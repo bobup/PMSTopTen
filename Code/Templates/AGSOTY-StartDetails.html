@@ -1,0 +1,36 @@
+<!-- Start AGSOTY-StartDetails.html -->
+						<tr class="{GenderAgeGroup}-DisplayToggle" id="{UniquePersonId}" style="display:none">
+							<td class="placeClass"></td>
+							<td colspan="2">
+								<table style="font-size: 80%" border="" cellpadding="4" width="100%">
+									<tbody>
+									<tr>
+										<td width="92%">
+	Team(s):&nbsp;&nbsp;{SwimmersTeams}
+	&nbsp;&nbsp;&nbsp;&nbsp;Age Group(s):&nbsp;&nbsp;{SwimmersAgeGroups}
+	<span title="{NumSwimmersMeetsDetails}">&nbsp;&nbsp;&nbsp;&nbsp;
+		<a href="#" onclick="return ponclick_details('popup_{UniquePersonId}')"># Total Meets:&nbsp;&nbsp;{NumSwimmersMeets}</a></span>
+	<span title="{NumSwimmersPACMeetsDetails}">&nbsp;&nbsp;&nbsp;&nbsp;
+		<a href="#" onclick="return ponclick_details('popup_{UniquePersonId}')"># PAC Meets:&nbsp;&nbsp;{NumSwimmersPACMeets}</a></span>
+		<table  style="margin-left: 20px">   <!-- Meet Details -->
+			<tbody>
+			<tr  id="popup_{UniquePersonId}" style="display:none">
+				<td >
+					<table style="font-size: 80%" border="" cellpadding="4" width="100%">
+						<tbody>
+						<tr>
+							<th>Meet</th>
+							<th>Sanctioning Body</th>
+							<th>Points</th>
+						</tr>
+						{SwimmersMeetDetails}
+						</tbody>
+					</table>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+										</td>
+									</tr>
+<!-- End AGSOTY-StartDetails.html -->
+

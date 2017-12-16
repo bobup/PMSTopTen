@@ -1,0 +1,47 @@
+### properties.txt
+### This is the property file used by the Topten program.
+
+# Copyright (c) 2016 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
+
+###???DateOfInputResultFiles 7Mar2017
+
+# All file names are relative to the SourceData directory, which is the directory
+# containing this property file.
+
+# This file contains information about every swim meet discovered when downloading
+# the results to be processed:
+RacesDataFile	races.txt
+
+#RSIDNFileName USMS-RSIND_02-09-2017(2016Members).csv
+RSIDNFileName USMS-RSIND_03-21-2017(2016Members).csv
+
+####
+#### these are the result files we'll process
+####
+# PMS Top 10:
+PMSResultFiles			PACTop10SCY-2016.xlsx:PAC-SCY;	\
+						PACTop10SCM-2016.xlsx:PAC-SCM;	\
+						PACTop10LCM-2016.xlsx:PAC-LCM;
+
+# USMS Top 10:
+USMSResultFiles			USMSTop10SCY-2016.csv:USMS-SCY;	\
+						USMSTop10SCM-2016.csv:USMS-SCM;	\
+						USMSTop10LCM-2016.csv:USMS-LCM;
+
+# PMS Records
+PMSRecordsFiles	\
+						PACRecordsSCY-2016.csv:PAC-SCY;	\
+						PACRecordsSCM-2016.csv:PAC-SCM;	\
+						PACRecordsLCM-2016.csv:PAC-LCM;
+
+# USMS Records
+USMSRecordsFiles		USMSRecords-M-SCY-2016.csv:USMS-SCY@M;	\
+						USMSRecords-M-SCM-2016.csv:USMS-SCM@M;	\
+						USMSRecords-M-LCM-2016.csv:USMS-LCM@M;	\
+						USMSRecords-W-SCY-2016.csv:USMS-SCY@W;	\
+						USMSRecords-W-SCM-2016.csv:USMS-SCM@W;	\
+						USMSRecords-W-LCM-2016.csv:USMS-LCM@W;
+
+# PMS Open Water
+PMSOpenWaterResultFile	2016PacMastersOWPlacesForEachSwimmer.csv

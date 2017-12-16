@@ -1,0 +1,14 @@
+# fakeRaces.txt
+# Every line is of the form:
+#	f1\tf2\t...fn
+# where f1, f2, ..., fn are the following fields (tab separated):
+#	f1:  meet title
+#	f2:  one of the following: "(NOT a PAC sanctioned meet)" or "(IS a PAC sanctioned meet)"
+#	f3:  Organization (e.g. PAC)
+#	F4:  Course (e.g. SCY)
+#	f5:  Date (one day meet, e.g. "2016-6-18") or Date range (multi-day meet, e.g. 2016-6-11 - 2016-6-12).  
+#			Always in the form yyyy-mm-dd, where mm and dd can be a single digit.
+#	f6:  Unique USMS meet id.  Usually set to "-1" for fake meets
+#	f7:  Link - usually "/" for fake meets
+
+Fake Swim Meet	(IS a PAC sanctioned meet)	PAC	SCM	2017-9-18	-1	/

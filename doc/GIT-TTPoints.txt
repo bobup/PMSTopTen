@@ -1,0 +1,55 @@
+GIT-TTPoints:
+This are just some random notes used to write an eventual document
+
+*** Definitions:
+	- appRootDir: the PMSTopTen directory
+	
+*** Begin a new season:
+	- Create our new season-specific Source directory:
+		% cd <appRootDir>/Code/working/
+		- Copy the latest SourceData
+		- Paste to "SourceData-<new season>"
+		- cd to "SourceData-<new season>"
+		- remove all the previous year's result files; "races.txt"
+		- remove all old RSIDN files and get a new one (or use an old one for now)
+		- rename the "properties-<old season>" to "properties-<new season>"
+		- edit "properties-<new season>" and make necessary changes:
+			- comment line with name of file
+			- RSIDNFileName
+			- PMSOpenWaterResultFile
+	- Initialize our database:
+		- mysql -u root -p1994Maggie
+			- CREATE DATABASE TopTen_<new season>;
+			- GRANT ALL ON TopTen_<new season>.* TO DBTopTen IDENTIFIED BY 'TopTen';
+				(grant all privileges on db (all tables) to Username identified by password)
+	- use GetResults.pl to make sure we get the expected results in 
+		the SourceData-<new season> and Generated-<new season> directories:
+		- from Eclipse:  change the properties.txt file to contain the <new season>, or
+		- from Terminal: FetchTopten <new season>
+	- Add a link to the Support directory to the Generated-<new season> directory:
+		- copy the Support directory alias from Generated-<old season> 
+			to Generated-<new season>
+	- use Topten2.pl to process the fetched files and make sure we get the expected results
+		in the Generated-<new season> directory:
+		- from Eclipse:  change the properties.txt file to contain the <new season>, or
+		- from Terminal: GenTopten <new season>
+		
+		
+		
+		
+		
+		
+		
+		
+	- Remove all the files in the GeneratedFiles directory EXCEPT the Support symbolic link.
+	- Remove all the files and sub-directories in the OWResults directory.  This is where 
+		the new year's results will be placed.
+	- Edit the "properties.txt" file to include the <new year>-properties.txt instead
+		of the <previous year>-properties.txt
+	- Refresh your Eclipse project.
+
+
+
+
+
+=========================================================================================

@@ -1,0 +1,15 @@
+### properties.txt
+### This is the property file used by the Topten program.
+
+# Copyright (c) 2016 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
+###YearBeingProcessed		2017
+
+
+>include ../SeasonData/Season-{YearBeingProcessed}/properties-{YearBeingProcessed}.txt
+
+
+
+
+>endoffile
+

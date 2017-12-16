@@ -1,0 +1,57 @@
+#!/bin/bash
+
+
+# FetchTopten - fetch results for the specified season in preparation for generating the Top 10 standings.  
+#	DON'T generate the standings
+#
+# PASSED:
+#	$1 - the season, e.g. 2017
+#
+#
+
+TMPFILE=/tmp/FetchTopten.$$
+TMPFILE2=/tmp/FetchTopten_2.$$
+EMAIL_NOTICE=bobup@acm.org
+
+# compute the full path name of the directory holding this script.  We'll find the
+# programs to run relative to this directory:
+script_dir=$(dirname $0)
+pushd $script_dir/.. >/dev/null; FULLPATHCODE=`pwd -P`; popd >/dev/null
+
+if [ ."$1" = . ]  ; then 
+	echo "$0: Missing season - ABORT!"
+	exit 1
+fi
+
+cd "$FULLPATHCODE"
+# get the latest results for the specified season
+echo $0:  Get the latest results for $1
+./GetResults.pl $1 > $TMPFILE
+if grep -q "Results have changed" < $TMPFILE ; then
+	# looks like we've got some changes!
+	echo "Found some changes in the USMS or PAC results:"
+	tail -n -13 $TMPFILE >$TMPFILE2
+	cat $TMPFILE2
+	/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<BUp
+Subject: There are new results to process for $1 Top ten
+There are new results to process for $1 Top ten fetched by $0.
+Generation was completed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`.
+Details from GetResults.pl:
+`cat $TMPFILE2`
+BUp
+else
+	echo "No new changes for $1:"
+	tail -n -8 $TMPFILE >$TMPFILE2
+	cat $TMPFILE2
+	/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<BUp2
+Subject: No new results to process for $1 Top ten
+There were no new changes for $1 discovered by $0.
+(Results were fetched and compared with previous results on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
+Details from GetResults.pl:
+`cat $TMPFILE2`
+BUp2
+fi
+
+# done
+echo $0 is done\!
+rm -f $TMPFILE $TMPFILE2

@@ -1,0 +1,14 @@
+# .gitignore for the PMSTopTen project
+
+# ignore Mac-specific directory descriptor file
+.DS_Store
+# ignore Eclipse file
+.project
+ # ignore the top level GeneratedFiles, but don't ignore the GeneratedFiles in Historical/
+/Generated*/
+# ignore any directory named 'old' - temp backups
+old/
+# ignore vi temp files
+*.swp
+# DON'T ignore anything in the Historical directory
+!/Historical/*

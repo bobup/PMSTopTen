@@ -1,0 +1,25 @@
++Log file created on Sun Mar 26 2017 - 01:57:06
++GetResults.pl: get results for the year 2016
+GetResults::GetPMSTopTenResults(): Get the results for PAC LCM...(3942 lines)...1000...2000...3000...Found 2725 different results and 19 newly seen swim meets.
+GetResults::GetPMSTopTenResults(): Get the results for PAC SCM...(3694 lines)...1000...2000...3000...Found 2473 different results and 20 newly seen swim meets.
+GetResults::GetPMSTopTenResults(): Get the results for PAC SCY...(6107 lines)...1000...2000...3000...4000...5000...6000...Found 4812 different results and 28 newly seen swim meets.
+GetResults::GetUSMSTopTenResults(): Get the results for USMS LCM...(1079 lines)...200...400...600...800...1000...found 680 results and 0 newly seen swim meets.
+GetResults::GetUSMSTopTenResults(): Get the results for USMS SCM...(920 lines)...200...400...600...800...found 527 results and 0 newly seen swim meets.
+GetResults::GetUSMSTopTenResults(): Get the results for USMS SCY...(944 lines)...200...400...600...800...found 542 results and 0 newly seen swim meets.
+GetResults::GetPMSRecords(): Get the results for PAC LCM Records in the range 2015-10-01 - 2016-09-30...(743 lines)...found 50 records.
+GetResults::GetPMSRecords(): Get the results for PAC SCM Records in the range 2016-01-01 - 2016-12-31...(775 lines)...found 36 records.
+GetResults::GetPMSRecords(): Get the results for PAC SCY Records in the range 2015-06-01 - 2016-05-31...(773 lines)...found 27 records.
+GetResults::GetUSMSRecords(): Get the results for USMS Records LCM (M)...url='http://www.usms.org/comp/recordexport.php?CourseID=2&ri=M&ext=csv&prog=0'...
+GetResults::GetUSMSRecords(): Get the results for USMS Records SCM (M)...url='http://www.usms.org/comp/recordexport.php?CourseID=3&ri=M&ext=csv&prog=0'...
+GetResults::GetUSMSRecords(): Get the results for USMS Records SCY (M)...url='http://www.usms.org/comp/recordexport.php?CourseID=1&ri=M&ext=csv&prog=0'...
+GetResults::GetUSMSRecords(): Get the results for USMS Records LCM (W)...url='http://www.usms.org/comp/recordexport.php?CourseID=2&ri=W&ext=csv&prog=0'...
+GetResults::GetUSMSRecords(): Get the results for USMS Records SCM (W)...url='http://www.usms.org/comp/recordexport.php?CourseID=3&ri=W&ext=csv&prog=0'...
+GetResults::GetUSMSRecords(): Get the results for USMS Records SCY (W)...url='http://www.usms.org/comp/recordexport.php?CourseID=1&ri=W&ext=csv&prog=0'...
+GetResults:: Totals:
+    Total number of lines read: 17414
+    Total number of unique meets discovered: 67
+    Total number of different results found: 11872
+    Total number of different files processed: 15
+    Total number of different meets written to working/SourceData-2016/races.txt: 67
+NOTE:  there appears to be no change in results since 2017-03-25 13:51:33
+Done with GetResults.pl!

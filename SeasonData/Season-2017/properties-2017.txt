@@ -1,0 +1,46 @@
+### properties-2017.txt
+### This is the property file used by the Topten program.
+
+# Copyright (c) 2016 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
+
+# All file names are relative to the SourceData directory, which is the directory
+# containing this property file.
+
+# This file contains information about every swim meet discovered when downloading
+# the results to be processed:
+RacesDataFile	races.txt
+
+# These two files allow us to "create" swim meets and splashes that we otherwise wouldn't
+# know about (because USMS didn't post the results from the meet, or we have other special
+# cases.)  If a macro has no value, or the file it references is empty, then there are no
+# special cases.
+FakeMeetDataFile	fakeRaces.txt
+FakeSplashDataFile	SCM Champs True First Name.xlsx
+
+# this is the file that enumerates all PMS swimmers at this point in time:
+#RSIDNFileName	USMS-RSIND_09-27-2017.csv
+RSIDNFileName	2017 USMS-RSIND_11-27-2017 (1).csv
+
+PMSResultFiles			PACTOP10SCY-{YearBeingProcessed}.xlsx:PAC-SCY;	\
+						PACTop10SCM-{YearBeingProcessed}.xlsx:PAC-SCM;	\
+						PACTop10LCM-{YearBeingProcessed}.xlsx:PAC-LCM;
+						
+USMSResultFiles	\
+						USMSTop10SCY-{YearBeingProcessed}.csv:USMS-SCY;	\
+						USMSTop10SCM-{YearBeingProcessed}.csv:USMS-SCM;	\
+						USMSTop10LCM-{YearBeingProcessed}.csv:USMS-LCM;
+						
+PMSRecordsFiles	\
+						PACRecordsSCY-{YearBeingProcessed}.csv:PAC-SCY;	\
+						PACRecordsSCM-{YearBeingProcessed}.csv:PAC-SCM;	\
+						PACRecordsLCM-{YearBeingProcessed}.csv:PAC-LCM;
+						
+USMSRecordsFiles		USMSRecords-M-SCY-{YearBeingProcessed}.csv:USMS-SCY@M;	\
+						USMSRecords-M-SCM-{YearBeingProcessed}.csv:USMS-SCM@M;	\
+						USMSRecords-M-LCM-{YearBeingProcessed}.csv:USMS-LCM@M;	\
+						USMSRecords-W-SCY-{YearBeingProcessed}.csv:USMS-SCY@W;	\
+						USMSRecords-W-SCM-{YearBeingProcessed}.csv:USMS-SCM@W;	\
+						USMSRecords-W-LCM-{YearBeingProcessed}.csv:USMS-LCM@W;
+
+PMSOpenWaterResultFile	{YearBeingProcessed}PacMastersOWPlacesForEachSwimmer.csv

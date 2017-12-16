@@ -1,0 +1,46 @@
+<!-- Start AGSOTY-soty.html -->
+
+<div class="sotyTitle">
+	High Points as of {GenerationDate}
+</div>
+<div class="sotyDetail" style="color:red">
+	Female{FemaleSOTYtie1} with the most points:
+	<div class="sotySwimmers" style="color:red">
+		{FemaleSOTY}
+	</div>
+</div>
+<div class="sotyDetail" style="color:blue">
+	Male{MaleSOTYtie1} with the most points:
+	<div class="sotySwimmers" style="color:blue">
+		{MaleSOTY}
+	</div>
+</div>
+<p>&nbsp;</p>
+
+<span class="sotyTitle">
+	Number of Competing PAC Swimmers:
+</span>
+{NumberOfCompetingSwimmers}<br>
+<span class="sotyTitle">
+	Number of PAC Swimmers Who Earned Points:
+</span>
+{NumberOfSwimmersEarnedPoints}
+
+<div class="sotyTitle">
+	Swim Meets Analyzed for Points: ({NumberOfPoolMeets} pool meets - {NumberOfPMSMeets} of them Pacific Masters sanctioned; 
+	{NumberOfOWMeets} open water swims)
+</div>
+<table style="margin-left:10px; font-size:0.8em">
+	<tr>
+		<th style="padding-right:20px">#</th>
+		<th style="text-align:center; width: 600px">Meet Name</th>
+		<th style="text-align:center">Date</th>
+		<th>PAC Sanctioned?</th>
+		<th style="width:60px">Link</th>
+		<th width=50px># PAC Splashes <span style='font-size:8px'>(that earned points)</span></th>
+		<th width=50px># PAC Swimmers <span style='font-size:8px'>(that earned points)</span></th>
+	</tr>
+	{ListOfMeets}
+</table>
+
+<!-- End AGSOTY-soty.html -->

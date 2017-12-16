@@ -1,0 +1,217 @@
+#!/bin/bash
+
+
+# DoFetchAndProcessTopten - fetch results for the specified season and, if the results are different from the
+#	last time we generated the top 10 standings, generate new standings.
+#
+# PASSED:
+#	$1 - the season, e.g. 2017
+#	$2 - (optional) if present we'll force generation of the standings page after fetching
+#		the results.
+#
+# To force GetResults to detect a change in data, simply set a stat to 0.  For example:
+#	Update FetchStats set LinesRead=0 where FetchStatsId=1;
+#
+
+STARTDATE=`date`
+TMPFILE=/tmp/DoFetchAndProcessTopten.$$
+TMPFILE2=/tmp/DoFetchAndProcessTopten_2.$$
+ARCHIVED_TMPFILE=/tmp/DoFetchAndProcessTopten.archive
+ARCHIVED_TMPFILE2=/tmp/DoFetchAndProcessTopten_2.archive
+EMAIL_NOTICE=bobup@acm.org
+TOPTEN='./Topten2.pl'
+DOFETCH_LOG=/tmp/DoFetchLog.txt
+
+if [ ."$1" = . ]  ; then 
+	echo "$0: Missing season - ABORT!"
+	exit 1
+fi
+
+# compute the full path name of the directory holding this script.  We'll find the
+# programs to run relative to this directory:
+# Also compute the full path name of the directory into which the generated files are placed:
+script_dir=$(dirname $0)
+pushd $script_dir/.. >/dev/null; FULLPATHCODE=`pwd -P`; \
+	cd ../GeneratedFiles/Generated-$1; GENERATED_DIR=`pwd -P`; popd >/dev/null
+
+# log files produced by programs executed by this script:
+GETRESULTSLOG=$GENERATED_DIR/GetResultsLog-$1.txt
+TOPTENLOG=$GENERATED_DIR/TopTenLog-$1.txt
+# semaphore used to make sure we don't execute this script more than once at a time:
+SEMAPHORE=$GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
+
+
+##########################################################################################
+# FUNCTIONS:
+#
+# ExecuteTopten - this function will run the TopTen.pl perl script with the supplied
+# 	argument.
+#
+# PASSED:
+#	$1 - the year to process, e.g. "2017"
+#
+# RETURNED:
+#	n/a
+#	This routine will only return if TopTen.pl doesn't get any errors.  If errors are
+#	detected then an email is sent and this script is aborted.
+#
+ExecuteTopten() {
+	$TOPTEN $1
+	if grep -q "ABORT" <$TOPTENLOG ; then
+		echo "$TOPTEN got an ABORT, so we are GIVING UP"'!'
+		echo "See the TopTen log file: $TOPTENLOG"
+		/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<BUp0
+Subject: FATAL ERROR during $TOPTEN $1
+There was an error discovered when running $TOPTEN $1
+The TopTen log file is here:  $TOPTENLOG
+(STARTed on $STARTDATE, ABORTed on `date`)
+BUp0
+	rm $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
+	echo "(STARTed on $STARTDATE, ABORTed on `date`)"
+	exit 1;
+	fi
+}  # end of Executetopten()
+
+
+#
+# LogMessage - generate a log message to various devices:  email, stdout, and a script 
+#	log file.
+#
+# PASSED:
+#	$1 - the subject of the log message.
+#	$2 - the log message
+#	$3 - if non-empty then write to the dedicated script log file ($DOFETCH_LOG)
+#	$4 - if non-empty then delete the semaphore
+#
+LogMessage() {
+	MSG=""
+	echo "$2"
+	if [ -n "$3" ] ; then
+		echo "$1" >$DOFETCH_LOG
+		echo "$2" >>$DOFETCH_LOG
+		MSG="(see log file $DOFETCH_LOG)"
+		echo $MSG
+	fi
+	/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<- BUpLM
+		Subject: $1
+		$2
+		$MSG
+		BUpLM
+	if [ -n "$4" ] ; then
+		rm -f $SEMAPHORE
+	fi
+} # end of LogMessage()
+
+##########################################################################################
+
+##################  CHECK THE SEMAPHORE   ################################################
+if [ -e $SEMAPHORE ] ; then
+	# abort - program already running!
+	LogMessage "Attempted parallel executions of $0" "$(cat <<- BUp9 
+		ABORT - $0 has been running since $(cat $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore)
+		If you think this is wrong and $0 is not running then do this:
+		   rm $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
+		(STARTed on $STARTDATE, ABORTed on $(date))
+		BUp9
+		)"
+	exit 1
+else
+	echo $STARTDATE > $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
+fi
+#######################  END OF SEMAPHORE - GET TO WORK  #################################
+
+#echo "GETRESULTSLOG = $GETRESULTSLOG"
+#echo "TOPTENLOG = $TOPTENLOG"
+
+
+##############################  GET RESULT FILES  ########################################
+
+cd "$FULLPATHCODE"
+# get the latest results for the specified season
+echo "$0:  Get the latest results for $1 (`date`)"
+./GetResults.pl $1 > $TMPFILE
+
+# if the above GetResults got an error we're going to abort the whole thing.  It's 
+# probably a DB problem, or a file system problem, so it probably doesn't make sense
+# to continue:
+if grep -q "ERROR" < $GETRESULTSLOG ; then
+########################  GOT ERROR WITH RESULT FILES  ###################################
+	tail -n -8 $GETRESULTSLOG >$TMPFILE2
+	LogMessage "FATAL ERROR during GetResults.pl $1, so we are GIVING UP!"  "$(cat <<- BUp1
+		There was an error discovered when running GetResults $1
+		Details from GetResults.pl:
+		------
+		`cat $TMPFILE2`
+		------
+		Script logs can be viewed on $ARCHIVED_TMPFILE and $ARCHIVED_TMPFILE2
+		GetResults.pl logs are at:  $GETRESULTSLOG
+		(STARTed on $STARTDATE, Terminated on `date`)
+		BUp1
+		)" "x" "x"
+	exit 1
+else
+	if grep -q "Results have changed" < $GETRESULTSLOG ; then
+##############################  GOT NEW RESULT FILES  ####################################
+		# looks like we've got some changes!
+		tail -n -13 $GETRESULTSLOG | grep -v "Get the results for USMS Records" >$TMPFILE2
+		ExecuteTopten $1
+		LogMessage "A new Standings page has been generated for $1" "$(cat <<- BUp2
+			A new Standings page has been generated for the year $1 by the $0 script..
+			Generation was completed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`.
+			Details from GetResults.pl:
+			------
+			`cat $TMPFILE2`
+			------
+			Script logs can be viewed on $ARCHIVED_TMPFILE and $ARCHIVED_TMPFILE2
+			GetResults.pl logs are at:  $GETRESULTSLOG
+			TopTen.pl logs are at: $TOPTENLOG
+			(STARTed on $STARTDATE, Terminated on `date`)
+			BUp2
+			)" "x"
+	elif [ ."$2" != . ] ; then
+########################  NO NEW RESULT FILES BUT GENERATE TOP 10 ANYWAY  ################
+		# even though there are no changes we're going to generate the standings anyway
+		tail -n -13 $GETRESULTSLOG | grep -v "Get the results for USMS Records" >$TMPFILE2
+		ExecuteTopten $1
+		LogMessage \
+			"Found NO changes in the USMS or PAC results, but we'll generate standings anyway for $1" \
+			"$(cat <<- BUp3
+			Even though there appear to be no changes in the PAC and USMS results we 
+			generated a new standings page for the year $1 using the $0 script..
+			Generation was completed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`.
+			Details from GetResults.pl:
+			------
+			`cat $TMPFILE2`
+			------
+			Script logs can be viewed on $ARCHIVED_TMPFILE and $ARCHIVED_TMPFILE2
+			GetResults.pl logs are at:  $GETRESULTSLOG
+			TopTen.pl logs are at: $TOPTENLOG
+			(STARTed on $STARTDATE, Terminated on `date`)
+			BUp3
+			)" "x"
+	else
+########################  NO NEW RESULT FILES - DON'T GENERATE TOP 10  ###################
+		tail -n -8 $GETRESULTSLOG >$TMPFILE2
+		LogMessage "No new Standings page for $1" "$(cat <<- BUp4
+			There were no new changes for $1.
+			(Results were fetched and compared with previous results on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
+			Details from GetResults.pl:
+			------
+			`cat $TMPFILE2`
+			------
+			Script logs can be viewed on $ARCHIVED_TMPFILE and $ARCHIVED_TMPFILE2
+			GetResults.pl logs are at:  $GETRESULTSLOG
+			TopTen.pl logs are at: $TOPTENLOG
+			(STARTed on $STARTDATE, Terminated on `date`)
+			BUp4
+			)" "x"
+	fi
+fi
+
+####################################  ALL DONE  ##########################################
+rm -f $ARCHIVED_TMPFILE $ARCHIVED_TMPFILE2
+mv $TMPFILE $ARCHIVED_TMPFILE
+mv $TMPFILE2 $ARCHIVED_TMPFILE2
+rm -f $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
+
+exit;
