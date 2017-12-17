@@ -55,6 +55,7 @@ use sigtrap;
 use warnings;
 use POSIX qw(strftime);
 use File::Basename;
+use File::Path qw(make_path remove_tree);
 use Cwd 'abs_path';
 
 
@@ -317,14 +318,14 @@ if( $mysqlDate ge $dateToStartTrackingPMSMeets ) {
 ### file names
 ###
 # Input data directory for the season we're processing 
-my $seasonData = "$appRootDir/SeasonData/Season-$yearBeingProcessed/";
+my $seasonData = "$appRootDir/SeasonData/Season-$yearBeingProcessed";
 # directory holding result files that we process for points:
-my $sourceDataDir = "$seasonData/SourceData-$yearBeingProcessed/";
+my $sourceDataDir = "$seasonData/SourceData-$yearBeingProcessed";
 # template directory:
 my $templateDir = "$appDirName/Templates";
 
 # location of the RSIDN file that we'll use
-my $swimmerDataFile = "$sourceDataDir/SourceData-$yearBeingProcessed/PMSSwimmerData/" .
+my $swimmerDataFile = "$seasonData/PMSSwimmerData/" .
 	PMSStruct::GetMacrosRef()->{"RSIDNFileName"};
 
 # the input result files that we process:
@@ -342,7 +343,10 @@ my $generatedDirName = "$appRootDir/GeneratedFiles/Generated-$yearBeingProcessed
 # does this directory exist?
 if( ! -e $generatedDirName ) {
 	# neither file nor directory with this name exists - create it
-	mkdir $generatedDirName;
+	my $count = File::Path::make_path( $generatedDirName );
+	if( $count == 0 ) {
+		die "Attempting to create '$generatedDirName' failed to create any directories.";
+	}
 } elsif( ! -d $generatedDirName ) {
 	die "A file with the name '$generatedDirName' exists - it must be a directory.  Abort.";
 } elsif( ! -w $generatedDirName ) {
@@ -416,7 +420,6 @@ PMSLogging::PrintLog( "", "", "Log file created on $generationTimeDate; Year bei
 ### initialize database
 ###
 # Initialize the database parameters:
-#PMS_MySqlSupport::SetSqlParameters( 'default', "localhost", "TopTen1Group_$yearBeingProcessed", "DBTopTen", "TopTen" );
 PMS_MySqlSupport::SetSqlParameters( 'default', "localhost", "TopTen_$yearBeingProcessed", "DBTopTen", "TopTen" );
 if( $RESULT_FILES_TO_READ != 0 ) {
 	TT_MySqlSupport::DropTTTables ();
@@ -634,7 +637,7 @@ sub PMSProcessResults($) {
 
 	foreach $simpleFileName ( sort keys %{$resultFilesRef} ) {
 		# open the top N file
-		my $fileName = $sourceDataDir . $simpleFileName;
+		my $fileName = "$sourceDataDir/" . $simpleFileName;
 		# compute the Org (PMS or USMS) and the course (SCY, etc) of the results to query
 		my $course;
 		my $org;
@@ -901,7 +904,7 @@ sub USMSProcessResults($) {
 
 	foreach $simpleFileName ( sort keys %{$resultFilesRef} ) {
 		# open the top N file
-		my $fileName = $sourceDataDir .  $simpleFileName;
+		my $fileName = "$sourceDataDir/" .  $simpleFileName;
 		# compute org and course
 		my $course;
 		my $org;
@@ -1099,7 +1102,7 @@ sub USMSProcessRecords($) {
 	
 	foreach $simpleFileName ( sort keys %{$resultFilesRef} ) {
 		# open the record file
-		my $fileName = $sourceDataDir .  $simpleFileName;
+		my $fileName = "$sourceDataDir/" .  $simpleFileName;
 		# compute the org and course (org must be USMS)
 		my $course;
 		my $org;
@@ -1401,7 +1404,7 @@ sub PMSProcessRecords($) {
 	
 	foreach $simpleFileName ( sort keys %{$resultFilesRef} ) {
 		# open the record file
-		my $fileName = $sourceDataDir .  $simpleFileName;
+		my $fileName = "$sourceDataDir/" .  $simpleFileName;
 		# compute the org and course (org must be PAC)
 		my $course;
 		my $org;
@@ -1586,7 +1589,7 @@ sub PMSProcessOpenWater($) {
 	my $org = "PAC";
 	$missingResults{"$org-$course"} = 0;
 	
-	my $fileName = $sourceDataDir .  $simpleFileName;
+	my $fileName = "$sourceDataDir/" .  $simpleFileName;
 	# does this file exist?
 	if( ! ( -e -f -r $fileName ) ) {
 		# can't find/open this file - just skip it with a warning:
@@ -1783,7 +1786,7 @@ sub ProcessFakeSplashes($) {
 	my $course = "SCY";
 	my $org = "PAC";
 	
-	my $fileName = $sourceDataDir .  $simpleFileName;
+	my $fileName = "$sourceDataDir/" .  $simpleFileName;
 	# does this file exist?
 		
 		# get to work

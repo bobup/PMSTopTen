@@ -2,7 +2,11 @@ GIT-TTPoints:
 This are just some random notes used to write an eventual document
 
 *** Definitions:
-	- appRootDir: the PMSTopTen directory
+	- rootDir:  the parent of our various appRootDir's.  The appRootDirs are:
+		PMSOWPoints - manage PMS open water points
+		PMSTopTen - manage PMS AGSOTY (that's what this writeup is concentrating on)
+		PMSPerlModules - helper Perl modules used by the two above projects.
+	- appRootDir: the PMSTopTen directory, the parent of which is rootDir
 	
 *** Begin a new season:
 	- Create our new season-specific Source directory:
@@ -48,6 +52,42 @@ This are just some random notes used to write an eventual document
 		of the <previous year>-properties.txt
 	- Refresh your Eclipse project.
 
+
+****** Create a local repository from the PMSTopTen remote repository
+
+# First, we must have the latest PMSPerlModules.  Get them here:
+% cd $rootDir			# see Definition of 'rootDir'.  Create if necessary
+% git clone https://github.com/bobup/PMSPerlModules
+
+# Next, we get the latest PMSTopTen files:
+% git clone https://github.com/bobup/PMSTopTen
+
+# At this point we have the source code but no "Generated Files", so we'll have 
+# to generate some.  In the 'SeasonData' directory there should be one or more 
+# source directories named "Season-yyyy' where 'yyyy' is some year.  Here's how we'll
+# generate some results assuming we have data for 2017.  Plug in whatever year for which
+# you have data.
+# First, set up your MySql server.  You need to install MySql and create a root account
+# with all permissions.  Then do the following (you may have to change names/passwords
+# to match the code - see the call to PMS_MySqlSupport::SetSqlParameters() in the file
+# PMSTopTen/Code/Topten2.pl to see what the code uses.)
+% mysql -u root -p
+<supply root password for your MySql server>
+> show databases;
+# if you have a database named "TopTen_2017" (where '2017' is the year in this example)
+# then you're done.  Or you can drop it like this:
+> DROP DATABASE TopTen_2017;
+# to create the database do this:
+> CREATE DATABASE TopTen_2017;
+> GRANT ALL ON TopTen_2017.* TO DBTopTen IDENTIFIED BY 'TopTen';
+> exit
+
+# Now we're ready to process the source data that we got from Git and create the
+# various result files:
+% cd PMSTopTen		# Remember: you are now in $rootDir/PMSTopTen
+# You may want to change the 'EMAIL_NOTICE' variable in the GenTopten2 script used
+# next so it will send an email to the correct person.  Then execute the script:
+% Code/Scripts/GenTopten2 2017
 
 
 

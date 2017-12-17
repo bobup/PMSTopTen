@@ -944,7 +944,7 @@ sub GetPMSOWResults( $$ ) {
 #		$LWP::Simple::ua->agent("WikiBot/0.1");
 	my $responseCode = LWP::Simple::getstore( $linkToResults, $filePath );
 	
-print "GetPMSOWResults(): url='$linkToResults', path='$filePath', responseCode='$responseCode'\n";
+#print "GetPMSOWResults(): url='$linkToResults', path='$filePath', responseCode='$responseCode'\n";
 	
 	
 	if( LWP::Simple::is_error($responseCode) ) {
