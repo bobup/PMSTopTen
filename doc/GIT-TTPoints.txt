@@ -7,6 +7,7 @@ This are just some random notes used to write an eventual document
 		PMSTopTen - manage PMS AGSOTY (that's what this writeup is concentrating on)
 		PMSPerlModules - helper Perl modules used by the two above projects.
 	- appRootDir: the PMSTopTen directory, the parent of which is rootDir
+	- yearToProcess: the season to process, e.g. 2017
 	
 *** Begin a new season:
 	- Create our new season-specific Source directory:
@@ -93,3 +94,12 @@ This are just some random notes used to write an eventual document
 
 
 =========================================================================================
+
+How to update RSIDN file so next run will use it.
+
+- get new RSIDN file from admin
+- put into $appRootDir/SeasonData/Season-$yearToProcess/PMSSwimmerData/.
+	- remove the old one if you want.
+- edit $appRootDir/SeasonData/Season-$yearToProcess/properties-$yearToProcess.txt
+	- change the value of the macro named 'RSIDNFileName' to the new RSIDN (simple)
+		file name.

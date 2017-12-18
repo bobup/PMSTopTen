@@ -19,8 +19,7 @@ FakeMeetDataFile	fakeRaces.txt
 FakeSplashDataFile	SCM Champs True First Name.xlsx
 
 # this is the file that enumerates all PMS swimmers at this point in time:
-#RSIDNFileName	USMS-RSIND_09-27-2017.csv
-RSIDNFileName	2017 USMS-RSIND_11-27-2017 (1).csv
+RSIDNFileName	USMS-RSIND_12-16-2017.csv
 
 PMSResultFiles			PACTOP10SCY-{YearBeingProcessed}.xlsx:PAC-SCY;	\
 						PACTop10SCM-{YearBeingProcessed}.xlsx:PAC-SCM;	\
