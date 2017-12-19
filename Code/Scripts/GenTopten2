@@ -19,19 +19,19 @@ script_dir=$(dirname $0)
 pushd $script_dir/.. >/dev/null; FULLPATHCODE=`pwd -P`; popd >/dev/null
 
 if [ ."$1" = . ]  ; then 
-	echo "PROGNAME: Missing season - ABORT!"
+	echo "$PROGNAME: Missing season - ABORT!"
 	exit 1
 fi
 
 cd "$FULLPATHCODE"
-echo "PROGNAME:  Generate a new Standings page."
+echo "$PROGNAME:  Generate a new Standings page."
 ./Topten2.pl $1
 /usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<BUp
 Subject: A new Standings page has been generated for $1 (using Topten2.pl)
-A new Standings page has been generated for the year $1 by the PROGNAME script.
+A new Standings page has been generated for the year $1 by the $PROGNAME script.
 Generation was completed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`.
 BUp
 
 # done
-echo PROGNAME is done\!
+echo $PROGNAME is done\!
 rm -f $TMPFILE
