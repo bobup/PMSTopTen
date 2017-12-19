@@ -11,6 +11,7 @@
 
 TMPFILE=/tmp/GenTopten2.$$
 EMAIL_NOTICE=bobup@acm.org
+PROGNAME=`hostname`::$0
 
 # compute the full path name of the directory holding this script.  We'll find the
 # programs to run relative to this directory:
@@ -18,19 +19,19 @@ script_dir=$(dirname $0)
 pushd $script_dir/.. >/dev/null; FULLPATHCODE=`pwd -P`; popd >/dev/null
 
 if [ ."$1" = . ]  ; then 
-	echo "$0: Missing season - ABORT!"
+	echo "PROGNAME: Missing season - ABORT!"
 	exit 1
 fi
 
 cd "$FULLPATHCODE"
-echo "$0:  Generate a new Standings page."
+echo "PROGNAME:  Generate a new Standings page."
 ./Topten2.pl $1
 /usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<BUp
 Subject: A new Standings page has been generated for $1 (using Topten2.pl)
-A new Standings page has been generated for the year $1 by the $0 script.
+A new Standings page has been generated for the year $1 by the PROGNAME script.
 Generation was completed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`.
 BUp
 
 # done
-echo $0 is done\!
+echo PROGNAME is done\!
 rm -f $TMPFILE

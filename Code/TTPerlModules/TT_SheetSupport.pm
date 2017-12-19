@@ -4,8 +4,8 @@
 package TT_SheetSupport;
 
 
-use Spreadsheet::Read;
-use Text::CSV_XS;
+require Spreadsheet::Read;
+require Text::CSV_XS;
 
 use strict;
 use sigtrap;
