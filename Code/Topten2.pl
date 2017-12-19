@@ -420,7 +420,11 @@ PMSLogging::PrintLog( "", "", "Log file created on $generationTimeDate; Year bei
 ### initialize database
 ###
 # Initialize the database parameters:
-PMS_MySqlSupport::SetSqlParameters( 'default', "localhost", "TopTen_$yearBeingProcessed", "DBTopTen", "TopTen" );
+PMS_MySqlSupport::SetSqlParameters( 'default',
+	PMSStruct::GetMacrosRef()->{"dbHost"},
+	PMSStruct::GetMacrosRef()->{"dbName"},
+	PMSStruct::GetMacrosRef()->{"dbUser"},
+	PMSStruct::GetMacrosRef()->{"dbPass"} );
 if( $RESULT_FILES_TO_READ != 0 ) {
 	TT_MySqlSupport::DropTTTables ();
 	my $dbh = TT_MySqlSupport::InitializeTopTenDB();

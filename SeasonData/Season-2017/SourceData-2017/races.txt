@@ -19,6 +19,8 @@ UCLA Bruin Masters SCM Swim Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2017-10-8	2
 SDSM 1st Annual Steven Plackemeier SCM Meet, Alga Norte Aquatic Center, Carlsbad, CA	(NOT a PAC sanctioned meet)	PAC	SCM	2017-11-5	20171105SDSM-S	http://www.usms.org/comp/meets/meet.php?MeetID=20171105SDSM-S
 South Carolina SCM Championships	(NOT a PAC sanctioned meet)	PAC	SCM	2017-12-1 - 2017-12-3	20171201COLUMBS	http://www.usms.org/comp/meets/meet.php?MeetID=20171201COLUMBS
 Southwest Zone &amp; SPMS Short Course Meters Championships	(NOT a PAC sanctioned meet)	PAC	SCM	2017-12-1 - 2017-12-3	20171201SCMChaS	http://www.usms.org/comp/meets/meet.php?MeetID=20171201SCMChaS
+Chris Jackson Memorial Meet (SCM)	(NOT a PAC sanctioned meet)	PAC	SCM	2017-12-2 - 2017-12-3	20171202CJ17S	http://www.usms.org/comp/meets/meet.php?MeetID=20171202CJ17S
+5th Annual Solstice SCM Swim Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2017-12-2	20171202SOLSTIS	http://www.usms.org/comp/meets/meet.php?MeetID=20171202SOLSTIS
 Splash & Dash Sprint Pentathlon	(IS a PAC sanctioned meet)	PAC	SCY	2017-2-11	20170211ALB-1YY	http://www.usms.org/comp/meets/meet.php?MeetID=20170211ALB-1YY
 Rose Bowl Masters SCY Swim Meet	(NOT a PAC sanctioned meet)	PAC	SCY	2017-2-11	20170211RBSCYY	http://www.usms.org/comp/meets/meet.php?MeetID=20170211RBSCYY
 Palm Desert Senior Games and International Sports Festival	(NOT a PAC sanctioned meet)	PAC	SCY	2017-2-12	20170212PDSGY	http://www.usms.org/comp/meets/meet.php?MeetID=20170212PDSGY

@@ -221,7 +221,11 @@ PMSLogging::DumpNote( "", "", "$appProgName: get results for the year $yearBeing
 # my $dbh = TT_MySqlSupport::InitializeTopTenDB();
 
 # First, initialize the database parameters:
-PMS_MySqlSupport::SetSqlParameters( 'default', "localhost", "TopTen_$yearBeingProcessed", "DBTopTen", "TopTen" );
+PMS_MySqlSupport::SetSqlParameters( 'default',
+	PMSStruct::GetMacrosRef()->{"dbHost"},
+	PMSStruct::GetMacrosRef()->{"dbName"},
+	PMSStruct::GetMacrosRef()->{"dbUser"},
+	PMSStruct::GetMacrosRef()->{"dbPass"} );
 
 my $dbh = TT_MySqlSupport::InitializeTopTenDB();
 

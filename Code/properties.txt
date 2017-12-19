@@ -1,10 +1,13 @@
 ### properties.txt
-### This is the property file used by the Topten program.
+### This is the property file used by the Topten and GetResults programs.
 
 # Copyright (c) 2016 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
-###YearBeingProcessed		2017
-
+# database connection parameters
+dbHost		localhost
+dbName		TopTen_{YearBeingProcessed}
+dbUser		DBTopTen
+dbPass		TopTen
 
 >include ../SeasonData/Season-{YearBeingProcessed}/properties-{YearBeingProcessed}.txt
 

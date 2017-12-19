@@ -80,6 +80,12 @@ This are just some random notes used to write an eventual document
 > DROP DATABASE TopTen_2017;
 # to create the database do this:
 > CREATE DATABASE TopTen_2017;
+# then you need to db user who has access to this new database.  See code to confirm
+# the name and password.  First see if the DBTopTen user exists:
+> select * from mysql.user;
+# if not then create the user:
+> CREATE USER DBTopTen IDENTIFIED BY 'TopTen';
+# then give this user permissions on our TopTen table:
 > GRANT ALL ON TopTen_2017.* TO DBTopTen IDENTIFIED BY 'TopTen';
 > exit
 
