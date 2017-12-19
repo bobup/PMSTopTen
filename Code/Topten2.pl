@@ -183,8 +183,13 @@ BEGIN {
 my $UsageString = <<bup
 Usage:  
 	$appProgName year
+			[-tPROPERTYFILE]
 where:
 	year - the year to process, e.g. 2016.  
+	-tPROPERTYFILE - the FULL PATH NAME of the property.txt file.  The default is 
+		appDirName/Code/properties.txt, where
+		'appDirName' is the directory holding this script, and
+		'properties.txt' is the name of the properties files for this script.
 bup
 ;
 
@@ -271,15 +276,36 @@ if( $RESULT_FILES_TO_READ != 0 ) {
 	InitializeMissingResults();
 }
 
+# initialize property file details:
+my $propertiesDir = $appDirName;		# Directory holding the properties.txt file.
+my $propertiesFileName = "properties.txt";
+
 # get the arguments:
 my $yearBeingProcessed ="";
 
 my $arg;
 my $numErrors = 0;
 while( defined( $arg = shift ) ) {
+	my $flag = $arg;
 	my $value = PMSUtil::trim($arg);
-	if( $value ne "" ) {
-		$yearBeingProcessed = $value;
+	if( $value =~ m/^-/ ) {
+		# we have a flag with possible arg
+		$flag =~ s/(-.).*$/$1/;		# e.g. '-t'
+		$value =~ s/^-.//;			# e.g. '/a/b/c/d/Propertyfile.xtx'
+		SWITCH: {
+	        if( $flag =~ m/^-t$/ ) {
+				$propertiesDir = dirname($value);
+				$propertiesFileName = basename($value);
+				last SWITCH;
+	        }
+			print "${appProgName}:: ERROR:  Invalid flag: '$arg'\n";
+			$numErrors++;
+		}
+	} else {
+		# we have the date only
+		if( $value ne "" ) {
+			$yearBeingProcessed = $value;
+		}
 	}
 } # end of while - done getting command line args
 
@@ -291,11 +317,10 @@ if( $yearBeingProcessed eq "" ) {
 	PMSStruct::GetMacrosRef()->{"YearBeingProcessed"} = $yearBeingProcessed;
 }
 
+print "  ...and with the propertiesDir='$propertiesDir', and propertiesFilename='$propertiesFileName'\n";
 
 # various input files:
 # properties file:
-my $propertiesDir = $appDirName;		# Directory holding the properties.txt file.
-my $propertiesFileName = "properties.txt";
 # Read the properties.txt file and set the necessary properties by setting name/values in 
 # the %macros hash which is accessed by the reference returned by PMSStruct::GetMacrosRef().  For example,
 # if the macro "numSwimsToConsider" is set in the properties file, then it's value is retrieved by 
@@ -306,13 +331,13 @@ my $propertiesFileName = "properties.txt";
 PMSMacros::GetProperties( $propertiesDir, $propertiesFileName, $yearBeingProcessed );			
 
 PMSStruct::GetMacrosRef()->{"YearBeingProcessedPlusOne"} = $yearBeingProcessed+1;
-print "Starting $appProgName : Year being analyzed: $yearBeingProcessed\n";
+print "  ...Year being analyzed: $yearBeingProcessed\n";
 
 # define the date beyond which we will flag swimmers who haven't swum enough PMS events:
 $dateToStartTrackingPMSMeets = "$yearBeingProcessed-10-01";		# Oct 1 of the year being processed.
 #$dateToStartTrackingPMSMeets = "$yearBeingProcessed-07-01";		# testing...
 if( $mysqlDate ge $dateToStartTrackingPMSMeets ) {
-	print " ...we are going to carefully count each high placed swimmer's PAC-sanctioned swims.\n"
+	print "  ...we are going to carefully count each high placed swimmer's PAC-sanctioned swims.\n"
 }
 ###
 ### file names

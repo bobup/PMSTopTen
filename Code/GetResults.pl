@@ -101,8 +101,13 @@ BEGIN {
 my $UsageString = <<bup
 Usage:  
 	$appProgName  year
+			[-tPROPERTYFILE]
 where:
-	year - the year to process, e.g. 2016
+	year - the year to process, e.g. 2016.  
+	-tPROPERTYFILE - the FULL PATH NAME of the property.txt file.  The default is 
+		appDirName/Code/properties.txt, where
+		'appDirName' is the directory holding this script, and
+		'properties.txt' is the name of the properties files for this script.
 bup
 ;
 
@@ -134,15 +139,36 @@ my $httpResponse;
 # $SwimMeets{title of meet} = "ORG|COURSE|link to details for meet";
 my %SwimMeets = ();
 
+# initialize property file details:
+my $propertiesDir = $appDirName;		# Directory holding the properties.txt file.
+my $propertiesFileName = "properties.txt";
+
 # get the arguments:
 my $yearBeingProcessed ="";
 
 my $arg;
 my $numErrors = 0;
 while( defined( $arg = shift ) ) {
+	my $flag = $arg;
 	my $value = PMSUtil::trim($arg);
-	if( $value ne "" ) {
-		$yearBeingProcessed = $value;		# this value will OVERRIDE the value in the property file below
+	if( $value =~ m/^-/ ) {
+		# we have a flag with possible arg
+		$flag =~ s/(-.).*$/$1/;		# e.g. '-t'
+		$value =~ s/^-.//;			# e.g. '/a/b/c/d/Propertyfile.xtx'
+		SWITCH: {
+	        if( $flag =~ m/^-t$/ ) {
+				$propertiesDir = dirname($value);
+				$propertiesFileName = basename($value);
+				last SWITCH;
+	        }
+			print "${appProgName}:: ERROR:  Invalid flag: '$arg'\n";
+			$numErrors++;
+		}
+	} else {
+		# we have the date only
+		if( $value ne "" ) {
+			$yearBeingProcessed = $value;
+		}
 	}
 } # end of while - done getting command line args
 
@@ -155,11 +181,10 @@ if( $yearBeingProcessed eq "" ) {
 #	# and we need to know the year following the year being processed:
 #	PMSStruct::GetMacrosRef()->{"YearBeingProcessedPlusOne"} = $yearBeingProcessed+1;
 }
-	
+
+print "  ...and with the propertiesDir='$propertiesDir', and propertiesFilename='$propertiesFileName'\n";
+
 # various input files:
-# properties file:
-my $propertiesDir = $appDirName;	# Directory holding the properties.txt file.
-my $propertiesFileName = "properties.txt";
 # Read the properties.txt file for this program and set the necessary properties by setting name/values in 
 # the %macros hash which is accessed by the reference returned by PMSStruct::GetMacrosRef().  For example,
 # if the macro "numSwimsToConsider" is set in the properties file, then it's value is retrieved by 
@@ -169,6 +194,7 @@ my $propertiesFileName = "properties.txt";
 # $propertiesDir and $propertiesFileName are initialized above.
 PMSMacros::GetProperties( $propertiesDir, $propertiesFileName, $yearBeingProcessed );			
 
+print "  ...Year being analyzed: $yearBeingProcessed\n";
 
 ###
 ### file names
