@@ -55,6 +55,7 @@ use warnings;
 
 use POSIX qw(strftime);
 use File::Basename;
+use File::Path qw(make_path remove_tree);
 use Cwd 'abs_path';
 use HTTP::Tiny;
 use LWP::Simple;
@@ -227,7 +228,10 @@ my $generatedDirName = "$appRootDir/GeneratedFiles/Generated-$yearBeingProcessed
 # does this directory exist?
 if( ! -e $generatedDirName ) {
 	# neither file nor directory with this name exists - create it
-	mkdir $generatedDirName;
+	my $count = File::Path::make_path( $generatedDirName );
+	if( $count == 0 ) {
+		die "Attempting to create '$generatedDirName' failed to create any directories.";
+	}
 } elsif( ! -d $generatedDirName ) {
 	die "A file with the name '$generatedDirName' exists - it must be a directory.  Abort.";
 } elsif( ! -w $generatedDirName ) {
