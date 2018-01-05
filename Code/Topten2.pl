@@ -623,6 +623,9 @@ TT_MySqlSupport::DumpStatsFor2GroupSwimmers( "$generatedHTMLFileDir/cag.html", $
 # won't get points they deserve, and also possibly help us identify swimmers who are
 # getting points they don't deserve (thus taking away points from swimmers who deserve them.)
 TT_MySqlSupport::DumpErrorsWithSwimmerNames();
+
+# log all the different aliases for swim strokes that we saw
+PMSUtil::DumpStrokes();
 	
 my $logLinesOnly = PMSLogging::GetLogOnlyLines();
 my $completionTimeDate = strftime( "%a %b %d %G - %X", localtime() );

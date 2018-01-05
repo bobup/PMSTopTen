@@ -60,12 +60,17 @@ use HTTP::Tiny;
 use LWP::Simple;
 use LWP::Simple qw/get $ua/;
 
+my $debug;
 my $appProgName;	# the name of this program
 my $appDirName;     # directory containing the application we're running
 my $appRootDir;		# directory containing the appDirName directory
 my $sourceData;		# full path of directory containing the "source data" which we process to create the generated files
 
 BEGIN {
+	# set this to adjust debug printing:
+	$debug = 0;
+	
+	
 	# Get the name of the program we're running:
 	$appProgName = basename( $0 );
 	die( "Can't determine the name of the program being run - did you use/require 'File::Basename' and its prerequisites?")
@@ -255,7 +260,18 @@ PMS_MySqlSupport::SetSqlParameters( 'default',
 
 my $dbh = TT_MySqlSupport::InitializeTopTenDB();
 
+######### debugging
+if( $debug ) {
+	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 
+	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
+		"SELECT LinesRead, MeetsSeen, ResultsSeen, FilesSeen, RaceLines, Date " .
+		"FROM FetchStats " .
+		"WHERE Season = \"$yearBeingProcessed\"" );
+	my $numRows = $sth->rows();
+	print "GetResults.pl::numrows=$numRows\n";
+}
+######### debugging
 
 
 # the result files that we get:
@@ -318,6 +334,20 @@ foreach my $simpleFileName ( sort keys %PMSResultFiles ) {
 	$numDifferentFiles += $numDifferentFilesTemp;
 }
 }
+
+if(0) {
+print "ready to exit\n";
+
+PMSLogging::PrintLog( "", "", "GetResults:: Totals:", 1);
+PMSLogging::PrintLog( "", "", "    Total number of lines read: $numLinesRead", 1);
+PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
+PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
+PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
+
+exit;
+}
+
+
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET USMS Top Ten POINTS
 ####
@@ -537,119 +567,237 @@ sub GetSwimMeetDetails() {
 #		- A list of meet names that we process later.
 #	Files are created and global variables are modified and used later.
 #
+
+my $htmlCopyFileName;
+my $htmlCopyFD;
+my $diffResultsFileName;
+my $diffResultsFD;
 sub GetPMSTopTenResults( $$$$$ ) {
 	my( $linkToResults, $baseURL, $org, $course, $destinationFileName ) = @_;
-	# we use a simple state machine to process the result file we're reading.
-	my $state = "LookingForExcelButton";
+	# define our callback to handle the HTTP response containing PMS top ten results
 	my $excelLink = "";		# the link used to request the excel results
 	my %excelArgs = ();		# the query args used when requesting the excel results
-	my $lineNum = 0;
-	my $numDifferentMeets = 0;
-	my $numDifferentResults = 0;
+	my %callbackState = (
+		"numCallbackCalls"		=> 	0,
+		"numLines"				=>	0,
+		"numDifferentMeets"		=>	0,
+		"numDifferentResults"	=>	0,
+		"state"					=>	"LookingForExcelButton",
+		"excelLinkRef"			=>	\$excelLink,
+		"excelArgsRef"			=>	\%excelArgs,
+		"leftoverLine"			=>	""
+		);
+	my %options = (
+		"data_callback"	=>	sub {
+			ParseTopTenHttpResponse( \%callbackState, $linkToResults, $baseURL, $org, 
+				$course, $_[0], $_[1] );
+		} );
 
 	# fetch the human-readable results
-	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSTopTenResults(): Get the results for $org $course...", 1 );
-	my $httpResponse = $tinyHttp->get( $linkToResults );
-	if( !$httpResponse->{success} ) {
+	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSTopTenResults(): Get the results for " .
+		"$org $course, linkToResults='$linkToResults'", 1 );
+
+if($debug) {
+$htmlCopyFileName = $generatedDirName . "test/PMSResults-new-$org-$course.html";
+open( $htmlCopyFD, ">$htmlCopyFileName" ) || (die "Can't open $htmlCopyFileName: $!\nAbort.\n");
+$diffResultsFileName = $generatedDirName . "test/PMSDiffResults-new-$org-$course.txt";
+open( $diffResultsFD, ">$diffResultsFileName" ) || (die "Can't open $diffResultsFileName: $!\nAbort.\n");
+}
+		
+	my $httpResponseRef = $tinyHttp->get( $linkToResults, \%options );
+	# we get here under TWO conditions:
+	#	- the entire response has been processed by data_callback routine and all is good, or
+	#	- none (or some?) of the response has been processed and we got an error.
+	# This means the httpResponse is either "OK" or some error, so, if it's an error, we'll handle
+	# it here:
+if( $debug ) {
+close $htmlCopyFD;
+close $diffResultsFD;
+}
+	if( !$httpResponseRef->{success} ) {
 		# failure - display message and give up on this one
 		PMSLogging::PrintLog( "", "", "FAILED!!", 1 );
-		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponse );
-		return (0,0,0,0);
-	}
+		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef );
+	} else {
+		# all of the human-readable results have been parsed with no errors
+		if( $callbackState{"numDifferentResults"} ) {
+			# we've got at least one result to process - generate the excel result file
+			PMSLogging::PrintLog( "", "", "Found $callbackState{'numDifferentResults'} different results, " .
+				"$callbackState{'numDifferentMeets'} newly seen swim meets, " .
+				$callbackState{"numLines"} . " lines.", 1 );
+			my $argString = "";
+			foreach my $key (keys %excelArgs) {
+				$argString .= "&" if( $argString );
+				$argString .= "$key=$excelArgs{$key}";
+			}
+			# we need to change the User Agent because USMS prohibits the SIMPLE user agent...
+			$LWP::Simple::ua->agent("WikiBot/0.1");
+			if( $debug ) {
+				PMSLogging::DumpNote( "", "", "$appProgName:GetPMSTopTenResults(): fetch Excel from " .
+					"'$baseURL$excelLink?$argString' and store in '$sourceDataDir/$destinationFileName'", 1);
+				PMSLogging::DumpNote( "", "", "    baseURL='$baseURL', excelLink='$excelLink'\n" .
+					"    argString='$argString'", 1 );
 
-	# begin our state machine, processing each line in the human-readable results:
-	my @lines = split('\n', $httpResponse->{content});
-	PMSLogging::PrintLogNoNL( "", "", "(" . scalar @lines . " lines)...", 1 );
-	foreach my $line ( split('\n', $httpResponse->{content}) ) {
-		$lineNum++;
-		#print "line $lineNum: $line\n";
-		if( ($lineNum % 1000) == 0 ) {
-			PMSLogging::PrintLogNoNL( "", "", "$lineNum...", 1 );
-		}
-		if( $state eq "LookingForExcelButton" ) {
-			# we're still looking for the button to push to retrieve the Excel file.  Did we find it?
-			if( $line =~ m/Top N Swims by Swimmers from the Pacific LMSC/ ) {
-				# yep!  where does it go?
-				$state = "LookingForExcelAction";
 			}
-			next;
-		} elsif( $state eq "LookingForExcelAction" ) {
-			# we're still looking for the URL to get us the Excel file.  Did we find it?
-			if( $line =~ m/^<form method/ ) {
-				# yep!  found action...
-				$line =~ s/^.*action="//;
-				$line =~ s/".*$//;
-				$excelLink = $line;
-				$state = "LookingForExcelArgs";
-			}
-			next;
-		} elsif( $state eq "LookingForExcelArgs" ) {
-			# we're looking for the query args used when fetching the Excel file.  Did we find one?
-			if( $line =~ m/^<input type="hidden"/ ) {
-				# yep - remember it
-				my ($name, $value) = ($line, "");
-				$name =~ s/^.*name="//;
-				$value = $name;
-				$name =~ s/".*$//;
-				$value =~ s/^.*value="//;
-				$value =~ s/".*$//;
-				$excelArgs{$name} = $value;
-			} elsif( $line =~ m,</form>, ) {
-				# nope, but we did find the end of the query args, so let's go on and look at each of the
-				# result lines to gather up a list of swim meets.  (It would be so much easier if this
-				# information was part of what was exported to the Excel file, but alias...)
-				$state = "LookingForResultLine";
-			}
-			next
-		} elsif( $state eq "LookingForResultLine" ) {
-			# we're looking for individual result lines - did we find one?
-			if( $line =~ m,View</a> \|, ) {
-				# yep!  get the meet name and link to details if we haven't seen this meet before:
-				$numDifferentResults++;
-				$line =~ s,^.*View</a> \|,,;
-				my ($link, $meetTitle) = ($line,"");
-				$link =~ s/^.*href="//;
-				$meetTitle = $link;
-				$link =~ s/".*$//;
-				$meetTitle =~ s/^.*">//;
-				$meetTitle =~ s,</a.*$,,;
-				#$meetTitle = CleanMeetTitle( $meetTitle );
-				if( ! defined( $SwimMeets{$meetTitle} ) ) {
-					# we haven't seen this meet before - record it
-					$link = $baseURL . $link;
-					$SwimMeets{$meetTitle} = "$org|$course|$link";
-					$numDifferentMeets++;
-				}
+			my $responseCode = LWP::Simple::getstore( "$baseURL$excelLink?$argString", 
+				"$sourceDataDir/$destinationFileName" );
+			if( LWP::Simple::is_error($responseCode) ) {
+				PMSLogging::DumpError( "", "", "GetResults::GetPMSTopTenResults(): LWP::Simple error:  $responseCode", 1 );
 			}
 		} else {
-			# huh??? bad state machine!!!
-			die "Unknown state: '$state'\n";
+			PMSLogging::PrintLog( "", "", "none found - no result file generated.", 1 );
 		}
-	} # end of foreach my $line...
-	
-	if( $numDifferentResults ) {
-		# we've got at least one result to process - generate the excel result file
-		PMSLogging::PrintLog( "", "", "Found $numDifferentResults different results " .
-			"and $numDifferentMeets newly seen swim meets.", 1 );
-		my $argString = "";
-		foreach my $key (keys %excelArgs) {
-			$argString .= "&" if( $argString );
-			$argString .= "$key=$excelArgs{$key}";
-		}
-		# we need to change the User Agent because USMS prohibits the SIMPLE user agent...
-		$LWP::Simple::ua->agent("WikiBot/0.1");
-		my $responseCode = LWP::Simple::getstore( "$baseURL$excelLink?$argString", 
-			"$sourceDataDir/$destinationFileName" );
-		if( LWP::Simple::is_error($responseCode) ) {
-			PMSLogging::DumpError( "", "", "GetResults::GetPMSTopTenResults(): LWP::Simple error:  $responseCode", 1 );
-		}
-	} else {
-		PMSLogging::PrintLog( "", "", "none found - no result file generated.", 1 );
 	}
 	
-	return(	$lineNum, $numDifferentMeets, $numDifferentResults, 1 );
-
+	return (
+		$callbackState{"numLines"},
+		$callbackState{"numDifferentMeets"},
+		$callbackState{"numDifferentResults"},
+		1 );
+		
 } # end of GetPMSTopTenResults()
+		
+	
+
+# ParseTopTenHttpResponse - parse the response to the request made by GetPMSTopTenResults() above.
+#
+sub ParseTopTenHttpResponse( $$$$$$$ ) {
+	my( $callbackStateRef, $linkToResults, $baseURL, $org, $course, $content, $httpResponseRef ) = @_;
+	my $numCallbackCalls = $callbackStateRef->{"numCallbackCalls"}+1;
+	my $numLines = $callbackStateRef->{"numLines"};
+	my $state = $callbackStateRef->{"state"};
+	$callbackStateRef->{"numCallbackCalls"} = $numCallbackCalls;
+	my $partialLastLine = 0;		# set to 1 if the content we are passed
+
+if( $debug ) {
+print "ParseTopTenHttpResponse() called:  numCallbackCalls=$numCallbackCalls, org=$org, " .
+	"course=$course, success=" . 
+	(defined $httpResponseRef->{'success'}?$httpResponseRef->{'success'}:"undefined") . ", " .
+	"numLines so far=$numLines" .
+	"\n";
+}
+	
+	# before doing anything make sure we didn't get an error
+	if( ((defined $httpResponseRef->{success}) && !$httpResponseRef->{'success'}) ||
+		($httpResponseRef->{'status'} !~ /^2/) ) {
+		# failure - display message and give up on this one
+		PMSLogging::PrintLog( "", "", "ParseTopTenHttpResponse() FAILED!! (during " .
+			"callback #$numCallbackCalls)", 1 );
+		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef );
+	} else {
+		# begin/continue our state machine, processing each line in the human-readable results:
+		if( $content !~ m/\n$/ ) {
+			# the content ends with a partial line - remember this fact:
+			$partialLastLine = 1;
+		}
+		my @lines = split('\n', $content);
+if( $debug ) {
+	print $htmlCopyFD $content;
+}
+		my $leftoverLine = $callbackStateRef->{"leftoverLine"};
+		if( $leftoverLine ne "" ) {
+			# the previous chunk had a partial line, so we'll prepend it to the first line of
+			# the current chunk
+			$lines[0] = $leftoverLine . $lines[0];
+			if( $debug ) {
+				print "ParseTopTenHttpResponse(): process previously saved partial line (" .
+					length($leftoverLine) . " chars).  New first line: '" . $lines[0] . "'\n";
+			}
+		}
+		# if the last line in our chunk is a partial line then process it with the next chunk
+		if( $partialLastLine ) {
+			my $lastIndex = $#lines;
+			my $lastLine = $lines[$lastIndex];
+			# the last line doesn't end with a '\n' so it's a partial line
+			$callbackStateRef->{"leftoverLine"} = $lastLine;
+			$#lines = $lastIndex-1;
+			if( $debug ) {
+				print "ParseTopTenHttpResponse(): found a partial line (" . length($lastLine) . 
+					" chars) - saving it for next chunk: '" . $lastLine . "'\n";
+			}
+		} else {
+			# no partial line...
+			$callbackStateRef->{"leftoverLine"} = "";
+			if( $debug ) {
+				print "ParseTopTenHttpResponse(): No partial line\n";
+			}
+		}
+		
+		# now we have an array of 0 or more lines to parse...
+		foreach my $line ( @lines ) {
+			$numLines++;
+			#print "line $lineNum: $line\n";
+			if( ($numLines % 1000) == 0 ) {
+				PMSLogging::PrintLogNoNL( "", "", "$numLines...", 1 );
+			}
+			if( $state eq "LookingForExcelButton" ) {
+				# we're still looking for the button to push to retrieve the Excel file.  Did we find it?
+				if( $line =~ m/Top N Swims by Swimmers from the Pacific LMSC/ ) {
+					# yep!  where does it go?
+					$state = "LookingForExcelAction";
+				}
+				next;
+			} elsif( $state eq "LookingForExcelAction" ) {
+				# we're still looking for the URL to get us the Excel file.  Did we find it?
+				if( $line =~ m/^<form method/ ) {
+					# yep!  found action...
+					$line =~ s/^.*action="//;
+					$line =~ s/".*$//;
+					${$callbackStateRef->{"excelLinkRef"}} = $line;	# the link used to request the excel results
+					$state = "LookingForExcelArgs";
+				}
+				next;
+			} elsif( $state eq "LookingForExcelArgs" ) {
+				# we're looking for the query args used when fetching the Excel file.  Did we find one?
+				if( $line =~ m/^<input type="hidden"/ ) {
+					# yep - remember it
+					my ($name, $value) = ($line, "");
+					$name =~ s/^.*name="//;
+					$value = $name;
+					$name =~ s/".*$//;
+					$value =~ s/^.*value="//;
+					$value =~ s/".*$//;
+					# the query args used when requesting the excel results:
+					$callbackStateRef->{"excelArgsRef"}->{$name} = $value;
+				} elsif( $line =~ m,</form>, ) {
+					# nope, but we did find the end of the query args, so let's go on and look at each of the
+					# result lines to gather up a list of swim meets.  (It would be so much easier if this
+					# information was part of what was exported to the Excel file, but alias...)
+					$state = "LookingForResultLine";
+				}
+				next
+			} elsif( $state eq "LookingForResultLine" ) {
+				# we're looking for individual result lines - did we find one?
+				if( $line =~ m,View</a> \|, ) {
+					# yep!  get the meet name and link to details if we haven't seen this meet before:
+					$callbackStateRef->{"numDifferentResults"}++;
+if( $debug ) {
+	print $diffResultsFD "$line\n";
+}
+					$line =~ s,^.*View</a> \|,,;
+					my ($link, $meetTitle) = ($line,"");
+					$link =~ s/^.*href="//;
+					$meetTitle = $link;
+					$link =~ s/".*$//;
+					$meetTitle =~ s/^.*">//;
+					$meetTitle =~ s,</a.*$,,;
+					#$meetTitle = CleanMeetTitle( $meetTitle );
+					if( ! defined( $SwimMeets{$meetTitle} ) ) {
+						# we haven't seen this meet before - record it
+						$link = $baseURL . $link;
+						$SwimMeets{$meetTitle} = "$org|$course|$link";
+						$callbackStateRef->{"numDifferentMeets"}++;
+					}
+				}
+			} else {
+				# huh??? bad state machine!!!
+				die "ParseTopTenHttpResponse(): Unknown state: '$state'\n";
+			}
+		} # end of foreach my $line...
+	} # end of # begin/continue our state machine...
+	$callbackStateRef->{"state"} = $state;
+	$callbackStateRef->{"numLines"} = $numLines;
+} # end of ParseTopTenHttpResponse()
 
 
 

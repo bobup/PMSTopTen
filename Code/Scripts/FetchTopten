@@ -12,6 +12,7 @@
 TMPFILE=/tmp/FetchTopten.$$
 TMPFILE2=/tmp/FetchTopten_2.$$
 EMAIL_NOTICE=bobup@acm.org
+SCRIPT_NAME="`hostname`::$0"		# used for messages
 
 # compute the full path name of the directory holding this script.  We'll find the
 # programs to run relative to this directory:
@@ -19,13 +20,13 @@ script_dir=$(dirname $0)
 pushd $script_dir/.. >/dev/null; FULLPATHCODE=`pwd -P`; popd >/dev/null
 
 if [ ."$1" = . ]  ; then 
-	echo "$0: Missing season - ABORT!"
+	echo "$SCRIPT_NAME: Missing season - ABORT!"
 	exit 1
 fi
 
 cd "$FULLPATHCODE"
 # get the latest results for the specified season
-echo $0:  Get the latest results for $1
+echo $SCRIPT_NAME:  Get the latest results for $1
 ./GetResults.pl $1 > $TMPFILE
 if grep -q "Results have changed" < $TMPFILE ; then
 	# looks like we've got some changes!
@@ -34,7 +35,7 @@ if grep -q "Results have changed" < $TMPFILE ; then
 	cat $TMPFILE2
 	/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<BUp
 Subject: There are new results to process for $1 Top ten
-There are new results to process for $1 Top ten fetched by $0.
+There are new results to process for $1 Top ten fetched by $SCRIPT_NAME.
 Generation was completed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`.
 Details from GetResults.pl:
 `cat $TMPFILE2`
@@ -45,7 +46,7 @@ else
 	cat $TMPFILE2
 	/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<BUp2
 Subject: No new results to process for $1 Top ten
-There were no new changes for $1 discovered by $0.
+There were no new changes for $1 discovered by $SCRIPT_NAME.
 (Results were fetched and compared with previous results on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 Details from GetResults.pl:
 `cat $TMPFILE2`
@@ -53,5 +54,6 @@ BUp2
 fi
 
 # done
-echo $0 is done\!
-rm -f $TMPFILE $TMPFILE2
+echo $SCRIPT_NAME is done\!
+echo "TMPFILE='$TMPFILE' and TMPFILE2='$TMPFILE2' not removed"
+#rm -f $TMPFILE $TMPFILE2
