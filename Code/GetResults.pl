@@ -209,8 +209,24 @@ print "  ...Year being analyzed: $yearBeingProcessed\n";
 my $seasonData = "$appRootDir/SeasonData/Season-$yearBeingProcessed/";
 # directory holding result files that we process for points:
 my $sourceDataDir = "$seasonData/SourceData-$yearBeingProcessed/";
+# does this directory exist?
+if( ! -e $sourceDataDir ) {
+	# neither file nor directory with this name exists - create it
+	my $count = File::Path::make_path( $sourceDataDir );
+	if( $count == 0 ) {
+		die "Attempting to create '$sourceDataDir' failed to create any directories.";
+	}
+}
+# something with this name exists - is it a writable directory?
+if( ! -d $sourceDataDir ) {
+	die "A file with the name '$sourceDataDir' exists - it must be a directory.  Abort.";
+} elsif( ! -w $sourceDataDir ) {
+	die "The directory '$sourceDataDir' is not writable.  Abort.";
+}
+
+
 # template directory:
-my $templateDir = "$appDirName/Templates";
+#my $templateDir = "$appDirName/Templates";
 
 # the date of executation, in the form 24Mar16
 my $dateString = strftime( "%d%b%g", localtime() );
@@ -232,7 +248,9 @@ if( ! -e $generatedDirName ) {
 	if( $count == 0 ) {
 		die "Attempting to create '$generatedDirName' failed to create any directories.";
 	}
-} elsif( ! -d $generatedDirName ) {
+}
+# something with this name exists - is it a writable directory?
+if( ! -d $generatedDirName ) {
 	die "A file with the name '$generatedDirName' exists - it must be a directory.  Abort.";
 } elsif( ! -w $generatedDirName ) {
 	die "The directory '$generatedDirName' is not writable.  Abort.";
@@ -263,20 +281,6 @@ PMS_MySqlSupport::SetSqlParameters( 'default',
 	PMSStruct::GetMacrosRef()->{"dbPass"} );
 
 my $dbh = TT_MySqlSupport::InitializeTopTenDB();
-
-######### debugging
-if( $debug ) {
-	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
-
-	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
-		"SELECT LinesRead, MeetsSeen, ResultsSeen, FilesSeen, RaceLines, Date " .
-		"FROM FetchStats " .
-		"WHERE Season = \"$yearBeingProcessed\"" );
-	my $numRows = $sth->rows();
-	print "GetResults.pl::numrows=$numRows\n";
-}
-######### debugging
-
 
 # the result files that we get:
 my %PMSResultFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"PMSResultFiles"};
@@ -311,141 +315,191 @@ my ($numLinesRead, $numDifferentMeetsSeen, $numDifferentResultsSeen, $numDiffere
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET PMS Top Ten POINTS
 ####
 if(1) {
-foreach my $simpleFileName ( sort keys %PMSResultFiles ) {
-	my ($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = (0,0,0,0);
-	my $org_course = $PMSResultFiles{$simpleFileName};
-	if( $org_course eq "PAC-SCY") {
-		## Get SCY results:
-		($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-			GetPMSTopTenResults( "http://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=1&ZoneID=&LMSCID=38&Club=",
-				"http://www.usms.org", "PAC", "SCY", $simpleFileName );
-	} elsif( $org_course eq "PAC-SCM") {
-		## Get SCM results:
-		($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-			GetPMSTopTenResults( "http://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=3&ZoneID=&LMSCID=38&Club=",
-				"http://www.usms.org", "PAC", "SCM", $simpleFileName );
-	} elsif( $org_course eq "PAC-LCM") {
-		## Get LCM results:
-		($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-			GetPMSTopTenResults( "http://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=2&ZoneID=&LMSCID=38&Club=",
-				"http://www.usms.org", "PAC", "LCM", $simpleFileName );
-	} else {
-		PMSLogging::DumpError( "", "", "GetResults::Illegal org_course ($org_course) when getting PMS Top Ten POINTS" );		
+	PMSLogging::PrintLog( "", "", "\n*********", 1 );
+	foreach my $simpleFileName ( sort keys %PMSResultFiles ) {
+		my ($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = (0,0,0,0);
+		my $org_course = $PMSResultFiles{$simpleFileName};
+		if( $org_course eq "PAC-SCY") {
+			## Get SCY results:
+			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
+				GetPMSTopTenResults( "http://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=1&ZoneID=&LMSCID=38&Club=",
+					"http://www.usms.org", "PAC", "SCY", $simpleFileName );
+		} elsif( $org_course eq "PAC-SCM") {
+			## Get SCM results:
+			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
+				GetPMSTopTenResults( "http://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=3&ZoneID=&LMSCID=38&Club=",
+					"http://www.usms.org", "PAC", "SCM", $simpleFileName );
+		} elsif( $org_course eq "PAC-LCM") {
+			## Get LCM results:
+			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
+				GetPMSTopTenResults( "http://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=2&ZoneID=&LMSCID=38&Club=",
+					"http://www.usms.org", "PAC", "LCM", $simpleFileName );
+		} else {
+			PMSLogging::DumpError( "", "", "GetResults::Illegal org_course ($org_course) when getting PMS Top Ten POINTS" );		
+		}
+		$numLinesRead += $numLinesReadTemp;
+		$numDifferentMeetsSeen += $numDifferentMeetsSeenTemp;
+		$numDifferentResultsSeen += $numDifferentResultsSeenTemp;
+		$numDifferentFiles += $numDifferentFilesTemp;
+	} # end of foreach( ...
+	if( $debug ) {
+		PMSLogging::PrintLog( "", "", "FINISH getting PMS top 10...", 1 );
+		PMSLogging::PrintLog( "", "", "GetResults:: Totals:", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of lines read: $numLinesRead", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
+		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0 );
+		PMSLogging::PrintLog( "", "", "Did query after getting PMS top 10.", 1 );
 	}
-	$numLinesRead += $numLinesReadTemp;
-	$numDifferentMeetsSeen += $numDifferentMeetsSeenTemp;
-	$numDifferentResultsSeen += $numDifferentResultsSeenTemp;
-	$numDifferentFiles += $numDifferentFilesTemp;
-}
-}
+} # end of if(1)...
 
-if(0) {
-print "ready to exit\n";
 
-PMSLogging::PrintLog( "", "", "GetResults:: Totals:", 1);
-PMSLogging::PrintLog( "", "", "    Total number of lines read: $numLinesRead", 1);
-PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
-PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
-PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-
-exit;
-}
 
 
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET USMS Top Ten POINTS
 ####
 if(1) {
-foreach my $simpleFileName ( sort keys %USMSResultFiles ) {
-	my ($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = (0,0,0,0);
-	my $org_course = $USMSResultFiles{$simpleFileName};
-	if( $org_course eq "USMS-SCY" ) {
-		## Get SCY results:
-		($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-			GetUSMSTopTenResults( "http://www.usms.org/comp/tt/toptenlmsc.php?Year=$yearBeingProcessed&CourseID=1&ZoneID=&LMSCID=38&ClubAbbr=",
-				"http://www.usms.org", "USMS", "SCY", $simpleFileName );
-	} elsif( $org_course eq "USMS-SCM" ) {
-		## Get SCM results:
-		($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-			GetUSMSTopTenResults( "http://www.usms.org/comp/tt/toptenlmsc.php?Year=$yearBeingProcessed&CourseID=3&ZoneID=&LMSCID=38&ClubAbbr=",
-				"http://www.usms.org", "USMS", "SCM", $simpleFileName );
-	} elsif( $org_course eq "USMS-LCM" ) {
-		## Get LCM results:
-		($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-			GetUSMSTopTenResults( "http://www.usms.org/comp/tt/toptenlmsc.php?Year=$yearBeingProcessed&CourseID=2&ZoneID=&LMSCID=38&ClubAbbr=",
-				"http://www.usms.org", "USMS", "LCM", $simpleFileName );
-	} else {
-		PMSLogging::DumpError( "", "", "GetResults::Illegal org_course ($org_course) when getting USMS Top Ten POINTS" );		
+	PMSLogging::PrintLog( "", "", "\n*********", 1 );
+	foreach my $simpleFileName ( sort keys %USMSResultFiles ) {
+		my ($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = (0,0,0,0);
+		my $org_course = $USMSResultFiles{$simpleFileName};
+		if( $org_course eq "USMS-SCY" ) {
+			## Get SCY results:
+			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
+				GetUSMSTopTenResults( "http://www.usms.org/comp/tt/toptenlmsc.php?Year=$yearBeingProcessed&CourseID=1&ZoneID=&LMSCID=38&ClubAbbr=",
+					"http://www.usms.org", "USMS", "SCY", $simpleFileName );
+		} elsif( $org_course eq "USMS-SCM" ) {
+			## Get SCM results:
+			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
+				GetUSMSTopTenResults( "http://www.usms.org/comp/tt/toptenlmsc.php?Year=$yearBeingProcessed&CourseID=3&ZoneID=&LMSCID=38&ClubAbbr=",
+					"http://www.usms.org", "USMS", "SCM", $simpleFileName );
+		} elsif( $org_course eq "USMS-LCM" ) {
+			## Get LCM results:
+			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
+				GetUSMSTopTenResults( "http://www.usms.org/comp/tt/toptenlmsc.php?Year=$yearBeingProcessed&CourseID=2&ZoneID=&LMSCID=38&ClubAbbr=",
+					"http://www.usms.org", "USMS", "LCM", $simpleFileName );
+		} else {
+			PMSLogging::DumpError( "", "", "GetResults::Illegal org_course ($org_course) when getting USMS Top Ten POINTS" );		
+		}
+		$numLinesRead += $numLinesReadTemp;
+		$numDifferentMeetsSeen += $numDifferentMeetsSeenTemp;
+		$numDifferentResultsSeen += $numDifferentResultsSeenTemp;
+		$numDifferentFiles += $numDifferentFilesTemp;
+	} # end of foreach( ...
+	if( $debug ) {
+		PMSLogging::PrintLog( "", "", "FINISH getting USMS top 10...", 1 );
+		PMSLogging::PrintLog( "", "", "GetResults:: Totals:", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of lines read: $numLinesRead", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
+		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0 );
+		PMSLogging::PrintLog( "", "", "Did query after getting USMS top 10.", 1 );
 	}
-	$numLinesRead += $numLinesReadTemp;
-	$numDifferentMeetsSeen += $numDifferentMeetsSeenTemp;
-	$numDifferentResultsSeen += $numDifferentResultsSeenTemp;
-	$numDifferentFiles += $numDifferentFilesTemp;
-}
-
-}
+} # end of if(1)...
 
 
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET PMS Records
 ####
 if(1) {
-my $previousYear = $yearBeingProcessed-1;
-foreach my $simpleFileName ( sort keys %PMSRecordsFiles ) {
-	my ($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = (0,0,0,0);
-	my $org_course = $PMSRecordsFiles{$simpleFileName};
-	if( $org_course eq "PAC-SCY" ) {
-		## Get SCY results:
-		($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-			GetPMSRecords( "http://pacificmasters.org/pacm/records?course=ind_scy&sort=desc&order=Date",
-				"PAC", "SCY Records", "$previousYear-06-01", "$yearBeingProcessed-05-31",
-				$simpleFileName );
-	} elsif( $org_course eq "PAC-SCM" ) {
-		## Get SCM results:
-		($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-			GetPMSRecords( "http://pacificmasters.org/pacm/records?course=ind_scm&sort=desc&order=Date",
-				"PAC", "SCM Records", "$yearBeingProcessed-01-01", "$yearBeingProcessed-12-31",
-				$simpleFileName );
-	} elsif( $org_course eq "PAC-LCM" ) {
-		## Get LCM results:
-		($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-			GetPMSRecords( "http://pacificmasters.org/pacm/records?course=ind_lcm&sort=desc&order=Date",
-				"PAC", "LCM Records", "$previousYear-10-01", "$yearBeingProcessed-09-30",
-				$simpleFileName );
-	} else {
-		PMSLogging::DumpError( "", "", "GetResults::Illegal org_course ($org_course) when getting PMS Records" );		
+	PMSLogging::PrintLog( "", "", "\n*********", 1 );
+	my $previousYear = $yearBeingProcessed-1;
+	foreach my $simpleFileName ( sort keys %PMSRecordsFiles ) {
+		my ($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = (0,0,0,0);
+		my $org_course = $PMSRecordsFiles{$simpleFileName};
+		if( $org_course eq "PAC-SCY" ) {
+			## Get SCY results:
+			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
+				GetPMSRecords( "http://pacificmasters.org/pacm/records?course=ind_scy&sort=desc&order=Date",
+					"PAC", "SCY Records", "$previousYear-06-01", "$yearBeingProcessed-05-31",
+					$simpleFileName );
+		} elsif( $org_course eq "PAC-SCM" ) {
+			## Get SCM results:
+			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
+				GetPMSRecords( "http://pacificmasters.org/pacm/records?course=ind_scm&sort=desc&order=Date",
+					"PAC", "SCM Records", "$yearBeingProcessed-01-01", "$yearBeingProcessed-12-31",
+					$simpleFileName );
+		} elsif( $org_course eq "PAC-LCM" ) {
+			## Get LCM results:
+			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
+				GetPMSRecords( "http://pacificmasters.org/pacm/records?course=ind_lcm&sort=desc&order=Date",
+					"PAC", "LCM Records", "$previousYear-10-01", "$yearBeingProcessed-09-30",
+					$simpleFileName );
+		} else {
+			PMSLogging::DumpError( "", "", "GetResults::Illegal org_course ($org_course) when getting PMS Records" );		
+		}
+		$numLinesRead += $numLinesReadTemp;
+		$numDifferentMeetsSeen += $numDifferentMeetsSeenTemp;
+		$numDifferentResultsSeen += $numDifferentResultsSeenTemp;
+		$numDifferentFiles += $numDifferentFilesTemp;
+	} # end of foreach( ...
+	if( $debug ) {
+		PMSLogging::PrintLog( "", "", "FINISH getting PMS records...", 1 );
+		PMSLogging::PrintLog( "", "", "GetResults:: Totals:", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of lines read: $numLinesRead", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
+		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0 );
+		PMSLogging::PrintLog( "", "", "Did query after getting PMS records.", 1 );
 	}
-	$numLinesRead += $numLinesReadTemp;
-	$numDifferentMeetsSeen += $numDifferentMeetsSeenTemp;
-	$numDifferentResultsSeen += $numDifferentResultsSeenTemp;
-	$numDifferentFiles += $numDifferentFilesTemp;
-}
-}			
+} # end of if(1)...
+
+	
 
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET USMS Records
 ####
 if(1) {
-my ($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-	GetUSMSRecords( "http://www.usms.org/comp/recordexport.php", \%USMSRecordsFiles, $yearBeingProcessed );
+	PMSLogging::PrintLog( "", "", "\n*********", 1 );
+	my ($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
+		GetUSMSRecords( "http://www.usms.org/comp/recordexport.php", \%USMSRecordsFiles, $yearBeingProcessed );
 	$numLinesRead += $numLinesReadTemp;
 	$numDifferentMeetsSeen += $numDifferentMeetsSeenTemp;
 	$numDifferentResultsSeen += $numDifferentResultsSeenTemp;
 	$numDifferentFiles += $numDifferentFilesTemp;
-}
+
+	if( $debug ) {
+		PMSLogging::PrintLog( "", "", "FINISH getting USMS records...", 1 );
+		PMSLogging::PrintLog( "", "", "GetResults:: Totals:", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of lines read: $numLinesRead", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
+		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0 );
+		PMSLogging::PrintLog( "", "", "Did query after getting USMS records.", 1 );
+	}
+} # end of if(1)...
+
+
 
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET PMS OW results
 ####
 if(1) {
-my ($numResultLines, $numEvents) = 
-	GetPMSOWResults( "http://pacificmasters.org/points/OWPoints/$PMSOpenWaterResultFile",
-		 "$sourceDataDir/$PMSOpenWaterResultFile" );
+	PMSLogging::PrintLog( "", "", "\n*********", 1 );
+	my ($numResultLines, $numEvents) = 
+		GetPMSOWResults( "http://pacificmasters.org/points/OWPoints/$PMSOpenWaterResultFile",
+		"$sourceDataDir/$PMSOpenWaterResultFile" );
 	$numLinesRead += $numResultLines;
 	$numDifferentMeetsSeen += $numEvents;
 	$numDifferentResultsSeen += $numResultLines;
 	$numDifferentFiles += 1;
-}
+
+	if( $debug ) {
+		PMSLogging::PrintLog( "", "", "FINISH getting OW...", 1 );
+		PMSLogging::PrintLog( "", "", "GetResults:: Totals:", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of lines read: $numLinesRead", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
+		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
+		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0 );
+		PMSLogging::PrintLog( "", "", "Did query after getting OW.", 1 );
+	}
+} # end of if(1)...
 
 
 
@@ -477,6 +531,9 @@ PMSLogging::PrintLog( "", "", "    Total number of different meets written to $r
 TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, $numLinesRead, $numDifferentMeetsSeen, 
 	$numDifferentResultsSeen, $numDifferentFiles, $raceLines );
 PMSLogging::PrintLog( "", "", "Done with $appProgName!", 1);
+
+
+
 # end of main
 
 
@@ -502,6 +559,7 @@ PMSLogging::PrintLog( "", "", "Done with $appProgName!", 1);
 #		$SwimMeets{title of meet} = "date|USMSMeetId|ORG|COURSE|USMSMeetId|link to details for meet|(IS a PAC sanctioned meet)"
 #
 sub GetSwimMeetDetails() {
+#	my $tinyHttp = HTTP::Tiny->new();
 	foreach my $key (keys %SwimMeets) {
 		my $value = $SwimMeets{$key};		# ORD|COURSE|LINK
 		$value =~ m/^([^\|]*)\|([^\|]*)\|(.*$)/;
@@ -593,7 +651,7 @@ sub GetPMSTopTenResults( $$$$$ ) {
 		);
 	my %options = (
 		"data_callback"	=>	sub {
-			ParseTopTenHttpResponse( \%callbackState, $linkToResults, $baseURL, $org, 
+			ParsePMSTopTenHttpResponse( \%callbackState, $linkToResults, $baseURL, $org, 
 				$course, $_[0], $_[1] );
 		} );
 
@@ -601,12 +659,13 @@ sub GetPMSTopTenResults( $$$$$ ) {
 	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSTopTenResults(): Get the results for " .
 		"$org $course, linkToResults='$linkToResults'", 1 );
 
-if($debug) {
-$htmlCopyFileName = $generatedDirName . "test/PMSResults-new-$org-$course.html";
-open( $htmlCopyFD, ">$htmlCopyFileName" ) || (die "Can't open $htmlCopyFileName: $!\nAbort.\n");
-$diffResultsFileName = $generatedDirName . "test/PMSDiffResults-new-$org-$course.txt";
-open( $diffResultsFD, ">$diffResultsFileName" ) || (die "Can't open $diffResultsFileName: $!\nAbort.\n");
-}
+	if($debug > 2) {
+		# dump the html we fetched so we can make sure we're getting what we expect
+		$htmlCopyFileName = $generatedDirName . "test/PMSResults-new-$org-$course.html";
+		open( $htmlCopyFD, ">$htmlCopyFileName" ) || (die "Can't open $htmlCopyFileName: $!\nAbort.\n");
+		$diffResultsFileName = $generatedDirName . "test/PMSDiffResults-new-$org-$course.txt";
+		open( $diffResultsFD, ">$diffResultsFileName" ) || (die "Can't open $diffResultsFileName: $!\nAbort.\n");
+	}
 		
 	my $httpResponseRef = $tinyHttp->get( $linkToResults, \%options );
 	# we get here under TWO conditions:
@@ -614,10 +673,11 @@ open( $diffResultsFD, ">$diffResultsFileName" ) || (die "Can't open $diffResults
 	#	- none (or some?) of the response has been processed and we got an error.
 	# This means the httpResponse is either "OK" or some error, so, if it's an error, we'll handle
 	# it here:
-if( $debug ) {
-close $htmlCopyFD;
-close $diffResultsFD;
-}
+	if( $debug > 2 ) {
+		# dump the html we fetched so we can make sure we're getting what we expect
+		close $htmlCopyFD;
+		close $diffResultsFD;
+	}
 	if( !$httpResponseRef->{success} ) {
 		# failure - display message and give up on this one
 		PMSLogging::PrintLog( "", "", "FAILED!!", 1 );
@@ -626,6 +686,7 @@ close $diffResultsFD;
 		# all of the human-readable results have been parsed with no errors
 		if( $callbackState{"numDifferentResults"} ) {
 			# we've got at least one result to process - generate the excel result file
+			my $resultFileName = "$sourceDataDir/$destinationFileName";
 			PMSLogging::PrintLog( "", "", "Found $callbackState{'numDifferentResults'} different results, " .
 				"$callbackState{'numDifferentMeets'} newly seen swim meets, " .
 				$callbackState{"numLines"} . " lines.", 1 );
@@ -638,15 +699,18 @@ close $diffResultsFD;
 			$LWP::Simple::ua->agent("WikiBot/0.1");
 			if( $debug ) {
 				PMSLogging::DumpNote( "", "", "$appProgName:GetPMSTopTenResults(): fetch Excel from " .
-					"'$baseURL$excelLink?$argString' and store in '$sourceDataDir/$destinationFileName'", 1);
+					"'$baseURL$excelLink?$argString' and store in '$resultFileName'", 1);
 				PMSLogging::DumpNote( "", "", "    baseURL='$baseURL', excelLink='$excelLink'\n" .
 					"    argString='$argString'", 1 );
-
 			}
 			my $responseCode = LWP::Simple::getstore( "$baseURL$excelLink?$argString", 
-				"$sourceDataDir/$destinationFileName" );
+				"$resultFileName" );
 			if( LWP::Simple::is_error($responseCode) ) {
 				PMSLogging::DumpError( "", "", "GetResults::GetPMSTopTenResults(): LWP::Simple error:  $responseCode", 1 );
+			}
+			if( ! -e $resultFileName ) {
+				PMSLogging::DumpError( "", "", "GetResults::GetPMSTopTenResults(): " .
+				"Unable to write to '$resultFileName' - FAILED to save Excel file.", 1 );
 			}
 		} else {
 			PMSLogging::PrintLog( "", "", "none found - no result file generated.", 1 );
@@ -663,29 +727,29 @@ close $diffResultsFD;
 		
 	
 
-# ParseTopTenHttpResponse - parse the response to the request made by GetPMSTopTenResults() above.
+# ParsePMSTopTenHttpResponse - parse the response to the request made by GetPMSTopTenResults() above.
 #
-sub ParseTopTenHttpResponse( $$$$$$$ ) {
+sub ParsePMSTopTenHttpResponse( $$$$$$$ ) {
 	my( $callbackStateRef, $linkToResults, $baseURL, $org, $course, $content, $httpResponseRef ) = @_;
 	my $numCallbackCalls = $callbackStateRef->{"numCallbackCalls"}+1;
 	my $numLines = $callbackStateRef->{"numLines"};
 	my $state = $callbackStateRef->{"state"};
 	$callbackStateRef->{"numCallbackCalls"} = $numCallbackCalls;
-	my $partialLastLine = 0;		# set to 1 if the content we are passed
+	my $partialLastLine = 0;		# set to 1 if the content we are passed ends with a partial line
 
-if( $debug ) {
-print "ParseTopTenHttpResponse() called:  numCallbackCalls=$numCallbackCalls, org=$org, " .
-	"course=$course, success=" . 
-	(defined $httpResponseRef->{'success'}?$httpResponseRef->{'success'}:"undefined") . ", " .
-	"numLines so far=$numLines" .
-	"\n";
-}
+	if( $debug ) {
+		print "ParsePMSTopTenHttpResponse() called:  numCallbackCalls=$numCallbackCalls, org=$org, " .
+			"course=$course, success=" . 
+			(defined $httpResponseRef->{'success'}?$httpResponseRef->{'success'}:"undefined") . ", " .
+			"numLines so far=$numLines" .
+			"\n";
+	}
 	
 	# before doing anything make sure we didn't get an error
 	if( ((defined $httpResponseRef->{success}) && !$httpResponseRef->{'success'}) ||
 		($httpResponseRef->{'status'} !~ /^2/) ) {
 		# failure - display message and give up on this one
-		PMSLogging::PrintLog( "", "", "ParseTopTenHttpResponse() FAILED!! (during " .
+		PMSLogging::PrintLog( "", "", "ParsePMSTopTenHttpResponse() FAILED!! (during " .
 			"callback #$numCallbackCalls)", 1 );
 		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef );
 	} else {
@@ -695,16 +759,17 @@ print "ParseTopTenHttpResponse() called:  numCallbackCalls=$numCallbackCalls, or
 			$partialLastLine = 1;
 		}
 		my @lines = split('\n', $content);
-if( $debug ) {
-	print $htmlCopyFD $content;
-}
+		if( $debug > 2 ) {
+			# dump the html we fetched so we can make sure we're getting what we expect
+			print $htmlCopyFD $content;
+		}
 		my $leftoverLine = $callbackStateRef->{"leftoverLine"};
 		if( $leftoverLine ne "" ) {
 			# the previous chunk had a partial line, so we'll prepend it to the first line of
 			# the current chunk
 			$lines[0] = $leftoverLine . $lines[0];
 			if( $debug ) {
-				print "ParseTopTenHttpResponse(): process previously saved partial line (" .
+				print "ParsePMSTopTenHttpResponse(): process previously saved partial line (" .
 					length($leftoverLine) . " chars).  New first line: '" . $lines[0] . "'\n";
 			}
 		}
@@ -716,14 +781,14 @@ if( $debug ) {
 			$callbackStateRef->{"leftoverLine"} = $lastLine;
 			$#lines = $lastIndex-1;
 			if( $debug ) {
-				print "ParseTopTenHttpResponse(): found a partial line (" . length($lastLine) . 
+				print "ParsePMSTopTenHttpResponse(): found a partial line (" . length($lastLine) . 
 					" chars) - saving it for next chunk: '" . $lastLine . "'\n";
 			}
 		} else {
 			# no partial line...
 			$callbackStateRef->{"leftoverLine"} = "";
 			if( $debug ) {
-				print "ParseTopTenHttpResponse(): No partial line\n";
+				print "ParsePMSTopTenHttpResponse(): No partial line\n";
 			}
 		}
 		
@@ -775,9 +840,10 @@ if( $debug ) {
 				if( $line =~ m,View</a> \|, ) {
 					# yep!  get the meet name and link to details if we haven't seen this meet before:
 					$callbackStateRef->{"numDifferentResults"}++;
-if( $debug ) {
-	print $diffResultsFD "$line\n";
-}
+					if( $debug > 2 ) {
+						# dump the html we fetched so we can make sure we're getting what we expect
+						print $diffResultsFD "$line\n";
+					}
 					$line =~ s,^.*View</a> \|,,;
 					my ($link, $meetTitle) = ($line,"");
 					$link =~ s/^.*href="//;
@@ -795,13 +861,13 @@ if( $debug ) {
 				}
 			} else {
 				# huh??? bad state machine!!!
-				die "ParseTopTenHttpResponse(): Unknown state: '$state'\n";
+				die "ParsePMSTopTenHttpResponse(): Unknown state: '$state'\n";
 			}
 		} # end of foreach my $line...
 	} # end of # begin/continue our state machine...
 	$callbackStateRef->{"state"} = $state;
 	$callbackStateRef->{"numLines"} = $numLines;
-} # end of ParseTopTenHttpResponse()
+} # end of ParsePMSTopTenHttpResponse()
 
 
 
@@ -832,84 +898,314 @@ if( $debug ) {
 #
 sub GetUSMSTopTenResults( $$$$$ ) {
 	my( $linkToResults, $baseURL, $org, $course, $destinationFileName ) = @_;
-	# we use a simple state machine to process the result file we're reading.
-	my $state = "LookingForExcelButton";
-	my $excelLink = "";		# the link used to request the CSV results
-	my %excelArgs = ();		# the query args used when requesting the CSV results
-	my $lineNum = 0;
-	my $numDifferentMeets = 0;
-	my $numDifferentResults = 0;
+	# define our callback to handle the HTTP response containing USMS top ten results
+	my $excelLink = "";		# the link used to request the excel results
+	my %excelArgs = ();		# the query args used when requesting the excel results
+	my %callbackState = (
+		"numCallbackCalls"		=> 	0,
+		"numLines"				=>	0,
+		"numDifferentMeets"		=>	0,
+		"numDifferentResults"	=>	0,
+		"state"					=>	"LookingForExcelButton",
+		"excelLinkRef"			=>	\$excelLink,
+		"leftoverLine"			=>	""
+		);
+	my %options = (
+		"data_callback"	=>	sub {
+			ParseUSMSTopTenHttpResponse( \%callbackState, $linkToResults, $baseURL, $org, 
+				$course, $_[0], $_[1] );
+		} );
+
 
 	# fetch the human-readable results
-	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetUSMSTopTenResults(): Get the results for $org $course...", 1 );
-	my $httpResponse = $tinyHttp->get( $linkToResults );
+	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetUSMSTopTenResults(): Get the results for " .
+		"$org $course, linkToResults='$linkToResults'", 1 );
+		
+	my $httpResponse = $tinyHttp->get( $linkToResults, , \%options );
+	# we get here under TWO conditions:
+	#	- the entire response has been processed by data_callback routine and all is good, or
+	#	- none (or some?) of the response has been processed and we got an error.
+	# This means the httpResponse is either "OK" or some error, so, if it's an error, we'll handle
+	# it here:
 	if( !$httpResponse->{success} ) {
 		# failure - display message and give up on this one
 		PMSLogging::PrintLog( "", "", "FAILED!!" );
 		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponse );
-		return (0,0,0,0);
+	} else {
+		# all of the human-readable results have been parsed with no errors
+		if( $callbackState{"numDifferentResults"} ) {
+			# we've got at least one result to process - generate the excel result file
+			my $resultFileName = "$sourceDataDir/$destinationFileName";
+			PMSLogging::PrintLog( "", "", "Found $callbackState{'numDifferentResults'} different results, " .
+				"$callbackState{'numDifferentMeets'} newly seen swim meets, " .
+				$callbackState{"numLines"} . " lines.", 1 );
+			# we need to change the User Agent because USMS prohibits the SIMPLE user agent...
+			$LWP::Simple::ua->agent("WikiBot/0.1");
+			if( $debug ) {
+				PMSLogging::DumpNote( "", "", "$appProgName:GetUSMSTopTenResults(): fetch Excel from " .
+					"'$baseURL$excelLink' and store in '$resultFileName'", 1);
+				PMSLogging::DumpNote( "", "", "    baseURL='$baseURL' and excelLink='$excelLink'" );
+			}
+			my $responseCode = LWP::Simple::getstore( "$baseURL$excelLink", $resultFileName );
+			if( LWP::Simple::is_error($responseCode) ) {
+				PMSLogging::DumpError( "", "", "GetResults::GetUSMSTopTenResults(): LWP::Simple error:  $responseCode", 1 );
+			}
+			if( ! -e $resultFileName ) {
+				PMSLogging::DumpError( "", "", "GetResults::GetUSMSTopTenResults(): " .
+				"Unable to write to '$resultFileName' - FAILED to save Excel file.", 1 );
+			}
+	
+		} else {
+			PMSLogging::PrintLog( "", "", "none found - no result file generated - " .
+				$callbackState{"numLines"} . " lines, " . $callbackState{"numCallbackCalls"} .
+				" callbacks.", 1 );
+		}
 	}
 
-	# begin our state machine, processing each line in the human-readable results:
-	my @lines = split('\n', $httpResponse->{content});
-	PMSLogging::PrintLogNoNL( "", "", "(" . scalar @lines . " lines)...", 1 );
-	foreach my $line ( @lines ) {
-		$lineNum++;
-		#print "line $lineNum: $line\n";
-		if( ($lineNum % 200) == 0 ) {
-			PMSLogging::PrintLogNoNL( "", "", "$lineNum...", 1 );
-		}
-		if( $state eq "LookingForExcelButton" ) {
-			# we're still looking for the button to push to retrieve the CSV file.  Did we find it?
-			if( $line =~ m/>CSV File/ ) {
-				# yep!  where does it go?
-				$line =~ s/^.*\|//;
-				$line =~ s/^.<a href="//;
-				$line =~ s/">CSV File.*$//;
-				$excelLink = CleanMeetTitle($line);
-				$state = "LookingForResultLine";
-			}
-			next
-		} elsif( $state eq "LookingForResultLine" ) {
-			# we're looking for individual result lines - did we find one?
-			if( $line =~ m,<a href="/comp/meets, ) {
-				# yep!  get the link to the swim details
-				$numDifferentResults++;
-				$line =~ s,^.*<a href="/comp/meets,/comp/meets,;
-				$line =~ s/">.*$//;
-				my $swimLink = "$baseURL$line";
-				# now get the meet details:
-				my($meetTitle,$link) = ProcessUSMSSwimDetails( $swimLink );
-				#$meetTitle = CleanMeetTitle( $meetTitle );
-				if( ! defined( $SwimMeets{$meetTitle} ) ) {
-					# we haven't seen this meet before - record it
-					$link = $baseURL . "/comp/meets/" . $link;
-					$SwimMeets{$meetTitle} = "$org|$course|$link";
-					$numDifferentMeets++;
-				}
-			}
-		} else {
-			# huh??? bad state machine!!!
-			die "Unknown state: '$state'\n";
-		}
-	} # end of foreach my $line...
-	
-	if( $numDifferentResults ) {
-		# we've got at least one result to process - generate the CSV result file
-		PMSLogging::PrintLog( "", "", "found $numDifferentResults results and $numDifferentMeets newly seen swim meets.", 1 );
-		# we need to change the User Agent because USMS prohibits the SIMPLE user agent...
-		$LWP::Simple::ua->agent("WikiBot/0.1");
-		my $responseCode = LWP::Simple::getstore( "$baseURL$excelLink", 
-			"$sourceDataDir/$destinationFileName" );
-		if( LWP::Simple::is_error($responseCode) ) {
-			PMSLogging::DumpError( "", "", "GetResults::GetUSMSTopTenResults(): LWP::Simple error:  $responseCode", 1 );
-		}
-	} else {
-		PMSLogging::PrintLog( "", "", "none found - no result file generated.", 1 );
-	}
-	return(	$lineNum, $numDifferentMeets, $numDifferentResults, 1 );
+	return (
+		$callbackState{"numLines"},
+		$callbackState{"numDifferentMeets"},
+		$callbackState{"numDifferentResults"},
+		1 );
 
 } # end of GetUSMSTopTenResults()
+
+
+# ParseUSMSTopTenHttpResponse - parse the response to the request made by GetUSMSTopTenResults() above.
+#
+sub ParseUSMSTopTenHttpResponse( $$$$$$$ ) {
+	my( $callbackStateRef, $linkToResults, $baseURL, $org, $course, $content, $httpResponseRef ) = @_;
+	my $numCallbackCalls = $callbackStateRef->{"numCallbackCalls"}+1;
+	my $numLines = $callbackStateRef->{"numLines"};
+	my $state = $callbackStateRef->{"state"};
+	$callbackStateRef->{"numCallbackCalls"} = $numCallbackCalls;
+	my $partialLastLine = 0;		# set to 1 if the content we are passed ends with a partial line
+
+	# before doing anything make sure we didn't get an error
+	if( ((defined $httpResponseRef->{success}) && !$httpResponseRef->{'success'}) ||
+		($httpResponseRef->{'status'} !~ /^2/) ) {
+		# failure - display message and give up on this one
+		PMSLogging::PrintLog( "", "", "ParseUSMSTopTenHttpResponse() FAILED!! (during " .
+			"callback #$numCallbackCalls)", 1 );
+		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef );
+	} else {
+		# begin/continue our state machine, processing each line in the human-readable results:
+		if( $content !~ m/\n$/ ) {
+			# the content ends with a partial line - remember this fact:
+			$partialLastLine = 1;
+		}
+		my @lines = split('\n', $content);		# break this chunk of HTML into lines
+		my $leftoverLine = $callbackStateRef->{"leftoverLine"};
+		if( $leftoverLine ne "" ) {
+			# the previous chunk had a partial line, so we'll prepend it to the first line of
+			# the current chunk
+			$lines[0] = $leftoverLine . $lines[0];
+			if( $debug ) {
+				print "ParseUSMSTopTenHttpResponse(): process previously saved partial line (" .
+					length($leftoverLine) . " chars).  New first line: '" . $lines[0] . "'\n";
+			}
+		}
+		# if the last line in our chunk is a partial line then process it with the next chunk
+		if( $partialLastLine ) {
+			my $lastIndex = $#lines;
+			my $lastLine = $lines[$lastIndex];
+			# the last line doesn't end with a '\n' so it's a partial line
+			$callbackStateRef->{"leftoverLine"} = $lastLine;
+			$#lines = $lastIndex-1;
+			if( $debug ) {
+				print "ParseUSMSTopTenHttpResponse(): found a partial line (" . length($lastLine) . 
+					" chars) - saving it for next chunk: '" . $lastLine . "'\n";
+			}
+		} else {
+			# no partial line...
+			$callbackStateRef->{"leftoverLine"} = "";
+			if( $debug ) {
+				print "ParseUSMSTopTenHttpResponse(): No partial line\n";
+			}
+		}
+	
+		# now we have an array of 0 or more lines to parse...
+		foreach my $line ( @lines ) {
+			$numLines++;
+			#print "line $numLines: $line\n";
+			if( ($numLines % 200) == 0 ) {
+				PMSLogging::PrintLogNoNL( "", "", "$numLines...", 1 );
+			}
+			if( $state eq "LookingForExcelButton" ) {
+				# we're still looking for the button to push to retrieve the CSV file.  Did we find it?
+				if( $line =~ m/>CSV File/ ) {
+					# yep!  where does it go?
+					$line =~ s/^.*\|//;
+					$line =~ s/^.<a href="//;
+					$line =~ s/">CSV File.*$//;
+					${$callbackStateRef->{"excelLinkRef"}} = CleanMeetTitle($line);
+					$state = "LookingForResultLine";
+				}
+				next
+			} elsif( $state eq "LookingForResultLine" ) {
+				# we're looking for individual result lines - did we find one?
+				if( $line =~ m,<a href="/comp/meets, ) {
+					# yep!  get the link to the swim details
+					$callbackStateRef->{"numDifferentResults"}++;
+					$line =~ s,^.*<a href="/comp/meets,/comp/meets,;
+					$line =~ s/">.*$//;
+					my $swimLink = "$baseURL$line";
+					# now get the meet details:
+					my($meetTitle,$link) = ProcessUSMSSwimDetails( $swimLink );
+					#$meetTitle = CleanMeetTitle( $meetTitle );
+					if( ! defined( $SwimMeets{$meetTitle} ) ) {
+						# we haven't seen this meet before - record it
+						$link = $baseURL . "/comp/meets/" . $link;
+						$SwimMeets{$meetTitle} = "$org|$course|$link";
+						$callbackStateRef->{"numDifferentMeets"}++;
+					}
+				}
+			} else {
+				# huh??? bad state machine!!!
+				die "Unknown state: '$state'\n";
+			}
+		} # end of foreach my $line...
+	} # end of # begin/continue our state machine...
+	$callbackStateRef->{"state"} = $state;
+	$callbackStateRef->{"numLines"} = $numLines;
+} # end of ParseUSMSTopTenHttpResponse()
+
+
+
+# 				my($meetTitle,$link) = ProcessUSMSSwimDetails( $swimLink );
+# ProcessUSMSSwimDetails - look at a single swim result and get details on the meet at which the result was generated.
+#
+# PASSED:
+#	$swimLink - a URL to a page giving the details of a swim
+#
+# RETURNED:
+#	$meetTitle - the title of the meet where the swim ocurred.
+#	$link - a link to the meet
+#
+sub ProcessUSMSSwimDetails($) {
+	my $swimLink = $_[0];
+	my ($meetTitle,$link) = ("", "");
+	my $lineNum = 0;
+
+	my %callbackState = (
+		"numCallbackCalls"		=> 	0,
+		"numLines"				=>	0,
+		"meetTitle"				=>	"",
+		"link"					=>	"",
+		"leftoverLine"			=>	""
+		);
+	my %options = (
+		"data_callback"	=>	sub {
+			ParseUSMSSwimDetails( \%callbackState, $swimLink, $_[0], $_[1] );
+		} );
+	my $tinyHttp2 = HTTP::Tiny->new();
+
+	#PMSLogging::PrintLog( "", "", "GetResults::ProcessUSMSSwimDetails(): find Meet info in '$swimLink' ", 1 );
+
+	# fetch the human-readable swim details
+	my $httpResponse = $tinyHttp2->get( $swimLink, \%options );
+	$meetTitle = $callbackState{'meetTitle'};
+	$link = $callbackState{'link'};
+	# we get here under TWO conditions:
+	#	- the entire response has been processed by data_callback routine and all is good, or
+	#	- none (or some?) of the response has been processed and we got an error.
+	# This means the httpResponse is either "OK" or some error, so, if it's an error, we'll handle
+	# it here:
+	if( !$httpResponse->{success} ) {
+		# failure - display message and give up on this one
+		PMSLogging::PrintLog( "", "", "FAILED!!" );
+		TT_Logging::HandleHTTPFailure( $swimLink, "USMS", "?", $httpResponse );
+	} elsif( ($meetTitle eq "") || ($link eq "") ) {
+		PMSLogging::PrintLog( "", "", "GetResults::ProcessUSMSSwimDetails(): Unable to find " .
+			"Meet info in '$swimLink'; link='$link', meetTitle='$meetTitle', " .
+			"callbacks=$callbackState{'numCallbackCalls'}, " .
+			"numLines=callbacks=$callbackState{'numLines'}", 1 );
+	}
+	return ($meetTitle,$link);
+} # end of ProcessUSMSSwimDetails()
+
+
+# ParseUSMSSwimDetails - 
+sub ParseUSMSSwimDetails( $$$$ ) {
+	my( $callbackStateRef, $swimLink, $content, $httpResponseRef ) = @_;
+	my $numCallbackCalls = $callbackStateRef->{"numCallbackCalls"}+1;
+	$callbackStateRef->{"numCallbackCalls"} = $numCallbackCalls;
+	my $numLines = $callbackStateRef->{"numLines"};
+	my $partialLastLine = 0;		# set to 1 if the content we are passed ends with a partial line
+
+	# did we already find the data we were looking for?
+	my $meetTitle = $callbackStateRef->{'meetTitle'};
+	my $link = $callbackStateRef->{'link'};
+	if( ($meetTitle ne "") || ($link ne "") ) {
+		# yes - ignore this call - we've got what we want so now we just chew up the rest
+		# of the fetched web page and then go on...
+		#print "ParseUSMSSwimDetails: got '$meetTitle' and '$link'\n";
+	} else {
+		# before doing anything make sure we didn't get an error
+		if( ((defined $httpResponseRef->{success}) && !$httpResponseRef->{'success'}) ||
+			($httpResponseRef->{'status'} !~ /^2/) ) {
+			# failure - display message and give up on this one
+			PMSLogging::PrintLog( "", "", "ParseUSMSSwimDetails() FAILED!! (during " .
+				"callback #$numCallbackCalls)", 1 );
+			TT_Logging::HandleHTTPFailure( $swimLink, "USMS", "?", $httpResponseRef );
+		} else {
+			# process each line in the human-readable results:
+			if( $content !~ m/\n$/ ) {
+				# the content ends with a partial line - remember this fact:
+				$partialLastLine = 1;
+			}
+			my @lines = split('\n', $content);		# break this chunk of HTML into lines
+			my $leftoverLine = $callbackStateRef->{"leftoverLine"};
+			if( $leftoverLine ne "" ) {
+				# the previous chunk had a partial line, so we'll prepend it to the first line of
+				# the current chunk
+				$lines[0] = $leftoverLine . $lines[0];
+				if( $debug ) {
+					print "ParseUSMSSwimDetails(): process previously saved partial line (" .
+						length($leftoverLine) . " chars).  New first line: '" . $lines[0] . "'\n";
+				}
+			}
+			# if the last line in our chunk is a partial line then process it with the next chunk
+			if( $partialLastLine ) {
+				my $lastIndex = $#lines;
+				my $lastLine = $lines[$lastIndex];
+				# the last line doesn't end with a '\n' so it's a partial line
+				$callbackStateRef->{"leftoverLine"} = $lastLine;
+				$#lines = $lastIndex-1;
+				if( $debug ) {
+					print "ParseUSMSSwimDetails(): found a partial line (" . length($lastLine) . 
+						" chars) - saving it for next chunk: '" . $lastLine . "'\n";
+				}
+			} else {
+				# no partial line...
+				$callbackStateRef->{"leftoverLine"} = "";
+				if( $debug ) {
+					print "ParseUSMSSwimDetails(): No partial line\n";
+				}
+			}
+			# process the chunk of the web page and see if we find the one line we're 
+			# looking for...
+			foreach my $line ( @lines ) {
+				$numLines++;
+				if( $line =~ m/Meet: / ) {
+					$line =~ s/^.*Meet: //;
+					$line =~ s,</a>.*$,,;
+					$line =~ m/"(.*)">(.*$)/;
+					$callbackStateRef->{'meetTitle'} = $2;
+					$callbackStateRef->{'link'} = $1;
+					$callbackStateRef->{"numLines"} = $numLines;
+					last;
+				}
+			} # end of foreach...
+		} # end of process each line in the human-readable results...
+	} # end of before doing anything make sure we didn't get an error...
+	
+	# all done - if we found the data we're looking for it's in the callback structure
+	#print "ParseUSMSSwimDetails: return with '$meetTitle' and '$link'\n";
+	
+} # end of ParseUSMSSwimDetails()
+
+
 
 
 # GetPMSRecords - get the PMS Records result files in all courses (SCY, SCM, and LCM)
@@ -927,9 +1223,9 @@ sub GetUSMSTopTenResults( $$$$$ ) {
 # RETURNED:
 #		return(	$lineNum, $numDifferentMeets, $numDifferentResults, 1 );
 #	# lines read
-#	# different meets seen
-#	# different results seen
-#	# different files
+#	# different meets seen (will be 0)
+#	# different results seen (number of different records we find)
+#	# different files (will be 1)
 #
 # NOTES:
 #	This routine will read the records page ($linkToResults) gathering the information for every
@@ -940,62 +1236,140 @@ sub GetPMSRecords( $$$$$$ ) {
 	my( $linkToResults, $org, $course, $minDate, $maxDate, $destinationFileName ) = @_;
 	my $recordsFileName = "$sourceDataDir/$destinationFileName";
 	my $recordsFileHandle;
-	my $lineNum = 0;
-	my $recordsNum = 0;
+	# define our callback to handle the HTTP response containing PMS records
+	my %callbackState = (
+		"numCallbackCalls"		=> 	0,
+		"numLines"				=>	0,
+		"numDifferentRecords"	=>	0,
+		"recordsFileHandle"		=>	0,
+		"leftoverLine"			=>	""
+		);
+	my %options = (
+		"data_callback"	=>	sub {
+			ParsePMSRecordsHttpResponse( \%callbackState, $linkToResults, $org, 
+				$course, $minDate, $maxDate, $_[0], $_[1] );
+		} );
 
 	# fetch the human-readable results
 	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSRecords(): Get the results for $org $course in " .
-		"the range $minDate - $maxDate...", 1 );
-	my $httpResponse = $tinyHttp->get( $linkToResults );
+		"the range $minDate - $maxDate, linkToResults='$linkToResults'", 1 );
+	# create the file we'll use for accumulating the records we find:
+	open( $recordsFileHandle, ">$recordsFileName" ) || 
+		die "GetResults::GetPMSRecords(): Can't open $recordsFileName: $!\nAbort.\n";
+	$callbackState{"recordsFileHandle"} = $recordsFileHandle;
+		
+	my $httpResponse = $tinyHttp->get( $linkToResults, \%options );
+	# we get here under TWO conditions:
+	#	- the entire response has been processed by data_callback routine and all is good, or
+	#	- none (or some?) of the response has been processed and we got an error.
+	# This means the httpResponse is either "OK" or some error, so, if it's an error, we'll handle
+	# it here:
 	if( !$httpResponse->{success} ) {
 		# failure - display message and give up on this one
 		PMSLogging::PrintLog( "", "", "FAILED!!", 1 );
 		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponse );
-		return (0,0,0,0);
-	}
-
-	# begin processing each line in the human-readable results:
-	my @lines = split('\n', $httpResponse->{content});
-	PMSLogging::PrintLogNoNL( "", "", "(" . scalar @lines . " lines)...", 1 );
-	foreach my $line ( split('\n', $httpResponse->{content}) ) {
-		$lineNum++;
-		#print "line $lineNum: $line\n";
-		if( ($lineNum % 1000) == 0 ) {
-			PMSLogging::PrintLogNoNL( "", "", "$lineNum...", 1 );
-		}
-		if( $line =~ m/^ <tr class="/ ) {
-			# found a result line...get the fields			
-			#              gender        age grp           dist            stroke          full name                        date             time
-			$line =~ m,<td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td class="active">([^<]+)</td><td>([^<]+)</td>,;
-			my $date = $6;			# must be in MySql format
-			my $dateAnalysis = PMSUtil::ValidateDateWithinSeason( $date, $course, $yearBeingProcessed );
-			if( $dateAnalysis eq "" ) {
-				$recordsNum++;
-				# open the output file if not yet open
-				if( $recordsNum == 1 ) {
-					open( $recordsFileHandle, ">$recordsFileName" ) || die "Can't open $recordsFileName: $!\nAbort.\n";
-				}
-				# write the data to the output file.
-				print $recordsFileHandle "$1,$2,$3,$4,$5,$6,$7\n";
-			} elsif( $date lt $minDate ) {
-				# records are in chronological order youngest to oldest, so in this case we're done
-				last;
-			}
-		} elsif( $line =~ m,^</table>, ) {
-			# no more records...
-			last;
-		}
-	} # end of foreach ...
-		
-	if( $recordsNum ) {
-		PMSLogging::PrintLog( "", "", "found $recordsNum records.", 1 );
 	} else {
-		PMSLogging::PrintLog( "", "", "none found - no result file generated.", 1 );
+		if( $callbackState{'numDifferentRecords'} ) {
+			PMSLogging::PrintLog( "", "", "($callbackState{'numLines'} lines, " .
+				"$callbackState{'numCallbackCalls'} callbacks)... " .
+				"found $callbackState{'numDifferentRecords'} records.", 1 );
+		} else {
+			PMSLogging::PrintLog( "", "", "none found - no result file generated - " .
+				$callbackState{"numLines"} . " lines, " . $callbackState{"numCallbackCalls"} .
+				" callbacks.", 1 );
+		}
 	}
 	
-	return ($lineNum, 0, $recordsNum, 1);
+	return ($callbackState{"numLines"}, 0, $callbackState{'numDifferentRecords'}, 1);
+	
 } # end of GetPMSRecords()
+		
 
+# ParsePMSRecordsHttpResponse - parse the response to the request made by GetPMSRecords() above.
+#
+sub ParsePMSRecordsHttpResponse( $$$$$$$$ ) {
+	my( $callbackStateRef, $linkToResults, $org, $course, $minDate, $maxDate,
+		$content, $httpResponseRef ) = @_;
+	my $numCallbackCalls = $callbackStateRef->{"numCallbackCalls"}+1;
+	$callbackStateRef->{"numCallbackCalls"} = $numCallbackCalls;
+	my $numLines = $callbackStateRef->{"numLines"};
+	my $partialLastLine = 0;		# set to 1 if the content we are passed
+	
+	# before doing anything make sure we didn't get an error
+	if( ((defined $httpResponseRef->{success}) && !$httpResponseRef->{'success'}) ||
+		($httpResponseRef->{'status'} !~ /^2/) ) {
+		# failure - display message and give up on this one
+		PMSLogging::PrintLog( "", "", "ParsePMSRecordsHttpResponse() ($org,$course) FAILED!! (during " .
+			"callback #$numCallbackCalls)", 1 );
+		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef );
+	} else {
+		# begin/continue processing each line in the human-readable results:
+		if( $content !~ m/\n$/ ) {
+			# the content ends with a partial line - remember this fact:
+			$partialLastLine = 1;
+		}
+		my @lines = split('\n', $content);
+		my $leftoverLine = $callbackStateRef->{"leftoverLine"};
+		if( $leftoverLine ne "" ) {
+			# the previous chunk had a partial line, so we'll prepend it to the first line of
+			# the current chunk
+			$lines[0] = $leftoverLine . $lines[0];
+			if( $debug ) {
+				print "ParsePMSRecordsHttpResponse(): process previously saved partial line (" .
+					length($leftoverLine) . " chars).  New first line: '" . $lines[0] . "'\n";
+			}
+		}
+		# if the last line in our chunk is a partial line then process it with the next chunk
+		if( $partialLastLine ) {
+			my $lastIndex = $#lines;
+			my $lastLine = $lines[$lastIndex];
+			# the last line doesn't end with a '\n' so it's a partial line
+			$callbackStateRef->{"leftoverLine"} = $lastLine;
+			$#lines = $lastIndex-1;
+			if( $debug ) {
+				print "ParsePMSRecordsHttpResponse(): found a partial line (" . length($lastLine) . 
+					" chars) - saving it for next chunk: '" . $lastLine . "'\n";
+			}
+		} else {
+			# no partial line...
+			$callbackStateRef->{"leftoverLine"} = "";
+			if( $debug ) {
+				print "ParsePMSRecordsHttpResponse(): No partial line\n";
+			}
+		}
+		
+		$numLines += scalar @lines;
+		#print "\ncallback #$numCallbackCalls: \n";
+		foreach my $line ( @lines ) {
+			#print "line $numLines: $line\n";
+			if( ($numLines % 1000) == 0 ) {
+				PMSLogging::PrintLogNoNL( "", "", "$numLines...", 1 );
+			}
+			if( $line =~ m/^ <tr class="/ ) {
+				# found a result line...get the fields			
+				#              gender        age grp           dist            stroke          full name                        date             time
+				$line =~ m,<td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td class="active">([^<]+)</td><td>([^<]+)</td>,;
+				my $date = $6;			# must be in MySql format
+				my $dateAnalysis = PMSUtil::ValidateDateWithinSeason( $date, $course, $yearBeingProcessed );
+				if( $dateAnalysis eq "" ) {
+					$callbackStateRef->{"numDifferentRecords"}++;
+					# write the data to the output file.
+					my $fd = $callbackStateRef->{"recordsFileHandle"};
+					print $fd "$1,$2,$3,$4,$5,$6,$7\n";
+				} elsif( $date lt $minDate ) {
+					# records are in chronological order youngest to oldest, so in this case we're done
+					last;
+				}
+			} elsif( $line =~ m,^</table>, ) {
+				# no more records...
+				last;
+			}
+		} # end of foreach ...
+	}
+	
+	$callbackStateRef->{"numLines"} = $numLines;
+
+} # end of ParsePMSRecordsHttpResponse()
 
 
 
@@ -1043,59 +1417,30 @@ sub GetUSMSRecords( $$$ ) {
 		PMSLogging::PrintLogNoNL( "", "", "GetResults::GetUSMSRecords(): Get the results for USMS Records $course ($gender)...", 1 );
 		my $courseCode = $courses{$course};
 		my $url = $linkToResults . "?CourseID=$courseCode&ri=$gender&ext=csv&prog=0";
-		PMSLogging::PrintLogNoNL( "", "", "url='$url'...", 1 );
+		PMSLogging::PrintLog( "", "", "  url='$url'...", 1 );
 		# we need to change the User Agent because USMS prohibits the SIMPLE user agent...
 		$LWP::Simple::ua->agent("WikiBot/0.1");
-		my $responseCode = LWP::Simple::getstore( "$url", 
-			"$sourceDataDir/$simpleFileName" );
+		# construct full path name of the file we will create with the records:
+		my $resultFileName = "$sourceDataDir/$simpleFileName";
+		
+		my $responseCode = LWP::Simple::getstore( "$url", $resultFileName );
 		if( LWP::Simple::is_error($responseCode) ) {
 			PMSLogging::DumpError( "", "", "LWP::Simple error:  $responseCode", 1 );
+		}
+		if( ! -e $resultFileName ) {
+			PMSLogging::DumpError( "", "", "GetResults::GetUSMSRecords(): " .
+			"Unable to write to '$resultFileName' - FAILED to save CSCV file.", 1 );
 		} else {
-			PMSLogging::PrintLog( "", "", "", 1 );
+			my $lineCount = `wc -l < $resultFileName`;
+			$lineCount =~ s/^\D*//;
+			$lineCount =~ s/\D*$//;
+			PMSLogging::PrintLog( "", "", "($lineCount lines)", 1 );
 			$numFiles++;
 		}
 	} # end of foreach my $simpleFileName...
 	return(	0, 0, 0, $numFiles );
 } # end of GetUSMSRecords()
 
-
-
-# 				my($meetTitle,$link) = ProcessUSMSSwimDetails( $swimLink );
-# ProcessUSMSSwimDetails - look at a single swim result and get details on the meet at which the result was generated.
-#
-# PASSED:
-#	$swimLink - a URL to a page giving the details of a swim
-#
-# RETURNED:
-#	$meetTitle - the title of the meet where the swim ocurred.
-#	$link - a link to the meet
-#
-sub ProcessUSMSSwimDetails($) {
-	my $swimLink = $_[0];
-	my ($meetTitle,$link) = ("", "");
-	my $lineNum = 0;
-	
-	# fetch the human-readable swim details
-	my $httpResponse = $tinyHttp->get( $swimLink );
-	if( !$httpResponse->{success} ) {
-		# failure - display message and give up on this one
-		TT_Logging::HandleHTTPFailure( $swimLink, "USMS", "?", $httpResponse );
-		return ($meetTitle,$link);
-	}
-	foreach my $line ( split('\n', $httpResponse->{content}) ) {
-		$lineNum++;
-		if( $line =~ m/Meet: / ) {
-			$line =~ s/^.*Meet: //;
-			$line =~ s,</a>.*$,,;
-			$line =~ m/"(.*)">(.*$)/;
-			$meetTitle = $2;
-			$link = $1;
-			return ($meetTitle,$link);
-		}
-	}
-	PMSLogging::PrintLog( "", "", "GetResults::ProcessUSMSSwimDetails(): Unable to find Meet info in '$swimLink' ", 1 );
-	return ($meetTitle,$link);
-} # end of ProcessUSMSSwimDetails()
 
 
 
@@ -1118,25 +1463,29 @@ sub GetPMSOWResults( $$ ) {
 	my( $linkToResults, $filePath ) = @_;
 	my( $numResultLines, $numEvents ) = (0, 0);
 	my $listOfEvents = ",";
+	my $gotOWResults = 1;		# assume we'll find some OW events
 
 	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSOWResults(): Get the results for PAC open water...", 1 );
 	PMSLogging::PrintLogNoNL( "", "", "url='$linkToResults',\n  destination='$filePath'...", 1 );
 
-#		# we need to change the User Agent because USMS prohibits the SIMPLE user agent...
-#		$LWP::Simple::ua->agent("WikiBot/0.1");
 	my $responseCode = LWP::Simple::getstore( $linkToResults, $filePath );
 	
-#print "GetPMSOWResults(): url='$linkToResults', path='$filePath', responseCode='$responseCode'\n";
-	
-	
 	if( LWP::Simple::is_error($responseCode) ) {
+		$gotOWResults = 0;
 		if( $responseCode == 404 ) {
 			# we ignore this error - no OW results yet
 			PMSLogging::PrintLog( "", "", "GetResults::GetPMSOWResults(): No OW results to process yet!" );
 		} else {
 			PMSLogging::DumpError( "", "", "LWP::Simple error:  $responseCode", 1 );
 		}
-	} else {
+	} elsif( ! -e $filePath ) {
+		# failed to write the file wih OW results
+		PMSLogging::DumpError( "", "", "GetResults::GetPMSOWResults(): " .
+			"Unable to write to '$filePath' - FAILED to save CSV file.", 1 );
+	}
+	
+	# if we found some OW events let's count them...
+	if( $gotOWResults ) {
 		PMSLogging::PrintLog( "", "", "", 1 );
 		# scan through the file we got and count the different events and # result lines
 		my $fd;
@@ -1163,6 +1512,8 @@ sub GetPMSOWResults( $$ ) {
 	}
 	
 	$listOfEvents = "no events" if( $listOfEvents eq "," );
+	$listOfEvents =~ s/^,//;
+	$listOfEvents =~ s/,$//;
 	PMSLogging::PrintLog( "", "", "GetResults::GetPMSOWResults(): Found $numResultLines result lines and " .
 		"$numEvents different events ($listOfEvents)", 1 );
 	return( $numResultLines, $numEvents );
