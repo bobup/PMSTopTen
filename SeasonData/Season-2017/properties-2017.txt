@@ -14,13 +14,17 @@ RacesDataFile	races.txt
 # These two files allow us to "create" swim meets and splashes that we otherwise wouldn't
 # know about (because USMS didn't post the results from the meet, or we have other special
 # cases.)  If a macro has no value, or the file it references is empty, then there are no
-# special cases.
+# special cases.  However, if a file is specified it must exist.
+# These files are placed in the PMSSwimmerData folder.
 FakeMeetDataFile	fakeRaces.txt
-FakeSplashDataFile	SCM Champs True First Name.xlsx
+FakeSplashDataFile	SCMChampsTrueFirstName.xlsx
 
-# this is the file that enumerates all PMS swimmers at this point in time:
+# this is the file that enumerates all PMS swimmers at this point in time.
+# This file is placed in the PMSSwimmerData folder.
 RSIDNFileName	USMS-RSIND_01-02-2018(2017Reg).csv
 
+# These are the result files that we'll fetch using the GetResults script, and that we'll process
+# using the Topten script.  All are found in the SourceData-{YearBeingProcessed} directory.
 PMSResultFiles			PACTop10SCY-{YearBeingProcessed}.xlsx:PAC-SCY;	\
 						PACTop10SCM-{YearBeingProcessed}.xlsx:PAC-SCM;	\
 						PACTop10LCM-{YearBeingProcessed}.xlsx:PAC-LCM;

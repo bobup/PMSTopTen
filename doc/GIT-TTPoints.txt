@@ -63,12 +63,22 @@ This are just some random notes used to write an eventual document
 # Next, we get the latest PMSTopTen files:
 % git clone https://github.com/bobup/PMSTopTen
 
+# Next, we need to be sure our database configuration parameters are set
+# correctly.  They are specified in the 'properties.txt' file located in the
+# Code subdirectory of the PMSTopTen directory.  The checked in version
+# has default values for the database host, database name, database user, 
+# and database password.  These need to be modified if necessary.  Don't 
+# bother checking in the modified properties.txt file since it will contain
+# information that should not be available to the rest of the world.   
+
 # At this point we have the source code but no "Generated Files", so we'll have 
 # to generate some.  In the 'SeasonData' directory there should be one or more 
 # source directories named "Season-yyyy' where 'yyyy' is some year.  Here's how we'll
 # generate some results assuming we have data for 2017.  Plug in whatever year for which
 # you have data.
-# First, set up your MySql server.  You need to install MySql and create a root account
+# Next, set up your MySql server.  The following discussion assumes the default
+# configuration define in the properties.txt file described above.
+# You need to install MySql and create a root account
 # with all permissions.  Then do the following (you may have to change names/passwords
 # to match the code - see the call to PMS_MySqlSupport::SetSqlParameters() in the file
 # PMSTopTen/Code/Topten2.pl to see what the code uses.)

@@ -20,12 +20,15 @@ ARCHIVED_TMPFILE=/tmp/DoFetchAndProcessTopten.archive
 ARCHIVED_TMPFILE2=/tmp/DoFetchAndProcessTopten_2.archive
 EMAIL_NOTICE=bobup@acm.org
 TOPTEN='./Topten2.pl'
+SIMPLE_SCRIPT_NAME=`basename $0`
 DOFETCH_LOG=/tmp/DoFetchLog.txt
 
 if [ ."$1" = . ]  ; then 
-	echo "$0: Missing season - ABORT!"
+	echo "$SIMPLE_SCRIPT_NAME: Missing season - ABORT!"
 	exit 1
 fi
+
+echo ""; echo '******************** Begin' "$0"
 
 # compute the full path name of the directory holding this script.  We'll find the
 # programs to run relative to this directory:
@@ -107,9 +110,9 @@ LogMessage() {
 ##################  CHECK THE SEMAPHORE   ################################################
 if [ -e $SEMAPHORE ] ; then
 	# abort - program already running!
-	LogMessage "Attempted parallel executions of $0" "$(cat <<- BUp9 
-		ABORT - $0 has been running since $(cat $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore)
-		If you think this is wrong and $0 is not running then do this:
+	LogMessage "Attempted parallel executions of $SIMPLE_SCRIPT_NAME" "$(cat <<- BUp9 
+		ABORT - $SIMPLE_SCRIPT_NAME has been running since $(cat $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore)
+		If you think this is wrong and $SIMPLE_SCRIPT_NAME is not running then do this:
 		   rm $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
 		(STARTed on $STARTDATE, ABORTed on $(date))
 		BUp9
@@ -128,7 +131,7 @@ fi
 
 cd "$FULLPATHCODE"
 # get the latest results for the specified season
-echo "$0:  Get the latest results for $1 (`date`)"
+echo "$SIMPLE_SCRIPT_NAME:  Starting GetResults.pl to get the latest results for $1 (`date`)"
 ./GetResults.pl $1 > $TMPFILE
 
 # if the above GetResults got an error we're going to abort the whole thing.  It's 
@@ -154,6 +157,7 @@ else
 ##############################  GOT NEW RESULT FILES  ####################################
 		# looks like we've got some changes!
 		tail -n -13 $GETRESULTSLOG | grep -v "Get the results for USMS Records" >$TMPFILE2
+		echo "$SIMPLE_SCRIPT_NAME:  Starting $TOPTEN to process the NEW latest results for $1 (`date`)"
 		ExecuteTopten $1
 		LogMessage "A new Standings page has been generated for $1" "$(cat <<- BUp2
 			A new Standings page has been generated for the year $1 by the $0 script..
@@ -172,6 +176,7 @@ else
 ########################  NO NEW RESULT FILES BUT GENERATE TOP 10 ANYWAY  ################
 		# even though there are no changes we're going to generate the standings anyway
 		tail -n -13 $GETRESULTSLOG | grep -v "Get the results for USMS Records" >$TMPFILE2
+		echo "$SIMPLE_SCRIPT_NAME:  Starting $TOPTEN to process the PREVIOUS latest results for $1 (`date`)"
 		ExecuteTopten $1
 		LogMessage \
 			"Found NO changes in the USMS or PAC results, but we'll generate standings anyway for $1" \
@@ -213,5 +218,8 @@ rm -f $ARCHIVED_TMPFILE $ARCHIVED_TMPFILE2
 mv $TMPFILE $ARCHIVED_TMPFILE
 mv $TMPFILE2 $ARCHIVED_TMPFILE2
 rm -f $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
+
+echo ""; echo '******************** End' "$0"
+
 
 exit;

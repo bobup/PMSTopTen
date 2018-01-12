@@ -348,10 +348,11 @@ my $seasonData = "$appRootDir/SeasonData/Season-$yearBeingProcessed";
 my $sourceDataDir = "$seasonData/SourceData-$yearBeingProcessed";
 # template directory:
 my $templateDir = "$appDirName/Templates";
+# swimmer data (not race results) directory
+my $PMSSwimmerData = "$seasonData/PMSSwimmerData/";
 
 # location of the RSIDN file that we'll use
-my $swimmerDataFile = "$seasonData/PMSSwimmerData/" .
-	PMSStruct::GetMacrosRef()->{"RSIDNFileName"};
+my $swimmerDataFile = $PMSSwimmerData . PMSStruct::GetMacrosRef()->{"RSIDNFileName"};
 
 # the input result files that we process:
 my %PMSResultFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"PMSResultFiles"};
@@ -458,13 +459,15 @@ if( $RESULT_FILES_TO_READ != 0 ) {
 	# Get the data we've accumulated about swim meets seen in results
 #	my $racesDataFile = "$sourceDataDir/races.txt";
 	# Read info about all the swim meets we know about:
+# TODO:  BEFORE THIS MAKE SURE THE SOURCEDATADIR EXISTS AND HAS A THE RACESDATAFILE IN IT.  IF NOT
+# THIS MEANS SOMEONE FORGOT TO RUN THE GETRESULTS.PL SCRIPT.
 	TT_MySqlSupport::ReadSwimMeetData( "$sourceDataDir/" . PMSStruct::GetMacrosRef()->{"RacesDataFile"} );
 	# get our "fake" data that allows us to handle special cases:
 	my $fakeMeetDataFile = PMSStruct::GetMacrosRef()->{"FakeMeetDataFile"};
 	if( (defined $fakeMeetDataFile) && ($fakeMeetDataFile ne "" ) ) {
 		# we have some "fake" meets to handle
 		PMSLogging::PrintLog( "", "", "We have a FakeMeetDataFile to process ($fakeMeetDataFile)", 1 );
-		TT_MySqlSupport::ReadSwimMeetData( "$sourceDataDir/" . PMSStruct::GetMacrosRef()->{"FakeMeetDataFile"} );
+		TT_MySqlSupport::ReadSwimMeetData( $PMSSwimmerData . PMSStruct::GetMacrosRef()->{"FakeMeetDataFile"} );
 	} else {
 		PMSLogging::PrintLog( "", "", "FakeMeetDataFile is either not defined or is empty, so no fake meets", 1 );
 	}
@@ -1818,7 +1821,7 @@ sub ProcessFakeSplashes($) {
 	my $course = "SCY";
 	my $org = "PAC";
 	
-	my $fileName = "$sourceDataDir/" .  $simpleFileName;
+	my $fileName = $PMSSwimmerData .  $simpleFileName;
 	# does this file exist?
 		
 		# get to work
