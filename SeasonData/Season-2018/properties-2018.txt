@@ -11,7 +11,7 @@
 # the results to be processed:
 RacesDataFile	races.txt
 
-RSIDNFileName	USMS-RSIND_08-16-2017.csv
+RSIDNFileName	USMS-RSIND_01-14-2018.csv
 
 PMSResultFiles \
 						PACTOP10SCY-{YearBeingProcessed}.xlsx:PAC-SCY;	\

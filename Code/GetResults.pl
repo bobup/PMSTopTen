@@ -657,7 +657,7 @@ sub GetPMSTopTenResults( $$$$$ ) {
 
 	# fetch the human-readable results
 	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSTopTenResults(): Get the results for " .
-		"$org $course, linkToResults='$linkToResults'", 1 );
+		"$org $course,\n    linkToResults='$linkToResults'...", 1 );
 
 	if($debug > 2) {
 		# dump the html we fetched so we can make sure we're getting what we expect
@@ -919,7 +919,7 @@ sub GetUSMSTopTenResults( $$$$$ ) {
 
 	# fetch the human-readable results
 	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetUSMSTopTenResults(): Get the results for " .
-		"$org $course, linkToResults='$linkToResults'", 1 );
+		"$org $course,\n    linkToResults='$linkToResults'...", 1 );
 		
 	my $httpResponse = $tinyHttp->get( $linkToResults, , \%options );
 	# we get here under TWO conditions:
@@ -1252,7 +1252,7 @@ sub GetPMSRecords( $$$$$$ ) {
 
 	# fetch the human-readable results
 	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSRecords(): Get the results for $org $course in " .
-		"the range $minDate - $maxDate, linkToResults='$linkToResults'", 1 );
+		"the range $minDate - $maxDate,\n    linkToResults='$linkToResults'...", 1 );
 	# create the file we'll use for accumulating the records we find:
 	open( $recordsFileHandle, ">$recordsFileName" ) || 
 		die "GetResults::GetPMSRecords(): Can't open $recordsFileName: $!\nAbort.\n";
