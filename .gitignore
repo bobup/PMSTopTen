@@ -12,3 +12,6 @@ old/
 *.swp
 # DON'T ignore anything in the Historical directory
 !/Historical/*
+# BUT...DO ignore .DS_Store in Historical/
+/Historical/.DS_Store
+

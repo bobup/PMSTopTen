@@ -13,7 +13,7 @@
 #	Update FetchStats set LinesRead=0 where FetchStatsId=1;
 #
 
-STARTDATE=`date`
+STARTDATE=`date +'%a, %b %d %G at %l:%M:%S %p %Z'`
 TMPFILE=/tmp/DoFetchAndProcessTopten.$$
 TMPFILE2=/tmp/DoFetchAndProcessTopten_2.$$
 ARCHIVED_TMPFILE=/tmp/DoFetchAndProcessTopten.archive
@@ -75,10 +75,10 @@ ExecuteTopten() {
 Subject: FATAL ERROR (syntax error?) during $TOPTEN $1 on `hostname`
 There was an error discovered when running $TOPTEN $1
 preventing it from running and creating a log file.
-(STARTed on $STARTDATE, ABORTed on `date`)
+(STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 BUp0
 	rm $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
-	echo "(STARTed on $STARTDATE, ABORTed (syntax error?) on `date`)"
+	echo "(STARTed on $STARTDATE, ABORTed (syntax error?) on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
 	exit 1;
 	fi
 	# Topten ran, but did it get an error...?
@@ -89,10 +89,10 @@ BUp0
 Subject: FATAL ERROR during $TOPTEN $1 on `hostname`
 There was an error discovered when running $TOPTEN $1
 The TopTen log file is here:  $TOPTENLOG
-(STARTed on $STARTDATE, ABORTed on `date`)
+(STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 BUp0
 	rm $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
-	echo "(STARTed on $STARTDATE, ABORTed on `date`)"
+	echo "(STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
 	exit 1;
 	fi
 }  # end of Executetopten()
@@ -137,7 +137,7 @@ if [ -e $SEMAPHORE ] ; then
 		ABORT - $SIMPLE_SCRIPT_NAME has been running since $(cat $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore) on `hostname`
 		If you think this is wrong and $SIMPLE_SCRIPT_NAME is not running then do this:
 		   rm $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
-		(STARTed on $STARTDATE, ABORTed on $(date))
+		(STARTed on $STARTDATE, ABORTed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
 		BUp9
 		)"
 	exit 1
@@ -154,7 +154,7 @@ fi
 
 cd "$FULLPATHCODE"
 # get the latest results for the specified season
-echo "$SIMPLE_SCRIPT_NAME:  Starting GetResults.pl to get the latest results for $1 (`date`)"
+echo "$SIMPLE_SCRIPT_NAME:  Starting GetResults.pl to get the latest results for $1 (`date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
 ./GetResults.pl $1 > $TMPFILE
 
 # if the above GetResults got an error we're going to abort the whole thing.  It's 
@@ -171,7 +171,7 @@ if grep -q "ERROR" < $GETRESULTSLOG ; then
 		------
 		Script logs can be viewed on $ARCHIVED_TMPFILE and $ARCHIVED_TMPFILE2
 		GetResults.pl logs are at:  $GETRESULTSLOG
-		(STARTed on $STARTDATE, Terminated on `date`)
+		(STARTed on $STARTDATE, Terminated on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 		BUp1
 		)" "x" "x"
 	exit 1
@@ -180,7 +180,7 @@ else
 ##############################  GOT NEW RESULT FILES  ####################################
 		# looks like we've got some changes!
 		tail -n -13 $GETRESULTSLOG | grep -v "Get the results for USMS Records" >$TMPFILE2
-		echo "$SIMPLE_SCRIPT_NAME:  Starting $TOPTEN to process the NEW latest results for $1 (`date`)"
+		echo "$SIMPLE_SCRIPT_NAME:  Starting $TOPTEN to process the NEW latest results for $1 (`date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
 		ExecuteTopten $1
 		LogMessage "A new Standings page has been generated for $1 on `hostname`" "$(cat <<- BUp2
 			A new Standings page has been generated for the year $1 by the $0 script on `hostname`..
@@ -192,14 +192,14 @@ else
 			Script logs can be viewed on $ARCHIVED_TMPFILE and $ARCHIVED_TMPFILE2
 			GetResults.pl logs are at:  $GETRESULTSLOG
 			TopTen.pl logs are at: $TOPTENLOG
-			(STARTed on $STARTDATE, Terminated on `date`)
+			(STARTed on $STARTDATE, Terminated on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 			BUp2
 			)" "x"
 	elif [ ."$2" != . ] ; then
 ########################  NO NEW RESULT FILES BUT GENERATE TOP 10 ANYWAY  ################
 		# even though there are no changes we're going to generate the standings anyway
 		tail -n -13 $GETRESULTSLOG | grep -v "Get the results for USMS Records" >$TMPFILE2
-		echo "$SIMPLE_SCRIPT_NAME:  Starting $TOPTEN to process the PREVIOUS latest results for $1 (`date`)"
+		echo "$SIMPLE_SCRIPT_NAME:  Starting $TOPTEN to process the PREVIOUS latest results for $1 (`date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
 		ExecuteTopten $1
 		LogMessage \
 			"Found NO changes in the USMS or PAC results, but we'll generate standings anyway for $1 on `hostname`" \
@@ -214,7 +214,7 @@ else
 			Script logs can be viewed on $ARCHIVED_TMPFILE and $ARCHIVED_TMPFILE2
 			GetResults.pl logs are at:  $GETRESULTSLOG
 			TopTen.pl logs are at: $TOPTENLOG
-			(STARTed on $STARTDATE, Terminated on `date`)
+			(STARTed on $STARTDATE, Terminated on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 			BUp3
 			)" "x"
 	else
@@ -229,7 +229,7 @@ else
 			------
 			Script logs can be viewed on $ARCHIVED_TMPFILE and $ARCHIVED_TMPFILE2
 			GetResults.pl logs are at:  $GETRESULTSLOG
-			(STARTed on $STARTDATE, Terminated on `date`)
+			(STARTed on $STARTDATE, Terminated on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 			BUp4
 			)" "x"
 	fi

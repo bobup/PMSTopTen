@@ -1,0 +1,55 @@
+NOTE: Log file created on Tue Mar 06 2018 - 14:00:03
+NOTE: GetResults.pl: get results for the year 2017
+
+*********
+GetResults::GetPMSTopTenResults(): Get the results for PAC LCM,
+    linkToResults='http://www.usms.org/comp/meets/toptenlocalind.php?Year=2017&CourseID=2&ZoneID=&LMSCID=38&Club='...1000...2000...3000...Found 2039 different results, 22 newly seen swim meets, 3234 lines.
+GetResults::GetPMSTopTenResults(): Get the results for PAC SCM,
+    linkToResults='http://www.usms.org/comp/meets/toptenlocalind.php?Year=2017&CourseID=3&ZoneID=&LMSCID=38&Club='...1000...Found 862 different results, 20 newly seen swim meets, 1944 lines.
+GetResults::GetPMSTopTenResults(): Get the results for PAC SCY,
+    linkToResults='http://www.usms.org/comp/meets/toptenlocalind.php?Year=2017&CourseID=1&ZoneID=&LMSCID=38&Club='...1000...2000...3000...4000...5000...6000...7000...Found 5712 different results, 38 newly seen swim meets, 7004 lines.
+
+*********
+GetResults::GetUSMSTopTenResults(): Get the results for USMS LCM,
+    linkToResults='http://www.usms.org/comp/tt/toptenlmsc.php?Year=2017&CourseID=2&ZoneID=&LMSCID=38&ClubAbbr='...200...400...600...800...1000...Found 616 different results, 0 newly seen swim meets, 1028 lines.
+GetResults::GetUSMSTopTenResults(): Get the results for USMS SCM,
+    linkToResults='http://www.usms.org/comp/tt/toptenlmsc.php?Year=2017&CourseID=3&ZoneID=&LMSCID=38&ClubAbbr='...200...GetResults::ProcessUSMSSwimDetails(): Unable to find Meet info in 'http://www.usms.org/comp/meets/swim.php?s=3461804'; link='', meetTitle='', callbacks=2, numLines=callbacks=0
+400...600...Found 315 different results, 0 newly seen swim meets, 723 lines.
+GetResults::GetUSMSTopTenResults(): Get the results for USMS SCY,
+    linkToResults='http://www.usms.org/comp/tt/toptenlmsc.php?Year=2017&CourseID=1&ZoneID=&LMSCID=38&ClubAbbr='...200...400...600...800...1000...Found 648 different results, 0 newly seen swim meets, 1056 lines.
+
+*********
+GetResults::GetPMSRecords(): Get the results for PAC LCM Records in the range 2016-10-01 - 2017-09-30,
+    linkToResults='http://pacificmasters.org/pacm/records?course=ind_lcm&sort=desc&order=Date'...(744 lines, 4 callbacks)... found 52 records.
+GetResults::GetPMSRecords(): Get the results for PAC SCM Records in the range 2017-01-01 - 2017-12-31,
+    linkToResults='http://pacificmasters.org/pacm/records?course=ind_scm&sort=desc&order=Date'...(782 lines, 4 callbacks)... found 35 records.
+GetResults::GetPMSRecords(): Get the results for PAC SCY Records in the range 2016-06-01 - 2017-05-31,
+    linkToResults='http://pacificmasters.org/pacm/records?course=ind_scy&sort=desc&order=Date'...NOTE: Ignoring unverified record.: [line 208, ' <tr class="odd"><td>F</td><td>25-29</td><td>50</td><td>Back</td><td>Felicia Lee</td><td class="active">2018-01-20</td><td><a href="http://www.usms.org/comp/meets/swim.php?s=3468681" target="blank" class="records-table spl">26.06</a>**</td> </tr>']
+(774 lines, 4 callbacks)... found 65 records.
+
+*********
+GetResults::GetUSMSRecords(): Get the results for USMS Records LCM (M)...  url='http://www.usms.org/comp/recordexport.php?CourseID=2&ri=M&ext=csv&prog=0'...
+(281 lines)
+GetResults::GetUSMSRecords(): Get the results for USMS Records SCM (M)...  url='http://www.usms.org/comp/recordexport.php?CourseID=3&ri=M&ext=csv&prog=0'...
+(292 lines)
+GetResults::GetUSMSRecords(): Get the results for USMS Records SCY (M)...  url='http://www.usms.org/comp/recordexport.php?CourseID=1&ri=M&ext=csv&prog=0'...
+(291 lines)
+GetResults::GetUSMSRecords(): Get the results for USMS Records LCM (W)...  url='http://www.usms.org/comp/recordexport.php?CourseID=2&ri=W&ext=csv&prog=0'...
+(276 lines)
+GetResults::GetUSMSRecords(): Get the results for USMS Records SCM (W)...  url='http://www.usms.org/comp/recordexport.php?CourseID=3&ri=W&ext=csv&prog=0'...
+(286 lines)
+GetResults::GetUSMSRecords(): Get the results for USMS Records SCY (W)...  url='http://www.usms.org/comp/recordexport.php?CourseID=1&ri=W&ext=csv&prog=0'...
+(285 lines)
+
+*********
+GetResults::GetPMSOWResults(): Get the results for PAC open water...url='http://pacificmasters.org/points/OWPoints/2017PacMastersOWPlacesForEachSwimmer.csv',
+  destination='/Users/bobup/Development/PacificMasters/PMSTopTen/SeasonData/Season-2017//SourceData-2017//2017PacMastersOWPlacesForEachSwimmer.csv'...
+GetResults::GetPMSOWResults(): Found 1773 result lines and 15 different events (Lake Del Valle 1.2K,Santa Cruz Rough Water 1 Mile,Keller Cove 1 Mile,Lake Berryessa 1 Mile,Lake Del Valle 2.5K,Lake Berryessa 2 Mile,Santa Cruz Cruise 2 Mile,Whiskeytown 2 Mile,Whiskeytown 1 Mile,Keller Cove 2 Mile,Lake Del Valle 5K,Lake Del Valle 10K,Donner Lake Swim 2.7 Mile,Spring Lake 1 Mile,Keller Cove 1/2 Mile)
+GetResults:: Totals:
+    Total number of lines read: 19062
+    Total number of unique meets discovered: 95
+    Total number of different results found: 12117
+    Total number of different files processed: 16
+    Total number of different meets written to /Users/bobup/Development/PacificMasters/PMSTopTen/SeasonData/Season-2017//SourceData-2017//races.txt: 80
+NOTE:  there appears to be no change in results since 2018-03-06 13:20:12
+Done with GetResults.pl!

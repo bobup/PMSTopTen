@@ -148,7 +148,7 @@ sub InitializeTopTenDB() {
     				# splashes to populate the Points table.
     				# --- SplashId : primary key
     				# --- Course : one of SCY, SCM, LCM, SCY Records, SCM Records, LCM Records, or OW
-    				# --- Org : orginazation, one of PMS or USMS
+    				# --- Org : orginazation, one of PAC or USMS
     				# --- EventId : reference to the exact event (e.g. '50 y freestyle') [0 for OW]
     				# --- Gender - one of M or F
 				  	# --- AgeGroup - their age group on the day of the swim, of the form 18-24, 25-29, etc.
@@ -300,7 +300,7 @@ sub InitializeTopTenDB() {
     				# --- SwimmerId - the swimmer who earned these points
 	   				# --- Course - the course in which they earned these points  
     				# ---   (SCY, SCM, LCM, OW, SCY Records, SCM Records, LCM Records)
-    				# --- Org - the organization which awarded the points (PMS, USMS)
+    				# --- Org - the organization which awarded the points (PAC, USMS)
     				# --- AgeGroup - the age group the swimmer was in when earning these points.
     				#		Can be of the form "18-25:25-29" if we combine age groups for 
     				#		a swimmer who swims the season in two age groups.

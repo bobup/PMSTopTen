@@ -39,13 +39,6 @@ This are just some random notes used to write an eventual document
 		- from Eclipse:  change the properties.txt file to contain the <new season>, or
 		- from Terminal: GenTopten <new season>
 		
-		
-		
-		
-		
-		
-		
-		
 	- Remove all the files in the GeneratedFiles directory EXCEPT the Support symbolic link.
 	- Remove all the files and sub-directories in the OWResults directory.  This is where 
 		the new year's results will be placed.
@@ -53,6 +46,34 @@ This are just some random notes used to write an eventual document
 		of the <previous year>-properties.txt
 	- Refresh your Eclipse project.
 
+=========================================================================================
+*** move a season <yearToProcess> into Historical
+cd <appRootDir>/Historical
+mkdir <yearToProcess>
+mv ../GeneratedFiles/Generated-<yearToProcess>  <yearToProcess>
+mv ../SeasonData/Season-<yearToProcess>  <yearToProcess>
+
+
+
+
+
+=========================================================================================
+******  Update remote (master) repository using local repository
+
+- first get list of new and changed files on local repository
+% cd <appRootDir>
+% git status
+--- get list of files that are tracked and:
+	modified
+	deleted
+	% git add <file> for files we want to commit
+	% git rm <file> for files we want to delete
+	% git checkout -- <file> to discard changed files
+--- Untracked files:
+	% git add <file> for files we want to commit
+
+.... in progress....
+=========================================================================================
 
 ****** Create a local repository from the PMSTopTen remote repository
 

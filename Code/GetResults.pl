@@ -69,7 +69,7 @@ my $sourceData;		# full path of directory containing the "source data" which we 
 
 BEGIN {
 	# set this to adjust debug printing:
-	$debug = 0;
+	$debug = 3;
 	
 	
 	# Get the name of the program we're running:
@@ -139,7 +139,9 @@ sub GetPMSOWResults( $$ );
 
 
 # initialize our HTTP class:
-my $tinyHttp = HTTP::Tiny->new();
+#my %tinyAttributes = ("agent" => "WikiBot/0.1");
+my %tinyAttributes = ("agent" => "Mozilla/5.0 (Macintosh; Intel É) Gecko/20100101 Firefox/59.0");
+my $tinyHttp = HTTP::Tiny->new( %tinyAttributes );
 my $httpResponse;
 
 # $SwimMeets{title of meet} = "ORG|COURSE|link to details for meet";
@@ -448,7 +450,6 @@ if(1) {
 	}
 } # end of if(1)...
 
-	
 
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET USMS Records
@@ -666,8 +667,16 @@ sub GetPMSTopTenResults( $$$$$ ) {
 		$diffResultsFileName = $generatedDirName . "test/PMSDiffResults-new-$org-$course.txt";
 		open( $diffResultsFD, ">$diffResultsFileName" ) || (die "Can't open $diffResultsFileName: $!\nAbort.\n");
 	}
-		
-	my $httpResponseRef = $tinyHttp->get( $linkToResults, \%options );
+
+
+
+			# we need to change the User Agent because USMS prohibits the SIMPLE user agent...
+	#		$LWP::Simple::ua->agent("WikiBot/0.1");
+
+
+
+#my $httpResponseRef = $tinyHttp->get( "https://www.usms.org/css/layout/content.css?time=24398", \%options );
+my $httpResponseRef = $tinyHttp->get( $linkToResults, \%options );
 	# we get here under TWO conditions:
 	#	- the entire response has been processed by data_callback routine and all is good, or
 	#	- none (or some?) of the response has been processed and we got an error.
@@ -852,7 +861,7 @@ sub ParsePMSTopTenHttpResponse( $$$$$$$ ) {
 					$meetTitle =~ s/^.*">//;
 					$meetTitle =~ s,</a.*$,,;
 					#$meetTitle = CleanMeetTitle( $meetTitle );
-					if( ! defined( $SwimMeets{$meetTitle} ) ) {
+					if( ($meetTitle ne "") && ($link ne "") && (! defined( $SwimMeets{$meetTitle} ) ) ) {
 						# we haven't seen this meet before - record it
 						$link = $baseURL . $link;
 						$SwimMeets{$meetTitle} = "$org|$course|$link";
@@ -1053,7 +1062,7 @@ sub ParseUSMSTopTenHttpResponse( $$$$$$$ ) {
 					# now get the meet details:
 					my($meetTitle,$link) = ProcessUSMSSwimDetails( $swimLink );
 					#$meetTitle = CleanMeetTitle( $meetTitle );
-					if( ! defined( $SwimMeets{$meetTitle} ) ) {
+					if( ($meetTitle ne "") && ($link ne "") && (! defined( $SwimMeets{$meetTitle} ) ) ) {
 						# we haven't seen this meet before - record it
 						$link = $baseURL . "/comp/meets/" . $link;
 						$SwimMeets{$meetTitle} = "$org|$course|$link";
@@ -1098,9 +1107,10 @@ sub ProcessUSMSSwimDetails($) {
 		"data_callback"	=>	sub {
 			ParseUSMSSwimDetails( \%callbackState, $swimLink, $_[0], $_[1] );
 		} );
-	my $tinyHttp2 = HTTP::Tiny->new();
-
-	#PMSLogging::PrintLog( "", "", "GetResults::ProcessUSMSSwimDetails(): find Meet info in '$swimLink' ", 1 );
+	my %attributes = (
+		"timeout"		=>	600
+		);
+	my $tinyHttp2 = HTTP::Tiny->new( %attributes );
 
 	# fetch the human-readable swim details
 	my $httpResponse = $tinyHttp2->get( $swimLink, \%options );
@@ -1294,6 +1304,7 @@ sub ParsePMSRecordsHttpResponse( $$$$$$$$ ) {
 	$callbackStateRef->{"numCallbackCalls"} = $numCallbackCalls;
 	my $numLines = $callbackStateRef->{"numLines"};
 	my $partialLastLine = 0;		# set to 1 if the content we are passed
+	my $numLinesThisCall = 0;		# the number of lines of content we'll process this call (computed below)
 	
 	# before doing anything make sure we didn't get an error
 	if( ((defined $httpResponseRef->{success}) && !$httpResponseRef->{'success'}) ||
@@ -1338,27 +1349,67 @@ sub ParsePMSRecordsHttpResponse( $$$$$$$$ ) {
 			}
 		}
 		
-		$numLines += scalar @lines;
+		$numLinesThisCall += scalar @lines;
 		#print "\ncallback #$numCallbackCalls: \n";
 		foreach my $line ( @lines ) {
+			$numLines++;
 			#print "line $numLines: $line\n";
 			if( ($numLines % 1000) == 0 ) {
 				PMSLogging::PrintLogNoNL( "", "", "$numLines...", 1 );
 			}
 			if( $line =~ m/^ <tr class="/ ) {
+				my $foundLinkUnderTime = 0;		# 0 = no link under time, 1 = link under time, -1 = error found - ignore line
 				# found a result line...get the fields			
-				#              gender        age grp           dist            stroke          full name                        date             time
-				$line =~ m,<td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td class="active">([^<]+)</td><td>([^<]+)</td>,;
-				my $date = $6;			# must be in MySql format
-				my $dateAnalysis = PMSUtil::ValidateDateWithinSeason( $date, $course, $yearBeingProcessed );
-				if( $dateAnalysis eq "" ) {
-					$callbackStateRef->{"numDifferentRecords"}++;
-					# write the data to the output file.
-					my $fd = $callbackStateRef->{"recordsFileHandle"};
-					print $fd "$1,$2,$3,$4,$5,$6,$7\n";
-				} elsif( $date lt $minDate ) {
-					# records are in chronological order youngest to oldest, so in this case we're done
-					last;
+				#                  gender        age grp           dist            stroke          full name                        date             time
+				if( $line =~ m,<td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td class="active">([^<]+)</td><td>([^<]+)</td>, ) {
+					# we found a result line that does NOT contain a link under the time.
+					$foundLinkUnderTime = 0;
+				#                  gender        age grp           dist            stroke          full name                        date              link     time   unverified flag
+				} elsif( $line =~ m,<td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td class="active">([^<]+)</td><td><a[^>]+>([^<]+)</a(>.*<)/td>, ) {
+					$foundLinkUnderTime = 1;
+				} else {
+					# our pattern didn't match - this is a problem that we need to fix!
+					$foundLinkUnderTime = -1;
+				}
+				if( $foundLinkUnderTime >= 0 ) {
+					# it looks like a valid record line - do we use it?
+					my $date = $6;			# must be in MySql format
+					my $time = "";			# compute below
+					if( $foundLinkUnderTime == 1 ) {
+						# we have a link - is this record verified?
+						my $verifiedFlag = $8;
+						if( $verifiedFlag eq "><" ) {
+							# yes - this is verified!
+							$time = $7;
+						} else {
+							# no - not verified.  ignore it
+							PMSLogging::DumpNote( $line, $numLines, "Ignoring unverified record.", 1 );
+							next;
+						}
+					} else {
+						# no link under time
+						$time = $7;
+					}
+					my $dateAnalysis = PMSUtil::ValidateDateWithinSeason( $date, $course, $yearBeingProcessed );
+					if( index( $dateAnalysis, "Illegal" ) >= 0 ) {
+						# ValidateDateWithinSeason() had a problem...
+						PMSLogging::DumpError( $line, 0, "ParsePMSRecordsHttpResponse(): Error from " .
+							"ValidateDateWithinSeason(): '$dateAnalysis'", 1 );
+						# we'll keep going but this should be fixed!
+					}
+					if( $dateAnalysis eq "" ) {
+						$callbackStateRef->{"numDifferentRecords"}++;
+						# write the data to the output file.
+						my $fd = $callbackStateRef->{"recordsFileHandle"};
+						print $fd "$1,$2,$3,$4,$5,$6,$time\n";
+					} elsif( $date lt $minDate ) {
+						# records are in chronological order youngest to oldest, so in this case we're done
+						last;
+					}
+				} # done with this result line
+				else {
+					# this result line doesn't look like we think it should - we're going to skip it:
+					PMSLogging::DumpNote( $line, $numLines, "We are ignoring this record ($course) - pattern match failed:", 1 );
 				}
 			} elsif( $line =~ m,^</table>, ) {
 				# no more records...
@@ -1367,7 +1418,7 @@ sub ParsePMSRecordsHttpResponse( $$$$$$$$ ) {
 		} # end of foreach ...
 	}
 	
-	$callbackStateRef->{"numLines"} = $numLines;
+	$callbackStateRef->{"numLines"} += $numLinesThisCall;
 
 } # end of ParsePMSRecordsHttpResponse()
 

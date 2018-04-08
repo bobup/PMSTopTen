@@ -20,9 +20,10 @@ use warnings;
 #
 sub HandleHTTPFailure( $$$$ ) {
 	my ($linkToResults, $org, $course, $httpResponse) = @_;
-	PMSLogging::PrintLog( "", "", "GetResults::HandleHTTPFailure(): HTTP Request to '$linkToResults' " .
-		"(org:'$org', course:'$course') failed.  " .
-		"status: '$httpResponse->{status}', reason: '$httpResponse->{reason}'", 1 );
+	PMSLogging::PrintLog( "", "", "HandleHTTPFailure(): HTTP Request to '$linkToResults'\n" .
+		"    (org:'$org', course:'$course') failed.  " .
+		"{status}: '$httpResponse->{status}', {reason}: '$httpResponse->{reason}',\n" .
+		"    {url}: '$httpResponse->{url}'\n", 1 );
 } # end of HandleHTTPFailure()
 
 
