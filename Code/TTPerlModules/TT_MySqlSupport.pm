@@ -2259,19 +2259,28 @@ sub DidWeGetDifferentData( $$$$$$ ) {
 				PMSLogging::PrintLog( "", "", "Results have changed since the last time we got results on $prevDateTime:", 1 );
 				LogPrevious( $prevLinesRead, $prevMeetsSeen, $prevResultsSeen, $prevFilesSeen, $prevRaceLines );
 				# now update this row with the new values
-				($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
-					"UPDATE FetchStats SET LinesRead = '$numLinesRead', " .
+				my $query = "UPDATE FetchStats SET LinesRead = '$numLinesRead', " .
 					"MeetsSeen = '$numDifferentMeetsSeen', " .
 					"ResultsSeen = '$numDifferentResultsSeen', " .
 					"FilesSeen = '$numDifferentFiles', " .
 					"RaceLines = '$raceLines', " .
 					"Date = '" . PMSStruct::GetMacrosRef()->{"MySqlDateTime"} . "' " .
-					"WHERE Season = '$season'" );
+					"WHERE Season = '$season'";
+#				($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+				my $rowsAffected = $dbh->do( $query );
+				if( $rowsAffected == 0 ) {
+					# update failed - ERROR!
+					print "UPDATE of FetchStats failed (query='$query')\n";
+					# oops - Update failed
+					PMSLogging::DumpError( 0, 0, "TT_MySqlSupport.pm::DidWeGetDifferentData(): " .
+						"UPDATE of FetchStats failed (query='$query')", 1 );
+				}
 			} else {
 				# we had errors so don't trust that results changed:
 				PMSLogging::PrintLog( "", "", "Results appear to have changed since the last time we " .
-					"got results on $prevDateTime...\n    BUT errors were detected, so we're ignoring the " .
-					"possible changes.\n    We'll act as though results DID NOT change.", 1 );
+					"got results on $prevDateTime...\n    >>>BUT errors were detected, so we're ignoring the " .
+					"possible changes.\n    >>>We'll act as though results DID NOT change " .
+					"and NOT update our FetchStats.", 1 );
 				LogPrevious( $prevLinesRead, $prevMeetsSeen, $prevResultsSeen, $prevFilesSeen, $prevRaceLines );
 			}
 		} else {

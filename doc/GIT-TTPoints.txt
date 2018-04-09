@@ -62,20 +62,31 @@ mv ../SeasonData/Season-<yearToProcess>  <yearToProcess>
 
 - first get list of new and changed files on local repository
 % cd <appRootDir>
-% git status
---- get list of files that are tracked and:
-	modified
-	deleted
-	% git add <file> for files we want to commit
-	% git rm <file> for files we want to delete
-	% git checkout -- <file> to discard changed files
---- Untracked files:
-	% git add <file> for files we want to commit
+--- do one of these:
+1)
+	% git status
+		(review list of files and make sure you want them all...)
+	% git add -n -A
+		(review list of additions and deletions.)
+	% git add -A
+	% git commit -a
+	% git push
+OR
+2)
+	% git status
+	--- get list of files that are tracked and:
+		modified
+		deleted
+		% git add <file> for files we want to commit
+		% git rm <file> for files we want to delete
+		% git checkout -- <file> to discard changed files
+	--- Untracked files:
+		% git add <file> for files we want to commit
 
-.... in progress....
 =========================================================================================
 
 ****** Create a local repository from the PMSTopTen remote repository
+(do this on any client...mac or pc or linux box)
 
 # First, we must have the latest PMSPerlModules.  Get them here:
 % cd $rootDir			# see Definition of 'rootDir'.  Create if necessary
@@ -91,6 +102,9 @@ mv ../SeasonData/Season-<yearToProcess>  <yearToProcess>
 # and database password.  These need to be modified if necessary.  Don't 
 # bother checking in the modified properties.txt file since it will contain
 # information that should not be available to the rest of the world.   
+% cd PMSTopTen/Code
+
+
 
 # At this point we have the source code but no "Generated Files", so we'll have 
 # to generate some.  In the 'SeasonData' directory there should be one or more 

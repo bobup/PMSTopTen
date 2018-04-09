@@ -69,7 +69,7 @@ my $sourceData;		# full path of directory containing the "source data" which we 
 
 BEGIN {
 	# set this to adjust debug printing:
-	$debug = 3;
+	$debug = 0;
 	
 	
 	# Get the name of the program we're running:
@@ -140,8 +140,9 @@ sub GetPMSOWResults( $$ );
 
 # initialize our HTTP class:
 #my %tinyAttributes = ("agent" => "WikiBot/0.1");
-my %tinyAttributes = ("agent" => "Mozilla/5.0 (Macintosh; Intel É) Gecko/20100101 Firefox/59.0");
-my $tinyHttp = HTTP::Tiny->new( %tinyAttributes );
+#my %tinyAttributes = ("agent" => "Mozilla/5.0 (Macintosh; Intel É) Gecko/20100101 Firefox/59.0");
+#my $tinyHttp = HTTP::Tiny->new( %tinyAttributes );
+my $tinyHttp = HTTP::Tiny->new( );
 my $httpResponse;
 
 # $SwimMeets{title of meet} = "ORG|COURSE|link to details for meet";
@@ -324,18 +325,18 @@ if(1) {
 		if( $org_course eq "PAC-SCY") {
 			## Get SCY results:
 			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-				GetPMSTopTenResults( "http://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=1&ZoneID=&LMSCID=38&Club=",
-					"http://www.usms.org", "PAC", "SCY", $simpleFileName );
+				GetPMSTopTenResults( "https://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=1&ZoneID=&LMSCID=38&Club=",
+					"https://www.usms.org", "PAC", "SCY", $simpleFileName );
 		} elsif( $org_course eq "PAC-SCM") {
 			## Get SCM results:
 			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-				GetPMSTopTenResults( "http://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=3&ZoneID=&LMSCID=38&Club=",
-					"http://www.usms.org", "PAC", "SCM", $simpleFileName );
+				GetPMSTopTenResults( "https://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=3&ZoneID=&LMSCID=38&Club=",
+					"https://www.usms.org", "PAC", "SCM", $simpleFileName );
 		} elsif( $org_course eq "PAC-LCM") {
 			## Get LCM results:
 			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-				GetPMSTopTenResults( "http://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=2&ZoneID=&LMSCID=38&Club=",
-					"http://www.usms.org", "PAC", "LCM", $simpleFileName );
+				GetPMSTopTenResults( "https://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=2&ZoneID=&LMSCID=38&Club=",
+					"https://www.usms.org", "PAC", "LCM", $simpleFileName );
 		} else {
 			PMSLogging::DumpError( "", "", "GetResults::Illegal org_course ($org_course) when getting PMS Top Ten POINTS" );		
 		}

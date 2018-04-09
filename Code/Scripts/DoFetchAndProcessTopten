@@ -32,10 +32,15 @@ echo ""; echo '******************** Begin' "$0"
 
 # compute the full path name of the directory holding this script.  We'll find the
 # programs to run relative to this directory:
-# Also compute the full path name of the directory into which the generated files are placed:
 script_dir=$(dirname $0)
-pushd $script_dir/.. >/dev/null; FULLPATHCODE=`pwd -P`; \
-	cd ../GeneratedFiles/Generated-$1; GENERATED_DIR=`pwd -P`; popd >/dev/null
+pushd $script_dir/.. >/dev/null; FULLPATHCODE=`pwd -P`
+
+# Next compute the full path name of the directory into which the generated files are placed:
+cd ../GeneratedFiles
+GENERATED_DIR=`pwd -P`/Generated-$1
+# make sure the GENERATED_DIR exists
+mkdir -p $GENERATED_DIR
+popd >/dev/null
 
 # log files produced by programs executed by this script:
 GETRESULTSLOG=$GENERATED_DIR/GetResultsLog-$1.txt
