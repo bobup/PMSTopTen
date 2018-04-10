@@ -11,8 +11,7 @@
 # the results to be processed:
 RacesDataFile	races.txt
 
-RSIDNFileName	USMS-RSIND_03-26-2018.csv
-#RSIDNFileName	USMS-RSIND_02-12-2018.csv
+RSIDNFileName	USMS-RSIND_04-09-2018.csv
 
 
 PMSResultFiles \

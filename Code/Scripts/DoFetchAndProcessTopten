@@ -174,7 +174,7 @@ if grep -q "ERROR" < $GETRESULTSLOG ; then
 		------
 		`cat $TMPFILE2`
 		------
-		Script logs can be viewed on $ARCHIVED_TMPFILE and $ARCHIVED_TMPFILE2
+		Script logs can be viewed on $TMPFILE and $TMPFILE2
 		GetResults.pl logs are at:  $GETRESULTSLOG
 		(STARTed on $STARTDATE, Terminated on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 		BUp1

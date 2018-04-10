@@ -103,6 +103,25 @@ OR
 # bother checking in the modified properties.txt file since it will contain
 # information that should not be available to the rest of the world.   
 % cd PMSTopTen/Code
+% vi properties.txt
+--- remove everything from 
+	# database connection...
+--- up to BUT NOT INCLUDING
+	>include
+--- insert correct chunk from ~/Automation/properties-YEAR.txt.  For example, for the
+--- 2018 year the correct chunk is:
+#### WARNING - CHANGED FOR USE ON PAC DEV SERVER FOR THE 2017 SEASON
+# database connection parameters for 2017
+# Modified for use on PMS server
+dbHost  db89a.pair.com
+dbName  caroline_TT2017
+dbUser  caroline_5
+dbPass  DwBNLDSN
+
+
+
+
+
 
 
 
