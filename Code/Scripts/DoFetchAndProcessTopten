@@ -6,8 +6,16 @@
 #
 # PASSED:
 #	$1 - the season, e.g. 2017
-#	$2 - (optional) if present we'll force generation of the standings page after fetching
-#		the results.
+#	$2 - (optional) If present and equal to 'y' we'll force generation of the standings page after fetching
+#		the results. If present and equal to anything else we will generate the standings page only
+#		if the results look different than the last time we fetched the results.  This is the default.
+#
+# NOTES:
+#	When this script begins it will move the to-be generated index.html to index.html.old.  This
+#	way you can always tell if the last run of this script generated a new standings page.  If
+#	there is no index.html file in the "Generated files" directory then this means that the
+#	last run of this script did not generate a new standings page.  To view the last successfully
+#	generated standings page when there is no index.html file look at index.html.old. 
 #
 # To force GetResults to detect a change in data, simply set a stat to 0.  For example:
 #	Update FetchStats set LinesRead=0 where FetchStatsId=1;
@@ -36,7 +44,7 @@ script_dir=$(dirname $0)
 pushd $script_dir/.. >/dev/null; FULLPATHCODE=`pwd -P`
 
 # Next compute the full path name of the directory into which the generated files are placed:
-cd ../GeneratedFiles
+pushd ../GeneratedFiles >/dev/null
 GENERATED_DIR=`pwd -P`/Generated-$1
 # make sure the GENERATED_DIR exists
 mkdir -p $GENERATED_DIR
@@ -47,6 +55,12 @@ GETRESULTSLOG=$GENERATED_DIR/GetResultsLog-$1.txt
 TOPTENLOG=$GENERATED_DIR/TopTenLog-$1.txt
 # semaphore used to make sure we don't execute this script more than once at a time:
 SEMAPHORE=$GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
+
+# remove the generated index.html if it exists.  This way we'll know when a new one is generated.
+if [ -e "$GENERATED_DIR/index.html" ] ; then
+	mv -f $GENERATED_DIR/index.html $GENERATED_DIR/index.html.old
+fi
+
 
 # if we're running on the PMS server we need to initialize our Perl search path (@INC)
 if hostname | grep -q "pair.com"  ; then
@@ -200,7 +214,7 @@ else
 			(STARTed on $STARTDATE, Terminated on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 			BUp2
 			)" "x"
-	elif [ ."$2" != . ] ; then
+	elif [ ."$2" == .y ] ; then
 ########################  NO NEW RESULT FILES BUT GENERATE TOP 10 ANYWAY  ################
 		# even though there are no changes we're going to generate the standings anyway
 		tail -n -13 $GETRESULTSLOG | grep -v "Get the results for USMS Records" >$TMPFILE2
