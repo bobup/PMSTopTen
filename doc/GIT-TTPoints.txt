@@ -68,6 +68,8 @@ mv ../SeasonData/Season-<yearToProcess>  <yearToProcess>
 		(review list of files and make sure you want them all...)
 	% git add -n -A
 		(review list of additions and deletions.)
+		(	git diff <file>   ---- difference between <file> in local repo and remote repository.
+
 	% git add -A
 	% git commit -a
 	% git push
@@ -95,6 +97,8 @@ OR
 % git clone https://github.com/bobup/PMSPerlModules
 
 # Next, we get the latest PMSTopTen files:
+% cp PMSTopTen/Code/properties.txt .     # make a copy of working properties.txt
+% rm -rf PMSTopTen
 % git clone https://github.com/bobup/PMSTopTen
 
 # Next, we need to be sure our database configuration parameters are set

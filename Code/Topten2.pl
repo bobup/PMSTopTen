@@ -260,12 +260,13 @@ my $dateString = strftime( "%d%b%g", localtime() );
 # ... and in the form March 24, 2016
 my $generationDate = strftime( "%B %e, %G", localtime() );
 PMSStruct::GetMacrosRef()->{"GenerationDate"} = $generationDate;
-# ... and in the form Fri Sep 30 16:29:04 2016
-my $generationTimeDate = strftime( "%a %b %d %G - %X", localtime() );
+# ... and in the form Tue Mar 27 2018 - 09:34:17 PM EST
+my $generationTimeDate = strftime( "%a %b %d %G - %r %Z", localtime() );
 PMSStruct::GetMacrosRef()->{"GenerationTimeDate"} = $generationTimeDate;
 # ... and in MySql format (yyyy-mm-dd):
 my $mysqlDate = strftime( "%F", localtime() );
 PMSStruct::GetMacrosRef()->{"MySqlDate"} = $mysqlDate;
+
 
 my %hashOfLongNames = (
 	'PAC' => "Pacific Masters",
