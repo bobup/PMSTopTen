@@ -39,10 +39,10 @@
 #	swimmer id) of the swimmers in the results.  This makes it even more unlikely we'll match all the
 #	swimmer's to their identity in the PAC member database.
 #
-# OUTPUT:  This program will produce its results as a .xlsx file and a set of html files.  
+# OUTPUT:  This program will produce its results as a number of .xlsx files and a set of html files.  
 #	The generation of the web page (the set of html files) is controlled by a variable declared below 
 #	named $WRITE_HTML_FILES.  
-#	The generation of the Excel file is controlled by a variable declared below 
+#	The generation of the Excel files is controlled by a variable declared below 
 #	named $WRITE_EXCEL_FILES.
 #
 # MYSQL:  This program processes result files from USMS and PAC and stores all "interesting" data into
@@ -71,7 +71,7 @@ my $WRITE_EXCEL_FILES = 1;
 # (which happens for every one of us once every 5 years, since a season spans more than 1 calendar year) we
 # generate split age groups if such a swimmer accumulates points in their two age groups.  This means they have
 # two entries in the AGSOTY, one entry for their younger age group, and another for their older age group.
-my $GENERATE_SPLIT_AGE_GROUPS = 1;
+my $GENERATE_SPLIT_AGE_GROUPS = 0;
 
 # Do we generate results for "combined age groups"?  If a swimmer changes age groups in the middle of a 
 # season (which happens for every one of us once every 5 years, since a season spans more than 1 calendar year) we
@@ -127,26 +127,29 @@ my $COMPUTE_POINTS = ($RESULT_FILES_TO_READ != 0);
 my $COMPUTE_PLACE = $COMPUTE_POINTS;		# always compute places if we compute points.
 #$COMPUTE_PLACE = 1;				# override above
 
-# Generation of the spreadsheet "FullExcelResults.xlsx":
+# Generation of the spreadsheet "FullExcelResults-{year}.xlsx":
 # We will actually show the full details of the top N swimmers
 # for each age group.  In order to only show the top 10 set this value to 10.  To show
 # all swimmers set this value to 0.  Set to -1 if we don't generate this file.
 my $TOP_NUMBER_OF_PLACES_TO_SHOW_EXCEL = 0;
+#$TOP_NUMBER_OF_PLACES_TO_SHOW_EXCEL = -1;			# don't generate this file
 
-# Generation of the spreadsheet "Top_3_ExcelResults.xlsx":
+# Generation of the spreadsheet "Top_3_ExcelResults-{year}.xlsx":
 # This file will change based on the value of this variable.  Normally 3 is what is used,
 # but if set to anything above 0 it will show only that number of top point getters for 
 # each age group.  Note only those swimmers who have swum "$minMeetsForConsideration" PMS
 # sanctioned swim meets/open water meets will be considered.
 # Set to 0 or less if we don't generate this file.
 my $TOP_N_PLACES_TO_SHOW_EXCEL = 3;
+#$TOP_N_PLACES_TO_SHOW_EXCEL = 0;					# don't generate this file
 
-# Generation of the spreadsheet "TopSOTYContenders":
+# Generation of the spreadsheet "TopSOTYContenders-{year}.xlsx":
 # This file contains only a subset of specifics for each of the female and male contenders for
 # Swimmer of the Year (aka "Laura Val award).  The value of this variable determines the 
 # number of swimmers we will include (more if there are ties in points.)
 # Set to 0 or less if we don't generate this file.
 my $TOP_SOTY_CONTENDERS_EXCEL = 10;
+#$TOP_SOTY_CONTENDERS_EXCEL = 0;						# don't generate this file
 
 # set this to non-zero if we want to track and display the number of PMS swims for every swimmer
 # who earns points:
@@ -239,7 +242,7 @@ sub USMSProcessRecords($);
 sub PMSProcessOpenWater($);
 sub ProcessFakeSplashes($);
 sub CalculatePointsForSwimmers($);
-sub PrintResultsExcelTop10($$$$);
+sub PrintFullExcelResults($$$$);
 sub PrintResultsExcelTopN($$$$);
 sub PrintResultsExcelSOTY($$$$);
 sub InitializeMissingResults();
@@ -353,7 +356,7 @@ PMSStruct::GetMacrosRef()->{"YearBeingProcessedPlusOne"} = $yearBeingProcessed+1
 print "  ...Year being analyzed: $yearBeingProcessed\n";
 
 # define the date beyond which we will flag swimmers who haven't swum enough PMS events:
-$dateToStartTrackingPMSMeets = "$yearBeingProcessed-10-01";		# Oct 1 of the year being processed.
+$dateToStartTrackingPMSMeets = "$yearBeingProcessed-03-01";		# March 1 of the year being processed.
 #$dateToStartTrackingPMSMeets = "$yearBeingProcessed-07-01";		# testing...
 if( $mysqlDate ge $dateToStartTrackingPMSMeets ) {
 	print "  ...we are going to carefully count each high placed swimmer's PAC-sanctioned swims.\n"
@@ -606,42 +609,40 @@ if($WRITE_HTML_FILES) {
 
 
 if( $WRITE_EXCEL_FILES ) {
-	if( $GENERATE_SPLIT_AGE_GROUPS ) {
-		###
-		###initialize split agegroup Excel output file
-		###
-		if( $TOP_NUMBER_OF_PLACES_TO_SHOW_EXCEL >= 0 ) {
-		    # Create a new Excel workbook for the full excel file
-		    $workbook = Excel::Writer::XLSX->new( $FullExcelResults );
-		    # Add a worksheet
-		    $worksheet = $workbook->add_worksheet();
-		    # generate the file
-			PrintResultsExcelTop10( $workbook, $worksheet, $TOP_NUMBER_OF_PLACES_TO_SHOW_EXCEL, 1 );
-			# done with this workbook:
-			$workbook->close();
-		}
-	
-		if( $TOP_N_PLACES_TO_SHOW_EXCEL > 0 ) {
-		    # Create a new Excel workbook for the top 'N' excel file
-		    $workbook = Excel::Writer::XLSX->new( $TopNExcelResults );
-		    # Add a worksheet
-		    $worksheet = $workbook->add_worksheet();
-		    # generate the file
-			PrintResultsExcelTopN( $workbook, $worksheet, $TOP_N_PLACES_TO_SHOW_EXCEL, 1 );
-			# done with this workbook:
-			$workbook->close();
-		}
+	###
+	###initialize split agegroup Excel output file
+	###
+	if( $TOP_NUMBER_OF_PLACES_TO_SHOW_EXCEL >= 0 ) {
+	    # Create a new Excel workbook for the full excel file
+	    $workbook = Excel::Writer::XLSX->new( $FullExcelResults );
+	    # Add a worksheet
+	    $worksheet = $workbook->add_worksheet();
+	    # generate the file
+		PrintFullExcelResults( $workbook, $worksheet, $TOP_NUMBER_OF_PLACES_TO_SHOW_EXCEL, 0 );
+		# done with this workbook:
+		$workbook->close();
+	}
 
-		if( $TOP_SOTY_CONTENDERS_EXCEL > 0 ) {
-			# Create a new Excel workbook for the SOTY contenders:
-		    $workbook = Excel::Writer::XLSX->new( $TopSOTYExcelResults );
-		    # Add a worksheet
-		    $worksheet = $workbook->add_worksheet();
-		    # generate the file
-			PrintResultsExcelSOTY( $workbook, $worksheet, $TOP_SOTY_CONTENDERS_EXCEL, 1 );
-			# done with this workbook:
-			$workbook->close();
-		}
+	if( $TOP_N_PLACES_TO_SHOW_EXCEL > 0 ) {
+	    # Create a new Excel workbook for the top 'N' excel file
+	    $workbook = Excel::Writer::XLSX->new( $TopNExcelResults );
+	    # Add a worksheet
+	    $worksheet = $workbook->add_worksheet();
+	    # generate the file
+		PrintResultsExcelTopN( $workbook, $worksheet, $TOP_N_PLACES_TO_SHOW_EXCEL, 0 );
+		# done with this workbook:
+		$workbook->close();
+	}
+
+	if( $TOP_SOTY_CONTENDERS_EXCEL > 0 ) {
+		# Create a new Excel workbook for the SOTY contenders:
+	    $workbook = Excel::Writer::XLSX->new( $TopSOTYExcelResults );
+	    # Add a worksheet
+	    $worksheet = $workbook->add_worksheet();
+	    # generate the file
+		PrintResultsExcelSOTY( $workbook, $worksheet, $TOP_SOTY_CONTENDERS_EXCEL, 0 );
+		# done with this workbook:
+		$workbook->close();
 	}
 	
 if(0) {
@@ -3667,18 +3668,18 @@ print "M Excel: swimmerid=$swimmerId, #meets=$numPMSSanctionedMeets\n";
 
 
 
-# PrintResultsExcelTop10 - generate the Excel file with our results.
+# PrintFullExcelResults - generate the Excel file with our results.
 #
 # PASSED:
 #	$workbook - a Excel::Writer::XLSX workbook.
 #	$worksheet - a Excel::Writer::XLSX worksheet.
 #	$numPlacesToShow - number of swimmers to show per gender/age group WITH UNIQUE POINTS
-#	$splitAgeGroups -
+#	$splitAgeGroups - 1 if split age groups
 #
 #
 # doc:  http://search.cpan.org/~jmcnamara/Excel-Writer-XLSX/lib/Excel/Writer/XLSX.pm
 #
-sub PrintResultsExcelTop10($$$$) {
+sub PrintFullExcelResults($$$$) {
 	my ($workbook, $worksheet, $numPlacesToShow, $splitAgeGroups) = @_;
 	my( $firstName, $middleInitial, $lastName, $regNum );
 	my $resultHash;
@@ -3686,7 +3687,7 @@ sub PrintResultsExcelTop10($$$$) {
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	my ($sth, $rv);
 
-	PMSLogging::PrintLog( "", "", "\n** Begin PrintResultsExcelTop10 (" . 
+	PMSLogging::PrintLog( "", "", "\n** Begin PrintFullExcelResults (" . 
 		($splitAgeGroups == 1 ? "Split Age Groups" : "Combine Age Groups") . ")", 1 );
 
 
@@ -3741,6 +3742,26 @@ sub PrintResultsExcelTop10($$$$) {
 	$worksheet->merge_range( "A3:S3", "Generated on $generationTimeDate by BUp", $subTitleFormat  );
 	$row++;
 
+	# Show a key for our display:
+	my $formatKeyTitle = $workbook->add_format();
+	$formatKeyTitle->set_size(14);
+	$formatKeyTitle->set_bold();
+   	$formatKeyTitle->set_text_wrap();
+	$worksheet->merge_range( "M4:S4", "Key for top swimmers on left and the table below", $formatKeyTitle );
+	my $formatKey = $workbook->add_format();
+   	$formatKey->set_text_wrap();
+   	$formatKey->set_align( 'left' );
+   	$formatKey->set_align( 'top' );
+	$worksheet->merge_range( "M5:S" . (3+$TT_Struct::NumHighPoints*2),
+		"  - PAC Swims '6+1' means the swimmer swam 6 PAC meets, 1 of which was\n" .
+		"      a hidden meet.  A hidden meet is a meet in which the swimmer did\n" .
+		"      not earn points towards AGSOTY.\n" .
+		"  - Only top swimmers (on left) who swam the minumum number of PAC\n" .
+		"      meets ($minMeetsForConsideration) will be shown.\n" .
+		"  - a * (table below) indicates a swimmer who has not swum the minimum\n" .
+		"      number of meets ($minMeetsForConsideration) to be considered for Top 10.\n",
+		$formatKey );
+	
 	# now display the top point-winning Swimmers of the Year:
 	my $SOTY_TitleFormatF = $workbook->add_format();	
 	$SOTY_TitleFormatF->set_size(14);
@@ -3759,7 +3780,7 @@ sub PrintResultsExcelTop10($$$$) {
 	while( $numTopPoints <= $TT_Struct::NumHighPoints ) {
 		my $resultHash = $sth->fetchrow_hashref;
 		if( !defined $resultHash ) {
-			PMSLogging::DumpError( "", "", "PrintResultsExcelTop10(): Ran out of top female point getters!", 1 );
+			PMSLogging::DumpError( "", "", "PrintFullExcelResults(): Ran out of top female point getters!", 1 );
 			last;
 		}
 		my $swimmerId = $resultHash->{"SwimmerId"};
@@ -3813,7 +3834,7 @@ sub PrintResultsExcelTop10($$$$) {
 	while( $numTopPoints <= $TT_Struct::NumHighPoints ) {
 		my $resultHash = $sth->fetchrow_hashref;
 		if( !defined $resultHash ) {
-			PMSLogging::DumpError( "", "", "PrintResultsExcelTop10(): Ran out of top male point getters!", 1 );
+			PMSLogging::DumpError( "", "", "PrintFullExcelResults(): Ran out of top male point getters!", 1 );
 			last;
 		}
 		my $swimmerId = $resultHash->{"SwimmerId"};
@@ -3854,23 +3875,6 @@ sub PrintResultsExcelTop10($$$$) {
 		
 	}
 	print( "  - There were $numTopPoints male top point-winning swimmers of the year\n" );
-
-	# show a key to our display
-	if(1 && ($mysqlDate ge $dateToStartTrackingPMSMeets)) {
-		my $formatKeyTitle = $workbook->add_format();
-		$formatKeyTitle->set_size(14);
-		$formatKeyTitle->set_bold();
-	   	$formatKeyTitle->set_text_wrap();
-		$worksheet->merge_range( "K4:M4", "Key for table below:", $formatKeyTitle );
-		
-		my $formatKey = $workbook->add_format();
-	   	$formatKey->set_text_wrap();
-	   	$formatKey->set_align( 'left' );
-	   	$formatKey->set_align( 'top' );
-		$worksheet->merge_range( "K5:S6", "* indicates a swimmer who has not swum the " .
-			"minimum number of events to be considered for Top 10.", $formatKey );
-	
-	}
 
 	# now for the complete list of swimmers and their points
 	$row += 2;
@@ -4071,10 +4075,10 @@ sub PrintResultsExcelTop10($$$$) {
 	$row++;
 	$worksheet->merge_range( "A$row:M$row", "Number of Swimmers who earned points:  $numWithPoints", $format );
 	
-	PMSLogging::PrintLog( "", "", "\n** End PrintResultsExcelTop10 (" . 
+	PMSLogging::PrintLog( "", "", "\n** End PrintFullExcelResults (" . 
 		($splitAgeGroups == 1 ? "Split Age Groups" : "Combine Age Groups") . ")", 1 );
 
-} # end of PrintResultsExcelTop10()
+} # end of PrintFullExcelResults()
 
 
 
@@ -4142,6 +4146,29 @@ sub PrintResultsExcelTopN($$$$) {
 	$worksheetTopN->write( $rowTopN, $columnTopN++, "Rank", $dataCellFormatTopN );
 	$rowTopN++;
 
+	# Show a key for our display:
+	my $formatKeyTitle = $workbook->add_format();
+	$formatKeyTitle->set_size(14);
+	$formatKeyTitle->set_bold();
+   	$formatKeyTitle->set_text_wrap();
+	$worksheet->merge_range( "J6:M6", "Key for top $numPlacesToShow swimmers shown on left", $formatKeyTitle );
+	my $formatKey = $workbook->add_format();
+   	$formatKey->set_text_wrap();
+   	$formatKey->set_align( 'left' );
+   	$formatKey->set_align( 'top' );
+	$worksheet->merge_range( "J7:M25",
+		"  - # PAC Swims '6+1' means the swimmer swam 6 PAC meets, 1 of which was\n" .
+		"      a hidden meet.  A hidden meet is a meet in which the swimmer did\n" .
+		"      not earn points towards AGSOTY.\n" .
+		"  - Only top swimmers who swam the minumum number of PAC\n" .
+		"      meets ($minMeetsForConsideration) will be shown.\n" .
+		"      This means some age groups may not have $numPlacesToShow top swimmers\n" .
+		"      who qualify for AGSOTY.\n" .
+		"  - 'Rank' indicates where the swimmer placed in their gender/age group\n" .
+		"      including those swimmers who did not swim the minumum number of PAC\n" .
+		"      meets.  This means that a top swimmer may have a ranking different than\n" .
+		"      their place.\n",
+		$formatKey );
 
 
 	$query = GetPlaceOrderedSwimmersQuery( $splitAgeGroups );

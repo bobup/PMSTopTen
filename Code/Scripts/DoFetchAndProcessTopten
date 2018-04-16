@@ -7,7 +7,7 @@
 # PASSED:
 #	$1 - the season, e.g. 2017
 #	$2 - (optional) If present and equal to 'y' we'll force generation of the standings page after fetching
-#		the results. If present and equal to anything else we will generate the standings page only
+#		the results. If present and equal to anything else (or not present) we will generate the standings page only
 #		if the results look different than the last time we fetched the results.  This is the default.
 #
 # NOTES:

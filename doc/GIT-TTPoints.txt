@@ -88,6 +88,12 @@ OR
 
 
 =========================================================================================
+******* Update local repository from the remote (master) repository
+% cd <appRootDir>
+% git pull
+
+
+=========================================================================================
 
 ****** Create a local repository from the PMSTopTen remote repository
 (do this on any client...mac or pc or linux box)
