@@ -374,7 +374,17 @@ my $templateDir = "$appDirName/Templates";
 my $PMSSwimmerData = "$seasonData/PMSSwimmerData/";
 
 # location of the RSIDN file that we'll use
-my $swimmerDataFile = $PMSSwimmerData . PMSStruct::GetMacrosRef()->{"RSIDNFileName"};
+my $swimmerDataFile;
+if( ! defined( PMSStruct::GetMacrosRef()->{"RSIDNFileName"} ) ) {
+	# We will use the most recent version of the RSIDN file we can find in the $PMSSwimmerData
+	# directory:
+	$swimmerDataFile = 	PMSUtil::GetMostRecentVersion( ".*RSIND.*", $PMSSwimmerData );
+} else {
+	$swimmerDataFile = $PMSSwimmerData . PMSStruct::GetMacrosRef()->{"RSIDNFileName"};
+}
+if( ! -f $swimmerDataFile ) {
+	die "The RSIDN file '$swimmerDataFile' does not exist - ABORT!.";
+}
 
 # the input result files that we process:
 my %PMSResultFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"PMSResultFiles"};
@@ -490,6 +500,7 @@ if( $RESULT_FILES_TO_READ != 0 ) {
 	TT_MySqlSupport::DropTTTables ();
 	my $dbh = TT_MySqlSupport::InitializeTopTenDB();
 	# Get the PMS-supplied data about every PMS member	
+	PMSLogging::PrintLog( "", "", "Using the RSIDN file '$swimmerDataFile", 1 );
 	PMS_ImportPMSData::ReadPMS_RSIDNData( $swimmerDataFile, $yearBeingProcessed );
 	# Get the data we've accumulated about swim meets seen in results
 #	my $racesDataFile = "$sourceDataDir/races.txt";
