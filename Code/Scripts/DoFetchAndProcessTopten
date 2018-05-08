@@ -56,12 +56,6 @@ TOPTENLOG=$GENERATED_DIR/TopTenLog-$1.txt
 # semaphore used to make sure we don't execute this script more than once at a time:
 SEMAPHORE=$GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
 
-# remove the generated index.html if it exists.  This way we'll know when a new one is generated.
-if [ -e "$GENERATED_DIR/index.html" ] ; then
-	mv -f $GENERATED_DIR/index.html $GENERATED_DIR/index.html.old
-fi
-
-
 # if we're running on the PMS server we need to initialize our Perl search path (@INC)
 if hostname | grep -q "pair.com"  ; then
 	# this is for dev
@@ -96,7 +90,7 @@ There was an error discovered when running $TOPTEN $1
 preventing it from running and creating a log file.
 (STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 BUp0
-	rm $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
+	rm $SEMAPHORE
 	echo "(STARTed on $STARTDATE, ABORTed (syntax error?) on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
 	exit 1;
 	fi
@@ -110,7 +104,7 @@ There was an error discovered when running $TOPTEN $1
 The TopTen log file is here:  $TOPTENLOG
 (STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 BUp0
-	rm $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
+	rm $SEMAPHORE
 	echo "(STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
 	exit 1;
 	fi
@@ -146,6 +140,7 @@ LogMessage() {
 	fi
 } # end of LogMessage()
 
+# END OF FUNCTIONS.
 ##########################################################################################
 
 
@@ -153,20 +148,25 @@ LogMessage() {
 if [ -e $SEMAPHORE ] ; then
 	# abort - program already running!
 	LogMessage "Attempted parallel executions of $SIMPLE_SCRIPT_NAME on `hostname`" "$(cat <<- BUp9 
-		ABORT - $SIMPLE_SCRIPT_NAME has been running since $(cat $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore) on `hostname`
+		ABORT - $SIMPLE_SCRIPT_NAME has been running since $(cat $SEMAPHORE) on `hostname`
 		If you think this is wrong and $SIMPLE_SCRIPT_NAME is not running then do this:
-		   rm $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
+		   rm $SEMAPHORE
 		(STARTed on $STARTDATE, ABORTed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
 		BUp9
 		)"
 	exit 1
 else
-	echo $STARTDATE > $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
+	echo $STARTDATE > $SEMAPHORE
 fi
 #######################  END OF SEMAPHORE - GET TO WORK  #################################
 
 #echo "GETRESULTSLOG = $GETRESULTSLOG"
 #echo "TOPTENLOG = $TOPTENLOG"
+
+# remove the generated index.html if it exists.  This way we'll know when a new one is generated.
+if [ -e "$GENERATED_DIR/index.html" ] ; then
+	mv -f $GENERATED_DIR/index.html $GENERATED_DIR/index.html.old
+fi
 
 
 ##############################  GET RESULT FILES  ########################################
@@ -258,7 +258,7 @@ fi
 rm -f $ARCHIVED_TMPFILE $ARCHIVED_TMPFILE2
 mv $TMPFILE $ARCHIVED_TMPFILE
 mv $TMPFILE2 $ARCHIVED_TMPFILE2
-rm -f $GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
+rm -f $SEMAPHORE
 
 echo ""; echo '******************** End' "$0"
 
