@@ -72,7 +72,7 @@ sub GetUSMSDirectoryInfo( $ ) {
 		
 		# get the page that has a list of all events swum by this swimmer, which includes the meets they
 		# were swum in:
-		my $link = "http://www.usms.org/comp/meets/indresults.php?SwimmerID=$usmsSwimmerId";
+		my $link = "https://www.usms.org/comp/meets/indresults.php?SwimmerID=$usmsSwimmerId";
 
 		PMSLogging::PrintLogNoNL( "", "", "Topten::GetUSMSDirectoryInfo(): GET from '$link' for " .
 			"'$firstName $middleInitial $lastName' ...", 1 ) if( $debug > 1 );
@@ -287,7 +287,7 @@ sub AddHiddenMeetIfNecessary() {
 #
 sub PopulateDetailsOfHiddenMeet( $$$$ ) {
 	my ($meetId, $USMSMeetId, $meetCourse, $tinyHttp) = @_;
-	my $meetLink = "http://www.usms.org/comp/meets/meet.php?MeetID=$USMSMeetId";	
+	my $meetLink = "https://www.usms.org/comp/meets/meet.php?MeetID=$USMSMeetId";	
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	
 	PMSLogging::PrintLogNoNL( "", "", "        -[Topten::PopulateDetailsOfHiddenMeet():] GET from '$meetLink' " .
