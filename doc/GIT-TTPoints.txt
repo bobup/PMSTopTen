@@ -184,6 +184,8 @@ How to update RSIDN file so next run will use it.
 - get new RSIDN file from admin
 - put into $appRootDir/SeasonData/Season-$yearToProcess/PMSSwimmerData/.
 	- remove the old one if you want.
-- edit $appRootDir/SeasonData/Season-$yearToProcess/properties-$yearToProcess.txt
+- OBSOLETE:  edit $appRootDir/SeasonData/Season-$yearToProcess/properties-$yearToProcess.txt
 	- change the value of the macro named 'RSIDNFileName' to the new RSIDN (simple)
 		file name.
+  INSTEAD:  the code will use the most recent version it can find in the PMSSwimmerData/
+  	directory, so just put it there and you're done.

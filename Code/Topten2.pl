@@ -352,6 +352,12 @@ print "  ...and with the propertiesDir='$propertiesDir', and propertiesFilename=
 # $propertiesDir and $propertiesFileName are initialized above.
 PMSMacros::GetProperties( $propertiesDir, $propertiesFileName, $yearBeingProcessed );			
 
+# at this point we INSIST that $yearBeingProcessed is a reasonable year:
+if( ($yearBeingProcessed !~ m/^\d\d\d\d$/) ||
+	( ($yearBeingProcessed < 2008) || ($yearBeingProcessed > 2030) ) ) {
+	die( "${appProgName}::  The year being processed ('$yearBeingProcessed') is invalid - ABORT!");
+}
+
 PMSStruct::GetMacrosRef()->{"YearBeingProcessedPlusOne"} = $yearBeingProcessed+1;
 print "  ...Year being analyzed: $yearBeingProcessed\n";
 
@@ -378,12 +384,16 @@ my $swimmerDataFile;
 if( ! defined( PMSStruct::GetMacrosRef()->{"RSIDNFileName"} ) ) {
 	# We will use the most recent version of the RSIDN file we can find in the $PMSSwimmerData
 	# directory:
-	$swimmerDataFile = 	PMSUtil::GetMostRecentVersion( ".*RSIND.*", $PMSSwimmerData );
+	$swimmerDataFile = 	PMSUtil::GetMostRecentVersion( '^(.*RSIND.*)|(.*RSIDN.*)$', $PMSSwimmerData );
+	PMSStruct::GetMacrosRef()->{"RSIDNFileName"} = $swimmerDataFile;
 } else {
 	$swimmerDataFile = $PMSSwimmerData . PMSStruct::GetMacrosRef()->{"RSIDNFileName"};
 }
-if( ! -f $swimmerDataFile ) {
-	die "The RSIDN file '$swimmerDataFile' does not exist - ABORT!.";
+if( ! defined( PMSStruct::GetMacrosRef()->{"RSIDNFileName"} ) ) {
+	die "A RSIDN file wasn't found in '$PMSSwimmerData' - ABORT!.";
+} elsif( ! -f $swimmerDataFile ) {
+	die "The RSIDN file '$swimmerDataFile' does not exist -\n" .
+		"    (check your property files!) - ABORT!.";
 }
 
 # the input result files that we process:
