@@ -28,6 +28,7 @@ ARCHIVED_TMPFILE=/tmp/DoFetchAndProcessTopten.archive
 ARCHIVED_TMPFILE2=/tmp/DoFetchAndProcessTopten_2.archive
 EMAIL_NOTICE=bobup@acm.org
 TOPTEN='./Topten2.pl'
+TTSTATS='./TTStats.pl'
 SIMPLE_SCRIPT_NAME=`basename $0`
 DOFETCH_LOG=/tmp/DoFetchLog.txt
 
@@ -84,30 +85,32 @@ ExecuteTopten() {
 	# first check to see if Topten ran at all...
 	if [ ! -f $TOPTENLOG ] ; then
 		echo "$TOPTEN failed to run (syntax error?), so we are GIVING UP"'!'
-		/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<BUp0
-Subject: FATAL ERROR (syntax error?) during $TOPTEN $1 on `hostname`
-There was an error discovered when running $TOPTEN $1
-preventing it from running and creating a log file.
-(STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
-BUp0
-	rm $SEMAPHORE
-	echo "(STARTed on $STARTDATE, ABORTed (syntax error?) on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
-	exit 1;
+		/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<-BUp0
+			Subject: FATAL ERROR (syntax error?) during $TOPTEN $1 on `hostname`
+			There was an error discovered when running $TOPTEN $1
+			preventing it from running and creating a log file.
+			(STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
+			BUp0
+		rm $SEMAPHORE
+		echo "(STARTed on $STARTDATE, ABORTed (syntax error?) on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
+		exit 1;
 	fi
 	# Topten ran, but did it get an error...?
 	if grep -q "ABORT" <$TOPTENLOG ; then
 		echo "$TOPTEN got an ABORT, so we are GIVING UP"'!'
 		echo "See the TopTen log file: $TOPTENLOG"
-		/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<BUp0
-Subject: FATAL ERROR during $TOPTEN $1 on `hostname`
-There was an error discovered when running $TOPTEN $1
-The TopTen log file is here:  $TOPTENLOG
-(STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
-BUp0
-	rm $SEMAPHORE
-	echo "(STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
-	exit 1;
+		/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<-BUp0
+			Subject: FATAL ERROR during $TOPTEN $1 on `hostname`
+			There was an error discovered when running $TOPTEN $1
+			The TopTen log file is here:  $TOPTENLOG
+			(STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
+			BUp0
+		rm $SEMAPHORE
+		echo "(STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
+		exit 1;
 	fi
+	# if we got here it looks like we generated top ten results!  Now generate statistics:
+	$TTSTATS $1
 }  # end of Executetopten()
 
 

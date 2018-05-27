@@ -321,6 +321,20 @@ function ShowSoty(event, HTMLVSupportDir) {
 	}
 } // end of ShowSoty()
 
+// ShowStats - show statistics generated when top ten page was generated
+function ShowStats( event, statFile ) {
+
+	$("#numericStats").load( statFile, function( response, status, xhr ) {
+		if( status == "error" ) {
+			var msg = "Unable to find the statistics!  ";
+			$("#numericStats").html( msg + xhr.status + ": " + xhr.statusText );
+		}
+	}  // end of anonymous function
+	);  // end of load()
+	document.getElementById("StatsButton").style.display="none";
+	
+} // end of ShowStats()
+
 
 /*
  * There is a "bug" in ios6 (and beyond?) where apple caches ajax requests even if the

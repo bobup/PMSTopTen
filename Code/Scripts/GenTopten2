@@ -26,6 +26,7 @@ fi
 cd "$FULLPATHCODE"
 echo "$PROGNAME:  Generate a new Standings page."
 ./Topten2.pl $1
+./TTStats.pl $1
 /usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<BUp
 Subject: A new Standings page has been generated for $1 (using Topten2.pl)
 A new Standings page has been generated for the year $1 by the $PROGNAME script.

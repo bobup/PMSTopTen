@@ -1,0 +1,52 @@
+
+<pre style="margin-left: 50px">
+[A]: Number of swimmers who swam in exactly one age group (with and without points) by gender:
+Number of Swimmers      Age Group       Gender
+------------------      ---------       ------
+{NumSwimmersOneAgeGroup}
+
+
+[B]: Number of swimmers who swam in two age groups (with and without points) by gender:
+Number of Swimmers      Age Group       Gender
+------------------      ---------       ------
+{NumSwimmersTwoAgeGroups}
+
+
+[C]: Number of splashes per age group and gender:
+Number of Splashes      Age Group       Gender
+------------------      ---------       ------
+{NumSplashes}
+
+
+[D]: Number of swimmers who earned points by gender and age group.  Some swimmers may be 
+      counted twice if they earned points in two age groups:
+Number of Swimmers      Age Group       Gender
+------------------      ---------       ------
+{NumSwimmersEarningPoints}
+
+
+[E]: Number of total points earned (some points may be counted twice for a swimmer who swam
+      in two age groups):
+    Total Points
+----------------
+{TotalPoints}
+
+
+[F]: Number of points earned by each age group (includes "combined" age groups):
+    Total Points        Age Group
+----------------        ---------
+{TotalPointsPerAgeGroup}
+
+
+[G]: Number of Open Water splashes (with and without points):
+Number OW Splashes
+------------------
+{NumberOWSplashes}
+
+
+[H]: Number of swimmers who swam at least one Open Water event (with and without points):
+Number of OW Swimmers
+---------------------
+{NumberOWSwimmers}
+</pre>
+
