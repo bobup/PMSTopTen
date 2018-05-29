@@ -4,7 +4,7 @@
 # TTStats.pl - a program to generate statistics about the current Top Ten data in the database.
 #	See Topten2.pl (or it's current name if it changed) for details on how those data are generated. 
 #
-# OUTPUT:  This program will produce its results as single text file (.txt)
+# OUTPUT:  This program will produce its results as single html file (.html)
 #
 #
 
@@ -201,14 +201,14 @@ if( ! -e $generatedDirName ) {
 
 # define the directories and files to which we write our HTML output 
 my $generatedHTMLFileDir = $generatedDirName;
-# the .txt file we'll generate:
-my $generatedTXTStatSimpleName = "TTStats.txt";
-my $generatedTXTStatsFullName = "$generatedHTMLFileDir/$generatedTXTStatSimpleName";
+# the .html file we'll generate:
+my $generatedHTMLStatSimpleName = "TTStats.html";
+my $generatedHTMLStatsFullName = "$generatedHTMLFileDir/$generatedHTMLStatSimpleName";
 
 
 # since we're generating an HTML file then we're going to first remove it (if it exists) so
 # it's clear that whatever we generate is the most up-to-date:
-unlink $generatedTXTStatsFullName;
+unlink $generatedHTMLStatsFullName;
 
 
 ###
@@ -234,7 +234,7 @@ PMS_MySqlSupport::SetSqlParameters( 'default',
 ################ PROCESSING #########################
 #####################################################
 
-GenerateHTMLStats( $generatedTXTStatsFullName );
+GenerateHTMLStats( $generatedHTMLStatsFullName );
 
 ###
 ### Done!
@@ -253,7 +253,7 @@ exit(0);
 #####################################################
 
 sub GenerateHTMLStats( $ ) {
-	my $generatedTXTStatsFullName = $_[0];
+	my $generatedHTMLStatsFullName = $_[0];
 	
 	my $templateStats = "$templateDir/TTStatsTemplate.txt";
 	my $query;
@@ -351,7 +351,7 @@ sub GenerateHTMLStats( $ ) {
 	# Number of swimmers who earned points by gender and age group.  Some swimmers may be 
 	# counted twice if they earned points in two age groups:
 	$query = "SELECT COUNT(DISTINCT(Points.SwimmerId)) AS Count, AgeGroup, Gender FROM Points JOIN Swimmer " .
-		"WHERE POINTS.SwimmerId = Swimmer.SwimmerId " .
+		"WHERE Points.SwimmerId = Swimmer.SwimmerId " .
 		"AND AgeGroup NOT LIKE '%:%' " .
 		"GROUP BY AgeGroup, Gender ORDER BY AgeGroup, Gender";
 	($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
@@ -458,10 +458,10 @@ sub GenerateHTMLStats( $ ) {
 
 	# we've got all the data - create the stats file:
 	
-	open( my $masterGeneratedTXTFileHandle, ">", $generatedTXTStatsFullName ) or
-		die( "Can't open $generatedTXTStatsFullName: $!" );
-	TT_Template::ProcessHTMLTemplate( $templateStats, $masterGeneratedTXTFileHandle );
-	close( $masterGeneratedTXTFileHandle );
+	open( my $masterGeneratedHTMLFileHandle, ">", $generatedHTMLStatsFullName ) or
+		die( "Can't open $generatedHTMLStatsFullName: $!" );
+	TT_Template::ProcessHTMLTemplate( $templateStats, $masterGeneratedHTMLFileHandle );
+	close( $masterGeneratedHTMLFileHandle );
 } # GenerateHTMLStats()
 
 
