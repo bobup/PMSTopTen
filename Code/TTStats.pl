@@ -116,6 +116,13 @@ my %hashOfLongNames = (
 my $propertiesDir = $appDirName;		# Directory holding the properties.txt file.
 my $propertiesFileName = "properties.txt";
 
+# We also use the AppDirName in the properties file (it can't change)
+PMSStruct::GetMacrosRef()->{"AppDirName"} = $appDirName;	# directory containing the application we're running
+
+############################################################################################################
+# get to work - initialize the program
+############################################################################################################
+
 # get the arguments:
 my $yearBeingProcessed ="";
 

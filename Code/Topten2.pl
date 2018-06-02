@@ -66,12 +66,13 @@ my $WRITE_HTML_FILES = 1;
 
 # do we write EXCEL output files? 0 means "No", anything else means "Yes"
 my $WRITE_EXCEL_FILES = 1;
-$WRITE_EXCEL_FILES = 0;			# don't write EXCEL files
+$WRITE_EXCEL_FILES = 1;			# don't write EXCEL files
 
 # Do we generate results for "split age groups"?  If a swimmer changes age groups in the middle of a season
 # (which happens for every one of us once every 5 years, since a season spans more than 1 calendar year) we
 # generate split age groups if such a swimmer accumulates points in their two age groups.  This means they have
 # two entries in the AGSOTY, one entry for their younger age group, and another for their older age group.
+# NOTE!!  ON AND AFTER THE 2018 SEASON THIS CAN ALWAYS BE '0'!
 my $GENERATE_SPLIT_AGE_GROUPS = 0;
 
 # Do we generate results for "combined age groups"?  If a swimmer changes age groups in the middle of a 
@@ -102,7 +103,7 @@ $TT_Struct::NumHighPoints=5;
 my $RESULT_FILES_TO_READ = 	0b111111;			# process all result files (default)
 #$RESULT_FILES_TO_READ = 0b011110;			# process all but Top Ten result files
 #$RESULT_FILES_TO_READ = 	0b001111; 			# process all but OW
-$RESULT_FILES_TO_READ = 	0;					# process none of the result files (use DB only)
+#$RESULT_FILES_TO_READ = 	0;					# process none of the result files (use DB only)
 #$RESULT_FILES_TO_READ = 	0b010000;			# ow only
 #$RESULT_FILES_TO_READ = 	0b000001;			# PMS Top Ten result files only
 #$RESULT_FILES_TO_READ = 	0b000100;			# PMS records only
@@ -303,6 +304,13 @@ if( $RESULT_FILES_TO_READ != 0 ) {
 # initialize property file details:
 my $propertiesDir = $appDirName;		# Directory holding the properties.txt file.
 my $propertiesFileName = "properties.txt";
+
+# We also use the AppDirName in the properties file (it can't change)
+PMSStruct::GetMacrosRef()->{"AppDirName"} = $appDirName;	# directory containing the application we're running
+
+############################################################################################################
+# get to work - initialize the program
+############################################################################################################
 
 # get the arguments:
 my $yearBeingProcessed ="";
