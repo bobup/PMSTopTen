@@ -16,4 +16,5 @@ old/
 /Historical/.DS_Store
 # ignore SourceData that we fetch to compute Top Ten numbers:
 /SourceData-*/*
+#properties_DB.txt
 

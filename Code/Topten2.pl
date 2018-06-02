@@ -470,7 +470,6 @@ my $masterGeneratedCAGHTMLFileName;
 
 # THIS DEPENDS ON WHAT SEASON WE'RE GENERATING!!
 if( $yearBeingProcessed >= 2018 ) {
-#if( $yearBeingProcessed >= 2017 ) {		# testing...
 	# on/after 2018 we default to combining split age groups
 	$masterGeneratedSAGHTMLFileName = "$generatedHTMLFileDir/index-sag.html";
 	$masterGeneratedCAGHTMLFileName =$masterGeneratedSAGHTMLFileName;

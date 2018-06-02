@@ -3,11 +3,9 @@
 
 # Copyright (c) 2016 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
-# database connection parameters
-dbHost		localhost
-dbName		TopTen_{YearBeingProcessed}
-dbUser		DBTopTen
-dbPass		TopTen
+# get database parameters:
+>include {AppDirName}/properties_DB.txt
+
 
 >include ../SeasonData/Season-{YearBeingProcessed}/properties-{YearBeingProcessed}.txt
 
