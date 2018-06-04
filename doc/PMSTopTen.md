@@ -12,6 +12,8 @@ TBD:
 6. Describe need for RSIDN file.
 7. discuss the seasons
 8. link to rules in overview
+9. change permissions of checked-in properties_DB.txt to be go-rwx
+10. 
 
 
 
@@ -35,7 +37,7 @@ which means "change directory to the directory known as the 'rootDir'".
 ### Glossary
 1.  appRootDir : the root of the tree holding all the files in a local repository tree (e.g. the PMSTopTen project tree.)
 2. rootDir : the parent directory of the appRootDir.
-3. yearToProcess : the season being processed by the PMSTopTen project.  "year" in the name is a misnomer, since a full season encompasses 18 calendar months. 
+3. yearToProcess : the season being processed by the PMSTopTen project.  "year" in the name is a misnomer, since a full season encompasses 18 calendar months. See "What is a Season" below.
 
 ###PMSTopTen Project Files
 The code and support files for the PMSTopTen project are stored in a GitHub repository here:
@@ -48,7 +50,7 @@ General purposes Perl modules are used and are available from CPAN.
 To build and use the PMSTopTen project you'll need to create TWO local repositories:  one for PMSTopTen and the other for PMSPerlModules.  Details follow:
 #####PMSPerlModules
 To create the PMSPerlModules local repository execute the following commands:  
-1. `% cd $rootDir`  
+1. `% cd <rootDir>`  
 2. `% git clone https://github.com/bobup/PMSPerlModules`
 
 #####Files that make up PMSPerlModules
@@ -71,7 +73,7 @@ PMSPerlModules/
 
 #####PMSTopTen
 To create the PMSTopTen local repository execute the following commands:  
-1. `% cd $rootDir`  
+1. `% cd <rootDir>`  
 2. `% git clone https://github.com/bobup/PMSTopTen`
 
 #####Files that make up PMSTopTen
@@ -126,4 +128,51 @@ PMSTopTen/
 * doc/  - The directory holding this document and others.
 
 ###Configuration of the Local Repository
-Once you've created the local repositories for the PMSPerlModules and the PMSTopTen projects you need to configure the PMSTopTen project.  To do this follow these steps:
+Once you've created the local repositories for the PMSPerlModules and the PMSTopTen projects you need to configure the PMSTopTen project.  Here is what needs to be done:
+
+#####Make the GeneratedFiles Directory
+We need to make sure the directory into which all generated files are written exists:
+
+1. `% cd <rootDir>/PMSTopTen`  
+2. `% mkdir -p GeneratedFiles`
+
+#####Configure the Database
+Next you need to configure database access for the PMSTopTen project whose <appRootDir> is <rootDir>/PMSTopTen.  To do this you need to update a property file stored in <appRootDir>/Code named properties_DB.txt:
+
+1. `% cd <appRootDir>/Code`
+2. `% vi properties_DB.txt`
+    3. Change the value of "dbHost" to be the host name of the server hosting the database server.  This will be "localhost" if the database server is running on the same server running this project.
+    4. Set the value of "dbName" to the name of the name database being used by this project.
+    5. Set the value of "dbUser" to the name of the database user used by this project.
+    6. Set the value of "dbPass" to the to the dbUser's password that gives the user read/write access to all the tables of the dbName database.  Since this should be kept private DO NOT allow this file to be readable to world.  If necessary do this: 
+4. `% chmod go-rwx properties_DB.txt`
+
+#####PERL CPAN Libraries
+The PMSTopTen project depends on a few public domain Perl libraries in order to support Excel reading and writing.  These are the CPAN libraries that were used during development:
+
+* Excel-Writer-XLSX-0.96/  
+* Spreadsheet-Read-0.75/  
+* Spreadsheet-XLSX-0.15/
+
+You must guarantee that the Perl search path includes these libraries that you've downloaded and installed on the machine running this project.  The easiest way to do this is to set the environment variable "PERL5LIB" to the list of directories holding the above libraries.  For example:
+
+`% export PERL5LIB=/home/cpan/Excel-Writer-XLSX-0.96/lib\`
+`    :/home/cpan/Spreadsheet-Read-0.75\`
+`    :/home/cpan/Spreadsheet-XLSX-0.15/lib`
+
+Note that later versions may be available and should probably work just as well as the versions above.
+
+###Run the PMSTopTen Project
+Once we have the GeneratedFiles/ subdirectory and we've configured our database access we can fetch race results, analyze them, and generate the AGSOTY page.  To do that follow these steps:
+
+1. `% cd <appRootDir>/Code/Scripts`
+2. `% ./FetchTopten <yearToProcess>`
+3. `# assuming the above did not get any errors we can now generate our AGSOTY page`
+4. `% ./GenTopten2 <yearToProcess>`
+
+At this point the generated AGSOTY page, Excel files, and log files have been written to <appRootDir>/GeneratedFiles/ .
+
+
+
+
+##What is a Season
