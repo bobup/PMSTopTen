@@ -157,7 +157,9 @@ The PMSTopTen project depends on a few public domain Perl libraries in order to 
 You must guarantee that the Perl search path includes these libraries that you've downloaded and installed on the machine running this project.  The easiest way to do this is to set the environment variable "PERL5LIB" to the list of directories holding the above libraries.  For example:
 
 `% export PERL5LIB=/home/cpan/Excel-Writer-XLSX-0.96/lib\`
+<br>
 `    :/home/cpan/Spreadsheet-Read-0.75\`
+<br>
 `    :/home/cpan/Spreadsheet-XLSX-0.15/lib`
 
 Note that later versions may be available and should probably work just as well as the versions above.
