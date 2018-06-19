@@ -9,8 +9,10 @@
 #
 # PASSED:
 #   $1 - the season, e.g. 2017
+#	$2 - (optional) if passed, and equal to 'y', then do the push even if results don't appear 'sane'
 #
 
+FORCE_PUSH=$2
 STANDINGSDIR=standings-$1
 STARTDATE=`date +'%a, %b %d %G at %l:%M:%S %p %Z'`
 EMAIL_NOTICE=bobup@acm.org
@@ -26,6 +28,9 @@ TARDIR=~/Automation/TTPushes
 SOURCE_POINTS_DIR=/usr/home/caroline/public_html/pacific-masters.org/sites/default/files/comp/points/
 SOURCE_DIR=/usr/home/caroline/public_html/pacific-masters.org/sites/default/files/comp/points/$STANDINGSDIR
 SOURCE_TTSTATS=$SOURCE_DIR/TTStats.html
+
+# temp diff:
+TTSTATS_DIFF=/tmp/TTStatsDiff.$$
 
 #
 # LogMessage - generate a log message to various devices:  email, stdout, and a script
@@ -58,8 +63,6 @@ DoThePush() {
     cd $TARDIR >/dev/null
     # push tarball to production
     scp -p $TARBALL pacmasters@pacmasters.pairserver.com:~/public_html/pacificmasters.org/sites/default/files/comp/points
-    # archive old production top ten standings and untar the new one in its place
-    # Also clean out old tar files.
     ssh pacmasters@pacmasters.pairserver.com \
         "( cd ~/public_html/pacificmasters.org/sites/default/files/comp/points; tar zcf Attic/$STANDINGSDIRARCHIVE $STANDINGSDIR; rm -rf $STANDINGSDIR; tar xf $TARBALL; mv $TARBALL Attic; cd Attic; ls -tp | grep -v '/$' | grep $STANDINGSDIR | tail -n +21 | xargs -I {} rm -- {}; ls -tp | grep -v '/$' | grep TT_ | tail -n +21 | xargs -I {} rm -- {} )"
     
@@ -71,10 +74,9 @@ DoThePush() {
         "$(cat <<- BUp9
 Destination Directory: $DESTINATION_DIR
 (STARTed on $STARTDATE, FINISHed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
-diff $SERVER_TTSTATS $SOURCE_TTSTATS:
-< lines: PRODUCTION server
-> lines: DEV server
-$(diff $SERVER_TTSTATS $SOURCE_TTSTATS)
+diff $SERVER_TTSTATS $SOURCE_TTSTATS :
+< lines: PRODUCTION server, > lines: DEV server
+$(cat $TTSTATS_DIFF)
 BUp9
 )"
 } # end of DoThePush()
@@ -84,11 +86,17 @@ BUp9
 #   we'll log and email a message explaining the problem(s) found.
 #
 DontDoThePush() {
-    LogMessage "$1" "The SERVER was NOT updated!
-        $2" "diff $SERVER_TTSTATS $SOURCE_TTSTATS:
-        < lines: PRODUCTION server
-        > lines: DEV server
-        $(diff $SERVER_TTSTATS $SOURCE_TTSTATS)"
+	if [ .$FORCE_PUSH == .y ] ; then
+		LogMessage "$1" "The SERVER was FORCE updated! 
+			$2"
+		DoThePush
+	else
+		LogMessage "$1" "The SERVER was NOT updated!
+			$2" "diff $SERVER_TTSTATS
+				$SOURCE_TTSTATS :
+			< lines: PRODUCTION server, > lines: DEV server
+			$(cat $TTSTATS_DIFF)"
+	fi		
     exit 1;
 } # end of DontDoThePush()
 
@@ -108,10 +116,13 @@ echo ""; echo '******************** Begin' "$0"
 curl -f $DESTINATION_URL >$SERVER_TTSTATS 2>/dev/null
 STATUS=$?
 if [ "$STATUS" -eq 22 ] ; then
-    echo "There is no '$DESTINATION_URL'"
+    echo "There is no '$DESTINATION_URL'" | tee >$TTSTATS_DIFF
     # do the push!
     DoThePush
 else
+    # before we do anything first compare the current Production TTStats with the newly generated TTStats on dev
+    diff $SERVER_TTSTATS $SOURCE_TTSTATS >$TTSTATS_DIFF
+    
     SERVER_TOTAL_POINTS=`grep <$SERVER_TTSTATS "E1" | sed -e ' s/^....:[^0-9]*//'`
     DEV_TOTAL_POINTS=`grep <$SOURCE_TTSTATS "E1" | sed -e ' s/^....:[^0-9]*//'`
     
