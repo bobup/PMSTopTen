@@ -61,11 +61,11 @@ TOPTENLOG=$GENERATED_DIR/TopTenLog-$1.txt
 SEMAPHORE=$GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
 
 # if we're running on the PMS server we need to initialize our Perl search path (@INC)
-if hostname | grep -q "pair.com"  ; then
-	# this is for dev
-	export PERL5LIB=/usr/home/caroline/Automation/PerlCpan/Excel-Writer-XLSX-0.96/lib\
-:/usr/home/caroline/Automation/PerlCpan/Spreadsheet-Read-0.75\
-:/usr/home/caroline/Automation/PerlCpan/Spreadsheet-XLSX-0.15/lib
+#if hostname | grep -q "pair.com"  ; then
+#	# this is for dev
+#	export PERL5LIB=/usr/home/caroline/Automation/PerlCpan/Excel-Writer-XLSX-0.96/lib\
+#:/usr/home/caroline/Automation/PerlCpan/Spreadsheet-Read-0.75\
+#:/usr/home/caroline/Automation/PerlCpan/Spreadsheet-XLSX-0.15/lib
 fi
 #echo "PERL5LIB is '$PERL5LIB'"
 
