@@ -1,0 +1,84 @@
+/*
+** Standings.css - styles used by the PAC Swimmer Age Group Standings web pages
+**  (bob upshaw)
+**
+*/
+
+thead {
+    background-color: lightblue;
+}
+
+
+.jumpArea {
+	position: relative;
+	left: 40px;
+	font-size: 150%;
+}
+
+.jumpArea_mobile {
+	position: relative;
+	left: 10px;
+	font-size: 300%;
+}
+
+.sotyTitle {
+//	position: relative;
+//	left: 40px;
+	font-size: 100%;
+	font-weight: bold;
+}
+.sotyDetail {
+	position: relative;
+	left: 60px;
+}
+.sotySwimmers {
+	position: relative;
+	left: 20px;
+}
+
+
+.controlArea {
+	position: relative;
+}
+.buttonClass {
+	font-size: 20px;
+	background-color: lightblue;
+	padding: 2px 5px;
+	border: 1px solid;
+	border-radius: 10px;
+}
+.buttonClass_mobile {
+	font-size: 40px;
+	background-color: lightblue;
+	padding: 4px 8px;
+	border: 1px solid;
+	border-radius: 10px;
+}
+
+.selectClass {
+	font-size: 15px;
+	padding: 2px 5px;
+	margin-right: 20px;
+}
+.selectClass_mobile {
+	font-size: 30px;
+	padding: 4px 8px;
+	margin-right: 20px;
+}
+
+.placeClass {
+	width: 16px;
+	max-width: 95px;
+	padding-left: 10px;
+}
+.nameClass {
+	width: 260px;
+}
+.pointsClass {
+	width: 33px;
+}
+.TableSize {
+	min-width: 800px;
+	max-width: 800px;
+	table-layout: fixed;
+}

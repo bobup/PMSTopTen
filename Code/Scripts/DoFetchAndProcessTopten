@@ -66,7 +66,7 @@ SEMAPHORE=$GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
 #	export PERL5LIB=/usr/home/caroline/Automation/PerlCpan/Excel-Writer-XLSX-0.96/lib\
 #:/usr/home/caroline/Automation/PerlCpan/Spreadsheet-Read-0.75\
 #:/usr/home/caroline/Automation/PerlCpan/Spreadsheet-XLSX-0.15/lib
-fi
+#fi
 #echo "PERL5LIB is '$PERL5LIB'"
 
 ##########################################################################################

@@ -17,4 +17,4 @@ old/
 # ignore SourceData that we fetch to compute Top Ten numbers:
 /SourceData-*/*
 properties_DB.txt
-
+GetResults.pl.launch

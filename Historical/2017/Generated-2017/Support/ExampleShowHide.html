@@ -1,0 +1,43 @@
+<html>
+<head>
+	<script type="text/javascript">
+	
+
+		/*
+		** Invoked to open or close some details of a swimmer.
+		** passedID is the id of the row we are opening/closing.
+		** return false.
+		*/
+		function ponclick( passedID ) {
+			var result = false;
+			// just show or hide some existing DOM:
+			var mydisplay = document.all[passedID].style.display;
+			if( mydisplay == "none" ) {
+				mydisplay = "";
+			} else {
+				mydisplay = "none";
+			}
+			document.all[passedID].style.display=mydisplay;
+			return result;
+		} // end of ponclick()
+	
+	</script>
+
+	<title>Example Show/Hide</title>
+</head>
+<body>
+	<table>
+		<tbody>
+			<tr><td id="clickhere"><a href="" onclick="return ponclick('showthis')">Click here to see more (or less)</a></td></tr>
+			<tr id="showthis" style="display:none"><td>This is normally hidden text, but you get to see it!</td><tr>
+		</tbody>
+	</table>
+</body>
+</html>
+
+
+
+
+
+
+
