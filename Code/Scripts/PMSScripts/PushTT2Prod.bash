@@ -124,30 +124,33 @@ else
     diff $SERVER_TTSTATS $SOURCE_TTSTATS >$TTSTATS_DIFF
     
     SERVER_TOTAL_POINTS=`grep <$SERVER_TTSTATS "E1" | sed -e ' s/^....:[^0-9]*//'`
+    SERVER_ADJUSTED_POINTS=$[SERVER_TOTAL_POINTS-$[SERVER_TOTAL_POINTS/20]]
     DEV_TOTAL_POINTS=`grep <$SOURCE_TTSTATS "E1" | sed -e ' s/^....:[^0-9]*//'`
     
     if [ -z "$SERVER_TOTAL_POINTS" -o -z "$DEV_TOTAL_POINTS" ] ; then
         DontDoThePush "Invalid Total Points - one of them is '0'" \
             "SERVER Total Points is '$SERVER_TOTAL_POINTS', DEV Total Points is '$DEV_TOTAL_POINTS'"
     else
-        if [ "$DEV_TOTAL_POINTS" -lt "$SERVER_TOTAL_POINTS" ] ; then
-            DontDoThePush "Unexpected Total Points on Dev - it's less than what's on the SERVER" \
-                "SERVER Total Points is $SERVER_TOTAL_POINTS, DEV Total Points is $DEV_TOTAL_POINTS"
+        if [ "$DEV_TOTAL_POINTS" -lt "$SERVER_ADJUSTED_POINTS" ] ; then
+            DontDoThePush "Unexpected Total Points on Dev - it's less than 95% of what's on the SERVER" \
+                "SERVER Total Points is $SERVER_TOTAL_POINTS (95%=$SERVER_ADJUSTED_POINTS), DEV Total Points is $DEV_TOTAL_POINTS"
         fi
     fi
     
     SERVER_OW_SPLASHES=`grep <$SERVER_TTSTATS "G1" | sed -e ' s/^....:[^0-9]*//'`
+    SERVER_ADJUSTED_OW_SPLASHES=$[SERVER_OW_SPLASHES-$[SERVER_OW_SPLASHES/20]]
     DEV_OW_SPLASHES=`grep <$SOURCE_TTSTATS "G1" | sed -e ' s/^....:[^0-9]*//'`
-    if [ "$DEV_OW_SPLASHES" -lt "$SERVER_OW_SPLASHES" ] ; then
-        DontDoThePush "Unexpected OW Splashes on Dev - it's less than what's on the SERVER" \
-            "SERVER OW Splashes is $SERVER_OW_SPLASHES, DEV OW Splashes is $DEV_OW_SPLASHES"
+    if [ "$DEV_OW_SPLASHES" -lt "$SERVER_ADJUSTED_OW_SPLASHES" ] ; then
+        DontDoThePush "Unexpected OW Splashes on Dev - it's less than 95% of what's on the SERVER" \
+            "SERVER OW Splashes is $SERVER_OW_SPLASHES (95%=$SERVER_ADJUSTED_OW_SPLASHES), DEV OW Splashes is $DEV_OW_SPLASHES"
     fi
     
     SERVER_OW_SWIMMERS=`grep <$SERVER_TTSTATS "H1" | sed -e ' s/^....:[^0-9]*//'`
+    SERVER_ADJUSTED_OW_SWIMMERS=$[SERVER_OW_SWIMMERS-$[SERVER_OW_SWIMMERS/20]]
     DEV_OW_SWIMMERS=`grep <$SOURCE_TTSTATS "H1" | sed -e ' s/^....:[^0-9]*//'`
-    if [ "$DEV_OW_SWIMMERS" -lt "$SERVER_OW_SWIMMERS" ] ; then
-        DontDoThePush "Unexpected OW Swimmers on Dev - it's less than what's on the SERVER" \
-            "SERVER OW Swimmers is $SERVER_OW_SWIMMERS, DEV OW Swimmers is $DEV_OW_SWIMMERS"
+    if [ "$DEV_OW_SWIMMERS" -lt "$SERVER_ADJUSTED_OW_SWIMMERS" ] ; then
+        DontDoThePush "Unexpected OW Swimmers on Dev - it's less than 95% of what's on the SERVER" \
+            "SERVER OW Swimmers is $SERVER_OW_SWIMMERS (95%=$SERVER_ADJUSTED_OW_SWIMMERS), DEV OW Swimmers is $DEV_OW_SWIMMERS"
     fi
 
     echo The results on DEV look sane - do the push!
