@@ -140,7 +140,7 @@ sub GetPMSOWResults( $$ );
 
 # initialize our HTTP class:
 #my %tinyAttributes = ("agent" => "WikiBot/0.1");
-#my %tinyAttributes = ("agent" => "Mozilla/5.0 (Macintosh; Intel É) Gecko/20100101 Firefox/59.0");
+#my %tinyAttributes = ("agent" => "Mozilla/5.0 (Macintosh; Intel ï¿½) Gecko/20100101 Firefox/59.0");
 #my $tinyHttp = HTTP::Tiny->new( %tinyAttributes );
 my $tinyHttp = HTTP::Tiny->new( );
 my $httpResponse;
@@ -215,6 +215,7 @@ print "  ...Year being analyzed: $yearBeingProcessed\n";
 ###
 ### file names
 ###
+
 # Input data directory for the season we're processing 
 my $seasonData = "$appRootDir/SeasonData/Season-$yearBeingProcessed/";
 # directory holding result files that we process for points:
@@ -234,6 +235,9 @@ if( ! -d $sourceDataDir ) {
 	die "The directory '$sourceDataDir' is not writable.  Abort.";
 }
 
+# this is the directory holding swimmer data (not race data).  We need this because we want to 
+# know if the RSIND file is new, because if it is we're going to "claim" that results have changed.
+my $PMSSwimmerData = "$seasonData/PMSSwimmerData/";
 
 # template directory:
 #my $templateDir = "$appDirName/Templates";
@@ -359,7 +363,7 @@ if(1) {
 		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0 );
+		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
 		PMSLogging::PrintLog( "", "", "Did query after getting PMS top 10.", 1 );
 	}
 } # end of if(1)...
@@ -405,7 +409,7 @@ if(1) {
 		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0 );
+		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
 		PMSLogging::PrintLog( "", "", "Did query after getting USMS top 10.", 1 );
 	}
 } # end of if(1)...
@@ -453,7 +457,7 @@ if(1) {
 		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0 );
+		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
 		PMSLogging::PrintLog( "", "", "Did query after getting PMS records.", 1 );
 	}
 } # end of if(1)...
@@ -478,7 +482,7 @@ if(1) {
 		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0 );
+		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
 		PMSLogging::PrintLog( "", "", "Did query after getting USMS records.", 1 );
 	}
 } # end of if(1)...
@@ -505,7 +509,7 @@ if(1) {
 		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0 );
+		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
 		PMSLogging::PrintLog( "", "", "Did query after getting OW.", 1 );
 	}
 } # end of if(1)...
@@ -538,7 +542,7 @@ PMSLogging::PrintLog( "", "", "    Total number of different results found: $num
 PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
 PMSLogging::PrintLog( "", "", "    Total number of different meets written to $racesFileName: $raceLines", 1);
 TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, $numLinesRead, $numDifferentMeetsSeen, 
-	$numDifferentResultsSeen, $numDifferentFiles, $raceLines );
+	$numDifferentResultsSeen, $numDifferentFiles, $raceLines, $PMSSwimmerData );
 PMSLogging::PrintLog( "", "", "Done with $appProgName!", 1);
 
 

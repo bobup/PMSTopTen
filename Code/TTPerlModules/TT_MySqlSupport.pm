@@ -11,10 +11,12 @@ use DBI;
 
 use FindBin;
 use File::Spec;
+use File::Basename;
 use lib File::Spec->catdir( $FindBin::Bin, '..',  '..', 'PMSPerlModules' );
 require PMS_MySqlSupport;
 require PMSLogging;
 require PMSStruct;
+require PMS_ImportPMSData;
 
 # keep track of the number of swimmers who are split across two different age groups:
 my $total2AgeGroups = 0;
@@ -2204,6 +2206,7 @@ sub ReadSwimMeetData( $ ) {
 #	$numDifferentResultsSeen -
 #	$numDifferentFiles -
 #	$raceLines -
+#	$PMSSwimmerData
 #
 # RETURNED:
 #	n/a
@@ -2211,9 +2214,9 @@ sub ReadSwimMeetData( $ ) {
 # NOTES:
 #	Instead of returing a value, this routine will log its results.
 #
-sub DidWeGetDifferentData( $$$$$$ ) {
+sub DidWeGetDifferentData( $$$$$$$ ) {
 	my( $season, $numLinesRead, $numDifferentMeetsSeen, 
-		$numDifferentResultsSeen, $numDifferentFiles, $raceLines ) = @_;
+		$numDifferentResultsSeen, $numDifferentFiles, $raceLines, $PMSSwimmerData ) = @_;
 	my ($sth, $rv, $status) = (0, 0, "x");
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	
@@ -2285,8 +2288,44 @@ sub DidWeGetDifferentData( $$$$$$ ) {
 			}
 		} else {
 			if( PMSLogging::GetNumErrorsLogged() == 0 ) {
-				PMSLogging::PrintLog( "", "", "NOTE:  there appears to be no change in results " .
-					"since $prevDateTime", 1 );
+				# if we have a new RSIND file to process we'll pretend that results have changed because
+				# the new RSIND file may give us new swimmers who deserve points that didn't get point
+				# before.  We will NOT USE the RSIND file here - just see if it's different from the last
+				# one used by Topten2.pl:
+				# location of the RSIDN file that we'll use
+				my $swimmerDataFile;
+				if( ! defined( PMSStruct::GetMacrosRef()->{"RSIDNFileName"} ) ) {
+					# We will use the most recent version of the RSIDN file we can find in the $PMSSwimmerData
+					# directory:
+					$swimmerDataFile = 	PMSUtil::GetMostRecentVersion( '^(.*RSIND.*)|(.*RSIDN.*)$', $PMSSwimmerData );
+					PMSStruct::GetMacrosRef()->{"RSIDNFileName"} = $swimmerDataFile;
+				} else {
+					$swimmerDataFile = $PMSSwimmerData . PMSStruct::GetMacrosRef()->{"RSIDNFileName"};
+				}
+				if( ! defined( PMSStruct::GetMacrosRef()->{"RSIDNFileName"} ) ) {
+					PMSLogging::DumpError( 0, 0, "TT_MySqlSupport::DidWeGetDifferentData(): " .
+						"A RSIDN file wasn't found in '$PMSSwimmerData'.  Act as though results did NOT change." );
+				} elsif( ! -f $swimmerDataFile ) {
+					PMSLogging::DumpError( 0, 0, "TT_MySqlSupport::DidWeGetDifferentData(): " .
+						"The RSIDN file '$swimmerDataFile' does not exist -\n" .
+						"    (check your property files!)  Act as though results did NOT change." );
+				} else {
+					# we have identified the RSIND file that we'd likely use if we analyzed the results now -
+					# is it different from the RSIND file we last used when analyzing the results?
+					my( $simpleName, $dirs, $suffix ) = fileparse( $swimmerDataFile );		# get last simple name in filename
+					my ($refreshRSIDNFile, $lastRSIDNFileName) = 
+						PMS_ImportPMSData::RSINDFileIsNew( $simpleName, $season);
+					# $refreshRSIDNFile == 1 means that it's different, 0 means that it is not
+					if( $refreshRSIDNFile == 1 ) {
+						PMSLogging::PrintLog( "", "", "It appears that there were no changes to the results " .
+						"since the last time we got results on $prevDateTime...\n    BUT it looks like we " .
+						" need to process a new RSIND file, so...\n    we'll act as though Results " .
+						"have changed.", 1 );
+					} else {
+						PMSLogging::PrintLog( "", "", "NOTE:  there appears to be no change in results " .
+							"since $prevDateTime", 1 );
+					}
+				}
 			} else {
 				# we had errors so don't trust that results didn't change:
 				PMSLogging::PrintLog( "", "", "It appears that there were no changes to the results " .
