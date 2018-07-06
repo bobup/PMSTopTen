@@ -84,6 +84,7 @@ SEMAPHORE=$GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
 #	detected then an email is sent and this script is aborted.
 #
 ExecuteTopten() {
+	rm -f $TOPTENLOG
 	$TOPTEN $1
 	# first check to see if Topten ran at all...
 	if [ ! -f $TOPTENLOG ] ; then
@@ -180,6 +181,7 @@ fi
 cd "$FULLPATHCODE"
 # get the latest results for the specified season
 echo "$SIMPLE_SCRIPT_NAME:  Starting GetResults.pl to get the latest results for $1 (`date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
+rm -f $GETRESULTSLOG
 ./GetResults.pl $1 > $TMPFILE
 
 # if the above GetResults got an error we're going to abort the whole thing.  It's 

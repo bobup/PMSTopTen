@@ -3,7 +3,7 @@
 
 # PushTT2Dev.bash - this script is intended to be executed on the PMS Dev machine ONLY.  
 #	It will push the top ten generated files to the Dev points page, e.g.:
-#			http://www.pacific-masters.org/points/standings-2018/
+#			http://www.pacific-masters.org/points/standings-$1/
 #	ONLY IF the index.html file exists in the "Generated files" directory.
 #
 # PASSED:
@@ -56,7 +56,7 @@ echo ""; echo '******************** Begin' "$0"
 # Generated files directory relative to this directory:
 script_dir=$(dirname $0)
 # Next compute the full path name of the directory into which the generated files are placed:
-pushd $script_dir/../../PMSTopTen/GeneratedFiles >/dev/null; 
+pushd $script_dir/../../../GeneratedFiles >/dev/null; 
 GENERATED_DIR=`pwd -P`/Generated-$1
 # make sure the GENERATED_DIR exists
 mkdir -p $GENERATED_DIR
