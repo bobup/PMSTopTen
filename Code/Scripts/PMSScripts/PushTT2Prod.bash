@@ -102,6 +102,13 @@ DontDoThePush() {
 
 ##########################################################################################
 
+# Get to work!
+
+if [ ."$1" = . ]  ; then
+    echo "$SIMPLE_SCRIPT_NAME: Missing season on `hostname` - ABORT!"
+    exit 1
+fi
+
 # compute the full path name of the directory holding this script:
 SCRIPT_DIR=$(dirname $0)
 # see if our semaphore exists (put there by DoFetchAndProcessTopten) - if it does we're 
@@ -110,14 +117,6 @@ GENERATED_DIR=$SCRIPT_DIR/../../../GeneratedFiles/Generated-$1
 SEMAPHORE=$GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
 if [ -f $SEMAPHORE ] ; then
     echo "$SIMPLE_SCRIPT_NAME: $SEMAPHORE has existed since $(cat $SEMAPHORE) - ABORT!"
-    exit 1
-fi
-
-
-# Get to work!
-
-if [ ."$1" = . ]  ; then
-    echo "$SIMPLE_SCRIPT_NAME: Missing season on `hostname` - ABORT!"
     exit 1
 fi
 

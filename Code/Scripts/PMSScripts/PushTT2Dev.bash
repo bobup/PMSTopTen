@@ -42,6 +42,13 @@ LogMessage() {
 
 ##########################################################################################
 
+# Get to work!
+
+if [ ."$1" = . ]  ; then 
+	echo "$SIMPLE_SCRIPT_NAME: Missing season on `hostname` - ABORT!"
+	exit 1
+fi
+
 # compute the full path name of the directory holding this script:
 SCRIPT_DIR=$(dirname $0)
 # see if our semaphore exists (put there by DoFetchAndProcessTopten) - if it does we're 
@@ -53,13 +60,6 @@ if [ -f $SEMAPHORE ] ; then
     exit 1
 fi
 
-
-# Get to work!
-
-if [ ."$1" = . ]  ; then 
-	echo "$SIMPLE_SCRIPT_NAME: Missing season on `hostname` - ABORT!"
-	exit 1
-fi
 
 echo ""; echo '******************** Begin' "$0"
 
