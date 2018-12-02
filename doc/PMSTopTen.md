@@ -7,7 +7,7 @@ TBD:
 3. Add a section specifically for GeneratedFiles and link to it in Historical.  
 4. Same for SourceData.  (need to clean up Historical)
 5. Same for SourceData-2018  (need to clean up Historical)
-5. Same for Support  
+6. Same for Support  
 8. link to rules in overview
 9. change permissions of checked-in properties_DB.txt to be go-rwx
 10. document the cron job; scripts used, including push (dev/prod dependent)

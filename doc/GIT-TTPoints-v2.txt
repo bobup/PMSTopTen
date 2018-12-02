@@ -9,42 +9,66 @@ This are just some random notes used to write an eventual document
 	- appRootDir: the PMSTopTen directory, the parent of which is rootDir
 	- yearToProcess: the season to process, e.g. 2017
 	
-*** Begin a new season:
+*** Begin a new season:  (leave old season in place so we can compute points for 
+	both seasons.  See "Remove an old season" below when we no longer need to compute
+	points for the old season.)
 	- Create our new season-specific Source directory:
-		% cd <appRootDir>/Code/working/
-		- Copy the latest SourceData
-		- Paste to "SourceData-<new season>"
-		- cd to "SourceData-<new season>"
-		- remove all the previous year's result files; "races.txt"
+xxx		% cd <appRootDir>/Code/working/
+		% cd <appRootDir>/SeasonData
+xxx		- Copy the latest SourceData
+		- Copy the latest Season-<old season> directory
+xxx		- Paste to "SourceData-<new season>"
+		- Paste to "Season-<new season>"
+xxx		- cd to "SourceData-<new season>"
+		- cd to "Season-<new season>"
+xxx		- remove all the previous year's result files; "races.txt"
+		- remove SourceData-<old season>
+		- create the SourceData-<new season> directory
+		
+xxx		- remove all old RSIDN files and get a new one (or use an old one for now)
+		- cd PMSSwimmerData
 		- remove all old RSIDN files and get a new one (or use an old one for now)
+		- cd ..   (cwd=Season-<new season>
+
 		- rename the "properties-<old season>" to "properties-<new season>"
 		- edit "properties-<new season>" and make necessary changes:
 			- comment line with name of file
-			- RSIDNFileName
-			- PMSOpenWaterResultFile
+			
 	- Initialize our database:
-		- mysql -u root -p1994Maggie
+		- mysql -u root -p<MySql root password>   
 			- CREATE DATABASE TopTen_<new season>;
 			- GRANT ALL ON TopTen_<new season>.* TO DBTopTen IDENTIFIED BY 'TopTen';
 				(grant all privileges on db (all tables) to Username identified by password)
+			- quit
+			
 	- use GetResults.pl to make sure we get the expected results in 
-		the SourceData-<new season> and Generated-<new season> directories:
-		- from Eclipse:  change the properties.txt file to contain the <new season>, or
-		- from Terminal: FetchTopten <new season>
+xxx		the SourceData-<new season> and Generated-<new season> directories:
+		the directories:
+			<appRootDir>/SeasonData/Season-<new season>
+			<appRootDir>/GeneratedFiles/Generated-<new season>
+		- from Eclipse:  Run GetResults.pl with the parameter <new season>, or
+		- from Terminal: <appRootDir>/Code/Scripts/FetchTopten <new season>
+		
 	- Add a link to the Support directory to the Generated-<new season> directory:
 		- copy the Support directory alias from Generated-<old season> 
 			to Generated-<new season>
 	- use Topten2.pl to process the fetched files and make sure we get the expected results
-		in the Generated-<new season> directory:
-		- from Eclipse:  change the properties.txt file to contain the <new season>, or
-		- from Terminal: GenTopten <new season>
+		in the <appRootDir>/SeasonData/Season-<new season> directory:
+		- from Eclipse:  Run Topten2.pl with the parameter <new season>, or
+		- from Terminal: <appRootDir>/Code/Scripts/GenTopten2 <new season>
 		
-	- Remove all the files in the GeneratedFiles directory EXCEPT the Support symbolic link.
-	- Remove all the files and sub-directories in the OWResults directory.  This is where 
-		the new year's results will be placed.
-	- Edit the "properties.txt" file to include the <new year>-properties.txt instead
-		of the <previous year>-properties.txt
-	- Refresh your Eclipse project.
+	- Remove all the files in the <appRootDir>/GeneratedFiles/Generated-<new season>
+		directory EXCEPT the Support symbolic link.
+		
+	- Remove all the files in the 
+		<appRootDir>/SeasonData/Season-<new season>/SourceData-<new season>/ 
+		directory.  This is where the new seasons Top Ten results will be placed.
+		
+???	- Refresh your Eclipse project.
+
+
+
+*** Remove an old season:
 
 =========================================================================================
 *** move a season <yearToProcess> into Historical
