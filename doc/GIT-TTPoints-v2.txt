@@ -13,36 +13,43 @@ This are just some random notes used to write an eventual document
 	both seasons.  See "Remove an old season" below when we no longer need to compute
 	points for the old season.)
 	- Create our new season-specific Source directory:
-xxx		% cd <appRootDir>/Code/working/
 		% cd <appRootDir>/SeasonData
-xxx		- Copy the latest SourceData
 		- Copy the latest Season-<old season> directory
-xxx		- Paste to "SourceData-<new season>"
 		- Paste to "Season-<new season>"
-xxx		- cd to "SourceData-<new season>"
+		(at this point we have at least two Season directories:  Season-<old season> and
+		 Season-<new season>.  For example, Season-2016/ and Season-2017/)
 		- cd to "Season-<new season>"
-xxx		- remove all the previous year's result files; "races.txt"
-		- remove SourceData-<old season>
+		- remove SourceData-<old season>  (remember, this is still in the Season-<old season> directory)
 		- create the SourceData-<new season> directory
-		
-xxx		- remove all old RSIDN files and get a new one (or use an old one for now)
 		- cd PMSSwimmerData
 		- remove all old RSIDN files and get a new one (or use an old one for now)
 		- cd ..   (cwd=Season-<new season>
 
-		- rename the "properties-<old season>" to "properties-<new season>"
-		- edit "properties-<new season>" and make necessary changes:
+		- rename the "properties-<old season>.txt" to "properties-<new season>.txt"
+		- rename the "properties_DB-<old season>.txt" to "properties_DB-<new season>.txt"
+		- edit "properties-<new season>.txt" and make necessary changes, e.g.:
 			- comment line with name of file
+		- edit "properties_DB-<new season>.txt" and make necessary changes, e.g.:
+			(Some installations will require a different
+			MySQL user name and/or password for each new database.  In addition, some 
+			installations will not allow a simple database name like "TopTen_2017" so the
+			below "Initialize our database" instructions will have to be modified, requiring 
+			a modification of the 'properties_DB-{new season}.txt' property file.)
+			- change the name of the new season's database (see Initialize our database below.)
+			- change the Username and password of the MySQL user for this new database (if 
+				necessary)
 			
 	- Initialize our database:
+	  (NOTE:  this is platform-dependent, so you may have to adjust depending on your
+	   installation.  These instructions assume a simple MySQL platform.)
 		- mysql -u root -p<MySql root password>   
-			- CREATE DATABASE TopTen_<new season>;
+			- CREATE DATABASE TopTen_<new season>;  # (DB name may be platform-dependent)
 			- GRANT ALL ON TopTen_<new season>.* TO DBTopTen IDENTIFIED BY 'TopTen';
-				(grant all privileges on db (all tables) to Username identified by password)
+				(grant all privileges on db (all tables) to Username identified by password.
+				Note that Username and password may be platform-dependent)
 			- quit
-			
+	
 	- use GetResults.pl to make sure we get the expected results in 
-xxx		the SourceData-<new season> and Generated-<new season> directories:
 		the directories:
 			<appRootDir>/SeasonData/Season-<new season>
 			<appRootDir>/GeneratedFiles/Generated-<new season>
@@ -56,13 +63,13 @@ xxx		the SourceData-<new season> and Generated-<new season> directories:
 		in the <appRootDir>/SeasonData/Season-<new season> directory:
 		- from Eclipse:  Run Topten2.pl with the parameter <new season>, or
 		- from Terminal: <appRootDir>/Code/Scripts/GenTopten2 <new season>
-		
-	- Remove all the files in the <appRootDir>/GeneratedFiles/Generated-<new season>
-		directory EXCEPT the Support symbolic link.
-		
-	- Remove all the files in the 
-		<appRootDir>/SeasonData/Season-<new season>/SourceData-<new season>/ 
-		directory.  This is where the new seasons Top Ten results will be placed.
+	
+	- Clean up:
+		- Remove all the files in the <appRootDir>/GeneratedFiles/Generated-<new season>
+			directory EXCEPT the Support symbolic link.
+		- Remove all the files in the 
+			<appRootDir>/SeasonData/Season-<new season>/SourceData-<new season>/ 
+			directory.  This is where the new seasons Top Ten results will be placed.
 		
 ???	- Refresh your Eclipse project.
 
@@ -127,21 +134,21 @@ OR
 % git clone https://github.com/bobup/PMSPerlModules
 
 # Next, we get the latest PMSTopTen files:
-% cp PMSTopTen/Code/properties.txt .     # make a copy of working properties.txt
+xxx  % cp PMSTopTen/Code/properties.txt .     # make a copy of working properties.txt
 % rm -rf PMSTopTen
 % git clone https://github.com/bobup/PMSTopTen
 
 # Next, we need to be sure our database configuration parameters are set
-# correctly.  They are specified in the 'properties.txt' file located in the
-# Code subdirectory of the PMSTopTen directory.  The checked in version
+# correctly.  They are specified in the 'properties_DB-{season}.txt' file located in the
+# <appRootDir>/SeasonData/Season-<season> directory.  The checked in version
 # has default values for the database host, database name, database user, 
 # and database password.  These need to be modified if necessary.  Don't 
-# bother checking in the modified properties.txt file since it will contain
+# bother checking in the modified properties_DB-{season}.txt file since it will contain
 # information that should not be available to the rest of the world.   
 ---- DO ONE OF THESE:
 --- 1)
-% cd PMSTopTen/Code
-% vi properties.txt
+% cd <appRootDir>/SeasonData/Season-<season>
+% vi properties_DB-{season}.txt
 --- remove everything from 
 	# database connection...
 --- up to BUT NOT INCLUDING
@@ -157,9 +164,9 @@ dbUser  caroline_5
 dbPass  DwBNLDSN
 
 --- OR ----
-2)    ----- for 2018
-% cd PMSTopTen/Code
-% cp ../../TT2018/properties.txt .
+xxx2)    ----- for 2018
+xxx% cd PMSTopTen/Code
+xxx % cp ../../TT2018/properties.txt .
 
 
 
@@ -169,7 +176,7 @@ dbPass  DwBNLDSN
 # generate some results assuming we have data for 2017.  Plug in whatever year for which
 # you have data.
 # Next, set up your MySql server.  The following discussion assumes the default
-# configuration define in the properties.txt file described above.
+# configuration define in the properties_DB-{season}.txt file described above.
 # You need to install MySql and create a root account
 # with all permissions.  Then do the following (you may have to change names/passwords
 # to match the code - see the call to PMS_MySqlSupport::SetSqlParameters() in the file

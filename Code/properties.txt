@@ -4,7 +4,7 @@
 # Copyright (c) 2016 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
 # get database parameters:
->include {AppDirName}/properties_DB.txt
+>include ../SeasonData/Season-{YearBeingProcessed}/properties_DB-{YearBeingProcessed}.txt
 
 
 >include ../SeasonData/Season-{YearBeingProcessed}/properties-{YearBeingProcessed}.txt
