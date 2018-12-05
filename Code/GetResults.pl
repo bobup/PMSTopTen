@@ -527,12 +527,18 @@ open( my $racesFileHandle, ">$racesFileName" ) || die "Can't open $racesFileName
 my $raceLines = 0;
 foreach my $key (sort { $SwimMeets{$a} cmp $SwimMeets{$b} } keys %SwimMeets ) {
 	$raceLines++;
-	my $value = $SwimMeets{$key};
-	# e.g.: $value == "date|USMSMeetId|ORG|COURSE|link to details for meet|(NOT a PAC sanctioned meet)"
-	$value =~ m/^([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|(.*$)/;
+	my $value1 = $SwimMeets{$key};
+	# e.g.: $value1 == "date|USMSMeetId|ORG|COURSE|link to details for meet|(NOT a PAC sanctioned meet)"
+	my $value2=$value1;
+	$value1 =~ m/^([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|(.*$)/;
 	my ($date, $USMSMeetId,$org,$course,$isPMS) = ($1,$2,$3,$4,$6);
-	$value = $5;
-	print $racesFileHandle "$key\t$isPMS\t$org\t$course\t$date\t$USMSMeetId\t$value\n";
+	$value2 = $5;
+	if( ! defined $isPMS ) {
+		print "While Generating Swim Meet Data, isPMS is undefined.  raceLines=$raceLines, " .
+			"key='$key', racesFileName='$racesFileName', value1='$value1', value2='$value2'\n";
+	} else {
+		print $racesFileHandle "$key\t$isPMS\t$org\t$course\t$date\t$USMSMeetId\t$value2\n";
+	}
 }
 
 PMSLogging::PrintLog( "", "", "GetResults:: Totals:", 1);
@@ -1161,7 +1167,9 @@ sub ParseUSMSSwimDetails( $$$$ ) {
 	if( ($meetTitle ne "") || ($link ne "") ) {
 		# yes - ignore this call - we've got what we want so now we just chew up the rest
 		# of the fetched web page and then go on...
-		#print "ParseUSMSSwimDetails: got '$meetTitle' and '$link'\n";
+		if( $debug ) {
+			print "ParseUSMSSwimDetails: got '$meetTitle' and '$link'\n";
+		}
 	} else {
 		# before doing anything make sure we didn't get an error
 		if( ((defined $httpResponseRef->{success}) && !$httpResponseRef->{'success'}) ||
@@ -1223,7 +1231,9 @@ sub ParseUSMSSwimDetails( $$$$ ) {
 	} # end of before doing anything make sure we didn't get an error...
 	
 	# all done - if we found the data we're looking for it's in the callback structure
-	#print "ParseUSMSSwimDetails: return with '$meetTitle' and '$link'\n";
+	if( $debug ) {
+		print "ParseUSMSSwimDetails: return with '$meetTitle' and '$link'\n";
+	}
 	
 } # end of ParseUSMSSwimDetails()
 
