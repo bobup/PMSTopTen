@@ -88,7 +88,25 @@ This are just some random notes used to write an eventual document
 					comp/points/standings-<old season>
 				% cp -a Support /usr/home/caroline/public_html/pacific-masters.org/sites/default/
 					files/comp/points/standings-<new season>
+	- Update the "Swimmer of the Year Awards" page:
+		(https://pacific-masters.org/content/laura-val-swimmer-year-awards)
+		This page will show a link to the AGSOTY page for the "Current Year" and the
+		"Previous Year".  It switches years when the date changes years (Dec 31 at midnight.)
+		So there is nothing to do UNLESS you want to show other years, in which case do this:
+		- drupal log in (https://pacific-masters.org/user)
+		- Competition > Swimmer of the Year Awards
+		- Edit the php:
+			Make sure the text format is "PHP code" and "Disable rich-text" is off.
+			The first few lines grab the data from the PacM database, then the output starts. 
+			You have to scroll down a bit to find that.  Find this:
+  				$year = date('Y');
+			and change it to:
+  				$year = 2017;  # in this example <new season> is 2017
 
+
+		
+	
+	
 *** Begin a new season on PMS Prod:
 	ON PRODUCTION MACHINE:
 	- Add a link to the Support directory to the Generated-<new season> directory:

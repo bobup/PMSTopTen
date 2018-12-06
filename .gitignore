@@ -18,3 +18,4 @@ old/
 /SourceData-*/*
 properties_DB*.txt
 GetResults.pl.launch
+Generated-*/Support
