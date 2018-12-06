@@ -32,7 +32,8 @@ TTSTATS='./TTStats.pl'
 SIMPLE_SCRIPT_NAME=`basename $0`
 DOFETCH_LOG=/tmp/DoFetchLog.txt
 
-set -x
+# debugging...
+#set -x
 
 if [ ."$1" = . ]  ; then 
 	echo "$SIMPLE_SCRIPT_NAME: Missing season on `hostname` - ABORT!"

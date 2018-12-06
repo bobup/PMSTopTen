@@ -58,7 +58,12 @@ This are just some random notes used to write an eventual document
 		
 	- Add a link to the Support directory to the Generated-<new season> directory:
 		- copy the Support directory alias from Generated-<old season> 
-			to Generated-<new season>
+			to Generated-<new season>, e.g.:
+				% cd Generated-<old season>
+				% cp -a Support Generated-<new season>
+		- on PMS dev:  see "Begin a new season on PMS Dev" below
+		- on PMS Prod:  see "Begin a new season on PMS Prod" below
+				
 	- use Topten2.pl to process the fetched files and make sure we get the expected results
 		in the <appRootDir>/SeasonData/Season-<new season> directory:
 		- from Eclipse:  Run Topten2.pl with the parameter <new season>, or
@@ -72,6 +77,28 @@ This are just some random notes used to write an eventual document
 			directory.  This is where the new seasons Top Ten results will be placed.
 		
 ???	- Refresh your Eclipse project.
+
+=========================================================================================
+*** Begin a new season on PMS Dev:
+	ON DEV MACHINE (www1.g13.pair.com):
+	- Add a link to the Support directory to the Generated-<new season> directory:
+		- copy the Support directory alias from Generated-<old season> 
+			to Generated-<new season>, e.g.:
+				% cd /usr/home/caroline/public_html/pacific-masters.org/sites/default/files/
+					comp/points/standings-<old season>
+				% cp -a Support /usr/home/caroline/public_html/pacific-masters.org/sites/default/
+					files/comp/points/standings-<new season>
+
+*** Begin a new season on PMS Prod:
+	ON PRODUCTION MACHINE:
+	- Add a link to the Support directory to the Generated-<new season> directory:
+		- copy the Support directory alias from Generated-<old season> 
+			to Generated-<new season>, e.g.:
+				% cd /usr/home/pacmasters/public_html/pacificmasters.org/sites/default/files/
+					comp/points/standings-<old season>
+				% cp -a Support /usr/home/pacmasters/public_html/pacificmasters.org/sites/default/
+					files/comp/points/standings-<new season>
+
 
 
 
@@ -205,6 +232,8 @@ xxx % cp ../../TT2018/properties.txt .
 # next so it will send an email to the correct person.  Then execute the script:
     ----   no!   % Code/Scripts/GenTopten2 2017
 % Code/Scripts/DoFetchAndProcessTopten 2017
+
+
 
 
 

@@ -1,11 +1,9 @@
 <?php
-/* 
+/*
  * PwdPlease.php - display the contents of the parent directory of the
  *	directory holding this script.
  */
- 
- 
-$files = scandir( ".." );
+
 $cwdName = getcwd();
 $dirSimpleName = basename( dirname( $cwdName ) );
 ?>
@@ -19,7 +17,16 @@ echo "Contents of $dirSimpleName";
 <body>
 <?php
 echo "<h2>Contents of $dirSimpleName</h2>\n";
+$files = scandir( ".." );
+foreach( $files as $file ) {
+	if( substr( $file, 0, 1 ) === '.' ) continue;
+	$dir = "";
+	if( is_dir( $file ) ) $dir = '/';
+	echo "<br>$file$dir\n";
+}
 
+echo "<h2>Contents of $cwdName</h2>\n";
+$files = scandir( "." );
 foreach( $files as $file ) {
 	if( substr( $file, 0, 1 ) === '.' ) continue;
 	$dir = "";
