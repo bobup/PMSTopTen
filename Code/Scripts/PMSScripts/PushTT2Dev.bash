@@ -77,7 +77,7 @@ if [ -e "index.html" ] ; then
 	# yes!  get to work:
 	mkdir -p $DESTINATION_DIR
 	cp -r *  $DESTINATION_DIR
-	LogMessage "Top Ten standings pushed to dev by $SIMPLE_SCRIPT_NAME on `hostname`" \
+	LogMessage "$1 Top Ten standings pushed to dev by $SIMPLE_SCRIPT_NAME on `hostname`" \
 		"$(cat <<- BUp9 
 		Destination Directory: $DESTINATION_DIR
 		(STARTed on $STARTDATE, FINISHed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
@@ -85,7 +85,7 @@ if [ -e "index.html" ] ; then
 		)"
 else
 	# NO!  Nothing to push:
-	LogMessage "Top Ten standings NOT pushed to dev by $SIMPLE_SCRIPT_NAME on `hostname`" \
+	LogMessage "$1 Top Ten standings NOT pushed to dev by $SIMPLE_SCRIPT_NAME on `hostname`" \
 		"$(cat <<- BUp9 
 		The file
         '$GENERATED_DIR/index.html'

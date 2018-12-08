@@ -40,7 +40,7 @@ if [ "$PUSH_DEV_STATUS" -eq 0 ] ; then
     # push to dev was successful - push to production if appropriate
     $SCRIPT_DIR/PushTT2Prod.bash $1 $2
 else
-    echo "Push to dev failed, so no auto push to production."
+    echo "$1 Push to dev failed, so no auto push to production."
 fi
 
 echo ""; echo '******************** Done! with' "$0"

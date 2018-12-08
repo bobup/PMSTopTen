@@ -102,7 +102,8 @@ This are just some random notes used to write an eventual document
   				$year = date('Y');
 			and change it to:
   				$year = 2017;  # in this example <new season> is 2017
-
+	- Update the crontab for the dev user:
+		- copy the entry for the <old season> and convert it for the <new season>
 
 		
 	

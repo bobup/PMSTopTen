@@ -70,7 +70,7 @@ DoThePush() {
     cd $TARDIR >/dev/null
     ls -tp | grep -v '/$' | tail -n +61 | xargs -I {} rm -- {}
     
-    LogMessage "Top Ten standings pushed to PRODUCTION by $SIMPLE_SCRIPT_NAME on `hostname`" \
+    LogMessage "$1 Top Ten standings pushed to PRODUCTION by $SIMPLE_SCRIPT_NAME on `hostname`" \
         "$(cat <<- BUp9
 Destination Directory: $DESTINATION_DIR
 (STARTed on $STARTDATE, FINISHed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
