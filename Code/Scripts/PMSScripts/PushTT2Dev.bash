@@ -8,6 +8,9 @@
 #
 # PASSED:
 #	$1 - the season, e.g. 2017
+#	$2 - ignored, but must be supplied if $3 is supplied
+#	$3 - (optional) if passed, and equal to 'y', then don't send an email if we don't do the push because
+#		the index.html file can't be found.
 #
 # NOTES:
 #	The location of the "Generated files" directory is derived from the location of this script.
@@ -18,6 +21,7 @@ STARTDATE=`date +'%a, %b %d %G at %l:%M:%S %p %Z'`
 EMAIL_NOTICE=bobup@acm.org
 SIMPLE_SCRIPT_NAME=`basename $0`
 DESTINATION_DIR=/usr/home/caroline/public_html/pacific-masters.org/sites/default/files/comp/points/standings-$1
+NOEMAIL=$3
 
 # FINAL_EXIT_STATUS is 0 if we successfully push to dev, or 1 if not
 FINAL_EXIT_STATUS=0
@@ -33,11 +37,18 @@ FINAL_EXIT_STATUS=0
 LogMessage() {
 	MSG=""
 	echo "$2"
-	/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<- BUpLM
-		Subject: $1
-		$2
-		$MSG
-		BUpLM
+	if [ .$NOEMAIL != 'y' ] ; then
+		/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<- BUpLM
+			Subject: $1
+			$2
+			$MSG
+			BUpLM
+	else
+		/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<- BUpLM2
+			Subject: no email sent by PushTT2Dev.bash
+			remove this from PushTT2Dev.bash
+			BUpLM2
+	fi
 } # end of LogMessage()
 
 ##########################################################################################

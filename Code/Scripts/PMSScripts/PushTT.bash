@@ -10,6 +10,8 @@
 #   $1 - the season, e.g. 2017
 #	$2 - (optional) if passed, and equal to 'y', then do the push even if results don't appear 'sane'
 #		(Used for production push only)
+#	$3 - (optional) if passed, and equal to 'y', then don't send an email if we don't do the push because
+#		the index.html file can't be found.  This is just passed to PushTT2Dev.bash.
 #
 
 SIMPLE_SCRIPT_NAME=`basename $0`
@@ -34,7 +36,7 @@ if [ -f $SEMAPHORE ] ; then
 fi
 
 echo ""; echo '******************** Begin' "$0"
-$SCRIPT_DIR/PushTT2Dev.bash $1
+$SCRIPT_DIR/PushTT2Dev.bash $1 $2 $3
 PUSH_DEV_STATUS=$?
 if [ "$PUSH_DEV_STATUS" -eq 0 ] ; then
     # push to dev was successful - push to production if appropriate
