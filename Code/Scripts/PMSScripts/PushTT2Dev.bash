@@ -37,17 +37,14 @@ FINAL_EXIT_STATUS=0
 LogMessage() {
 	MSG=""
 	echo "$2"
-	if [ .$NOEMAIL != 'y' ] ; then
+	if [ .$NOEMAIL != '.y' ] ; then
 		/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<- BUpLM
 			Subject: $1
 			$2
 			$MSG
 			BUpLM
 	else
-		/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<- BUpLM2
-			Subject: no email sent by PushTT2Dev.bash
-			remove this from PushTT2Dev.bash
-			BUpLM2
+		echo "(No email sent.)"
 	fi
 } # end of LogMessage()
 
