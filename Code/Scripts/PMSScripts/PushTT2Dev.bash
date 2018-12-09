@@ -85,6 +85,7 @@ if [ -e "index.html" ] ; then
 	# yes!  get to work:
 	mkdir -p $DESTINATION_DIR
 	cp -r *  $DESTINATION_DIR
+	NOEMAIL=			# always send an email
 	LogMessage "$1 Top Ten standings pushed to dev by $SIMPLE_SCRIPT_NAME on `hostname`" \
 		"$(cat <<- BUp9 
 		Destination Directory: $DESTINATION_DIR
