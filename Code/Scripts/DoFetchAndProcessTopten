@@ -21,6 +21,7 @@
 #	Update FetchStats set LinesRead=0 where FetchStatsId=1;
 #
 
+SEASON=$1
 STARTDATE=`date +'%a, %b %d %G at %l:%M:%S %p %Z'`
 TMPFILE=/tmp/DoFetchAndProcessTopten.$$
 TMPFILE2=/tmp/DoFetchAndProcessTopten_2.$$
@@ -91,9 +92,9 @@ ExecuteTopten() {
 	$TOPTEN $1
 	# first check to see if Topten ran at all...
 	if [ ! -f $TOPTENLOG ] ; then
-		echo "$TOPTEN failed to run (syntax error?), so we are GIVING UP"'!'
+		echo "$TOPTEN $SEASON failed to run (syntax error?), so we are GIVING UP"'!'
 		/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<-BUp0
-			Subject: FATAL ERROR (syntax error?) during $TOPTEN $1 on `hostname`
+			Subject: $SEASON FATAL ERROR (syntax error?) during $TOPTEN $1 on `hostname`
 			There was an error discovered when running $TOPTEN $1
 			preventing it from running and creating a log file.
 			(STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
@@ -104,10 +105,10 @@ ExecuteTopten() {
 	fi
 	# Topten ran, but did it get an error...?
 	if grep -q "ABORT" <$TOPTENLOG ; then
-		echo "$TOPTEN got an ABORT, so we are GIVING UP"'!'
+		echo "$TOPTEN $SEASON got an ABORT, so we are GIVING UP"'!'
 		echo "See the TopTen log file: $TOPTENLOG"
 		/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<-BUp0
-			Subject: FATAL ERROR during $TOPTEN $1 on `hostname`
+			Subject: $SEASON FATAL ERROR during $TOPTEN $1 on `hostname`
 			There was an error discovered when running $TOPTEN $1
 			The TopTen log file is here:  $TOPTENLOG
 			(STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
@@ -157,7 +158,7 @@ LogMessage() {
 ##################  CHECK THE SEMAPHORE   ################################################
 if [ -e $SEMAPHORE ] ; then
 	# abort - program already running!
-	LogMessage "Attempted parallel executions of $SIMPLE_SCRIPT_NAME on `hostname`" "$(cat <<- BUp9 
+	LogMessage "$SEASON Attempted parallel executions of $SIMPLE_SCRIPT_NAME on `hostname`" "$(cat <<- BUp9 
 		ABORT - $SIMPLE_SCRIPT_NAME has been running since $(cat $SEMAPHORE) on `hostname`
 		If you think this is wrong and $SIMPLE_SCRIPT_NAME is not running then do this:
 		   rm $SEMAPHORE
@@ -193,7 +194,7 @@ rm -f $GETRESULTSLOG
 if grep -q "ERROR" < $GETRESULTSLOG ; then
 ########################  GOT ERROR WITH RESULT FILES  ###################################
 	tail -n -8 $GETRESULTSLOG >$TMPFILE2
-	LogMessage "FATAL ERROR during GetResults.pl $1 on `hostname`, so we are GIVING UP!"  "$(cat <<- BUp1
+	LogMessage "$SEASON FATAL ERROR during GetResults.pl $1 on `hostname`, so we are GIVING UP!"  "$(cat <<- BUp1
 		There was an error discovered when running GetResults $1 on `hostname`
 		Details from GetResults.pl:
 		------
@@ -212,7 +213,7 @@ else
 		tail -n -13 $GETRESULTSLOG | grep -v "Get the results for USMS Records" >$TMPFILE2
 		echo "$SIMPLE_SCRIPT_NAME:  Starting $TOPTEN to process the NEW latest results for $1 (`date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
 		ExecuteTopten $1
-		LogMessage "A new Standings page has been generated for $1 on `hostname`" "$(cat <<- BUp2
+		LogMessage "$SEASON: A new Standings page has been generated on `hostname`" "$(cat <<- BUp2
 			A new Standings page has been generated for the year $1 by the $0 script on `hostname`..
 			Generation was completed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`.
 			Details from GetResults.pl:
@@ -232,7 +233,7 @@ else
 		echo "$SIMPLE_SCRIPT_NAME:  Starting $TOPTEN to process the PREVIOUS latest results for $1 (`date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
 		ExecuteTopten $1
 		LogMessage \
-			"Found NO changes in the USMS or PAC results, but we'll generate standings anyway for $1 on `hostname`" \
+			"$SEASON: Found NO changes in the USMS or PAC results, but we'll generate standings anyway on `hostname`" \
 			"$(cat <<- BUp3
 			Even though there appear to be no changes in the PAC and USMS results we 
 			generated a new standings page for the year $1 using the $0 script on `hostname`..
@@ -250,7 +251,7 @@ else
 	else
 ########################  NO NEW RESULT FILES - DON'T GENERATE TOP 10  ###################
 		tail -n -8 $GETRESULTSLOG >$TMPFILE2
-		LogMessage "No new Standings page for $1 on `hostname`" "$(cat <<- BUp4
+		LogMessage "$SEASON: No new Standings page on `hostname`" "$(cat <<- BUp4
 			There were no new changes for $1 on `hostname`.
 			(Results were fetched and compared with previous results on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 			Details from GetResults.pl:

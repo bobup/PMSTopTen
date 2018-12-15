@@ -12,6 +12,7 @@
 #	$2 - (optional) if passed, and equal to 'y', then do the push even if results don't appear 'sane'
 #
 
+SEASON=$1
 FORCE_PUSH=$2
 STANDINGSDIR=standings-$1
 STARTDATE=`date +'%a, %b %d %G at %l:%M:%S %p %Z'`
@@ -70,7 +71,7 @@ DoThePush() {
     cd $TARDIR >/dev/null
     ls -tp | grep -v '/$' | tail -n +61 | xargs -I {} rm -- {}
     
-    LogMessage "$1 Top Ten standings pushed to PRODUCTION by $SIMPLE_SCRIPT_NAME on `hostname`" \
+    LogMessage "$SEASON Top Ten standings pushed to PRODUCTION by $SIMPLE_SCRIPT_NAME on `hostname`" \
         "$(cat <<- BUp9
 Destination Directory: $DESTINATION_DIR
 (STARTed on $STARTDATE, FINISHed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
@@ -138,11 +139,11 @@ else
     DEV_TOTAL_POINTS=`grep <$SOURCE_TTSTATS "E1" | sed -e ' s/^....:[^0-9]*//'`
     
     if [ -z "$SERVER_TOTAL_POINTS" -o -z "$DEV_TOTAL_POINTS" ] ; then
-        DontDoThePush "Invalid Total Points - one of them is '0'" \
+        DontDoThePush "$SEASON: Invalid Total Points - one of them is '0'" \
             "SERVER Total Points is '$SERVER_TOTAL_POINTS', DEV Total Points is '$DEV_TOTAL_POINTS'"
     else
         if [ "$DEV_TOTAL_POINTS" -lt "$SERVER_ADJUSTED_POINTS" ] ; then
-            DontDoThePush "Unexpected Total Points on Dev - it's less than 95% of what's on the SERVER" \
+            DontDoThePush "$SEASON: Unexpected Total Points on Dev - it's less than 95% of what's on the SERVER" \
                 "SERVER Total Points is $SERVER_TOTAL_POINTS (95%=$SERVER_ADJUSTED_POINTS), DEV Total Points is $DEV_TOTAL_POINTS"
         fi
     fi
@@ -151,7 +152,7 @@ else
     SERVER_ADJUSTED_OW_SPLASHES=$[SERVER_OW_SPLASHES-$[SERVER_OW_SPLASHES/20]]
     DEV_OW_SPLASHES=`grep <$SOURCE_TTSTATS "G1" | sed -e ' s/^....:[^0-9]*//'`
     if [ "$DEV_OW_SPLASHES" -lt "$SERVER_ADJUSTED_OW_SPLASHES" ] ; then
-        DontDoThePush "Unexpected OW Splashes on Dev - it's less than 95% of what's on the SERVER" \
+        DontDoThePush "$SEASON: Unexpected OW Splashes on Dev - it's less than 95% of what's on the SERVER" \
             "SERVER OW Splashes is $SERVER_OW_SPLASHES (95%=$SERVER_ADJUSTED_OW_SPLASHES), DEV OW Splashes is $DEV_OW_SPLASHES"
     fi
     
@@ -159,7 +160,7 @@ else
     SERVER_ADJUSTED_OW_SWIMMERS=$[SERVER_OW_SWIMMERS-$[SERVER_OW_SWIMMERS/20]]
     DEV_OW_SWIMMERS=`grep <$SOURCE_TTSTATS "H1" | sed -e ' s/^....:[^0-9]*//'`
     if [ "$DEV_OW_SWIMMERS" -lt "$SERVER_ADJUSTED_OW_SWIMMERS" ] ; then
-        DontDoThePush "Unexpected OW Swimmers on Dev - it's less than 95% of what's on the SERVER" \
+        DontDoThePush "$SEASON: Unexpected OW Swimmers on Dev - it's less than 95% of what's on the SERVER" \
             "SERVER OW Swimmers is $SERVER_OW_SWIMMERS (95%=$SERVER_ADJUSTED_OW_SWIMMERS), DEV OW Swimmers is $DEV_OW_SWIMMERS"
     fi
 
