@@ -792,6 +792,17 @@ sub PMSProcessResults($) {
 		# get to work
 		PMSLogging::DumpNote( "", "", "** Topten::PMSProcessResults(): Begin processing $org_course:\n   '$fileName'", 1 );
 		my %sheetHandle = TT_SheetSupport::OpenSheetFile($fileName);
+		
+		
+### we need this check for all users of OpenSheetFile():
+		if( %sheetHandle.{"fileRef"} == 0 ) {
+			# couldn't open the file even though it exists - empty?
+			PMSLogging::DumpWarning( "", "", "!! Topten::PMSProcessResults(): UNABLE TO PROCESS $org_course (file " .
+				"exists but unable to get handle - empty?) - INGORE THIS FILE:\n   '$fileName'", 1 );
+		}
+		
+####
+		
 		my $lineNum = 0;
 		my $numResultLines = 0;
 		my $numNotInSeason = 0;		# number of results that were out of season

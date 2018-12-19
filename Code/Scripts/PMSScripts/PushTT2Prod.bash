@@ -32,6 +32,7 @@ SOURCE_TTSTATS=$SOURCE_DIR/TTStats.html
 
 # temp diff:
 TTSTATS_DIFF=/tmp/TTStatsDiff.$$
+TTSTATS_DIFF2=/tmp/TTStatsDiff-2.$$
 
 #
 # LogMessage - generate a log message to various devices:  email, stdout, and a script
@@ -76,8 +77,8 @@ DoThePush() {
 Destination Directory: $DESTINATION_DIR
 (STARTed on $STARTDATE, FINISHed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
 diff $SERVER_TTSTATS $SOURCE_TTSTATS :
-< lines: PRODUCTION server, > lines: DEV server
-$(cat $TTSTATS_DIFF)
+.< lines: PRODUCTION server, .> lines: DEV server
+$(cat $TTSTATS_DIFF2)
 BUp9
 )"
 } # end of DoThePush()
@@ -95,8 +96,8 @@ DontDoThePush() {
 		LogMessage "$1" "The SERVER was NOT updated!
 			$2" "diff $SERVER_TTSTATS
 				$SOURCE_TTSTATS :
-			< lines: PRODUCTION server, > lines: DEV server
-			$(cat $TTSTATS_DIFF)"
+			.< lines: PRODUCTION server, .> lines: DEV server
+			$(cat $TTSTATS_DIFF2)"
 	fi		
     exit 1;
 } # end of DontDoThePush()
@@ -127,12 +128,17 @@ echo ""; echo '******************** Begin' "$0"
 curl -f $DESTINATION_URL >$SERVER_TTSTATS 2>/dev/null
 STATUS=$?
 if [ "$STATUS" -eq 22 ] ; then
-    echo "There is no '$DESTINATION_URL'" | tee >$TTSTATS_DIFF
+    echo "There is no '$DESTINATION_URL'" | tee >$TTSTATS_DIFF2
     # do the push!
     DoThePush
 else
     # before we do anything first compare the current Production TTStats with the newly generated TTStats on dev
     diff $SERVER_TTSTATS $SOURCE_TTSTATS >$TTSTATS_DIFF
+    # prepend every '<' and '>' line with a dot ('.') to avoid a problem with sendmail turning '>' into '|':
+	sed <$TTSTATS_DIFF -e ' s/^</.</' -e ' s/^>/.>/' >$TTSTATS_DIFF2
+    
+    
+    
     
     SERVER_TOTAL_POINTS=`grep <$SERVER_TTSTATS "E1" | sed -e ' s/^....:[^0-9]*//'`
     SERVER_ADJUSTED_POINTS=$[SERVER_TOTAL_POINTS-$[SERVER_TOTAL_POINTS/20]]
