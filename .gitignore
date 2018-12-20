@@ -19,3 +19,7 @@ old/
 properties_DB*.txt
 GetResults.pl.launch
 Generated-*/Support
+# don't save any of the RSIDN files - they contain personal information that we must not
+# store on a public repository
+*[rR][sS][iI][nN][dD]*
+*[rR][sS][iI][dD][nN]*
