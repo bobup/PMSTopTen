@@ -794,219 +794,219 @@ sub PMSProcessResults($) {
 		my %sheetHandle = TT_SheetSupport::OpenSheetFile($fileName);
 		
 		
-### we need this check for all users of OpenSheetFile():
-		if( %sheetHandle.{"fileRef"} == 0 ) {
+#todo: we need this check for all users of OpenSheetFile():
+		if( $sheetHandle{"fileRef"} == 0 ) {
 			# couldn't open the file even though it exists - empty?
 			PMSLogging::DumpWarning( "", "", "!! Topten::PMSProcessResults(): UNABLE TO PROCESS $org_course (file " .
 				"exists but unable to get handle - empty?) - INGORE THIS FILE:\n   '$fileName'", 1 );
-		}
-		
-####
-		
-		my $lineNum = 0;
-		my $numResultLines = 0;
-		my $numNotInSeason = 0;		# number of results that were out of season
-		my $emptyDateSeen = 0;
-		while( 1 ) {
-			my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
-			my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
-			my $length = scalar(@row);
-			if( $length ) {
-				# we've got a new row of of something (may be all spaces or a heading or something else)
-				$lineNum++;
-				
-				if( ($lineNum % 1000) == 0 ) {
-					print "...line $lineNum...\n";
-				}
-				
-				if( $debug ) {
-					print "$simpleFileName: line $lineNum: ";
-					for( my $i=0; $i < scalar(@row); $i++ ) {
-						print "col $i: '$row[$i]', ";
+		} else {
+			# it looks like we have a non-empty file to read!
+			
+			my $lineNum = 0;
+			my $numResultLines = 0;
+			my $numNotInSeason = 0;		# number of results that were out of season
+			my $emptyDateSeen = 0;
+			while( 1 ) {
+				my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
+				my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
+				my $length = scalar(@row);
+				if( $length ) {
+					# we've got a new row of of something (may be all spaces or a heading or something else)
+					$lineNum++;
+					
+					if( ($lineNum % 1000) == 0 ) {
+						print "...line $lineNum...\n";
 					}
-					print "\n";
-				} # end debug
-				my ($currentGender, $currentAgeGroup, $currentEventId);
-				$currentGender = $row[0];
-				if( ($currentGender ne "Women") && ($currentGender ne "Men") ) {
-					PMSLogging::DumpNote( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: " .
-						"Illegal line IGNORED:\n   $rowAsString" );
-					next;		# not a result line
-				}
-				$numResultLines++;
-				#
-				# we have a row with the following columns (2016):
-				# 0: Sex  (Women or Men)
-				# 1: Age Group (e.g. '45-49')
-				# 2: Distance (e.g. '100')
-				# 3: Stroke (e.g. 'Freestyle')
-				# 4: Rank (e.g. 1, 2, ...)
-				# 5: Time (e.g. '1:38.41')
-				# 6: Name (e.g. 'Elizabeth Pelton')
-				# 7: Age (e.g. 'F23' or 'M28')
-				# 8: Club (e.g. 'USF')
-				# 9: Reg Number (e.g. '386W-0AETB')
-				#10: Date (e.g. '07-23-2016')  [may be empty, e.g. 2017]
-				#11: Meet (e.g. '2016 U.S. Olympic Trials')
-
-				# get the age group
-				$currentAgeGroup = $row[1];
-				# get the event name
-				# Add this event to our Event table:
-				$currentEventId = TT_MySqlSupport::AddNewEventIfNecessary( $row[2], $units, 
-					PMSUtil::CanonicalStroke( $row[3] ) );
-				my ($place, $time, $firstName, $middleInitial, $lastName, $gender, $age, $team, $regNum, 
-					$eventName, $meetTitle, $date);
-				# these values come from the RSIDN file:
-				my ($RSIDNFirstName, $RSIDNMiddleInitial, $RSIDNLastName, $RSIDNTeam);
-				$place = $row[4];
-				$time = $row[5];		# e.g. '1:38.41'
-				$time = TT_Util::GenerateCanonicalDurationForDB( $time, $fileName, $lineNum );
-				my $fullName = $row[6];
-				$team = $row[8];
-				$regNum = $row[9];
-				$date = $row[10];
-				$meetTitle = $row[11];
-				$meetTitle = "(unknown meet name)" if( !defined( $meetTitle ) );
-
-				# convert the date to the conanical form 'yyyy-mm-dd'
-				my $convertedDateIsValid = 1;		# assume the passed $date is OK
-				my $convertedDate = PMSUtil::ConvertDateToISO( $date );
-				# handle empty or invalid dates
-				if( $convertedDate eq $PMSConstants::INVALID_DOB ) {
-					$convertedDateIsValid = 0;		# oops - something wrong with the passed $date
-					if( $date eq "" ) {
-						# minor problem - don't show this error more than once per file:
-						if( ! $emptyDateSeen ) {
-							# this is bad data if we have an empty date - we should get this fixed!
-							PMSLogging::DumpWarning( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName:  " .
-								"Missing date (this message will not be repeated for this file):" .
-								"\n     $rowAsString" .
-								"\n   WE WILL USE A FAKE BUT VALID DATE AND ATTEMPT TO PROCESS THIS ROW.", 0);
-							$emptyDateSeen = 1;
+					
+					if( $debug ) {
+						print "$simpleFileName: line $lineNum: ";
+						for( my $i=0; $i < scalar(@row); $i++ ) {
+							print "col $i: '$row[$i]', ";
 						}
-						# use a fake, but valid date:
-						$convertedDate = "$yearBeingProcessed-01-01";	# legal date part of the season for every course
+						print "\n";
+					} # end debug
+					my ($currentGender, $currentAgeGroup, $currentEventId);
+					$currentGender = $row[0];
+					if( ($currentGender ne "Women") && ($currentGender ne "Men") ) {
+						PMSLogging::DumpNote( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: " .
+							"Illegal line IGNORED:\n   $rowAsString" );
+						next;		# not a result line
+					}
+					$numResultLines++;
+					#
+					# we have a row with the following columns (2016):
+					# 0: Sex  (Women or Men)
+					# 1: Age Group (e.g. '45-49')
+					# 2: Distance (e.g. '100')
+					# 3: Stroke (e.g. 'Freestyle')
+					# 4: Rank (e.g. 1, 2, ...)
+					# 5: Time (e.g. '1:38.41')
+					# 6: Name (e.g. 'Elizabeth Pelton')
+					# 7: Age (e.g. 'F23' or 'M28')
+					# 8: Club (e.g. 'USF')
+					# 9: Reg Number (e.g. '386W-0AETB')
+					#10: Date (e.g. '07-23-2016')  [may be empty, e.g. 2017]
+					#11: Meet (e.g. '2016 U.S. Olympic Trials')
+	
+					# get the age group
+					$currentAgeGroup = $row[1];
+					# get the event name
+					# Add this event to our Event table:
+					$currentEventId = TT_MySqlSupport::AddNewEventIfNecessary( $row[2], $units, 
+						PMSUtil::CanonicalStroke( $row[3] ) );
+					my ($place, $time, $firstName, $middleInitial, $lastName, $gender, $age, $team, $regNum, 
+						$eventName, $meetTitle, $date);
+					# these values come from the RSIDN file:
+					my ($RSIDNFirstName, $RSIDNMiddleInitial, $RSIDNLastName, $RSIDNTeam);
+					$place = $row[4];
+					$time = $row[5];		# e.g. '1:38.41'
+					$time = TT_Util::GenerateCanonicalDurationForDB( $time, $fileName, $lineNum );
+					my $fullName = $row[6];
+					$team = $row[8];
+					$regNum = $row[9];
+					$date = $row[10];
+					$meetTitle = $row[11];
+					$meetTitle = "(unknown meet name)" if( !defined( $meetTitle ) );
+	
+					# convert the date to the conanical form 'yyyy-mm-dd'
+					my $convertedDateIsValid = 1;		# assume the passed $date is OK
+					my $convertedDate = PMSUtil::ConvertDateToISO( $date );
+					# handle empty or invalid dates
+					if( $convertedDate eq $PMSConstants::INVALID_DOB ) {
+						$convertedDateIsValid = 0;		# oops - something wrong with the passed $date
+						if( $date eq "" ) {
+							# minor problem - don't show this error more than once per file:
+							if( ! $emptyDateSeen ) {
+								# this is bad data if we have an empty date - we should get this fixed!
+								PMSLogging::DumpWarning( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName:  " .
+									"Missing date (this message will not be repeated for this file):" .
+									"\n     $rowAsString" .
+									"\n   WE WILL USE A FAKE BUT VALID DATE AND ATTEMPT TO PROCESS THIS ROW.", 0);
+								$emptyDateSeen = 1;
+							}
+							# use a fake, but valid date:
+							$convertedDate = "$yearBeingProcessed-01-01";	# legal date part of the season for every course
+						} else {
+							# we had a badly formatted date - ignore this entry
+							PMSLogging::DumpError( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: Invalid date " .
+								"('$date') - (line ignored):\n   $rowAsString", 1 );
+							next;
+						}
 					} else {
-						# we had a badly formatted date - ignore this entry
-						PMSLogging::DumpError( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: Invalid date " .
-							"('$date') - (line ignored):\n   $rowAsString", 1 );
+						# $convertedDate is a valid date in the correct format
+					}
+					
+					# start analysis of data.  First, make sure this result falls within the season of
+					# interest:
+					my $dateAnalysis = PMSUtil::ValidateDateWithinSeason( $convertedDate, $course, $yearBeingProcessed );
+					if( $dateAnalysis ne "" ) {
+						# this result is outside the season we're processing!  Ignore it...
+						PMSLogging::DumpError( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: The result in " .
+							"'$simpleFileName' is not part of the season we are processing ($yearBeingProcessed).\n" .
+							"   [$dateAnalysis] - THIS ROW WILL BE IGNORED!". 1 );
+						$numNotInSeason++;
 						next;
 					}
-				} else {
-					# $convertedDate is a valid date in the correct format
-				}
-				
-				# start analysis of data.  First, make sure this result falls within the season of
-				# interest:
-				my $dateAnalysis = PMSUtil::ValidateDateWithinSeason( $convertedDate, $course, $yearBeingProcessed );
-				if( $dateAnalysis ne "" ) {
-					# this result is outside the season we're processing!  Ignore it...
-					PMSLogging::DumpError( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: The result in " .
-						"'$simpleFileName' is not part of the season we are processing ($yearBeingProcessed).\n" .
-						"   [$dateAnalysis] - THIS ROW WILL BE IGNORED!". 1 );
-					$numNotInSeason++;
-					next;
-				}
-				
-				if( $convertedDateIsValid ) {
-					$date = $convertedDate;
-				} else {
-					$date = $PMSConstants::DEFAULT_MISSING_DATE;
-				}
-
-				
-				# get name and team from our PMS db (if we can):
-				($RSIDNFirstName, $RSIDNMiddleInitial, $RSIDNLastName,$RSIDNTeam) = 
-					GetSwimmerDetailsFromPMS_DB(  $fileName, $lineNum, $regNum, "non-fatal" );
-				# if we found them in the RSIDN file then we're using the data we found.  Otherwise,
-				# we use what we got from the result file.
-				# NOTE:  if this swimmer's first name is an empty string this means we couldn't find their reg number in our
-				# own db (the RSIDN file).  
-				if( $RSIDNFirstName ne "" ) {
-					# we found this swimmer in the RSIDN file.  Get their name and team from the RSIDN
-					$firstName = $RSIDNFirstName;
-					$middleInitial = $RSIDNMiddleInitial;
-					$lastName = $RSIDNLastName;
-					$team = $RSIDNTeam;
-				} else {
-					# didn't find this regnum - produce error message if we haven't done so before
-					# for this regNum.
-					my $count = $TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName"};
-					if( !defined $count ) {
-						$count = 0;
-						PMSLogging::DumpWarning( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: " .
-							"\n   Couldn't find regNum " .
-							"($regNum) in RSIDN_$yearBeingProcessed.  (FATAL - This Top 10 result will be " .
-							"IGNORED since we can't confirm that this swimmer is a PAC swimmer).  Result line:" .
-							"\n     $rowAsString" );
+					
+					if( $convertedDateIsValid ) {
+						$date = $convertedDate;
+					} else {
+						$date = $PMSConstants::DEFAULT_MISSING_DATE;
 					}
-					$TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName"} = $count+1;
-					# remember the org and course we're seeing this problem in.  
-					# $TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName:OrgCourse"} is of the form:
-					#    org:course[,org:course:...]
-					if( !defined $TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName:OrgCourse"} ) {
-						$TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName:OrgCourse"} = "$currentAgeGroup;$org:$course";
-					} elsif( $TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName:OrgCourse"} !~ m/$org:$course/ ) {
-						$TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName:OrgCourse"} .= ",$org:course";
-					}
-	next;	# don't give points to this swimmer
-					# use the first, middle, last name from the results.
-					# break the $fullName into first, middle, and last names
-					my @arrOfBrokenNames = TT_MySqlSupport::BreakFullNameIntoBrokenNames( $fileName, $lineNum, $fullName );
-					# we're going to take the first name combination it found.
-					my $hashRef = $arrOfBrokenNames[0];
-					$firstName = $hashRef->{'first'};
-					$middleInitial = $hashRef->{'middle'};
-					$lastName = $hashRef->{'last'};
-					}
-				$gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $currentGender );	# single letter
-				$age = $row[7];
-				$age =~ s/^.//;		# remove leading gender from age
-				#print "PMSProcessResults(): Line #$lineNum: place: $place, time=$time, name=$fullName " .
-				#	"['$firstName' '$middleInitial' '$lastName'] " .
-				#	", genderage=$genderAge ['$gender',$age], team=$team, regNum=$regNum\n";
-				# perform some sanity checks:
-				if( ! ValidateAge( $age, $currentAgeGroup ) ) {
-					PMSLogging::DumpError( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: Age error: " .
-						"('$fileName') Age is $age but event is for agegroup '$currentAgeGroup'", 1 );
-				}
-				
-				#compute the points they get for this swim:
-				my $points = 0;
-				if( ($place >= 1) && ($place <= 10) ) {
-					$points = $placeToPoints[$place];
-				}
-				
-				# add this swimmer to our DB if necessary
-				my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
-					$firstName, $middleInitial, $lastName,
-					$gender, $regNum, $age, $currentAgeGroup, $team );
-				
-				# add this meet to our DB if necessary
-				
-				if( lc($debugMeetTitle) eq lc($meetTitle) ) {
-					print "PMSProcessResults(): MeetTitle='$meetTitle', filename='$fileName', linenum='$lineNum'\n";
-				}
-				my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, $meetTitle,
-					"(none)", $org, $course, $date, $date, 1 );
-				
-				TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $currentAgeGroup, $currentGender, 
-					$place, $points, $swimmerId, $currentEventId, $org, $course, $meetId, $time, $date );
 	
-			} else # end of if( $length...
-			{
-				# TT_SheetSupport::ReadSheetRow() returned a 0 length row - end of file
-				TT_SheetSupport::CloseSheet( \%sheetHandle );
-				my $msg = "* Topten::PMSProcessResults(): Done with '$simpleFileName' - $lineNum lines read, $numResultLines lines " .
-					"stored.";
-				if( $numNotInSeason ) {
-					$msg .= "  ($numNotInSeason lines ignored: out of season.)";
+					
+					# get name and team from our PMS db (if we can):
+					($RSIDNFirstName, $RSIDNMiddleInitial, $RSIDNLastName,$RSIDNTeam) = 
+						GetSwimmerDetailsFromPMS_DB(  $fileName, $lineNum, $regNum, "non-fatal" );
+					# if we found them in the RSIDN file then we're using the data we found.  Otherwise,
+					# we use what we got from the result file.
+					# NOTE:  if this swimmer's first name is an empty string this means we couldn't find their reg number in our
+					# own db (the RSIDN file).  
+					if( $RSIDNFirstName ne "" ) {
+						# we found this swimmer in the RSIDN file.  Get their name and team from the RSIDN
+						$firstName = $RSIDNFirstName;
+						$middleInitial = $RSIDNMiddleInitial;
+						$lastName = $RSIDNLastName;
+						$team = $RSIDNTeam;
+					} else {
+						# didn't find this regnum - produce error message if we haven't done so before
+						# for this regNum.
+						my $count = $TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName"};
+						if( !defined $count ) {
+							$count = 0;
+							PMSLogging::DumpWarning( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: " .
+								"\n   Couldn't find regNum " .
+								"($regNum) in RSIDN_$yearBeingProcessed.  (FATAL - This Top 10 result will be " .
+								"IGNORED since we can't confirm that this swimmer is a PAC swimmer).  Result line:" .
+								"\n     $rowAsString" );
+						}
+						$TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName"} = $count+1;
+						# remember the org and course we're seeing this problem in.  
+						# $TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName:OrgCourse"} is of the form:
+						#    org:course[,org:course:...]
+						if( !defined $TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName:OrgCourse"} ) {
+							$TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName:OrgCourse"} = "$currentAgeGroup;$org:$course";
+						} elsif( $TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName:OrgCourse"} !~ m/$org:$course/ ) {
+							$TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName:OrgCourse"} .= ",$org:course";
+						}
+		next;	# don't give points to this swimmer
+						# use the first, middle, last name from the results.
+						# break the $fullName into first, middle, and last names
+						my @arrOfBrokenNames = TT_MySqlSupport::BreakFullNameIntoBrokenNames( $fileName, $lineNum, $fullName );
+						# we're going to take the first name combination it found.
+						my $hashRef = $arrOfBrokenNames[0];
+						$firstName = $hashRef->{'first'};
+						$middleInitial = $hashRef->{'middle'};
+						$lastName = $hashRef->{'last'};
+						}
+					$gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $currentGender );	# single letter
+					$age = $row[7];
+					$age =~ s/^.//;		# remove leading gender from age
+					#print "PMSProcessResults(): Line #$lineNum: place: $place, time=$time, name=$fullName " .
+					#	"['$firstName' '$middleInitial' '$lastName'] " .
+					#	", genderage=$genderAge ['$gender',$age], team=$team, regNum=$regNum\n";
+					# perform some sanity checks:
+					if( ! ValidateAge( $age, $currentAgeGroup ) ) {
+						PMSLogging::DumpError( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: Age error: " .
+							"('$fileName') Age is $age but event is for agegroup '$currentAgeGroup'", 1 );
+					}
+					
+					#compute the points they get for this swim:
+					my $points = 0;
+					if( ($place >= 1) && ($place <= 10) ) {
+						$points = $placeToPoints[$place];
+					}
+					
+					# add this swimmer to our DB if necessary
+					my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
+						$firstName, $middleInitial, $lastName,
+						$gender, $regNum, $age, $currentAgeGroup, $team );
+					
+					# add this meet to our DB if necessary
+					
+					if( lc($debugMeetTitle) eq lc($meetTitle) ) {
+						print "PMSProcessResults(): MeetTitle='$meetTitle', filename='$fileName', linenum='$lineNum'\n";
+					}
+					my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, $meetTitle,
+						"(none)", $org, $course, $date, $date, 1 );
+					
+					TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $currentAgeGroup, $currentGender, 
+						$place, $points, $swimmerId, $currentEventId, $org, $course, $meetId, $time, $date );
+		
+				} else # end of if( $length...
+				{
+					# TT_SheetSupport::ReadSheetRow() returned a 0 length row - end of file
+					TT_SheetSupport::CloseSheet( \%sheetHandle );
+					my $msg = "* Topten::PMSProcessResults(): Done with '$simpleFileName' - $lineNum lines read, $numResultLines lines " .
+						"stored.";
+					if( $numNotInSeason ) {
+						$msg .= "  ($numNotInSeason lines ignored: out of season.)";
+					}
+					PMSLogging::PrintLog( "", "", $msg, 1 );
+					last;
 				}
-				PMSLogging::PrintLog( "", "", $msg, 1 );
-				last;
-			}
-		} # end of while(1)...
+			} # end of while(1)...
+		} # end of it looks like we have a non-empty file to read!
 	} # end of foreach my $fileName...	
 } # end of PMSProcessResults()
 

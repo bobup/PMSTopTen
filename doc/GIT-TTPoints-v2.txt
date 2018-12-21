@@ -23,7 +23,7 @@ This are just some random notes used to write an eventual document
 		- create the SourceData-<new season> directory
 		- cd PMSSwimmerData
 		- remove all old RSIDN files and get a new one (or use an old one for now)
-		- cd ..   (cwd=Season-<new season>
+		- cd ..   (cwd=Season-<new season>)
 
 		- rename the "properties-<old season>.txt" to "properties-<new season>.txt"
 		- rename the "properties_DB-<old season>.txt" to "properties_DB-<new season>.txt"
@@ -179,10 +179,25 @@ OR
 % cd $rootDir			# see Definition of 'rootDir'.  Create if necessary
 % git clone https://github.com/bobup/PMSPerlModules
 
+# Next, we need to get the files that contain privileged information:
+#	- RSIND files
+#	- database config files
+# Put them somewhere safe so they will be available when we need them a few steps below.
+
 # Next, we get the latest PMSTopTen files:
-xxx  % cp PMSTopTen/Code/properties.txt .     # make a copy of working properties.txt
-% rm -rf PMSTopTen
+% rm -rf PMSTopTen   # if it exists.  You can also move it.
+# Create a brand new PMSTopTen directory:
 % git clone https://github.com/bobup/PMSTopTen
+
+# Next, install the privileged files we gathered above:
+#	- put the properties_DB-{season}.txt file into the <appRootDir>/SeasonData/Season-<season> 
+#		directory
+#	- put the correct RSIND file into the <appRootDir>/SeasonData/Season-<season>/PMSSwimmerData
+#		directory.
+# DO THE ABOVE FOR ALL seasons
+
+!!!! history tree
+!!!!  set permissions!!
 
 # Next, we need to be sure our database configuration parameters are set
 # correctly.  They are specified in the 'properties_DB-{season}.txt' file located in the
@@ -214,6 +229,14 @@ xxx2)    ----- for 2018
 xxx% cd PMSTopTen/Code
 xxx % cp ../../TT2018/properties.txt .
 
+
+****  need to add steps to get and maintain our RSIND files!  (We can't store them on github)
+...something like this:
+cd <appRootDir>/SeasonData/Season-<season>
+mkdir PMSSwimmerData
+cd PMSSwimmerData
+...get the RSIND file and put it here...
+... do the same for the 
 
 
 # At this point we have the source code but no "Generated Files", so we'll have 
