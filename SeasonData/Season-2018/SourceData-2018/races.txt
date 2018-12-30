@@ -18,7 +18,11 @@ Rowdy Gaines Masters Classic X	(NOT a PAC sanctioned meet)	PAC	SCM	2018-10-12 - 
 10th Annual UVAC Leaf Peepers Masters SCM Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2018-10-20	20181020LEAFPPS	https://www.usms.org/comp/meets/meet.php?MeetID=20181020LEAFPPS
 2018 Hood River Short Course Meters Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2018-11-10	20181110HOODRVS	https://www.usms.org/comp/meets/meet.php?MeetID=20181110HOODRVS
 2018 PSM SCM Championship and PN Zone Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2018-11-17 - 2018-11-18	20181117PSMSCMS	https://www.usms.org/comp/meets/meet.php?MeetID=20181117PSMSCMS
+2018 Ron Johnson Invitational Arizona SCM Championships	(NOT a PAC sanctioned meet)	PAC	SCM	2018-11-17 - 2018-11-18	20181117RonJonS	https://www.usms.org/comp/meets/meet.php?MeetID=20181117RonJonS
+2018 SPMS Short Course Meters Championships	(NOT a PAC sanctioned meet)	PAC	SCM	2018-11-30 - 2018-12-2	20181130LBSCMS	https://www.usms.org/comp/meets/meet.php?MeetID=20181130LBSCMS
 South Carolina SCM Championships	(NOT a PAC sanctioned meet)	PAC	SCM	2018-11-9 - 2018-11-11	20181109colscmS	https://www.usms.org/comp/meets/meet.php?MeetID=20181109colscmS
+6th Annual Solstice SCM Swim Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2018-12-1	20181201SOLSTS	https://www.usms.org/comp/meets/meet.php?MeetID=20181201SOLSTS
+St, Nick's SCM Invitational	(NOT a PAC sanctioned meet)	PAC	SCM	2018-12-2	20181202STNICKS	https://www.usms.org/comp/meets/meet.php?MeetID=20181202STNICKS
 Rose Bowl Masters SCY Swim Meet	(NOT a PAC sanctioned meet)	PAC	SCY	2018-2-10 - 2018-2-11	20180210RBSCYY	https://www.usms.org/comp/meets/meet.php?MeetID=20180210RBSCYY
 25th Annual Fort Lauderdale Masters Challenge	(NOT a PAC sanctioned meet)	PAC	SCY	2018-2-16 - 2018-2-18	20180216FTLMCY	https://www.usms.org/comp/meets/meet.php?MeetID=20180216FTLMCY
 Splash &amp; Dash 	(IS a PAC sanctioned meet)	PAC	SCY	2018-2-17	20180217ALB-1YY	https://www.usms.org/comp/meets/meet.php?MeetID=20180217ALB-1YY

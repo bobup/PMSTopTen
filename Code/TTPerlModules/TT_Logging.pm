@@ -19,11 +19,21 @@ use warnings;
 #
 #
 sub HandleHTTPFailure( $$$$ ) {
-	my ($linkToResults, $org, $course, $httpResponse) = @_;
+	my ($linkToResults, $org, $course, $httpResponse, $extraNote ) = @_;
+	if( !defined $extraNote ) {
+		$extraNote = "";
+	} else {
+		$extraNote = " ($extraNote)";
+	}
+	my $success = $httpResponse->{"success"};
+	$success = "(undefined)" if( !defined( $success ) );
+	my $content=$httpResponse->{"content"};
+	$content =~ s/\s+$//;
 	PMSLogging::PrintLog( "", "", "HandleHTTPFailure(): HTTP Request to '$linkToResults'\n" .
-		"    (org:'$org', course:'$course') failed.  " .
+		"    (org:'$org', course:'$course') failed. {success}: $success, " .
 		"{status}: '$httpResponse->{status}', {reason}: '$httpResponse->{reason}',\n" .
-		"    {url}: '$httpResponse->{url}'\n", 1 );
+		"    Text of Exception ({content}): '$content',\n" .
+		"    {url}: '$httpResponse->{url}$extraNote'\n", 1 );
 } # end of HandleHTTPFailure()
 
 

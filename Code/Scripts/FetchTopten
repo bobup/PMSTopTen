@@ -9,8 +9,8 @@
 #
 #
 
-TMPFILE=/tmp/FetchTopten.$$
-TMPFILE2=/tmp/FetchTopten_2.$$
+TMPFILE=/tmp/FetchTopten-$1.$$
+TMPFILE2=/tmp/FetchTopten_2-$1.$$
 EMAIL_NOTICE=bobup@acm.org
 SCRIPT_NAME="`hostname`::$0"		# used for messages
 
