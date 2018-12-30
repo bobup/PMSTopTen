@@ -792,16 +792,12 @@ sub PMSProcessResults($) {
 		# get to work
 		PMSLogging::DumpNote( "", "", "** Topten::PMSProcessResults(): Begin processing $org_course:\n   '$fileName'", 1 );
 		my %sheetHandle = TT_SheetSupport::OpenSheetFile($fileName);
-		
-		
-#todo: we need this check for all users of OpenSheetFile():
 		if( $sheetHandle{"fileRef"} == 0 ) {
 			# couldn't open the file even though it exists - empty?
 			PMSLogging::DumpWarning( "", "", "!! Topten::PMSProcessResults(): UNABLE TO PROCESS $org_course (file " .
 				"exists but unable to get handle - empty?) - INGORE THIS FILE:\n   '$fileName'", 1 );
 		} else {
 			# it looks like we have a non-empty file to read!
-			
 			my $lineNum = 0;
 			my $numResultLines = 0;
 			my $numNotInSeason = 0;		# number of results that were out of season
@@ -1068,134 +1064,141 @@ sub USMSProcessResults($) {
 		# get to work
 		PMSLogging::DumpNote( "", "", "** Topten::USMSProcessResults(): Begin processing $org_course:\n   '$fileName'", 1 );
 		my %sheetHandle = TT_SheetSupport::OpenSheetFile($fileName);
-		my $eventId;
-		my $lineNum = 0;
-		my $numResultLines = 0;
-		my $numPMSResultLines = 0;
-		my $numNotInSeason = 0;		# number of results that were out of season - not used - data doesn't contain date!
-		my $emptyDateSeen = 0;		# not used - data doesn't contain date!
-		while( 1 ) {
-			my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
-			my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
-			my $length = scalar(@row);
-			if( $length ) {
-				# we've got a new row of of something (may be all spaces or a heading or something else)
-				$lineNum++;
-				if( $debug ) {
-					print "$simpleFileName: line $lineNum: ";
-					for( my $i=0; $i < scalar(@row); $i++ ) {
-						print "col $i: '$row[$i]', ";
+		if( $sheetHandle{"fileRef"} == 0 ) {
+			# couldn't open the file even though it exists - empty?
+			PMSLogging::DumpWarning( "", "", "!! Topten::USMSProcessResults(): UNABLE TO PROCESS $org_course (file " .
+				"exists but unable to get handle - empty?) - INGORE THIS FILE:\n   '$fileName'", 1 );
+		} else {
+			# it looks like we have a non-empty file to read!
+			my $eventId;
+			my $lineNum = 0;
+			my $numResultLines = 0;
+			my $numPMSResultLines = 0;
+			my $numNotInSeason = 0;		# number of results that were out of season - not used - data doesn't contain date!
+			my $emptyDateSeen = 0;		# not used - data doesn't contain date!
+			while( 1 ) {
+				my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
+				my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
+				my $length = scalar(@row);
+				if( $length ) {
+					# we've got a new row of of something (may be all spaces or a heading or something else)
+					$lineNum++;
+					if( $debug ) {
+						print "$simpleFileName: line $lineNum: ";
+						for( my $i=0; $i < scalar(@row); $i++ ) {
+							print "col $i: '$row[$i]', ";
+						}
+						print "\n";
+					} # end debug
+					my $place = $row[0];
+					if( $place !~ m/^\d+$/ ) {
+						PMSLogging::DumpNote( "", "", "Topten::USMSProcessResults(): Line $lineNum of $simpleFileName: " .
+							"Illegal line IGNORED:\n   $rowAsString" );
+						next;		# not a result line
 					}
-					print "\n";
-				} # end debug
-				my $place = $row[0];
-				if( $place !~ m/^\d+$/ ) {
-					PMSLogging::DumpNote( "", "", "Topten::USMSProcessResults(): Line $lineNum of $simpleFileName: " .
-						"Illegal line IGNORED:\n   $rowAsString" );
-					next;		# not a result line
+					$numResultLines++;
+					#
+					# we have a row with the following columns (2016):
+					# 0: Place  (e.g. 1, 2, ...)
+					# 1: Gender/Age Group (e.g. 'W45-49' or 'M45-49')
+					# 2: Event (e.g. '500 Free')
+					# 3: Name (e.g. 'Allison A Arnold')
+					# 4: Age (e.g. '23')
+					# 5: Club (e.g. 'USF')
+					# 6: LMSC ('Pacific')
+					# 7: Time (e.g. '1:38.41Y')
+					#
+					# found a top N line - extract all the data
+					my ($time, $firstName, $middleInitial, $lastName, $gender, $age, $team, $regNum, 
+						$ageGroup, $eventName, $fullName, $LMSC, $units);
+					
+					my $genderAgeGroup = $row[1];
+					$eventName = $row[2];
+					$fullName = $row[3];
+					$age = $row[4];
+					$team = $row[5];
+					$LMSC = $row[6];
+					$time = $row[7];	# (e.g. '1:38.41Y')
+					$units = $time;		# (e.g. '1:38.41Y')
+					$time =~ s/\w$//;	# (e.g. '1:38.41')
+					$time = TT_Util::GenerateCanonicalDurationForDB( $time, $fileName, $lineNum );
+					$units =~ s/^[\d:.]+//;		# (e.g. 'Y') Y or M for yards or meters....?
+					if( $units eq "Y" ) {
+						$units = "Yard";
+					} else {
+						$units = "Meter";
+					}
+					
+					# break the $genderAgeGroup into gender and ageGroup:
+					$genderAgeGroup =~ m/^(.)(.+)$/;
+					$gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $1 );	# M or F
+					$ageGroup = $2;
+					# modify the eventName to include the course
+					$eventName =~ s/ / $units /;
+					# Add this event to our Event table:
+					my( $distance, $stroke ) = PMSUtil::GetDistanceAndStroke( $row[2] );
+					$eventId = TT_MySqlSupport::AddNewEventIfNecessary( $distance, $units, $stroke );
+					
+					if( $fullName =~ m/$debugLastName/ ) {
+						print "found her\n";
+					}
+					
+					# look up this swimmer by trying to parse their full name and then find them in our
+					# RSIDN table:
+					$regNum = "";		# just in case we can't deduce the swimmer's names
+					my $teamInitials = "";
+					($regNum, $teamInitials, $firstName, $middleInitial, $lastName) = 
+											TT_MySqlSupport::GetDetailsFromFullName( $fileName, $lineNum, $fullName,
+											$team, $ageGroup, $org, $course, "Error if not found" );
+					if( $regNum eq "" ) {
+						# we couldn't figure out who this swimmer is, or didn't find them in the RSIDN table.
+						# go on to the next swimmer;
+						next;
+					}
+	
+					if(0) {
+					print "USMSProcessResults():  Line #$lineNum: place: $place, time=$time, name=$fullName ['$firstName' '$middleInitial' '$lastName']" .
+						", gender='$gender', age=$age, ageGroup = '$ageGroup', team=$team, regNum=$regNum, " .
+						"eventName='$eventName'\n";
+					}
+					# perform some sanity checks:
+					if( ! ValidateAge( $age, $ageGroup ) ) {
+						PMSLogging::DumpWarning( "", "", "Topten::USMSProcessResults(): Line $lineNum of $simpleFileName: " .
+							"Age is $age but event is for agegroup '$ageGroup' (line NOT ignored):\n   '$fileName'" .
+							"\n    $rowAsString", 1 );
+					}
+					
+					#compute the points they get for this swim:
+					my $points = 0;
+					if( ($place >= 1) && ($place <= 10) ) {
+						$points = $placeToPoints[$place];
+					}
+					
+					# add this swimmer to our DB if necessary
+					# NOTE:  if this swimmer's regNum is an empty string this means we couldn't find their reg number in our
+					# own db (the RSIDN file).  In this case we will NOT add this swimmer to our db.
+					if( $regNum ne "" ) {
+						$numPMSResultLines++;
+						my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, $firstName, $middleInitial, $lastName,
+							$gender, $regNum, $age, $ageGroup, $team );
+						TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $ageGroup, $gender, $place, $points, $swimmerId, 
+							$eventId, $org, $course, $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID, $time,
+							$PMSConstants::DEFAULT_MISSING_DATE );
+					}
+				} else # end of if( $length...
+				{
+					# TT_SheetSupport::ReadSheetRow() returned a 0 length row - end of file
+					TT_SheetSupport::CloseSheet( \%sheetHandle );
+					my $msg = "* Topten::PMSProcessResults(): Done with '$simpleFileName' - $lineNum lines read, $numResultLines lines " .
+						"stored.";
+					if( $numNotInSeason ) {
+						$msg .= "  ($numNotInSeason lines ignored: out of season.)";
+					}
+					PMSLogging::PrintLog( "", "", $msg, 1 );
+					last;
 				}
-				$numResultLines++;
-				#
-				# we have a row with the following columns (2016):
-				# 0: Place  (e.g. 1, 2, ...)
-				# 1: Gender/Age Group (e.g. 'W45-49' or 'M45-49')
-				# 2: Event (e.g. '500 Free')
-				# 3: Name (e.g. 'Allison A Arnold')
-				# 4: Age (e.g. '23')
-				# 5: Club (e.g. 'USF')
-				# 6: LMSC ('Pacific')
-				# 7: Time (e.g. '1:38.41Y')
-				#
-				# found a top N line - extract all the data
-				my ($time, $firstName, $middleInitial, $lastName, $gender, $age, $team, $regNum, 
-					$ageGroup, $eventName, $fullName, $LMSC, $units);
-				
-				my $genderAgeGroup = $row[1];
-				$eventName = $row[2];
-				$fullName = $row[3];
-				$age = $row[4];
-				$team = $row[5];
-				$LMSC = $row[6];
-				$time = $row[7];	# (e.g. '1:38.41Y')
-				$units = $time;		# (e.g. '1:38.41Y')
-				$time =~ s/\w$//;	# (e.g. '1:38.41')
-				$time = TT_Util::GenerateCanonicalDurationForDB( $time, $fileName, $lineNum );
-				$units =~ s/^[\d:.]+//;		# (e.g. 'Y') Y or M for yards or meters....?
-				if( $units eq "Y" ) {
-					$units = "Yard";
-				} else {
-					$units = "Meter";
-				}
-				
-				# break the $genderAgeGroup into gender and ageGroup:
-				$genderAgeGroup =~ m/^(.)(.+)$/;
-				$gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $1 );	# M or F
-				$ageGroup = $2;
-				# modify the eventName to include the course
-				$eventName =~ s/ / $units /;
-				# Add this event to our Event table:
-				my( $distance, $stroke ) = PMSUtil::GetDistanceAndStroke( $row[2] );
-				$eventId = TT_MySqlSupport::AddNewEventIfNecessary( $distance, $units, $stroke );
-				
-				if( $fullName =~ m/$debugLastName/ ) {
-					print "found her\n";
-				}
-				
-				# look up this swimmer by trying to parse their full name and then find them in our
-				# RSIDN table:
-				$regNum = "";		# just in case we can't deduce the swimmer's names
-				my $teamInitials = "";
-				($regNum, $teamInitials, $firstName, $middleInitial, $lastName) = 
-										TT_MySqlSupport::GetDetailsFromFullName( $fileName, $lineNum, $fullName,
-										$team, $ageGroup, $org, $course, "Error if not found" );
-				if( $regNum eq "" ) {
-					# we couldn't figure out who this swimmer is, or didn't find them in the RSIDN table.
-					# go on to the next swimmer;
-					next;
-				}
-
-				if(0) {
-				print "USMSProcessResults():  Line #$lineNum: place: $place, time=$time, name=$fullName ['$firstName' '$middleInitial' '$lastName']" .
-					", gender='$gender', age=$age, ageGroup = '$ageGroup', team=$team, regNum=$regNum, " .
-					"eventName='$eventName'\n";
-				}
-				# perform some sanity checks:
-				if( ! ValidateAge( $age, $ageGroup ) ) {
-					PMSLogging::DumpWarning( "", "", "Topten::USMSProcessResults(): Line $lineNum of $simpleFileName: " .
-						"Age is $age but event is for agegroup '$ageGroup' (line NOT ignored):\n   '$fileName'" .
-						"\n    $rowAsString", 1 );
-				}
-				
-				#compute the points they get for this swim:
-				my $points = 0;
-				if( ($place >= 1) && ($place <= 10) ) {
-					$points = $placeToPoints[$place];
-				}
-				
-				# add this swimmer to our DB if necessary
-				# NOTE:  if this swimmer's regNum is an empty string this means we couldn't find their reg number in our
-				# own db (the RSIDN file).  In this case we will NOT add this swimmer to our db.
-				if( $regNum ne "" ) {
-					$numPMSResultLines++;
-					my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, $firstName, $middleInitial, $lastName,
-						$gender, $regNum, $age, $ageGroup, $team );
-					TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $ageGroup, $gender, $place, $points, $swimmerId, 
-						$eventId, $org, $course, $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID, $time,
-						$PMSConstants::DEFAULT_MISSING_DATE );
-				}
-			} else # end of if( $length...
-			{
-				# TT_SheetSupport::ReadSheetRow() returned a 0 length row - end of file
-				TT_SheetSupport::CloseSheet( \%sheetHandle );
-				my $msg = "* Topten::PMSProcessResults(): Done with '$simpleFileName' - $lineNum lines read, $numResultLines lines " .
-					"stored.";
-				if( $numNotInSeason ) {
-					$msg .= "  ($numNotInSeason lines ignored: out of season.)";
-				}
-				PMSLogging::PrintLog( "", "", $msg, 1 );
-				last;
-			}
-		} # end of while(1)...
+			} # end of while(1)...
+		} # end of "# it looks like we have a non-empty file to read!"
 	} # end of foreach my $fileName...	
 	
 } # end of USMSProcessResults()
@@ -1273,87 +1276,94 @@ sub USMSProcessRecords($) {
 		$numPMSResultLines = 0;
 		PMSLogging::DumpNote( "", "", "** Topten::USMSProcessRecords(): Begin processing $org_course:\n   '$fileName'", 1 );
 		my %sheetHandle = TT_SheetSupport::OpenSheetFile($fileName);
-		my $lineNum = 0;
-		my $numResultLines = 0;
-		my $previousGenderAgeGroup = "";		# used for ties
-		my $previousEventName = "";				# used for ties
-		while( 1 ) {
-			my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
-			my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
-			my $length = scalar(@row);
-			if( $length ) {
-				# we've got a new row of of something (may be all spaces or a heading or something else)
-				$lineNum++;
-				if( $debug ) {
-					PMSLogging::DumpNote( "", "", "Topten::USMSProcessRecords()[debug]: Line $lineNum of $simpleFileName: " .
-						"    $rowAsString", 1 );
-				}
-				my $genderAgeGroup = $row[0];
-				my $eventName = $row[1];
-				
-				# if the genderAgeGroup and the eventName are both empty we have a tie (or empty line).
-				if( ((defined $genderAgeGroup) && ($genderAgeGroup ne "")) &&
-					((defined $eventName) && ($eventName ne "")) ) {
-					# if this is really a gender/age group then we have a real data row
-					if( $genderAgeGroup !~ m/^\w\d+-\d+$/) {
-						PMSLogging::DumpNote( "", "", "Topten::USMSProcessRecords(): Line $lineNum of $simpleFileName: " .
-						"Illegal line IGNORED:\n   $rowAsString" );
-						next;		# not a result line
+		if( $sheetHandle{"fileRef"} == 0 ) {
+			# couldn't open the file even though it exists - empty?
+			PMSLogging::DumpWarning( "", "", "!! Topten::USMSProcessResults(): UNABLE TO PROCESS $org_course (file " .
+				"exists but unable to get handle - empty?) - INGORE THIS FILE:\n   '$fileName'", 1 );
+		} else {
+			# it looks like we have a non-empty file to read!
+			my $lineNum = 0;
+			my $numResultLines = 0;
+			my $previousGenderAgeGroup = "";		# used for ties
+			my $previousEventName = "";				# used for ties
+			while( 1 ) {
+				my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
+				my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
+				my $length = scalar(@row);
+				if( $length ) {
+					# we've got a new row of of something (may be all spaces or a heading or something else)
+					$lineNum++;
+					if( $debug ) {
+						PMSLogging::DumpNote( "", "", "Topten::USMSProcessRecords()[debug]: Line $lineNum of $simpleFileName: " .
+							"    $rowAsString", 1 );
 					}
-					# as of this writing there are NO blank lines!
-					$numResultLines++;
-					# prepare for the possibility that the following line is a tie with this one:
-					$previousGenderAgeGroup = $genderAgeGroup;
-					$previousEventName = $eventName;
-					#
-					# we have a row with the following columns (2016):
-					# 0: Gender/Age Group (e.g. 'W45-49' or 'M45-49')
-					# 1: Event (e.g. '500 Free')
-					# 2: Name (e.g. 'Allison A Arnold')
-					# 3: Date (e.g. '07-23-16')
-					# 4: Time (e.g. '1:38.41L' where 'L' is either 'L', 'S', or 'Y')
-					#
-					USMSProcessRecordRow( \@row, $rowAsString, $simpleFileName, $lineNum, $org, $course );					
-				} else {
-					# found a tie or blank line or heading taking only one column
-					# todo
-					# WARNING!!!!!!!!!!!!!!!!!!!!!
-					# We need to handle ties!
-					# How to handle ties:
-					#	This line has no gender/age group field and no event field.  If it has a name field then
-					#		that means it's a tie with the previous line.  So, in this case:
-					#	- if the date in this row is in the current season, AND
-					#	- if the name is different from any previous name for this gender/age group and event, THEN:
-					#		- Record this row using the previous row's gender/age group and event
-					#  		- $numResultLines++;
-					if( (defined $row[2]) && ($row[2] ne "") ) {
-						# this row represents a tie
-						$row[0] = $previousGenderAgeGroup;
-						$row[1] = $previousEventName;
-						$rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
-						USMSProcessRecordRow( \@row, $rowAsString, $simpleFileName, $lineNum, $org, $course );
-					} else {
-						# assume blank or header line for now...
-						PMSLogging::DumpWarning( "", "", "Topten::USMSProcessRecords(): Line $lineNum of $simpleFileName: " .
-							"ILLEGAL line (one or all of the first three columns are missing) ignored:\n   $rowAsString" );
-					}
+					my $genderAgeGroup = $row[0];
+					my $eventName = $row[1];
 					
+					# if the genderAgeGroup and the eventName are both empty we have a tie (or empty line).
+					if( ((defined $genderAgeGroup) && ($genderAgeGroup ne "")) &&
+						((defined $eventName) && ($eventName ne "")) ) {
+						# if this is really a gender/age group then we have a real data row
+						if( $genderAgeGroup !~ m/^\w\d+-\d+$/) {
+							PMSLogging::DumpNote( "", "", "Topten::USMSProcessRecords(): Line $lineNum of $simpleFileName: " .
+							"Illegal line IGNORED:\n   $rowAsString" );
+							next;		# not a result line
+						}
+						# as of this writing there are NO blank lines!
+						$numResultLines++;
+						# prepare for the possibility that the following line is a tie with this one:
+						$previousGenderAgeGroup = $genderAgeGroup;
+						$previousEventName = $eventName;
+						#
+						# we have a row with the following columns (2016):
+						# 0: Gender/Age Group (e.g. 'W45-49' or 'M45-49')
+						# 1: Event (e.g. '500 Free')
+						# 2: Name (e.g. 'Allison A Arnold')
+						# 3: Date (e.g. '07-23-16')
+						# 4: Time (e.g. '1:38.41L' where 'L' is either 'L', 'S', or 'Y')
+						#
+						USMSProcessRecordRow( \@row, $rowAsString, $simpleFileName, $lineNum, $org, $course );					
+					} else {
+						# found a tie or blank line or heading taking only one column
+						# todo
+						# WARNING!!!!!!!!!!!!!!!!!!!!!
+						# We need to handle ties!
+						# How to handle ties:
+						#	This line has no gender/age group field and no event field.  If it has a name field then
+						#		that means it's a tie with the previous line.  So, in this case:
+						#	- if the date in this row is in the current season, AND
+						#	- if the name is different from any previous name for this gender/age group and event, THEN:
+						#		- Record this row using the previous row's gender/age group and event
+						#  		- $numResultLines++;
+						if( (defined $row[2]) && ($row[2] ne "") ) {
+							# this row represents a tie
+							$row[0] = $previousGenderAgeGroup;
+							$row[1] = $previousEventName;
+							$rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
+							USMSProcessRecordRow( \@row, $rowAsString, $simpleFileName, $lineNum, $org, $course );
+						} else {
+							# assume blank or header line for now...
+							PMSLogging::DumpWarning( "", "", "Topten::USMSProcessRecords(): Line $lineNum of $simpleFileName: " .
+								"ILLEGAL line (one or all of the first three columns are missing) ignored:\n   $rowAsString" );
+						}
+						
+					}
+				} else # end of if( $length...
+				{
+					# ReadSheetRow() returned a 0 length row - end of file
+					TT_SheetSupport::CloseSheet( \%sheetHandle );
+					my $msg = "* Topten::USMSProcessRecords(): Done with '$simpleFileName' - " .
+						"$lineNum lines read, $numResultLines records analyzed\n" .
+						"    $numNonPMSResultLinesInSeason non-PMS records for this season, " .
+						"$numPMSResultLines PMS records stored.";
+					if( $numNotInSeason ) {
+						$msg .= "  ($numNotInSeason lines ignored: out of season.)"
+					}
+					PMSLogging::PrintLog( "", "", $msg, 1 );
+					last;
 				}
-			} else # end of if( $length...
-			{
-				# ReadSheetRow() returned a 0 length row - end of file
-				TT_SheetSupport::CloseSheet( \%sheetHandle );
-				my $msg = "* Topten::USMSProcessRecords(): Done with '$simpleFileName' - " .
-					"$lineNum lines read, $numResultLines records analyzed\n" .
-					"    $numNonPMSResultLinesInSeason non-PMS records for this season, " .
-					"$numPMSResultLines PMS records stored.";
-				if( $numNotInSeason ) {
-					$msg .= "  ($numNotInSeason lines ignored: out of season.)"
-				}
-				PMSLogging::PrintLog( "", "", $msg, 1 );
-				last;
-			}
-		} # end of while(1)...
+			} # end of while(1)...
+		} # end of "# it looks like we have a non-empty file to read!"
 	} # end of foreach my $fileName...	
 	
 } # end of USMSProcessRecords()
@@ -1572,126 +1582,133 @@ sub PMSProcessRecords($) {
 		# get to work
 		PMSLogging::DumpNote( "", "", "** Topten::PMSProcessRecords(): Begin processing $org_course:\n   '$fileName'", 1 );
 		my %sheetHandle = TT_SheetSupport::OpenSheetFile($fileName);
-		my $eventId;
-		my $lineNum = 0;
-		my $numResultLines = 0;
-		my $numNotInSeason = 0;		# number of results that were out of season
-		my $emptyDateSeen = 0;
-		while( 1 ) {
-			my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
-			my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
-			my $length = scalar(@row);
-			if( $length ) {
-				# we've got a new row of of something (may be all spaces or a heading or something else)
-				$lineNum++;
-				if( $debug ) {
-					print "$simpleFileName: line $lineNum: ";
-					for( my $i=0; $i < scalar(@row); $i++ ) {
-						print "col $i: '$row[$i]', ";
+		if( $sheetHandle{"fileRef"} == 0 ) {
+			# couldn't open the file even though it exists - empty?
+			PMSLogging::DumpWarning( "", "", "!! Topten::PMSProcessRecords(): UNABLE TO PROCESS $org_course (file " .
+				"exists but unable to get handle - empty?) - INGORE THIS FILE:\n   '$fileName'", 1 );
+		} else {
+			# it looks like we have a non-empty file to read!
+			my $eventId;
+			my $lineNum = 0;
+			my $numResultLines = 0;
+			my $numNotInSeason = 0;		# number of results that were out of season
+			my $emptyDateSeen = 0;
+			while( 1 ) {
+				my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
+				my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
+				my $length = scalar(@row);
+				if( $length ) {
+					# we've got a new row of of something (may be all spaces or a heading or something else)
+					$lineNum++;
+					if( $debug ) {
+						print "$simpleFileName: line $lineNum: ";
+						for( my $i=0; $i < scalar(@row); $i++ ) {
+							print "col $i: '$row[$i]', ";
+						}
+						print "\n";
 					}
-					print "\n";
+					my $gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $row[0] );	# M or F
+					if( $row[0] !~ m/^\w$/ ) {
+						PMSLogging::DumpNote( "", "", "Topten::PMSProcessRecords(): Line $lineNum of $simpleFileName: " .
+							"Illegal line IGNORED:\n   $rowAsString" );
+						next;		# not a result line
+					}
+					#
+					# we have a row with the following columns (2016):
+					# 0: Gender  ('F' or 'M')
+					# 1: Age Group (e.g. '45-49')
+					# 2: Distance (e.g. '100')
+					# 3: Stroke (e.g. 'Freestyle')
+					# 4: Swimmer (e.g. 'Elizabeth Pelton')
+					# 5: Date (e.g. '1/30/16')
+					# 6: Time (e.g. '1:38.41')
+					#
+	
+					# found a record line - extract all the data
+					my ($time, $firstName, $middleInitial, $lastName, $regNum, 
+						$ageGroup, $eventName, $fullName, $date);
+					
+					$ageGroup = $row[1];
+					$eventName = $row[2] . " " . $row[3];
+					$fullName = $row[4];
+					$date = $row[5];		# of the form '1/30/16'
+					$time = TT_Util::GenerateCanonicalDurationForDB( $row[6], $simpleFileName, $lineNum );
+	
+					# assume the date is in ISO format, but confirm it anyway:
+					if( !PMSUtil::ValidateISODate( $date ) ) {
+						# nope!  give up on this line!
+						PMSLogging::DumpError( "", "", "Topten::PMSProcessRecords(): Line $lineNum of $simpleFileName: " .
+							"Invalid date ('$date') (Assumed to be ISO - line IGNORED):" .
+							"\n     $rowAsString" );
+						next;
+					}
+	
+					# valid date - is it a date in the season being processed? If not, skip this record
+					my $dateAnalysis = PMSUtil::ValidateDateWithinSeason( $date, $course, $yearBeingProcessed );
+					if( $dateAnalysis ne "" ) {
+						# this record is outside the season we're processing and it shouldn't be!  Ignore it...
+						PMSLogging::DumpError( "", "", "Topten::PMSProcessRecords(): Line $lineNum of $simpleFileName: " .
+							"This result is not part of the season we are processing " .
+							"($yearBeingProcessed)." .
+							"\n    [$dateAnalysis]   THIS ROW WILL BE IGNORED!", 1 );
+						$numNotInSeason++;
+						next;
+					}
+					
+					# break the $fullName into first, middle, and last names
+					# (If the middle initial is not supplied then use "")
+					# Name may be empty, so if that's the case we'll ignore it the result
+					if( $fullName eq "" ) {
+						PMSLogging::DumpError( "", "", "Topten::PMSProcessRecords(): Line $lineNum of $simpleFileName: " .
+							"This record is missing the swimmer's name.  Line IGNORED." .
+							"\n    $rowAsString", 1 );
+						next;
+					}
+					
+					# look up this swimmer by trying to parse their full name and then find them in our
+					# RSIDN table:
+					$regNum = "";		# just in case we can't deduce the swimmer's names
+					my $teamInitials = "";
+					($regNum, $teamInitials, $firstName, $middleInitial, $lastName) = 
+											TT_MySqlSupport::GetDetailsFromFullName( $fileName, $lineNum, $fullName,
+											"", $ageGroup, $org, $course, "Error if not found" );
+					if( $regNum eq "" ) {
+						# we couldn't figure out who this swimmer is, or didn't find them in the RSIDN table.
+						# go on to the next swimmer;
+						next;
+					}
+	
+					$numResultLines++;
+	
+					# Add this event to our Event table:
+					$eventId = TT_MySqlSupport::AddNewEventIfNecessary( $row[2], $units, 
+						PMSUtil::CanonicalStroke( $row[3] ) );
+					
+					if(0) {
+					print "Topten::PMSProcessRecords(): Line #$lineNum: time=$time($row[6]), name=$fullName ['$firstName' '$middleInitial' '$lastName']" .
+						", gender='$gender', ageGroup = '$ageGroup', regNum=$regNum, " .
+						"eventName='$eventName'\n";
+					}
+					# add this swimmer to our DB if necessary
+					my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, $firstName, $middleInitial, $lastName,
+						$gender, $regNum, 0, $ageGroup, $teamInitials );
+					TT_MySqlSupport::AddNewRecordSplash( $fileName, $lineNum, $course, $org, $eventId, $gender,
+						$ageGroup, 1, $swimmerId, 0, 25, $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID, $date, $time );
+			
+				} else # end of if( $length...
+				{
+					# ReadSheetRow() returned a 0 length row - end of file
+					TT_SheetSupport::CloseSheet( \%sheetHandle );
+					my $msg = "* Topten::PMSProcessRecords(): Done with '$simpleFileName' - $lineNum lines read, $numResultLines lines " .
+						"stored.";
+					if( $numNotInSeason ) {
+						$msg .= "  ($numNotInSeason lines ignored: out of season.)"
+					}
+					PMSLogging::PrintLog( "", "", $msg, 1 );
+					last;
 				}
-				my $gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $row[0] );	# M or F
-				if( $row[0] !~ m/^\w$/ ) {
-					PMSLogging::DumpNote( "", "", "Topten::PMSProcessRecords(): Line $lineNum of $simpleFileName: " .
-						"Illegal line IGNORED:\n   $rowAsString" );
-					next;		# not a result line
-				}
-				#
-				# we have a row with the following columns (2016):
-				# 0: Gender  ('F' or 'M')
-				# 1: Age Group (e.g. '45-49')
-				# 2: Distance (e.g. '100')
-				# 3: Stroke (e.g. 'Freestyle')
-				# 4: Swimmer (e.g. 'Elizabeth Pelton')
-				# 5: Date (e.g. '1/30/16')
-				# 6: Time (e.g. '1:38.41')
-				#
-
-				# found a record line - extract all the data
-				my ($time, $firstName, $middleInitial, $lastName, $regNum, 
-					$ageGroup, $eventName, $fullName, $date);
-				
-				$ageGroup = $row[1];
-				$eventName = $row[2] . " " . $row[3];
-				$fullName = $row[4];
-				$date = $row[5];		# of the form '1/30/16'
-				$time = TT_Util::GenerateCanonicalDurationForDB( $row[6], $simpleFileName, $lineNum );
-
-				# assume the date is in ISO format, but confirm it anyway:
-				if( !PMSUtil::ValidateISODate( $date ) ) {
-					# nope!  give up on this line!
-					PMSLogging::DumpError( "", "", "Topten::PMSProcessRecords(): Line $lineNum of $simpleFileName: " .
-						"Invalid date ('$date') (Assumed to be ISO - line IGNORED):" .
-						"\n     $rowAsString" );
-					next;
-				}
-
-				# valid date - is it a date in the season being processed? If not, skip this record
-				my $dateAnalysis = PMSUtil::ValidateDateWithinSeason( $date, $course, $yearBeingProcessed );
-				if( $dateAnalysis ne "" ) {
-					# this record is outside the season we're processing and it shouldn't be!  Ignore it...
-					PMSLogging::DumpError( "", "", "Topten::PMSProcessRecords(): Line $lineNum of $simpleFileName: " .
-						"This result is not part of the season we are processing " .
-						"($yearBeingProcessed)." .
-						"\n    [$dateAnalysis]   THIS ROW WILL BE IGNORED!", 1 );
-					$numNotInSeason++;
-					next;
-				}
-				
-				# break the $fullName into first, middle, and last names
-				# (If the middle initial is not supplied then use "")
-				# Name may be empty, so if that's the case we'll ignore it the result
-				if( $fullName eq "" ) {
-					PMSLogging::DumpError( "", "", "Topten::PMSProcessRecords(): Line $lineNum of $simpleFileName: " .
-						"This record is missing the swimmer's name.  Line IGNORED." .
-						"\n    $rowAsString", 1 );
-					next;
-				}
-				
-				# look up this swimmer by trying to parse their full name and then find them in our
-				# RSIDN table:
-				$regNum = "";		# just in case we can't deduce the swimmer's names
-				my $teamInitials = "";
-				($regNum, $teamInitials, $firstName, $middleInitial, $lastName) = 
-										TT_MySqlSupport::GetDetailsFromFullName( $fileName, $lineNum, $fullName,
-										"", $ageGroup, $org, $course, "Error if not found" );
-				if( $regNum eq "" ) {
-					# we couldn't figure out who this swimmer is, or didn't find them in the RSIDN table.
-					# go on to the next swimmer;
-					next;
-				}
-
-				$numResultLines++;
-
-				# Add this event to our Event table:
-				$eventId = TT_MySqlSupport::AddNewEventIfNecessary( $row[2], $units, 
-					PMSUtil::CanonicalStroke( $row[3] ) );
-				
-				if(0) {
-				print "Topten::PMSProcessRecords(): Line #$lineNum: time=$time($row[6]), name=$fullName ['$firstName' '$middleInitial' '$lastName']" .
-					", gender='$gender', ageGroup = '$ageGroup', regNum=$regNum, " .
-					"eventName='$eventName'\n";
-				}
-				# add this swimmer to our DB if necessary
-				my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, $firstName, $middleInitial, $lastName,
-					$gender, $regNum, 0, $ageGroup, $teamInitials );
-				TT_MySqlSupport::AddNewRecordSplash( $fileName, $lineNum, $course, $org, $eventId, $gender,
-					$ageGroup, 1, $swimmerId, 0, 25, $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID, $date, $time );
-		
-			} else # end of if( $length...
-			{
-				# ReadSheetRow() returned a 0 length row - end of file
-				TT_SheetSupport::CloseSheet( \%sheetHandle );
-				my $msg = "* Topten::PMSProcessRecords(): Done with '$simpleFileName' - $lineNum lines read, $numResultLines lines " .
-					"stored.";
-				if( $numNotInSeason ) {
-					$msg .= "  ($numNotInSeason lines ignored: out of season.)"
-				}
-				PMSLogging::PrintLog( "", "", $msg, 1 );
-				last;
-			}
-		} # end of while(1)...
+			} # end of while(1)...
+		} # end of "it looks like we have a non-empty file to read!""
 	} # end of foreach my $fileName...	
 	
 } # end of PMSProcessRecords()
@@ -1741,131 +1758,138 @@ sub PMSProcessOpenWater($) {
 		# get to work
 		PMSLogging::DumpNote( "", "", "** Topten::PMSProcessOpenWater(): Begin processing $org $course:\n   '$fileName'", 1 );
 		my %sheetHandle = TT_SheetSupport::OpenSheetFile($fileName);
-		my $lineNum = 0;
-		my $numResultLines = 0;
-		while( 1 ) {
-			my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
-			my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
-			my $length = scalar(@row);
-			if( $length > 0 ) {
-				$lineNum++;
-				# we've got a new row of of something (may be all spaces or a heading or something else) BUT
-				# we know it's not an end-of-file
-				if( (defined($row[0])) && (defined($row[1])) && (defined($row[2])) ) {
-					# we've got a new row of of something (may be heading or data - anything else won't define
-					# row[2])
-					if( $debug ) {
-						PMSLogging::PrintLog( "", "", "  Topten::PMSProcessOpenWater(): Line $lineNum: " .
-							"$simpleFileName: ");
-						for( my $i=0; $i < scalar(@row); $i++ ) {
-							PMSLogging::PrintLogNoNL( "", "", "    col $i: '$row[$i]', ");
-						}
-						PMSLogging::PrintLog( "", "", "" );
-					}
-					# look for a header line:
-					if( $row[0] eq "Gender" ) {
-						# header line - skip it
+		if( $sheetHandle{"fileRef"} == 0 ) {
+			# couldn't open the file even though it exists - empty?
+			PMSLogging::DumpWarning( "", "", "!! Topten::PMSProcessOpenWater(): UNABLE TO PROCESS $org-$course (file " .
+				"exists but unable to get handle - empty?) - INGORE THIS FILE:\n   '$fileName'", 1 );
+		} else {
+			# it looks like we have a non-empty file to read!
+			my $lineNum = 0;
+			my $numResultLines = 0;
+			while( 1 ) {
+				my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
+				my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
+				my $length = scalar(@row);
+				if( $length > 0 ) {
+					$lineNum++;
+					# we've got a new row of of something (may be all spaces or a heading or something else) BUT
+					# we know it's not an end-of-file
+					if( (defined($row[0])) && (defined($row[1])) && (defined($row[2])) ) {
+						# we've got a new row of of something (may be heading or data - anything else won't define
+						# row[2])
 						if( $debug ) {
-							PMSLogging::PrintLog( "", "", "    (Skipping line $lineNum)");
+							PMSLogging::PrintLog( "", "", "  Topten::PMSProcessOpenWater(): Line $lineNum: " .
+								"$simpleFileName: ");
+							for( my $i=0; $i < scalar(@row); $i++ ) {
+								PMSLogging::PrintLogNoNL( "", "", "    col $i: '$row[$i]', ");
+							}
+							PMSLogging::PrintLog( "", "", "" );
 						}
-						next;
-					}
-					my $gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $row[0] );	# M or F
-					if( $row[0] !~ m/^\w$/ ) {
-						PMSLogging::PrintLog( "", "", "Topten::PMSProcessOpenWater(): Line $lineNum of $simpleFileName: " .
-							"Illegal line (bad gender) found in '$fileName':" .
-							"\n    $rowAsString", 1 );
-						next;		# not a result line
-					}
-					
-					# We've decided that this is a row containing a result that we need to use
-					$numResultLines++;
-					
-					#
-					# we have a row with the following columns (2016):
-					# 0: Gender	
-					# 1: Age Group	
-					# 2: Place	
-					# 3: Points	
-					# 4: Last Name	
-					# 5: First Name	
-					# 6: Middle	
-					# 7: Regnum	
-					# 8: Meet Name e.g. Spring Lake
-					# 9: Event Name	e.g. Spring Lake 1 Mile
-					# 10: Event Date
-					# 11: Duration
-			
-					my ($x, $ageGroup, $place, $points, $lastName, $firstName, $middleInitial, $regNum, 
-						$meetName, $eventName, $eventDate, $duration) = @row;
-		
-					# this date is assumed to be in the form 'yyyy-mm-dd'
-					my $convertedDate = $eventDate;
-					# handle empty or invalid dates (we don't expect any of these since we have control over
-					# this result file)
-					if( $convertedDate eq $PMSConstants::INVALID_DOB ) {
-						PMSLogging::DumpError( "", "", "Topten::PMSProcessOpenWater(): Line $lineNum of $simpleFileName: " .
-							"Invalid date ('$eventDate') FATAL - Ignoring this row:" .
-							"\n    $rowAsString", 1 );
-						next;
-					} else {
-						$eventDate = $convertedDate;
-					}
-					
-					# convert the duration into an int (hundredths of a second)
-					$duration = TT_Util::GenerateCanonicalDurationForDB( $duration, $fileName, $lineNum );
-		
-					if( $debugRegNum eq $regNum ) {
-						print "PMSProcessOpenWater(): Line #$lineNum: gender=$gender, ageGroup=$ageGroup, " .
-							"regNum='$regNum', firstName=$firstName, middleInitial='$middleInitial', " .
-							"lastName='$lastName', meetDate='$eventDate'";
-					}
-					
-					# Add this event to our Event table:
-					# $eventName is in the form "Lake Berryessa 1.3 Mile" or "Keller Cove 1/2 Mile"
-					$eventName =~ m,^(\D+)([\d./]+)\s*(\D+)$,;
-					my $distance = $2;		# e.g. "1.3"
-					my $eventCourse = $3;		# e.g. "Mile"
-					$eventCourse = PMSUtil::CanonicalOWCourse( $eventCourse );
-					my $stroke = $1;		# e.g. "Lake Berryessa "
-					$stroke =~ s/\s*$//;		# e.g. "Lake Berryessa"
-					my $eventId = TT_MySqlSupport::AddNewEventIfNecessary( $distance, $eventCourse,
-						$stroke, $eventName );
-					# add this swimmer to our DB if necessary
-					# (NOTE: we assume the passed name and regnum are valid)
-					my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
-						$firstName, $middleInitial, $lastName,
-						$gender, $regNum, 0, $ageGroup, "" );
-					# add this meet to our DB if necessary
-	
-					# filename, linenum, meetitle, meetlink, meetorg, meetcourse, meetbegindate, meetenddate, 
-					# ... meetispms (1 or 0)
-					# NOTE:  we are supplying the event name for the meet name since each OW event is counted as
-					# a separate "meet" - swimming 3 OW events is the same as swimming in 3 PAC events.
-					my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, $eventName, 
-						"http://pacificmasters.org/content/open-water-swims", $org, $course, 
-						$eventDate, $eventDate, 1 );
+						# look for a header line:
+						if( $row[0] eq "Gender" ) {
+							# header line - skip it
+							if( $debug ) {
+								PMSLogging::PrintLog( "", "", "    (Skipping line $lineNum)");
+							}
+							next;
+						}
+						my $gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $row[0] );	# M or F
+						if( $row[0] !~ m/^\w$/ ) {
+							PMSLogging::PrintLog( "", "", "Topten::PMSProcessOpenWater(): Line $lineNum of $simpleFileName: " .
+								"Illegal line (bad gender) found in '$fileName':" .
+								"\n    $rowAsString", 1 );
+							next;		# not a result line
+						}
 						
-					# compute the number of Top10 points they get from all of their OW places:
-					# the points they get for SOTY is the same as the OW points they were awarded.
-#					TT_MySqlSupport::AddNewOWSplash( $fileName, $lineNum, $ageGroup, $gender, $place,
-#						$points, $swimmerId, $eventId, $org, $course, $meetId, $eventDate, $duration );
-
-
-					TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $ageGroup, $gender, $place, 
-						$points, $swimmerId, $eventId, $org, $course, $meetId, $duration, $eventDate );
-
-
-				} # end of if( (defined($row[0])...
-			} else # end of if( $length...
-				{
-					# ReadSheetRow() returned a 0 length row - end of file
-					TT_SheetSupport::CloseSheet( \%sheetHandle );
-					PMSLogging::DumpNote( "", "", "*  Topten::PMSProcessOpenWater(): Done with '$simpleFileName' " .
-						"- $lineNum lines read, $numResultLines lines stored." );
-					last;
-				}
-		} # end of while
+						# We've decided that this is a row containing a result that we need to use
+						$numResultLines++;
+						
+						#
+						# we have a row with the following columns (2016):
+						# 0: Gender	
+						# 1: Age Group	
+						# 2: Place	
+						# 3: Points	
+						# 4: Last Name	
+						# 5: First Name	
+						# 6: Middle	
+						# 7: Regnum	
+						# 8: Meet Name e.g. Spring Lake
+						# 9: Event Name	e.g. Spring Lake 1 Mile
+						# 10: Event Date
+						# 11: Duration
+				
+						my ($x, $ageGroup, $place, $points, $lastName, $firstName, $middleInitial, $regNum, 
+							$meetName, $eventName, $eventDate, $duration) = @row;
+			
+						# this date is assumed to be in the form 'yyyy-mm-dd'
+						my $convertedDate = $eventDate;
+						# handle empty or invalid dates (we don't expect any of these since we have control over
+						# this result file)
+						if( $convertedDate eq $PMSConstants::INVALID_DOB ) {
+							PMSLogging::DumpError( "", "", "Topten::PMSProcessOpenWater(): Line $lineNum of $simpleFileName: " .
+								"Invalid date ('$eventDate') FATAL - Ignoring this row:" .
+								"\n    $rowAsString", 1 );
+							next;
+						} else {
+							$eventDate = $convertedDate;
+						}
+						
+						# convert the duration into an int (hundredths of a second)
+						$duration = TT_Util::GenerateCanonicalDurationForDB( $duration, $fileName, $lineNum );
+			
+						if( $debugRegNum eq $regNum ) {
+							print "PMSProcessOpenWater(): Line #$lineNum: gender=$gender, ageGroup=$ageGroup, " .
+								"regNum='$regNum', firstName=$firstName, middleInitial='$middleInitial', " .
+								"lastName='$lastName', meetDate='$eventDate'";
+						}
+						
+						# Add this event to our Event table:
+						# $eventName is in the form "Lake Berryessa 1.3 Mile" or "Keller Cove 1/2 Mile"
+						$eventName =~ m,^(\D+)([\d./]+)\s*(\D+)$,;
+						my $distance = $2;		# e.g. "1.3"
+						my $eventCourse = $3;		# e.g. "Mile"
+						$eventCourse = PMSUtil::CanonicalOWCourse( $eventCourse );
+						my $stroke = $1;		# e.g. "Lake Berryessa "
+						$stroke =~ s/\s*$//;		# e.g. "Lake Berryessa"
+						my $eventId = TT_MySqlSupport::AddNewEventIfNecessary( $distance, $eventCourse,
+							$stroke, $eventName );
+						# add this swimmer to our DB if necessary
+						# (NOTE: we assume the passed name and regnum are valid)
+						my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
+							$firstName, $middleInitial, $lastName,
+							$gender, $regNum, 0, $ageGroup, "" );
+						# add this meet to our DB if necessary
+		
+						# filename, linenum, meetitle, meetlink, meetorg, meetcourse, meetbegindate, meetenddate, 
+						# ... meetispms (1 or 0)
+						# NOTE:  we are supplying the event name for the meet name since each OW event is counted as
+						# a separate "meet" - swimming 3 OW events is the same as swimming in 3 PAC events.
+						my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, $eventName, 
+							"http://pacificmasters.org/content/open-water-swims", $org, $course, 
+							$eventDate, $eventDate, 1 );
+							
+						# compute the number of Top10 points they get from all of their OW places:
+						# the points they get for SOTY is the same as the OW points they were awarded.
+	#					TT_MySqlSupport::AddNewOWSplash( $fileName, $lineNum, $ageGroup, $gender, $place,
+	#						$points, $swimmerId, $eventId, $org, $course, $meetId, $eventDate, $duration );
+	
+	
+						TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $ageGroup, $gender, $place, 
+							$points, $swimmerId, $eventId, $org, $course, $meetId, $duration, $eventDate );
+	
+	
+					} # end of if( (defined($row[0])...
+				} else # end of if( $length...
+					{
+						# ReadSheetRow() returned a 0 length row - end of file
+						TT_SheetSupport::CloseSheet( \%sheetHandle );
+						PMSLogging::DumpNote( "", "", "*  Topten::PMSProcessOpenWater(): Done with '$simpleFileName' " .
+							"- $lineNum lines read, $numResultLines lines stored." );
+						last;
+					}
+			} # end of while
+		} # end of "it looks like we have a non-empty file to read!""
 	}
 	
 } # end of PMSProcessOpenWater()
