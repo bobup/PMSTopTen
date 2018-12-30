@@ -58,8 +58,8 @@ use File::Basename;
 use File::Path qw(make_path remove_tree);
 use Cwd 'abs_path';
 use HTTP::Tiny;
-use LWP::Simple;
-use LWP::Simple qw/get $ua/;
+#use LWP::Simple;
+#use LWP::Simple qw/get $ua/;
 
 my $debug;
 my $appProgName;	# the name of this program
@@ -140,7 +140,7 @@ sub GetPMSOWResults( $$ );
 
 # initialize our HTTP class:
 #my %tinyAttributes = ("agent" => "WikiBot/0.1");
-#my %tinyAttributes = ("agent" => "Mozilla/5.0 (Macintosh; Intel �) Gecko/20100101 Firefox/59.0");
+#my %tinyAttributes = ("agent" => "Mozilla/5.0 (Macintosh; Intel) Gecko/20100101 Firefox/59.0");
 #my $tinyHttp = HTTP::Tiny->new( %tinyAttributes );
 my $tinyHttp = HTTP::Tiny->new( );
 my $httpResponse;
@@ -363,8 +363,8 @@ if(1) {
 		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
-		PMSLogging::PrintLog( "", "", "Did query after getting PMS top 10.", 1 );
+		#TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
+		#PMSLogging::PrintLog( "", "", "Did query after getting PMS top 10.", 1 );
 	}
 } # end of if(1)...
 
@@ -383,17 +383,17 @@ if(1) {
 			## Get SCY results:
 			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
 				GetUSMSTopTenResults( "http://www.usms.org/comp/tt/toptenlmsc.php?Year=$yearBeingProcessed&CourseID=1&ZoneID=&LMSCID=38&ClubAbbr=",
-					"http://www.usms.org", "USMS", "SCY", $simpleFileName );
+					"https://www.usms.org", "USMS", "SCY", $simpleFileName );
 		} elsif( $org_course eq "USMS-SCM" ) {
 			## Get SCM results:
 			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
 				GetUSMSTopTenResults( "http://www.usms.org/comp/tt/toptenlmsc.php?Year=$yearBeingProcessed&CourseID=3&ZoneID=&LMSCID=38&ClubAbbr=",
-					"http://www.usms.org", "USMS", "SCM", $simpleFileName );
+					"https://www.usms.org", "USMS", "SCM", $simpleFileName );
 		} elsif( $org_course eq "USMS-LCM" ) {
 			## Get LCM results:
 			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
 				GetUSMSTopTenResults( "http://www.usms.org/comp/tt/toptenlmsc.php?Year=$yearBeingProcessed&CourseID=2&ZoneID=&LMSCID=38&ClubAbbr=",
-					"http://www.usms.org", "USMS", "LCM", $simpleFileName );
+					"https://www.usms.org", "USMS", "LCM", $simpleFileName );
 		} else {
 			PMSLogging::DumpError( "", "", "GetResults::Illegal org_course ($org_course) when getting USMS Top Ten POINTS" );		
 		}
@@ -409,8 +409,8 @@ if(1) {
 		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
-		PMSLogging::PrintLog( "", "", "Did query after getting USMS top 10.", 1 );
+		#TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
+		#PMSLogging::PrintLog( "", "", "Did query after getting USMS top 10.", 1 );
 	}
 } # end of if(1)...
 
@@ -457,8 +457,8 @@ if(1) {
 		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
-		PMSLogging::PrintLog( "", "", "Did query after getting PMS records.", 1 );
+		#TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
+		#PMSLogging::PrintLog( "", "", "Did query after getting PMS records.", 1 );
 	}
 } # end of if(1)...
 
@@ -482,8 +482,8 @@ if(1) {
 		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
-		PMSLogging::PrintLog( "", "", "Did query after getting USMS records.", 1 );
+		#TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
+		#PMSLogging::PrintLog( "", "", "Did query after getting USMS records.", 1 );
 	}
 } # end of if(1)...
 
@@ -509,8 +509,8 @@ if(1) {
 		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
 		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-		TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
-		PMSLogging::PrintLog( "", "", "Did query after getting OW.", 1 );
+		#TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
+		#PMSLogging::PrintLog( "", "", "Did query after getting OW.", 1 );
 	}
 } # end of if(1)...
 
@@ -680,20 +680,13 @@ sub GetPMSTopTenResults( $$$$$ ) {
 
 	if($debug > 2) {
 		# dump the html we fetched so we can make sure we're getting what we expect
+		###NOTE: we require the test directory (subdirectory of Generated-<season>/) to exist!
 		$htmlCopyFileName = $generatedDirName . "test/PMSResults-new-$org-$course.html";
 		open( $htmlCopyFD, ">$htmlCopyFileName" ) || (die "Can't open $htmlCopyFileName: $!\nAbort.\n");
 		$diffResultsFileName = $generatedDirName . "test/PMSDiffResults-new-$org-$course.txt";
 		open( $diffResultsFD, ">$diffResultsFileName" ) || (die "Can't open $diffResultsFileName: $!\nAbort.\n");
 	}
 
-
-
-			# we need to change the User Agent because USMS prohibits the SIMPLE user agent...
-	#		$LWP::Simple::ua->agent("WikiBot/0.1");
-
-
-
-#my $httpResponseRef = $tinyHttp->get( "https://www.usms.org/css/layout/content.css?time=24398", \%options );
 my $httpResponseRef = $tinyHttp->get( $linkToResults, \%options );
 	# we get here under TWO conditions:
 	#	- the entire response has been processed by data_callback routine and all is good, or
@@ -722,22 +715,43 @@ my $httpResponseRef = $tinyHttp->get( $linkToResults, \%options );
 				$argString .= "&" if( $argString );
 				$argString .= "$key=$excelArgs{$key}";
 			}
-			# we need to change the User Agent because USMS prohibits the SIMPLE user agent...
-			$LWP::Simple::ua->agent("WikiBot/0.1");
+			
+			# get full url to download
+			$linkToResults = "$baseURL$excelLink?$argString";
+			# set up callback for file download
+			my %callbackFileDownloadState = (
+				"numCallbackCalls"		=> 	0,
+				"numBytesSeen"			=>	0,
+				"numBytesWritten"		=>	0,
+				"fullFileName"			=>	$resultFileName,
+				"fileHandle"			=>  0,
+				"binmode"				=>	0,		# set to 1 if downloading a binary file
+				);
+			my %optionsFileDownload = (
+				"data_callback"	=>	sub {
+					ParseFileDownloadHttpResponse( \%callbackFileDownloadState, $linkToResults, $org, 
+						$course, $_[0], $_[1] );
+				} );
+
 			if( $debug ) {
-				PMSLogging::DumpNote( "", "", "$appProgName:GetPMSTopTenResults(): fetch Excel from " .
-					"'$baseURL$excelLink?$argString' and store in '$resultFileName'", 1);
-				PMSLogging::DumpNote( "", "", "    baseURL='$baseURL', excelLink='$excelLink'\n" .
-					"    argString='$argString'", 1 );
+				PMSLogging::DumpNote( "", "", "$appProgName:GetPMSTopTenResults(): fetch Excel from:\n  " .
+					"'$baseURL$excelLink?$argString'\n  and store in '$resultFileName'", 1);
+				PMSLogging::DumpNote( "", "", "    baseURL='$baseURL', excelLink='$excelLink'" );
 			}
-			my $responseCode = LWP::Simple::getstore( "$baseURL$excelLink?$argString", 
-				"$resultFileName" );
-			if( LWP::Simple::is_error($responseCode) ) {
-				PMSLogging::DumpError( "", "", "GetResults::GetPMSTopTenResults(): LWP::Simple error:  $responseCode", 1 );
-			}
-			if( ! -e $resultFileName ) {
-				PMSLogging::DumpError( "", "", "GetResults::GetPMSTopTenResults(): " .
-				"Unable to write to '$resultFileName' - FAILED to save Excel file.", 1 );
+			OpenDownloadDestination( \%callbackFileDownloadState, $linkToResults );
+			my $httpResponseRef = $tinyHttp->get( $linkToResults, \%optionsFileDownload );
+			CloseDownloadDestination( \%callbackFileDownloadState );
+			# we get here under TWO conditions:
+			#	- the entire response has been processed by data_callback routine and all is good, or
+			#	- none (or some?) of the response has been processed and we got an error.
+			# This means the httpResponse is either "OK" or some error, so, if it's an error, we'll handle
+			# it here:
+			if( !$httpResponseRef->{success} ) {
+				# failure - display message and give up on this one
+				PMSLogging::PrintLog( "", "", "FAILED to download '$linkToResults'!!", 1 );
+				TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef );
+			} else {
+				# the excel file was downloaded with no errors
 			}
 		} else {
 			PMSLogging::PrintLog( "", "", "none found - no result file generated.", 1 );
@@ -752,9 +766,85 @@ my $httpResponseRef = $tinyHttp->get( $linkToResults, \%options );
 		
 } # end of GetPMSTopTenResults()
 		
+
+sub OpenDownloadDestination( $$ ) {
+	my( $callbackStateRef, $linkToResults ) = @_;
+	my $binmode = $callbackStateRef->{"binmode"};
+	my $fileHandle = undef;
+	if( !open( $fileHandle, ">", $callbackStateRef->{"fullFileName"} ) ) {
+		my $msg = "OpenDownloadDestination(): OPEN of " .
+			$callbackStateRef->{"fullFileName"} . " FAILED!! ($!)\n" .
+			"Download of $linkToResults will cause an ABORT!";
+		PMSLogging::PrintError( "", "", $msg );
+		die $msg;
+	}
+	if( $binmode ) {
+		binmode( $fileHandle );
+	}
+	$callbackStateRef->{"fileHandle"} = $fileHandle;
+} # end of OpenDownloadDestination()
+
+sub CloseDownloadDestination( $ ) {
+	my( $callbackStateRef ) = @_;
+	if( $callbackStateRef->{"fileHandle"} != 0 ) {
+		close( $callbackStateRef->{"fileHandle"} );
+		$callbackStateRef->{"fileHandle"} = 0;
+	}
+} # end of CloseDownloadDestination()
+
+
+
+
+# ParseFileDownloadHttpResponse - parse the response to the request for a file download.
+#
+sub ParseFileDownloadHttpResponse( $$$$$$ ) {
+	my( $callbackStateRef, $linkToResults, $org, $course, $content, $httpResponseRef ) = @_;
+	my $numCallbackCalls = $callbackStateRef->{"numCallbackCalls"}+1;
+	$callbackStateRef->{"numCallbackCalls"} = $numCallbackCalls;
+	my $fileHandle = $callbackStateRef->{"fileHandle"};
+	my $binmode = $callbackStateRef->{"binmode"};
+	$callbackStateRef->{"numBytesSeen"} += length( $content );
+
+	if( $debug ) {
+		print "ParseFileDownloadHttpResponse() called:  numCallbackCalls=$numCallbackCalls, total bytes seen=" .
+			$callbackStateRef->{"numBytesSeen"} . ", success=" . 
+			(defined $httpResponseRef->{'success'}?$httpResponseRef->{'success'}:"undefined") . "\n";
+	}
 	
+	# before doing anything make sure we didn't get an error
+	if( ((defined $httpResponseRef->{success}) && !$httpResponseRef->{'success'}) ||
+		($httpResponseRef->{'status'} !~ /^2/) ) {
+		# failure - display message and give up on this one
+		PMSLogging::PrintLog( "", "", "ParseFileDownloadHttpResponse() FAILED!! (during " .
+			"callback #$numCallbackCalls)", 1 );
+		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef );
+	} else {
+		# write out this chunk of bytes to the destination file.
+		my $length = syswrite( $fileHandle, $content );
+		if( ! defined( $length ) ) {
+			# error on our write...
+			PMSLogging::PrintError( "", "", "ParseFileDownloadHttpResponse(): ERROR ($!) attempting to write " .
+				length( $content ) . " bytes to " . $callbackStateRef->{"fullFileName"} . "\n" );
+		} else {
+			$callbackStateRef->{"numBytesWritten"} += $length;
+		}
+	}
+} # end of ParseFileDownloadHttpResponse()
+
+
+
 
 # ParsePMSTopTenHttpResponse - parse the response to the request made by GetPMSTopTenResults() above.
+#
+# PASSED:
+#	$callbackStateRef -
+#	$linkToResults - used for error message only
+#	$baseURL - used to convert a relative URL found in a result line into a full URL
+#	$org - used for debug/error messages and for fully qualifying a meet
+#	$course - used for debug/error messages and for fully qualifying a meet
+#	$content - the chunk of data fetched from the url
+#	$httpResponseRef - reference to the http response hash
+#	
 #
 sub ParsePMSTopTenHttpResponse( $$$$$$$ ) {
 	my( $callbackStateRef, $linkToResults, $baseURL, $org, $course, $content, $httpResponseRef ) = @_;
@@ -943,22 +1033,43 @@ sub GetUSMSTopTenResults( $$$$$ ) {
 				$course, $_[0], $_[1] );
 		} );
 
-
 	# fetch the human-readable results
 	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetUSMSTopTenResults(): Get the results for " .
 		"$org $course,\n    linkToResults='$linkToResults'...", 1 );
 		
-	my $httpResponse = $tinyHttp->get( $linkToResults, , \%options );
+	my $httpResponse = $tinyHttp->get( $linkToResults, \%options );
 	# we get here under TWO conditions:
 	#	- the entire response has been processed by data_callback routine and all is good, or
 	#	- none (or some?) of the response has been processed and we got an error.
 	# This means the httpResponse is either "OK" or some error, so, if it's an error, we'll handle
 	# it here:
-	if( !$httpResponse->{success} ) {
+	my $success = $httpResponse->{success};
+	if( !$success ) {
 		# failure - display message and give up on this one
 		PMSLogging::PrintLog( "", "", "FAILED!!" );
 		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponse );
-	} else {
+		# WEIRD SITUATION:  on some machines (e.g. Mac) the response->{success} flag is not true, which
+		# should normally cause us to give up on this download.  But experimentation shows that we get
+		# the data anyway so we're going to fudge on this and, if it appears we got data anyway, continue
+		# anyway.  Here is where we check for and handle this weird situation:
+		#
+# Todo
+		# Here is the common error - perhaps we just check for this error to ignore?
+		#	HandleHTTPFailure(): HTTP Request to 'http://www.usms.org/comp/tt/toptenlmsc.php?Year=2018&CourseID=2&ZoneID=&LMSCID=38&ClubAbbr='
+		#	    (org:'USMS', course:'LCM') failed. {success}: , {status}: '599', {reason}: 'Internal Exception',
+		#	    Text of Exception ({content}): 'Could not close socket: 'Broken pipe'',
+		#	    {url}: 'http://www.usms.org/comp/tt/toptenlmsc.php?Year=2018&CourseID=2&ZoneID=&LMSCID=38&ClubAbbr='
+		#
+		if( $callbackState{"numLines"} > 0 ) {
+			PMSLogging::DumpNote( "", "", "$appProgName:GetUSMSTopTenResults(): The above error will be IGNORED!  " .
+				"If there were any results found we'll download the Excel file anyway.", 1 );
+			$success = 1;
+		} elsif( $callbackState{"numDifferentResults"} ) {
+			PMSLogging::DumpNote( "", "", "$appProgName:GetUSMSTopTenResults(): The above error will prevent " .
+				"the downloading of the results Excel file.", 1 );
+		}
+	}
+	if( $success ) {
 		# all of the human-readable results have been parsed with no errors
 		if( $callbackState{"numDifferentResults"} ) {
 			# we've got at least one result to process - generate the excel result file
@@ -966,22 +1077,45 @@ sub GetUSMSTopTenResults( $$$$$ ) {
 			PMSLogging::PrintLog( "", "", "Found $callbackState{'numDifferentResults'} different results, " .
 				"$callbackState{'numDifferentMeets'} newly seen swim meets, " .
 				$callbackState{"numLines"} . " lines.", 1 );
-			# we need to change the User Agent because USMS prohibits the SIMPLE user agent...
-			$LWP::Simple::ua->agent("WikiBot/0.1");
+				
+			# get full url to download
+			$linkToResults = "$baseURL$excelLink";
+			# set up callback for file download
+			my %callbackFileDownloadState = (
+				"numCallbackCalls"		=> 	0,
+				"numBytesSeen"			=>	0,
+				"numBytesWritten"		=>	0,
+				"fullFileName"			=>	$resultFileName,
+				"fileHandle"			=>  0,
+				"binmode"				=>	0,		# set to 1 if downloading a binary file
+				);
+			my %optionsFileDownload = (
+				"data_callback"	=>	sub {
+					ParseFileDownloadHttpResponse( \%callbackFileDownloadState, $linkToResults, $org, 
+						$course, $_[0], $_[1] );
+				} );
+
 			if( $debug ) {
-				PMSLogging::DumpNote( "", "", "$appProgName:GetUSMSTopTenResults(): fetch Excel from " .
-					"'$baseURL$excelLink' and store in '$resultFileName'", 1);
-				PMSLogging::DumpNote( "", "", "    baseURL='$baseURL' and excelLink='$excelLink'" );
+				PMSLogging::DumpNote( "", "", "$appProgName:GetUSMSTopTenResults(): fetch Excel from:\n  " .
+					"'$linkToResults'\n  and store in '$resultFileName'", 1);
+				#PMSLogging::DumpNote( "", "", "    baseURL='$baseURL', excelLink='$excelLink'" );
 			}
-			my $responseCode = LWP::Simple::getstore( "$baseURL$excelLink", $resultFileName );
-			if( LWP::Simple::is_error($responseCode) ) {
-				PMSLogging::DumpError( "", "", "GetResults::GetUSMSTopTenResults(): LWP::Simple error:  $responseCode", 1 );
+			OpenDownloadDestination( \%callbackFileDownloadState, $linkToResults );
+			my $httpResponseRef = $tinyHttp->get( $linkToResults, \%optionsFileDownload );
+			CloseDownloadDestination( \%callbackFileDownloadState );
+			# we get here under TWO conditions:
+			#	- the entire response has been processed by data_callback routine and all is good, or
+			#	- none (or some?) of the response has been processed and we got an error.
+			# This means the httpResponse is either "OK" or some error, so, if it's an error, we'll handle
+			# it here:
+			if( !$httpResponseRef->{success} ) {
+				# failure - display message and give up on this one
+				PMSLogging::PrintLog( "", "", "FAILED to download '$linkToResults'!!", 1 );
+				TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef, "(From GetUSMSTopTenResults())" );
+			} else {
+				# the excel file was downloaded with no errors
 			}
-			if( ! -e $resultFileName ) {
-				PMSLogging::DumpError( "", "", "GetResults::GetUSMSTopTenResults(): " .
-				"Unable to write to '$resultFileName' - FAILED to save Excel file.", 1 );
-			}
-	
+				
 		} else {
 			PMSLogging::PrintLog( "", "", "none found - no result file generated - " .
 				$callbackState{"numLines"} . " lines, " . $callbackState{"numCallbackCalls"} .
@@ -989,6 +1123,11 @@ sub GetUSMSTopTenResults( $$$$$ ) {
 		}
 	}
 
+	if( $debug ) {
+		PMSLogging::DumpNote( "", "", "GetResults::GetUSMSTopTenResults(): return callbackState{numLines}=" .
+			$callbackState{"numLines"} . ", callbackState{numDifferentMeets}=" . $callbackState{"numDifferentMeets"} .
+			", callbackState{numDifferentResults}=" . $callbackState{"numDifferentResults"} . "\n", 1 );
+	}
 	return (
 		$callbackState{"numLines"},
 		$callbackState{"numDifferentMeets"},
@@ -1142,7 +1281,7 @@ sub ProcessUSMSSwimDetails($) {
 	if( !$httpResponse->{success} ) {
 		# failure - display message and give up on this one
 		PMSLogging::PrintLog( "", "", "FAILED!!" );
-		TT_Logging::HandleHTTPFailure( $swimLink, "USMS", "?", $httpResponse );
+		TT_Logging::HandleHTTPFailure( $swimLink, "USMS", "?", $httpResponse, "From ProcessUSMSSwimDetails()" );
 	} elsif( ($meetTitle eq "") || ($link eq "") ) {
 		PMSLogging::PrintLog( "", "", "GetResults::ProcessUSMSSwimDetails(): Unable to find " .
 			"Meet info in '$swimLink'; link='$link', meetTitle='$meetTitle', " .
@@ -1177,7 +1316,7 @@ sub ParseUSMSSwimDetails( $$$$ ) {
 			# failure - display message and give up on this one
 			PMSLogging::PrintLog( "", "", "ParseUSMSSwimDetails() FAILED!! (during " .
 				"callback #$numCallbackCalls)", 1 );
-			TT_Logging::HandleHTTPFailure( $swimLink, "USMS", "?", $httpResponseRef );
+			TT_Logging::HandleHTTPFailure( $swimLink, "USMS", "?", $httpResponseRef, "From ParseUSMSSwimDetails()" );
 		} else {
 			# process each line in the human-readable results:
 			if( $content !~ m/\n$/ ) {
@@ -1209,7 +1348,7 @@ sub ParseUSMSSwimDetails( $$$$ ) {
 			} else {
 				# no partial line...
 				$callbackStateRef->{"leftoverLine"} = "";
-				if( $debug ) {
+				if( $debug > 4 ) {
 					print "ParseUSMSSwimDetails(): No partial line\n";
 				}
 			}
@@ -1231,8 +1370,10 @@ sub ParseUSMSSwimDetails( $$$$ ) {
 	} # end of before doing anything make sure we didn't get an error...
 	
 	# all done - if we found the data we're looking for it's in the callback structure
-	if( $debug ) {
-		print "ParseUSMSSwimDetails: return with '$meetTitle' and '$link'\n";
+	if( ($meetTitle ne "") || ($link ne "") ) {
+		if( $debug ) {
+			print "ParseUSMSSwimDetails: return with '$meetTitle' and '$link'\n";
+		}
 	}
 	
 } # end of ParseUSMSSwimDetails()
@@ -1450,7 +1591,7 @@ sub ParsePMSRecordsHttpResponse( $$$$$$$$ ) {
 # GetUSMSRecords - get the USMS Records result files in all courses (SCY, SCM, and LCM)
 #
 # PASSED:
-#	$linkToResults - the URL to the page from which we request specific USMS records (based on gender and course).
+#	$url - the URL to the page from which we request specific USMS records (based on gender and course).
 #	$USMSRecordsFilesRef - reference to a hash where each entry looks like this:
 #			$USMSRecordsFilesRef->{USMSRecords-M-SCM-2017.csv} = "USMS-SCM@M"
 #		where
@@ -1472,7 +1613,7 @@ sub ParsePMSRecordsHttpResponse( $$$$$$$$ ) {
 #	6 files are created (1 for each course and gender).
 #
 sub GetUSMSRecords( $$$ ) {
-	my( $linkToResults, $USMSRecordsFilesRef, $yearBeingProcessed ) = @_;
+	my( $url, $USMSRecordsFilesRef, $yearBeingProcessed ) = @_;
 	my $org = "USMS";
 	my %courses = ( "SCY" => 1, "LCM" => 2, "SCM" => 3 );
 	my $numFiles = 0;
@@ -1489,20 +1630,50 @@ sub GetUSMSRecords( $$$ ) {
 		}
 		PMSLogging::PrintLogNoNL( "", "", "GetResults::GetUSMSRecords(): Get the results for USMS Records $course ($gender)...", 1 );
 		my $courseCode = $courses{$course};
-		my $url = $linkToResults . "?CourseID=$courseCode&ri=$gender&ext=csv&prog=0";
+		# get full url to download
+		my $linkToResults = $url . "?CourseID=$courseCode&ri=$gender&ext=csv&prog=0";
 		PMSLogging::PrintLog( "", "", "  url='$url'...", 1 );
-		# we need to change the User Agent because USMS prohibits the SIMPLE user agent...
-		$LWP::Simple::ua->agent("WikiBot/0.1");
 		# construct full path name of the file we will create with the records:
 		my $resultFileName = "$sourceDataDir/$simpleFileName";
+
+			# set up callback for file download
+			my %callbackFileDownloadState = (
+				"numCallbackCalls"		=> 	0,
+				"numBytesSeen"			=>	0,
+				"numBytesWritten"		=>	0,
+				"fullFileName"			=>	$resultFileName,
+				"fileHandle"			=>  0,
+				"binmode"				=>	0,		# set to 1 if downloading a binary file
+				);
+			my %optionsFileDownload = (
+				"data_callback"	=>	sub {
+					ParseFileDownloadHttpResponse( \%callbackFileDownloadState, $linkToResults, $org, 
+						$course, $_[0], $_[1] );
+				} );
+
+			if( $debug ) {
+				PMSLogging::DumpNote( "", "", "$appProgName:GetUSMSRecords(): fetch Excel from:\n  " .
+					"'$linkToResults'\n  and store in '$resultFileName'", 1);
+			}
+			OpenDownloadDestination( \%callbackFileDownloadState, $linkToResults );
+			my $httpResponseRef = $tinyHttp->get( $linkToResults, \%optionsFileDownload );
+			CloseDownloadDestination( \%callbackFileDownloadState );
+			# we get here under TWO conditions:
+			#	- the entire response has been processed by data_callback routine and all is good, or
+			#	- none (or some?) of the response has been processed and we got an error.
+			# This means the httpResponse is either "OK" or some error, so, if it's an error, we'll handle
+			# it here:
+			if( !$httpResponseRef->{success} ) {
+				# failure - display message and give up on this one
+				PMSLogging::PrintLog( "", "", "FAILED to download '$linkToResults'!!", 1 );
+				TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef, "From GetUSMSRecords()" );
+			} else {
+				# the excel file was downloaded with no errors
+			}
 		
-		my $responseCode = LWP::Simple::getstore( "$url", $resultFileName );
-		if( LWP::Simple::is_error($responseCode) ) {
-			PMSLogging::DumpError( "", "", "LWP::Simple error:  $responseCode", 1 );
-		}
 		if( ! -e $resultFileName ) {
 			PMSLogging::DumpError( "", "", "GetResults::GetUSMSRecords(): " .
-			"Unable to write to '$resultFileName' - FAILED to save CSCV file.", 1 );
+			"Unable to write to '$resultFileName' - FAILED to save CSV file.", 1 );
 		} else {
 			my $lineCount = `wc -l < $resultFileName`;
 			$lineCount =~ s/^\D*//;
@@ -1523,7 +1694,7 @@ sub GetUSMSRecords( $$$ ) {
 #
 # PASSED:
 #	$linkToResults - the URL to the result file (on the PMS web site)
-#	$filePath - the path to which we store the file once we fetch it from the above site.
+#	$resultFileName - the path to which we store the file once we fetch it from the above site.
 #
 # RETURNED:
 #	$numResultLines - result lines read
@@ -1533,36 +1704,57 @@ sub GetUSMSRecords( $$$ ) {
 #	This routine will use the passed $linkToResults to request and store exactly one file
 #
 sub GetPMSOWResults( $$ ) {
-	my( $linkToResults, $filePath ) = @_;
+	my( $linkToResults, $resultFileName ) = @_;
 	my( $numResultLines, $numEvents ) = (0, 0);
 	my $listOfEvents = ",";
 	my $gotOWResults = 1;		# assume we'll find some OW events
+	my $org = "PMS";
+	my $course = "OW";
 
 	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSOWResults(): Get the results for PAC open water...", 1 );
-	PMSLogging::PrintLogNoNL( "", "", "url='$linkToResults',\n  destination='$filePath'...", 1 );
+	PMSLogging::PrintLogNoNL( "", "", "url='$linkToResults',\n  destination='$resultFileName'...", 1 );
 
-	my $responseCode = LWP::Simple::getstore( $linkToResults, $filePath );
-	
-	if( LWP::Simple::is_error($responseCode) ) {
-		$gotOWResults = 0;
-		if( $responseCode == 404 ) {
-			# we ignore this error - no OW results yet
-			PMSLogging::PrintLog( "", "", "GetResults::GetPMSOWResults(): No OW results to process yet!" );
-		} else {
-			PMSLogging::DumpError( "", "", "LWP::Simple error:  $responseCode", 1 );
-		}
-	} elsif( ! -e $filePath ) {
-		# failed to write the file wih OW results
-		PMSLogging::DumpError( "", "", "GetResults::GetPMSOWResults(): " .
-			"Unable to write to '$filePath' - FAILED to save CSV file.", 1 );
-	}
+			# set up callback for file download
+			my %callbackFileDownloadState = (
+				"numCallbackCalls"		=> 	0,
+				"numBytesSeen"			=>	0,
+				"numBytesWritten"		=>	0,
+				"fullFileName"			=>	$resultFileName,
+				"fileHandle"			=>  0,
+				"binmode"				=>	0,		# set to 1 if downloading a binary file
+				);
+			my %optionsFileDownload = (
+				"data_callback"	=>	sub {
+					ParseFileDownloadHttpResponse( \%callbackFileDownloadState, $linkToResults, $org, 
+						$course, $_[0], $_[1] );
+				} );
+
+			if( $debug ) {
+				PMSLogging::DumpNote( "", "", "$appProgName:GetPMSTopTenResults(): fetch Excel from:\n  " .
+					"'$linkToResults'\n  and store in '$resultFileName'", 1);
+			}
+			OpenDownloadDestination( \%callbackFileDownloadState, $linkToResults );
+			my $httpResponseRef = $tinyHttp->get( $linkToResults, \%optionsFileDownload );
+			CloseDownloadDestination( \%callbackFileDownloadState );
+			# we get here under TWO conditions:
+			#	- the entire response has been processed by data_callback routine and all is good, or
+			#	- none (or some?) of the response has been processed and we got an error.
+			# This means the httpResponse is either "OK" or some error, so, if it's an error, we'll handle
+			# it here:
+			if( !$httpResponseRef->{success} ) {
+				# failure - display message and give up on this one
+				PMSLogging::PrintLog( "", "", "FAILED to download '$linkToResults'!!", 1 );
+				TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef, "From GetPMSOWResults()" );
+			} else {
+				# the excel file was downloaded with no errors
+			}
 	
 	# if we found some OW events let's count them...
 	if( $gotOWResults ) {
 		PMSLogging::PrintLog( "", "", "", 1 );
 		# scan through the file we got and count the different events and # result lines
 		my $fd;
-		if( open( $fd, "<", $filePath ) ) {
+		if( open( $fd, "<", $resultFileName ) ) {
 			while( my $row = <$fd> ) {
 				if( ($row =~ m/,/) && ($row !~ m/^Gender/) ) {
 					# row contains a comma - it's a OW swim
@@ -1580,7 +1772,7 @@ sub GetPMSOWResults( $$ ) {
 			}
 		} else {
 			PMSLogging::DumpError( "", "", "Unable to open the OW file just downloaded (" .
-				"$filePath) - $!", 1 );
+				"$resultFileName) - $!", 1 );
 		}
 	}
 	
