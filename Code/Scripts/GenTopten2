@@ -9,7 +9,7 @@
 #
 #
 
-TMPFILE=/tmp/GenTopten2.$$
+TMPFILE=/tmp/GenTopten2-$1.$$
 EMAIL_NOTICE=bobup@acm.org
 PROGNAME=`hostname`::$0
 

@@ -197,7 +197,7 @@ OR
 # DO THE ABOVE FOR ALL seasons
 
 !!!! history tree
-!!!!  set permissions!!
+!!!!  set permissions!! on rsind files and prop db file
 
 # Next, we need to be sure our database configuration parameters are set
 # correctly.  They are specified in the 'properties_DB-{season}.txt' file located in the

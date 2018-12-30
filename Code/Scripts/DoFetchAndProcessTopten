@@ -23,15 +23,15 @@
 
 SEASON=$1
 STARTDATE=`date +'%a, %b %d %G at %l:%M:%S %p %Z'`
-TMPFILE=/tmp/DoFetchAndProcessTopten.$$
-TMPFILE2=/tmp/DoFetchAndProcessTopten_2.$$
-ARCHIVED_TMPFILE=/tmp/DoFetchAndProcessTopten.archive
-ARCHIVED_TMPFILE2=/tmp/DoFetchAndProcessTopten_2.archive
+TMPFILE=/tmp/DoFetchAndProcessTopten-$SEASON.$$
+TMPFILE2=/tmp/DoFetchAndProcessTopten_2-$SEASON.$$
+ARCHIVED_TMPFILE=/tmp/DoFetchAndProcessTopten-$SEASON.archive
+ARCHIVED_TMPFILE2=/tmp/DoFetchAndProcessTopten_2-$SEASON.archive
 EMAIL_NOTICE=bobup@acm.org
 TOPTEN='./Topten2.pl'
 TTSTATS='./TTStats.pl'
 SIMPLE_SCRIPT_NAME=`basename $0`
-DOFETCH_LOG=/tmp/DoFetchLog.txt
+DOFETCH_LOG=/tmp/DoFetchLog-$SEASON.txt
 
 # debugging...
 #set -x
