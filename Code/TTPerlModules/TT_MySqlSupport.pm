@@ -2269,7 +2269,6 @@ sub DidWeGetDifferentData( $$$$$$$ ) {
 					"RaceLines = '$raceLines', " .
 					"Date = '" . PMSStruct::GetMacrosRef()->{"MySqlDateTime"} . "' " .
 					"WHERE Season = '$season'";
-#				($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
 				my $rowsAffected = $dbh->do( $query );
 				if( $rowsAffected == 0 ) {
 					# update failed - ERROR!
@@ -2298,7 +2297,10 @@ sub DidWeGetDifferentData( $$$$$$$ ) {
 					# We will use the most recent version of the RSIDN file we can find in the $PMSSwimmerData
 					# directory:
 					$swimmerDataFile = 	PMSUtil::GetMostRecentVersion( '^(.*RSIND.*)|(.*RSIDN.*)$', $PMSSwimmerData );
-					PMSStruct::GetMacrosRef()->{"RSIDNFileName"} = $swimmerDataFile;
+					# NOTE: $swimmerDataFile is a FULL PATH NAME!  The RSIDNFileName macro is supposed to be the simple name
+					if( defined $swimmerDataFile ) {
+						PMSStruct::GetMacrosRef()->{"RSIDNFileName"} = basename( $swimmerDataFile );
+					}
 				} else {
 					$swimmerDataFile = $PMSSwimmerData . PMSStruct::GetMacrosRef()->{"RSIDNFileName"};
 				}
