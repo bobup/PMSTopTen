@@ -1,9 +1,16 @@
 #!/usr/bin/perl
+#
+# TTStatsDiffFilter - process the file produced by diff showing the difference between AGSOTY on dev with
+#	AGSOTY on prod.  This filter will make the diff file a bit more human friendly.
+#
 
 use strict;
 use lib '/Users/bobup/Development/PacificMasters/PMSPerlModules';
 use DateTime::Format::Strptime;
 use POSIX 'strftime';
+use File::Basename;
+use Cwd 'abs_path';
+
 
 require PMSUtil;
 
@@ -12,410 +19,198 @@ require PMSUtil;
 
 my $debug = 0;
 
-# define the directory holding the log files to be processed:
-my $rootDir = "/Users/bobup/Development/PacificMasters/AnalyzeAccessLogs/siteStats/4nov2018Generated-original";
-my $simpleFileName = xxxx;
-my $totalNumRows = 0;
-	my $filename = "$rootDir/$simpleFileName";
+# define the full path name of the diff file to be processed:
+my $TTSTATS_DIFF;
 
-	my $seperator = ",";
-	my $lineNum = 0;
-	open( PROPERTYFILE, "< $filename" ) || die( "TTStatsDiffFilter.pl:  Can't open $filename: $!" );
-	while( my $line = <PROPERTYFILE> ) {
-		
-		
-		
-		
-		my $value = "";
-		$lineNum++;
-		chomp( $line );
-		#print "Line #$lineNum: '$line'\n";
-		# remove comments:
-		$line =~ s/\s*#.*$//;
-		next if( $line eq "" );
-		# split on commas
- 
- 
-	my $numRows = ProcessResultFile( $RootDir, $file );
-	$totalNumRows += $numRows;
-	if( $debug > 1 ) {
-		print "Processing $file.  Number of page hits: $numRows\n";
-	}
-}
-if( $debug > 1 ) {
-	print "Total page hits:  $totalNumRows\n";
-}
 
-foreach my $ip( keys %AccessCounts ) {
-	# looking for ip's only
-	next if( $ip =~ m/-/ );
-	$TotalDiffIPs++;
-	my $totalHits = $AccessCounts{$ip};
-	print "Total number of hits for ip '$ip': $totalHits\n" if( $debug > 1);
-	$TotalHitsPerIP[$totalHits]++;
-	foreach my $monNum( 1,2,3,4,5,6,7,8,9,10,11,12) {
-		my $numHits = $AccessCounts{"$ip-$monNum"};
-		if( (defined $numHits) && ($numHits > 0) ) {
-			$SwimmersPerMonth[$monNum]++;
-			$HitsPerMonth[$monNum] += $numHits;
-			print "  Number of hits in " . $numToMonHash{$monNum} . ": $numHits\n" if( $debug > 1 );
-		}
-	}
-}
-print "Total different number of IPs seen: $TotalDiffIPs\n\n" if( $debug > 1 );
+my $appProgName;	# name of this program
+my $appDirName;     # directory containing the application we're running
+my $appRootDir;		# directory containing the appDirName directory
+my $sourceData;		# full path of directory containing the "source data" which we process to create the generated files
 
-# how many months are we considering?
-my $samplePeriod = 0;
-foreach my $monNum (1..12) {
-	next if( (!defined $SwimmersPerMonth[$monNum]) || ($SwimmersPerMonth[$monNum] == 0) );
-	$samplePeriod++;
-}
-
-if( $debug > 1 ) {
-	print "\n# Swimmers Per Page Hit (considering $samplePeriod months of $currentYear):\n";
-}
-my $totDiffSwimmers = 0;
-
-# $averageSwimmersPerMonth[i] = number of swimmers who hit the AGSOTY page at least 'i' times a month on average
-# $averageSwimmersPerMonth[0] = number of swimmers who hit the AGSOTY page less than once a month on average
-# (e.g. if a swimmer hits the AGSOTY page 15 times in a 6 month sample then that swimmer averaged 2 hits per month)
-my @averageSwimmersPerMonth;
-
-# $mostActiveSwimmerHits is the number of times the most active swimmer hit the AGSOTY pages during
-# our sample period.
-my $mostActiveSwimmerHits = scalar @TotalHitsPerIP - 1;
-for my $i (1..$mostActiveSwimmerHits) {
-	if( defined $TotalHitsPerIP[$i] ) {
-		my $swimmer_s = "s";
-		my $time_s = "s";
-		my $tot = $TotalHitsPerIP[$i];
-		$totDiffSwimmers+=$tot;
-		$swimmer_s = "" if( $tot == 1 );
-		$time_s = "" if( $i == 1 );
-		if( $debug > 1 ) {
-			print "  $tot swimmer$swimmer_s hit the AGSOTY Points page exactly $i time$time_s\n";
-		}
-		my $averageHitsPerMonth = int($i/$samplePeriod);
-		$averageSwimmersPerMonth[$averageHitsPerMonth] += $tot;
-	}
-}
-if( $debug > 1 ) {
-	print "(That's a total of $totDiffSwimmers different swimmers.)\n\n";
-}
-
-print "After analyzing our logs covering $samplePeriod months of $currentYear here is what we found:\n";
-# compute the average hits per month made by the most active swimmer:
-my $mostActiveTimesPerMonth = int($mostActiveSwimmerHits / $samplePeriod);
-if( $debug ) {
-	print "mostActiveSwimmerHits=$mostActiveSwimmerHits, mostActiveTimesPerMonth=$mostActiveTimesPerMonth\n";
-}
-my $lastNumSwimmers = -1;
-for my $timesPerMonth (reverse(0 .. $mostActiveTimesPerMonth)) {
-	my $totalHits = 0;
-	# how many total page hits does a swimmer have to make to average $timesPerMonth hits per month?
-	my $numHitsSameAverage = $timesPerMonth * $samplePeriod;
-	# compute the number of swimmers who averaged this many hits per month
-	my $numSwimmers = 0;
-	my $i = $mostActiveSwimmerHits;
-	
-	while( $i >= $numHitsSameAverage) {
-		if( defined $TotalHitsPerIP[$i] ) {
-			$numSwimmers += $TotalHitsPerIP[$i];
-			$totalHits += ($i * $TotalHitsPerIP[$i]);
-		}
-		if( $debug ) {
-			print ("i=$i, numSwimmers=$numSwimmers, totalHits=$totalHits\n");
-		}
-		$i--;
-	}
+BEGIN {
+	# Get the name of the program we're running:
+	$appProgName = basename( $0 );
+	die( "Can't determine the name of the program being run - did you use/require 'File::Basename' and its prerequisites?")
+		if( (!defined $appProgName) || ($appProgName eq "") );
 	if( $debug ) {
-		print "timePerMonth=$timesPerMonth, numHitsSameAverage=$numHitsSameAverage, numSwimmers=$numSwimmers\n";
+		print "Starting $appProgName...\n";
 	}
-	if( $numSwimmers != $lastNumSwimmers ) {
-		if( $timesPerMonth < 1 ) {
-			print "  A total of $numSwimmers swimmers hit the AGSOTY page at least once. Total hits: $totalHits\n";
-		} else {
-			print "  $numSwimmers swimmers averaged $timesPerMonth or more hits of the AGSOTY page per month." .
-				"  Total hits: $totalHits\n";
+	
+	# The program we're running is in a directory we call the "appDirName".
+	#
+	$appDirName = dirname( $0 );     # directory containing the application we're running, e.g.
+									# e.g. /Users/bobup/Documents/workspace/TopTen-2016
+										# or ./Code/
+	die( "${appProgName}:: Can't determine our running directory - did you use 'File::Basename' and its prerequisites?")
+		if( (!defined $appDirName) || ($appDirName eq "") );
+	# convert our application directory into a full path:
+	$appDirName = abs_path( $appDirName );		# now we're sure it's a full path name that begins with a '/'
+
+	# The 'appRootDir' is the parent directory of the appDirName:
+	$appRootDir = dirname($appDirName);		# e.g. /Users/bobup/Development/PacificMasters/PMSOWPoints/
+	die( "${appProgName}:: The parent directory of '$appDirName' is not a directory! (A permission problem?)" )
+		if( !-d $appRootDir );
+	if( $debug ) {
+		print "  ...with the app dir name '$appDirName' and app root of '$appRootDir'...\n";
+	}
+	
+	# initialize our source data directory name:
+	$sourceData = "$appRootDir/SeasonData";	
+}
+
+my $UsageString = <<bup
+Usage:  
+	$appProgName -h StatsDiff
+where:
+	-h - produce this message
+	StatsDiff - the full path name of the file containing a diff between two AGSOTYs
+	Example:
+	------
+		76,77c76,77
+		< [C5]:    352              30-34           F
+		< [C6]:    444              30-34           M
+		---
+		> [C5]:    355              30-34           F
+		> [C6]:    445              30-34           M
+		146c146
+		< [E1]:    101529
+		---
+		> [E1]:    101683
+		156,157c156,157
+		< [F4]:    276              25-29:30-34
+		< [F5]:    6386             30-34
+		...........etc.........
+	------
+	The goal of this program is to turn the diff into this:
+	------
+		NOTE:  .< lines: PRODUCTION server, .> lines: DEV server
+
+		[C]: Number of splashes per age group and gender:
+		76,77c76,77											<- diff change line
+		.< [C5]:    352              30-34           F		<- diff row
+		.< [C6]:    444              30-34           M
+		---
+		.> [C5]:    355              30-34           F
+		.> [C6]:    445              30-34           M
+
+		[E]: Number of total points earned (some points may be counted twice for a swimmer who swam
+      		in two age groups):
+		146c146
+		.< [E1]:    101529
+		---
+		.> [E1]:    101683
+		156,157c156,157
+		
+		[F]: Number of points earned by each age group (includes "combined" age groups):
+		156,157c156,157
+		.< [F4]:    276              25-29:30-34
+		.< [F5]:    6386             30-34
+		...........etc.........
+	------
+bup
+;
+
+
+# descriptions of each diff row:
+my %row;
+$row{'A'} = "[A]: Number of swimmers who swam in exactly one age group (with and without points) by gender";
+$row{'B'} = "[B]: Number of swimmers who swam in two age groups (with and without points) by gender";
+$row{'C'} = "[C]: Number of splashes per age group and gender";
+$row{'D'} = "[D]: Number of swimmers who earned points by gender and age group.  Some swimmers may be " . 
+            "counted twice if they earned points in two age groups";
+$row{'E'} = "[E]: Number of total points earned (some points may be counted twice for a swimmer who swam " .
+            "in two age groups";
+$row{'F'} = "[F]: Number of points earned by each age group (includes \"combined\" age groups)";
+$row{'G'} = "[G]: Number of Open Water splashes (with and without points)";
+$row{'H'} = "[H]: Number of swimmers who swam at least one Open Water event (with and without points)";
+
+my $previousDescriptionType = "@";		# set to letter of the last description we output
+
+
+###  get the program arguments
+my $arg;
+my $numErrors = 0;
+while( defined( $arg = shift ) ) {
+	my $flag = $arg;
+	my $value = PMSUtil::trim($arg);
+	if( $value =~ m/^-/ ) {
+		# we have a flag with possible arg
+		$flag =~ s/(-.).*$/$1/;		# e.g. '-t'
+		$value =~ s/^-.//;			# e.g. '/a/b/c/d/Propertyfile.xtx'
+		SWITCH: {
+	        if( $flag =~ m/^-h$/ ) {
+	        	print $UsageString . "\n";
+	        	exit;
+				last SWITCH;
+	        }
+			print "${appProgName}:: ERROR:  Invalid flag: '$arg'\n";
+			$numErrors++;
 		}
-		$lastNumSwimmers = $numSwimmers;
-	}
-}
-
-if(0) {
-	for my $i (0..scalar @averageSwimmersPerMonth) {
-		my $xxx = "(undefined)";
-		$xxx = $averageSwimmersPerMonth[$i] if( defined $averageSwimmersPerMonth[$i] );
-		print "averageSwimmersPerMonth[$i] = $xxx\n";
-	}
-}
-
-
-$totDiffSwimmers = 0;
-print "\n# Swimmers Hitting our AGSOTY Page Each Month (considering $samplePeriod months of $currentYear):\n";
-foreach my $monNum (1..12) {
-	next if( (!defined $SwimmersPerMonth[$monNum]) || ($SwimmersPerMonth[$monNum] == 0) );
-	$totDiffSwimmers += $SwimmersPerMonth[$monNum];
-	print "  " . $numToMonHash{$monNum} . ": $SwimmersPerMonth[$monNum]  ($HitsPerMonth[$monNum] hits)\n";
-}
-print "Total page hits:  $totalNumRows\n";
-
-# get the date/time we're starting:
-my $dateTimeFormat = '%a %b %d %Y %Z %I:%M:%S %p';
-my $currentDateTime = strftime $dateTimeFormat, localtime();
-#print "currentDateTime=$currentDateTime, localtime=" . scalar localtime . "\n";
-print "\nAnalysis completed on $currentDateTime\n\n";
-
-### END
-
-
-#         if( DuplicateRow( $ip, $date, $time ) ) {
-sub DuplicateRow( $$$ ) {
-	my ($ip, $date, $time) = @_;
-	my $result = 0;
-	my $key = "$ip-$date-$time";
-	if( defined( $AccessCounts{$key} ) ) {
-		$result = 1;
 	} else {
-		my $dateTimeStr = $date . "T" . $time;
-		my $strp = DateTime::Format::Strptime->new(
-    		pattern   => '%d/%b/%YT%T',
-    	);
-    	my $dt = $strp->parse_datetime( $dateTimeStr );
-    	my $dtStr = $strp->format_datetime( $dt );
-#    	print "'$dateTimeStr' == '$dtStr'....";
-		# have we already seen a hit 1 second prior to this hit?  If so consider it a duplicate:
-    	my $previousSecond = $dt - DateTime::Duration->new( seconds => 1 );
-    	my $previousSecondStr = $strp->format_datetime( $previousSecond );
-#    	print "'$previousSecondStr'\n";
-    	my $previousSecondTime = $previousSecondStr;
-    	$previousSecondTime =~ s/^.*T//;
-    	my $previousSecondKey = "$ip-$date-$previousSecondTime";
-#    	print "key='$key', previousSecondKey='$previousSecondKey'\n";
-		if( defined( $AccessCounts{$previousSecondKey} ) ) {
-			$result = 1;
-		}
-		# have we already seen a hit 1 second later than this hit?  If so consider it a duplicate:
-    	my $followingSecond = $dt + DateTime::Duration->new( seconds => 1 );
-    	my $followingSecondStr = $strp->format_datetime( $followingSecond );
-#    	print "'$followingSecond'\n";
-    	my $followingSecondTime = $followingSecond;
-    	$followingSecondTime =~ s/^.*T//;
-    	my $followingSecondKey = "$ip-$date-$followingSecondTime";
-#    	print "key='$key', $followingSecondKey='$followingSecondKey'\n";
-		if( defined( $AccessCounts{$followingSecondKey} ) ) {
-			$result = 1;
-		}
-
-	}
-	return $result;
-} # end of DuplicateRow()
-
-		
-# column order:  IP address, date dd/mmm/yyyy, time, referrer url, browser
-sub ProcessResultFile( $$ ) {
-	my( $rootDir, $simpleFileName ) = @_;
-    my $numUsedRows = 0;
-	my $filename = "$rootDir/$simpleFileName";
-
-	my $seperator = ",";
-	my $lineNum = 0;
-#	local $/ = "\r";
-	open( PROPERTYFILE, "< $filename" ) || die( "ProcessResultFile():  Can't open $filename: $!" );
-	while( my $line = <PROPERTYFILE> ) {
-		my $value = "";
-		$lineNum++;
-		chomp( $line );
-		#print "Line #$lineNum: '$line'\n";
-		# remove comments:
-		$line =~ s/\s*#.*$//;
-		next if( $line eq "" );
-		# split on commas
-		# the 'browser' field may have commas...
-		my @fields = split( $seperator, $line, 5 );
-		my ($abbr, $fullName) = @fields;
-        my $ip = PMSUtil::trim(lc($fields[0]));
-        my $date = PMSUtil::trim(lc($fields[1]));
-        my $time = PMSUtil::trim(lc($fields[2]));
-        my $url = PMSUtil::trim(lc($fields[3]));
-        # is this an empty row?
-        if( (!defined $ip) || ($ip eq "") ) {
-        	next;
-        }
-        # is this a log entry we care about?
-        if( DuplicateRow( $ip, $date, $time ) ) {
-        	# we don't want this row - it's a duplicate
-		    if( $debug > 1 ) {
-		        print "IGNORE DUPLICATE: $lineNum: IP is '$ip', date='$date', time='$time', url='$url'\n";
-		    }
-        	next;
-        } else {
-        	# yes, we care about this row!
-	        if( $debug > 1 ) {
-	        	print "Use this: $lineNum: IP is '$ip', date='$date', time='$time', url='$url'\n";
-	        }
-	        $numUsedRows++;
-	        my $monthNum = GetMonthNum( $date );
-	        $AccessCounts{$ip}++;
-	        $AccessCounts{"$ip-$monthNum"}++;
-	        $AccessCounts{"$ip-$date-$time"} = 1;
-        }
-	} # end of while(...
-
-    return $numUsedRows;
-
-} # end of ProcessResultFile()
-		
-
-
-    
-    
-
-# 	        my $monthNum = GetMonthNum( $date );
-sub GetMonthNum( $ ) {
-	my $result = 0;
-	my $month = $_[0];
-	my %monToNumHash = qw (
-		jan 1
-		feb 2
-		mar 3
-		apr 4  
-		may 5  
-		jun 6
-  		jul 7  
-  		aug 8  
-  		sep 9  
-  		oct 10 
-  		nov 11 
-  		dec 12
-	);
-	$month =~ s,^[^-/]+[/-],,;
-	$month =~ s,[/-].*$,,;
-	$result = $monToNumHash{ $month };
-	return $result;
-} # end of GetMonthNum()
-
-
-
-
-# TimeCloseToPreviousTime( $time, $previousTime ) ) {
-sub TimeCloseToPreviousTime( $$ ) {
-	my $result = 0;
-	my( $time, $previousTime ) =  @_;
-	
-	# temporary solution...
-	$result = $time eq $previousTime;
-	return $result;
-	
-} # end of TimeCloseToPreviousTime()
-
-	
-	
-	
-	
-	
-	
-	
-	
-exit;
-# =======================================================================================
-sub ProcessResultFile_old( $$ ) {
-	my( $rootDir, $simpleFileName ) = @_;
-    my $numUsedRows = 0;
-	my $filename = "$rootDir/$simpleFileName";
-my @requiredURLs = ("laura-val-swimmer-year-awards", "pacificmasters.org/points/standings-2018/");
-
-    # get some info about this spreadsheet (e.g. # sheets, # rows and columns in first sheet, etc)
-    my $g_ref = ReadData( $filename );
-    # $g_ref is an array reference
-    # $g_ref->[0] is a reference to a hashtable:  the "control hash"
-    my $numSheets = $g_ref->[0]{sheets};        # number of sheets, including empty sheets
-    print "\nfile $filename:\n  Number of sheets:  $numSheets.\n  Names of non-empty sheets:\n" 
-    	if( $debug > 1);
-    my $sheetNames_ref = $g_ref->[0]{sheet};  # reference to a hashtable containing names of non-empty sheets.  key = sheet
-                                              # name, value = monotonically increasing integer starting at 1 
-    my %tmp = % { $sheetNames_ref } ;         # hashtable of sheet names (above)
-    my ($sheetName);
-    if( $debug > 1 ) {
-	    foreach $sheetName( sort { $tmp{$a} <=> $tmp{$b} } keys %tmp ) {
-	        print "    $sheetName\n" ;
-	    }
-    }
-    
-    # get the first sheet
-    my $g_sheet1_ref = $g_ref->[1];         # reference to the hashtable representing the sheet
-    my $numRowsInSpreadsheet = $g_sheet1_ref->{maxrow};	# number of rows in spreadsheet file
-    my $numColumnsInSpreadsheet = $g_sheet1_ref->{maxcol};
-    print "numRows=$numRowsInSpreadsheet, numCols=$numColumnsInSpreadsheet\n" if( $debug > 1 );
-
-    # Now, pass through the sheet collecting data on the interesting log data:
-    my $rowNum;
-    my $previousDate = "";
-    my $previousTime = "";
-    for( $rowNum = 1; $rowNum <= $numRowsInSpreadsheet; $rowNum++ ) {
-    	if( ($rowNum % 1000) == 0 ) {
-    		print "...working on row $rowNum...\n";
-    	}
-        my $ip = PMSUtil::trim(lc($g_sheet1_ref->{"A$rowNum"}));
-        my $date = PMSUtil::trim(lc($g_sheet1_ref->{"B$rowNum"}));
-        my $time = PMSUtil::trim(lc($g_sheet1_ref->{"C$rowNum"}));
-        my $url = PMSUtil::trim(lc($g_sheet1_ref->{"D$rowNum"}));
-        # is this an empty row?
-        if( (!defined $ip) || ($ip eq "") ) {
-        	next;
-        }
-        # is this a log entry we care about?
-        my $weCareAboutThisRow = 0;
-        foreach my $requiredURL (@requiredURLs) {
-        	if( index( $url, $requiredURL ) != -1 ) {
-        		# yes!
-        		$weCareAboutThisRow = 1;
-        		last;
-        	}
-        }
-        if( $weCareAboutThisRow ) {
-        	# yes, we care about this row! But is it a duplicate?
-        	if( ($date eq $previousDate) && TimeCloseToPreviousTime( $time, $previousTime ) ) {
-        		# yes, duplicate - ignore this row
-		        if( $debug > 1 ) {
-		        	print "IGNORE DUPLICATE: $rowNum: IP is '$ip', date='$date', time='$time', url='$url'\n";
-		        }
-        		next;
-        	}
-	        if( $debug > 1 ) {
-	        	print "Use this: $rowNum: IP is '$ip', date='$date', time='$time', url='$url'\n";
-	        }
-	        $numUsedRows++;
-	        my $monthNum = GetMonthNum( $date );
-	        $AccessCounts{$ip}++;
-	        $AccessCounts{"$ip-$monthNum"}++;
-        } else {
-        	# no...
-	        if( $debug > 1 ) {
-	        	print "IGNORE this: $rowNum: IP is '$ip', date='$date', time='$time', url='$url'\n";
-	        }
-        }
-    } # end of for( ...
-    
-    return $numUsedRows;
-    
-} # end of ProcessResultFile()
-   
-   
-  # 		my $tot = SumArray( \@averageSwimmersPerMonth, $i );
-sub SumArray( $$$ ) {
-	my( $arrRef, $index, $maxIndex ) = @_;
-	my $total = 0;
-	for my $i (1..$maxIndex-1) {
-		if( defined( $arrRef->[$i] ) ) {
-			$total += $arrRef->[$i];
+		# we have the file name only
+		if( $value ne "" ) {
+			$TTSTATS_DIFF = $value;
 		}
 	}
-	return $total;
-} # end of SumArray()
+} # end of while - done getting command line args
+
+if( !defined $TTSTATS_DIFF ) {
+	print "Missing full path name of diff file to process:\n";
+	print $UsageString . "\n";
+	exit;
+}
+
+# State machine states:
+my $INITIALSTATE = 0;
+my $LOOKINGFOR_NEWROW = 1;
 
 
-# =======================================================================================
-    
-    
-  # end of AnalyzeAccessLogs.pl
+# get to work!
+open( DIFFFILE, "< $TTSTATS_DIFF" ) || die( "TTStatsDiffFilter.pl:  Can't open $TTSTATS_DIFF: $!" );
+my $lineNum = 0;
+my $state = $INITIALSTATE;
+my $previousDiffChangeLine = "";
+print "\nNOTE:  .< lines: PRODUCTION server, .> lines: DEV server\n";
+while( my $line = <DIFFFILE> ) {
+	my $value = "";
+	$lineNum++;
+	chomp( $line );
+	#print "Line #$lineNum: '$line'\n";
+	# remove comments:
+	$line =~ s/\s*#.*$//;
+	next if( $line eq "" );
+	# 
+	# look for a diff change line - something like "156,157c156,157"
+	if( $line =~ m/^\d/ ) {
+		$previousDiffChangeLine = $line;
+		$state = $LOOKINGFOR_NEWROW;
+		next;
+	}
+	if( $state == $LOOKINGFOR_NEWROW ) {
+		# this line is a diff row - something like   < [F4]:    276              25-29:30-34
+		$state = $INITIALSTATE;
+		# get the type of the diff row
+		my $type = $line;
+		$type =~ s/^.*\[//;
+		$type =~ s/\d.*$//;
+		if( ord($type) > ord($previousDescriptionType) ) {
+			# we haven't seen this diff type before
+			$previousDescriptionType = $type;
+			if( defined $row{$type} ) {
+				print "\n" . $row{$type} . "\n";
+			} else {
+				print "UNDEFINED description for type '$type'.\n";
+			}
+		}
+		print $previousDiffChangeLine . "\n";
+	}
+	# preceed '<' and '>' with a '.' to get around a display problem in email...
+	if( ($line =~ m/^</) || ($line =~ m/^>/) ) {
+		$line = "." . $line;
+	}
+	print $line . "\n";
+}
+
+
+# end of TTStatsDiffFilter.pl

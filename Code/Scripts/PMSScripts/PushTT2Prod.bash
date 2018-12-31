@@ -77,7 +77,6 @@ DoThePush() {
 Destination Directory: $DESTINATION_DIR
 (STARTed on $STARTDATE, FINISHed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
 diff $SERVER_TTSTATS $SOURCE_TTSTATS :
-.< lines: PRODUCTION server, .> lines: DEV server
 $(cat $TTSTATS_DIFF2)
 BUp9
 )"
@@ -96,7 +95,6 @@ DontDoThePush() {
 		LogMessage "$1" "The SERVER was NOT updated!
 			$2" "diff $SERVER_TTSTATS
 				$SOURCE_TTSTATS :
-			.< lines: PRODUCTION server, .> lines: DEV server
 			$(cat $TTSTATS_DIFF2)"
 	fi		
     exit 1;
@@ -134,11 +132,12 @@ if [ "$STATUS" -eq 22 ] ; then
 else
     # before we do anything first compare the current Production TTStats with the newly generated TTStats on dev
     diff $SERVER_TTSTATS $SOURCE_TTSTATS >$TTSTATS_DIFF
-    # prepend every '<' and '>' line with a dot ('.') to avoid a problem with sendmail turning '>' into '|':
-	sed <$TTSTATS_DIFF -e ' s/^</.</' -e ' s/^>/.>/' >$TTSTATS_DIFF2
+#    # prepend every '<' and '>' line with a dot ('.') to avoid a problem with sendmail turning '>' into '|':
+#	sed <$TTSTATS_DIFF -e ' s/^</.</' -e ' s/^>/.>/' >$TTSTATS_DIFF2
+    ./TTStatsDiffFilter.pl $TTSTATS_DIFF >$TTSTATS_DIFF2
     
-    
-    
+### put new code here???
+
     
     SERVER_TOTAL_POINTS=`grep <$SERVER_TTSTATS "E1" | sed -e ' s/^....:[^0-9]*//'`
     SERVER_ADJUSTED_POINTS=$[SERVER_TOTAL_POINTS-$[SERVER_TOTAL_POINTS/20]]

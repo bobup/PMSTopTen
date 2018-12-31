@@ -194,10 +194,10 @@ OR
 #		directory
 #	- put the correct RSIND file into the <appRootDir>/SeasonData/Season-<season>/PMSSwimmerData
 #		directory.
+#	- chmod go-rwx properties_DB-{season}.txt 
+#	- chmod go-rwx <appRootDir>/SeasonData/Season-<season>/PMSSwimmerData/*RSIND*
+#	- chmod go-rwx <appRootDir>/SeasonData/Season-<season>/PMSSwimmerData
 # DO THE ABOVE FOR ALL seasons
-
-!!!! history tree
-!!!!  set permissions!! on rsind files and prop db file
 
 # Next, we need to be sure our database configuration parameters are set
 # correctly.  They are specified in the 'properties_DB-{season}.txt' file located in the
