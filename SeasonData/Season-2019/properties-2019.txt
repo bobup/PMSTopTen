@@ -21,9 +21,9 @@ RacesDataFile	races.txt
 
 
 PMSResultFiles \
-						PACTOP10SCY-{YearBeingProcessed}.xlsx:PAC-SCY;	\
-						PACTop10SCM-{YearBeingProcessed}.xlsx:PAC-SCM;	\
-						PACTop10LCM-{YearBeingProcessed}.xlsx:PAC-LCM;
+						PACTOP10SCY-{YearBeingProcessed}.csv:PAC-SCY;	\
+						PACTop10SCM-{YearBeingProcessed}.csv:PAC-SCM;	\
+						PACTop10LCM-{YearBeingProcessed}.csv:PAC-LCM;
 						
 USMSResultFiles	\
 						USMSTop10SCY-{YearBeingProcessed}.csv:USMS-SCY;	\
