@@ -29,10 +29,15 @@ sub HandleHTTPFailure( $$$$ ) {
 	$success = "(undefined)" if( !defined( $success ) );
 	my $content=$httpResponse->{"content"};
 	$content =~ s/\s+$//;
+	my $status = $httpResponse->{"status"};
+	my $textOfException = "";
+	if( $status == 599 ) {
+		$textOfException = "    Text of Exception ({content}): '$content',\n";
+	}
 	PMSLogging::PrintLog( "", "", "HandleHTTPFailure(): HTTP Request to '$linkToResults'\n" .
 		"    (org:'$org', course:'$course') failed. {success}: $success, " .
-		"{status}: '$httpResponse->{status}', {reason}: '$httpResponse->{reason}',\n" .
-		"    Text of Exception ({content}): '$content',\n" .
+		"{status}: '$status', {reason}: '$httpResponse->{reason}',\n" .
+		"$textOfException" .
 		"    {url}: '$httpResponse->{url}$extraNote'\n", 1 );
 } # end of HandleHTTPFailure()
 
