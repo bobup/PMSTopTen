@@ -21,6 +21,9 @@ SIMPLE_SCRIPT_NAME=`basename $0`
 DESTINATION_DIR=/usr/home/pacmasters/public_html/pacificmasters.org/sites/default/files/comp/points/$STANDINGSDIR
 DESTINATION_URL=https://pacificmasters.org/points/standings-2018/TTStats.html
 SERVER_TTSTATS=/tmp/TTStats.$$      # a copy of TTStats from the server prior to the push
+# compute the full path name of the directory holding this script.  We'll find the
+# other scripts using this path:
+SCRIPT_DIR=$(dirname $0)
 
 # details of what we're pushing:
 TARBALL=TT_`date +'%d%b%Y'`.zip
@@ -109,8 +112,6 @@ if [ ."$1" = . ]  ; then
     exit 1
 fi
 
-# compute the full path name of the directory holding this script:
-SCRIPT_DIR=$(dirname $0)
 # see if our semaphore exists (put there by DoFetchAndProcessTopten) - if it does we're 
 # going to refuse to do anything!
 GENERATED_DIR=$SCRIPT_DIR/../../../GeneratedFiles/Generated-$1
@@ -134,10 +135,7 @@ else
     diff $SERVER_TTSTATS $SOURCE_TTSTATS >$TTSTATS_DIFF
 #    # prepend every '<' and '>' line with a dot ('.') to avoid a problem with sendmail turning '>' into '|':
 #	sed <$TTSTATS_DIFF -e ' s/^</.</' -e ' s/^>/.>/' >$TTSTATS_DIFF2
-    ./TTStatsDiffFilter.pl $TTSTATS_DIFF >$TTSTATS_DIFF2
-    
-### put new code here???
-
+    $SCRIPT_DIR/TTStatsDiffFilter.pl $TTSTATS_DIFF >$TTSTATS_DIFF2
     
     SERVER_TOTAL_POINTS=`grep <$SERVER_TTSTATS "E1" | sed -e ' s/^....:[^0-9]*//'`
     SERVER_ADJUSTED_POINTS=$[SERVER_TOTAL_POINTS-$[SERVER_TOTAL_POINTS/20]]
