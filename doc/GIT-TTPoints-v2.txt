@@ -404,3 +404,32 @@ How to update RSIDN file so next run will use it.
 	- remove the old one if you want.  Keep the most recent old one just in case the new one has problems.
   The code will use the most recent version it can find in the PMSSwimmerData/
   	directory, so just put it there and you're done.  Make sure the file name contains "RSIND" or 
+
+
+=========================================================================================
+How to force re-generation of AGSOTY for <current season> and generation of email with changed stats
+
+To do this we need to change the production stats so that diff will find differences for the email.  The stats are visible here:
+	https://pacificmasters.org/points/standings-<current season>/TTStats.html
+
+- ftp to production and download https://pacificmasters.org/points/standings-<current season>/TTStats.html
+- edit the copy of TTStats.html
+- use ftp to replace https://pacificmasters.org/points/standings-<current season>/TTStats.html
+or
+- use ftp editor to edit the TTStats.html file in place.
+
+- Then, on dev:
+	- execute:
+		DoFetchAndProcessTopten <current season> y
+		PushTT.bash 2019 y
+
+
+
+
+
+=========================================================================================
+=========================================================================================
+=========================================================================================
+=========================================================================================
+=========================================================================================
+=========================================================================================
