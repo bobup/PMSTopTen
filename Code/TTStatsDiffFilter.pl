@@ -5,16 +5,10 @@
 #
 
 use strict;
-use lib '/Users/bobup/Development/PacificMasters/PMSPerlModules';
 use DateTime::Format::Strptime;
 use POSIX 'strftime';
 use File::Basename;
 use Cwd 'abs_path';
-
-
-require PMSUtil;
-
-
 
 
 my $debug = 0;
@@ -58,6 +52,13 @@ BEGIN {
 	# initialize our source data directory name:
 	$sourceData = "$appRootDir/SeasonData";	
 }
+
+use lib "$appDirName/TTPerlModules";
+require PMSUtil;
+
+
+
+
 
 my $UsageString = <<bup
 Usage:  
