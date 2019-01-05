@@ -369,6 +369,7 @@ if( ($yearBeingProcessed !~ m/^\d\d\d\d$/) ||
 }
 
 PMSStruct::GetMacrosRef()->{"YearBeingProcessedPlusOne"} = $yearBeingProcessed+1;
+PMSStruct::GetMacrosRef()->{"YearBeingProcessedMinusOne"} = $yearBeingProcessed-1;
 print "  ...Year being analyzed: $yearBeingProcessed\n";
 
 # define the date beyond which we will flag swimmers who haven't swum enough PMS events:
