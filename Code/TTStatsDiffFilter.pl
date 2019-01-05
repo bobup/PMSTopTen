@@ -172,7 +172,7 @@ open( DIFFFILE, "< $TTSTATS_DIFF" ) || die( "TTStatsDiffFilter.pl:  Can't open $
 my $lineNum = 0;
 my $state = $INITIALSTATE;
 my $previousDiffChangeLine = "";
-print "\nNOTE:  .< lines: PRODUCTION server, .> lines: DEV server\n";
+print "\nNOTE:  .< lines: PRODUCTION server (old version), .> lines: DEV server (new version)\n";
 while( my $line = <DIFFFILE> ) {
 	my $value = "";
 	$lineNum++;
