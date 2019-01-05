@@ -53,7 +53,7 @@ BEGIN {
 	$sourceData = "$appRootDir/SeasonData";	
 }
 
-use lib "$appDirName/TTPerlModules";
+use lib "$appDirName/../../PMSPerlModules";
 require PMSUtil;
 
 
