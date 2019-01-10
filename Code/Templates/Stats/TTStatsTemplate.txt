@@ -1,5 +1,7 @@
 
 <pre style="margin-left: 50px">
+<h2 style="text-align:center">AGSOTY Generation Statistics as of {GenerationTimeDate}</h2>
+
 [A]: Number of swimmers who swam in exactly one age group (with and without points) by gender:
 Number of Swimmers      Age Group       Gender
 ------------------      ---------       ------
@@ -48,5 +50,16 @@ Number OW Splashes
 Number of OW Swimmers
 ---------------------
 {NumberOWSwimmers}
+
+==============================================================================
+GetResults:: Totals (as of {prevDateTime}):
+      Total number of lines read: {numLinesRead}
+      Total number of unique meets discovered: {numDifferentMeetsSeen}
+      Total number of different results found: {numDifferentResultsSeen}
+      Total number of different files processed: {numDifferentFiles}
+      Total number of different meets seen: {raceLines}
+      {extraNote}
+
+
 </pre>
 

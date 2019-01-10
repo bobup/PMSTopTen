@@ -242,6 +242,7 @@ PMS_MySqlSupport::SetSqlParameters( 'default',
 #####################################################
 
 GenerateHTMLStats( $generatedHTMLStatsFullName );
+	
 
 ###
 ### Done!
@@ -462,6 +463,43 @@ sub GenerateHTMLStats( $ ) {
 	}
 	PMSStruct::GetMacrosRef()->{"NumberOWSwimmers"} = $macroValue;
 
+###
+### GetResults statistics:
+###
+	$sth = TT_MySqlSupport::GetLastRequestStats( $dbh, $yearBeingProcessed );
+	# did we find exactly one row?
+	my $numRows = $sth->rows();
+	if( $numRows >= 1 ) {
+		# yes!  get the data
+		my $resultHash = $sth->fetchrow_hashref;
+		my $LinesRead = $resultHash->{LinesRead};
+		my $MeetsSeen = $resultHash->{MeetsSeen};
+		my $ResultsSeen = $resultHash->{ResultsSeen};
+		my $FilesSeen = $resultHash->{FilesSeen};
+		my $RaceLines = $resultHash->{RaceLines};
+		my $DateTime = $resultHash->{Date};
+		PMSStruct::GetMacrosRef()->{"numLinesRead"} = $LinesRead;
+		PMSStruct::GetMacrosRef()->{"numDifferentMeetsSeen"} = $MeetsSeen;
+		PMSStruct::GetMacrosRef()->{"numDifferentResultsSeen"} = $ResultsSeen;
+		PMSStruct::GetMacrosRef()->{"numDifferentFiles"} = $FilesSeen;
+		PMSStruct::GetMacrosRef()->{"raceLines"} = $RaceLines;
+		PMSStruct::GetMacrosRef()->{"prevDateTime"} = $DateTime;
+		PMSStruct::GetMacrosRef()->{"extraNote"} = "";
+		if( $numRows > 1 ) {
+			PMSStruct::GetMacrosRef()->{"extraNote"} = "(WARNING: Found $numRows rows for season $yearBeingProcessed " .
+				"in the FetchStats table. Above data is ambiguious!)";
+		}
+	} else {
+		# this isn't right!
+		PMSStruct::GetMacrosRef()->{"numLinesRead"} = "?";
+		PMSStruct::GetMacrosRef()->{"numDifferentMeetsSeen"} = "?";
+		PMSStruct::GetMacrosRef()->{"numDifferentResultsSeen"} = "?";
+		PMSStruct::GetMacrosRef()->{"numDifferentFiles"} = "?";
+		PMSStruct::GetMacrosRef()->{"raceLines"} = "?";
+		PMSStruct::GetMacrosRef()->{"prevDateTime"} = "?";
+		PMSStruct::GetMacrosRef()->{"extraNote"} = "(WARNING: No rows for season $yearBeingProcessed " .
+			"in the FetchStats table. Above data is missing!)";
+	}
 
 	# we've got all the data - create the stats file:
 	

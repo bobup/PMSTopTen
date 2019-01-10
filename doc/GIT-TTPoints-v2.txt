@@ -27,8 +27,13 @@ Calendar of Actions:
 	- Twice a day:  the cron job runs that will fetch new results (if any), and if there are any new results, this job will compute a new AGSOTY page and push it to the production server.
 	- The first Monday following March 1 of the current year:  The final AGSOTY standings for the old season will be computed on this day (or soon thereafter, depending on the availability of the person managing AGSOTY standings.)  Deliver AGSOTY spreadsheets to the Laura Val Swimmer of the Year Committee.  The spreadsheets include:
 		- FullExcelResults-<old season>.xlsx
+			- Full results showing all CAT 1 competing swimmers
 		- Top_3_ExcelResults-<old season>.xlsx
+			- Show the top 3 CAT 1 swimmers for each gender and age group.
 		- TopSOTYContenders-<old season>.xlsx
+			- The top 'N' (e.g. 10) CAT 1 male and female swimmers
+		Each of the above spreadsheets can be fetch via an http request to the same server that hosts the AGSOTY page, e.g. 
+		https://pacificmasters.org/points/standings-2018/TopSOTYContenders-2018.xlsx
 	- After the final AGSOTY standings are computed for the old season (after the first Monday following March 1 - see above) the old season is archived and moved into the Historical area.  See "move a season <yearToProcess> into Historical" below.
 	- November 1 (or after):  Begin the new season, keeping the current season.  See "Begin a new season" below.
 	- January 1 (or slightly after):  Confirm the "Laura Val Swimmer of the Year Awards" page (https://pacificmasters.org/content/laura-val-swimmer-year-awards at the time of this writing) points to the AGSOTY page for the current season (aka the new season) and the old season.
@@ -424,7 +429,7 @@ or
 		PushTT.bash 2019 y
 
 
-
+https://pacificmasters.org/points/standings-2018/TTStats.html
 
 
 =========================================================================================

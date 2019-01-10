@@ -2194,6 +2194,46 @@ sub ReadSwimMeetData( $ ) {
 	
 	
 	
+	
+#	$sth = GetLastRequestStats( $dbh );
+# GetLastRequestStats - get the statistics we generated when fetching the last request data
+#
+# PASSED:
+#	$dbh -
+#	$season -
+#
+# RETURNED:
+#	$sth - mysql statement handle from which our statistics can be fetched.
+#
+sub GetLastRequestStats( $$ ) { 
+	my $dbh = $_[0];
+	my $season = $_[1];
+	my $status = "x";		# initialize to any non-empty value
+	my ($sth, $rv) = (0, 0);
+	
+	# NOTE: The following loop is here so that we can recover a lost database handle.
+	# Experience has shown that the DB handle will become stale and the following SELECT 
+	# will fail with this error:
+	#	DBD::mysql::st execute failed: Lost connection to MySQL server during query at....
+	# This has only been seen on the PMS Linux web server.  This recovery code may need
+	# to be moved directly into PrepareAndExecute() if we see this in other cases.
+	for( my $i=1; ($status ne "") && ($i < 3); $i++ ) {
+		($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
+			"SELECT LinesRead, MeetsSeen, ResultsSeen, FilesSeen, RaceLines, Date " .
+			"FROM FetchStats " .
+			"WHERE Season = \"$season\"" );
+		if( $status ) {
+			# got an error - try to recover
+			PMS_MySqlSupport::CloseMySqlHandle();
+			$dbh = PMS_MySqlSupport::GetMySqlHandle();
+		}
+	}
+	if( $status ) { die "TT_MySqlSupport::GetLastRequestStats(): $status"; }
+	return $sth;
+
+} # end of GetLastRequestStats()
+	
+	
 #TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, $numLinesRead, $numDifferentMeetsSeen, 
 #	$numDifferentResultsSeen, $numDifferentFiles, $raceLines );
 # DidWeGetDifferentData - (Used by GetResults) see if the results we just fetched are different from
@@ -2217,28 +2257,11 @@ sub ReadSwimMeetData( $ ) {
 sub DidWeGetDifferentData( $$$$$$$ ) {
 	my( $season, $numLinesRead, $numDifferentMeetsSeen, 
 		$numDifferentResultsSeen, $numDifferentFiles, $raceLines, $PMSSwimmerData ) = @_;
-	my ($sth, $rv, $status) = (0, 0, "x");
+	my ($sth, $rv) = (0, 0);
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	
-	# NOTE: The following loop is here so that we can recover a lost database handle.
-	# Experience has shown that the DB handle will become stale and the following SELECT 
-	# will fail with this error:
-	#	DBD::mysql::st execute failed: Lost connection to MySQL server during query at....
-	# This has only been seen on the PMS Linux web server.  This recovery code may need
-	# to be moved directly into PrepareAndExecute() if we see this in other cases.
-	for( my $i=1; ($status ne "") && ($i < 3); $i++ ) {
-		($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
-			"SELECT LinesRead, MeetsSeen, ResultsSeen, FilesSeen, RaceLines, Date " .
-			"FROM FetchStats " .
-			"WHERE Season = \"$season\"" );
-		if( $status ) {
-			# got an error - try to recover
-			PMS_MySqlSupport::CloseMySqlHandle();
-			$dbh = PMS_MySqlSupport::GetMySqlHandle();
-		}
-	}
-	if( $status ) { die "TT_MySqlSupport::DidWeGetDifferentData(): $status"; }
-	
+	# get the request statistics from the last time we got request data:
+	$sth = GetLastRequestStats( $dbh, $season );
 	my $numRows = $sth->rows();
 	# did we find exactly one row?
 	if( $numRows == 1 ) {
