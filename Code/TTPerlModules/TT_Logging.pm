@@ -23,7 +23,7 @@ sub HandleHTTPFailure( $$$$ ) {
 	if( !defined $extraNote ) {
 		$extraNote = "";
 	} else {
-		$extraNote = " ($extraNote)";
+		$extraNote = "\n    ($extraNote)";
 	}
 	my $success = $httpResponse->{"success"};
 	$success = "(undefined)" if( !defined( $success ) );
@@ -31,8 +31,8 @@ sub HandleHTTPFailure( $$$$ ) {
 	$content =~ s/\s+$//;
 	my $status = $httpResponse->{"status"};
 	my $textOfException = "";
-	if( $status == 599 ) {
-		$textOfException = "    Text of Exception ({content}): '$content',\n";
+	if( ($status == 599) || ($status == 99999) ) {
+		$textOfException = "    Text of Exception (http $status) ({content}): '$content',\n";
 	}
 	PMSLogging::PrintLog( "", "", "HandleHTTPFailure(): HTTP Request to '$linkToResults'\n" .
 		"    (org:'$org', course:'$course') failed. {success}: $success, " .

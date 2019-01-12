@@ -2295,10 +2295,11 @@ sub DidWeGetDifferentData( $$$$$$$ ) {
 				my $rowsAffected = $dbh->do( $query );
 				if( $rowsAffected == 0 ) {
 					# update failed - ERROR!
-					print "UPDATE of FetchStats failed (query='$query')\n";
+					my $errStr = $dbh->errstr();
+					print "UPDATE of FetchStats failed (err='$errStr', query='$query')\n";
 					# oops - Update failed
 					PMSLogging::DumpError( 0, 0, "TT_MySqlSupport.pm::DidWeGetDifferentData(): " .
-						"UPDATE of FetchStats failed (query='$query')", 1 );
+						"UPDATE of FetchStats failed (err='$errStr', query='$query')", 1 );
 				}
 			} else {
 				# we had errors so don't trust that results changed:
