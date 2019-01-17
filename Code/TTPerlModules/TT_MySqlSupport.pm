@@ -2206,6 +2206,7 @@ sub ReadSwimMeetData( $ ) {
 #	$season -
 #
 # RETURNED:
+#	$count -
 #	$sth - mysql statement handle from which our statistics can be fetched.
 #
 sub GetLastRequestStats( $$ ) { 
@@ -2214,11 +2215,17 @@ sub GetLastRequestStats( $$ ) {
 	my $status = "x";		# initialize to any non-empty value
 	my ($sth, $rv) = (0, 0);
 	
+	my $query1 = "SELECT COUNT(*) as Count FROM FetchStats WHERE Season = \"$season\"";
+	($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query1 );
+	my $resultHash = $sth->fetchrow_hashref;
+	my $count = $resultHash->{"Count"};
+	
 	($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
 		"SELECT LinesRead, MeetsSeen, ResultsSeen, FilesSeen, RaceLines, Date " .
 		"FROM FetchStats " .
 		"WHERE Season = \"$season\"" );
-	return $sth;
+
+	return ($count, $sth);
 
 } # end of GetLastRequestStats()
 	
@@ -2246,12 +2253,11 @@ sub GetLastRequestStats( $$ ) {
 sub DidWeGetDifferentData( $$$$$$$ ) {
 	my( $season, $numLinesRead, $numDifferentMeetsSeen, 
 		$numDifferentResultsSeen, $numDifferentFiles, $raceLines, $PMSSwimmerData ) = @_;
-	my ($sth, $rv) = (0, 0);
+	my ($sth, $rv, $numRows) = (0, 0, 0);
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	
 	# get the request statistics from the last time we got request data:
-	$sth = GetLastRequestStats( $dbh, $season );
-	my $numRows = $sth->rows();
+	($numRows, $sth) = GetLastRequestStats( $dbh, $season );
 	# did we find exactly one row?
 	if( $numRows == 1 ) {
 		# yes!  Compare with passed data.

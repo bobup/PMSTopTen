@@ -168,6 +168,7 @@ if [ -e $SEMAPHORE ] ; then
 	exit 1
 else
 	echo $STARTDATE > $SEMAPHORE
+	echo "Process id: $$" >> $SEMAPHORE
 fi
 #######################  END OF SEMAPHORE - GET TO WORK  #################################
 
