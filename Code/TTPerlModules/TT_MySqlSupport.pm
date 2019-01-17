@@ -1657,8 +1657,10 @@ sub DumpErrorsWithSwimmerNames() {
 		$size /= 2;		# divide size by two since a hash has 2 elememts per swimmer (key and value)
 		# dump out the names of all swimmers that we didn't find in the RSIDN table but handled as a warning only
 		PMSLogging::PrintLog( "", "", "\nTT_MySqlSupport::DumpErrorsWithSwimmerNames(): The following $size " .
-			"swimmers were not in our RSIDN_$yearBeingProcessed table but this is only a WARNING\n" .
-			"    since we don't know if they are supposed to be PAC swimmers.  They did NOT get points:" );
+			"swimmers were not in our RSIDN_$yearBeingProcessed table\n" .
+			"but this is only a WARNING " .
+			"since we don't know if they are supposed to be PAC swimmers.\n" .
+			"They did NOT get points:" );
 		foreach my $key (keys %UnableToFindInRSIDN_WARNING) {
 			next if( $key =~ m/OrgCourse/ );
 			PMSLogging::PrintLog( "", "", "    '$key' (appeared in " . $UnableToFindInRSIDN_WARNING{$key} . 
@@ -1666,20 +1668,21 @@ sub DumpErrorsWithSwimmerNames() {
 		}
 	}
 	
-	if( my $size = (scalar keys %PMSStruct::hashOfInvalidRegNums) ) {
+	if( my $size = (scalar keys %TT_Struct::hashOfInvalidRegNums) ) {
 		$size /= 2;		# divide size by two since a hash has 2 elememts per swimmer (key and value)
 		# When analyzing a PMS top ten result we got from that result the swimmer's name and their 
 		# reg num.  We then looked up their swimmer id in the RSIDN table to make sure the name
 		# was correct, but if we couldn't find a swimmer with that swimmer id with a PMS reg num
-		# then we remembered it.  We'll log it here.  This isn't fatal.
+		# then we remembered it.  We'll log it here.  This is fatal - the swimmer DID NOT get points.
 		PMSLogging::PrintLog( "", "", "\nTT_MySqlSupport::DumpErrorsWithSwimmerNames(): The following $size " .
-			"reg numbers were not in our RSIDN_$yearBeingProcessed table but were used to identify " .
-			"\n    the swimmer in the PMS Top Ten results.  This is a WARNING - we still gave the swimmer their " .
-			"\n    points, but that might be a mistake." );
-		foreach my $key (keys %PMSStruct::hashOfInvalidRegNums) {
+			"reg numbers were not in our RSIDN_$yearBeingProcessed table\n" .
+			"but were used to identify " .
+			"a swimmer in the PMS Top Ten results.\n" .
+			"This is FATAL - the swimmer DID NOT get any points." );
+		foreach my $key (keys %TT_Struct::hashOfInvalidRegNums) {
 			next if( $key =~ m/OrgCourse/ );
-			PMSLogging::PrintLog( "", "", "    '$key' (appeared in " . $PMSStruct::hashOfInvalidRegNums{$key} . 
-				" results [" . $PMSStruct::hashOfInvalidRegNums{"$key:OrgCourse"} . "])" );
+			PMSLogging::PrintLog( "", "", "    '$key' (appeared in " . $TT_Struct::hashOfInvalidRegNums{$key} . 
+				" results [" . $TT_Struct::hashOfInvalidRegNums{"$key:OrgCourse"} . "])" );
 		}
 	}
 	
@@ -2352,7 +2355,8 @@ sub DidWeGetDifferentData( $$$$$$$ ) {
 	} else {
 		# first time we've gathered results for this year?  Act as though results have changed
 		# so we generate a new standings page:
-		PMSLogging::PrintLog( "", "", "Results have changed because this is the first time we've seen results for $season:", 1 );
+		PMSLogging::PrintLog( "", "", "Results have changed because this is the first time we've seen results " .
+		"for $season. ($numRows)", 1 );
 		# no rows.  Add this one
 		my $query = "INSERT INTO FetchStats " .
 				"(Season, LinesRead, MeetsSeen, ResultsSeen, FilesSeen, RaceLines, Date) " .

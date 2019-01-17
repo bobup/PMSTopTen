@@ -933,8 +933,10 @@ sub PMSProcessResults($) {
 							$count = 0;
 							PMSLogging::DumpWarning( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: " .
 								"\n   Couldn't find regNum " .
-								"($regNum) in RSIDN_$yearBeingProcessed.  (FATAL - This Top 10 result will be " .
-								"IGNORED since we can't confirm that this swimmer is a PAC swimmer).  Result line:" .
+								"($regNum) in RSIDN_$yearBeingProcessed.  NOTE: this error for this regNum will " .
+								"not be repeated.\n" .
+								"  This is FATAL - This Top 10 result will be " .
+								"IGNORED since we can't confirm that this swimmer is a PAC swimmer.  Result line:" .
 								"\n     $rowAsString" );
 						}
 						$TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName"} = $count+1;

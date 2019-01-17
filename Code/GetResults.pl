@@ -655,6 +655,16 @@ my $diffResultsFileName;
 my $diffResultsFD;
 sub GetPMSTopTenResults( $$$$$ ) {
 	my( $linkToResults, $baseURL, $org, $course, $destinationFileName ) = @_;
+	# the goal is to generate an "excel" file from the web page this routine will process.
+	# The web page will contain a button used to download the excel file, so we'll find
+	# that button and download the excel file into the file passed as "$destinationFileName".
+	# The first thing we'll do is convert it to a full path name, and then clear it out so if
+	# there is any failure we don't accidently use any data left there from a previous run:
+	my $resultFileName = "$sourceDataDir/$destinationFileName";
+	if( !EmptyThisFile( $resultFileName, $linkToResults ) ) {
+		return( 0, 0, 0, 0 );
+	}
+
 	# define our callback to handle the HTTP response containing PMS top ten results
 	my $excelLink = "";		# the link used to request the excel results
 	my %excelArgs = ();		# the query args used when requesting the excel results
@@ -706,7 +716,6 @@ my $httpResponseRef = $tinyHttp->get( $linkToResults, \%options );
 		# all of the human-readable results have been parsed with no errors
 		if( $callbackState{"numDifferentResults"} ) {
 			# we've got at least one result to process - generate the excel result file
-			my $resultFileName = "$sourceDataDir/$destinationFileName";
 			PMSLogging::PrintLog( "", "", "Found $callbackState{'numDifferentResults'} different results, " .
 				"$callbackState{'numDifferentMeets'} newly seen swim meets, " .
 				$callbackState{"numLines"} . " lines.", 1 );
@@ -765,7 +774,25 @@ my $httpResponseRef = $tinyHttp->get( $linkToResults, \%options );
 		1 );
 		
 } # end of GetPMSTopTenResults()
-		
+
+
+# 	if( !EmptyThisFile( $resultFileName, $linkToResults ) ) {
+	# return true if OK, false otherwise
+sub EmptyThisFile( $$ ) {
+	my( $fullPathName, $linkToResults ) = @_;
+	my $fileHandle = undef;
+	my $status = 1;		# assume all works OK
+	if( !open( $fileHandle, ">", $fullPathName ) ) {
+		my $msg = "EmptyThisFile(): OPEN of " .
+			$fullPathName . " FAILED!! ($!)\n" .
+			"Download of $linkToResults will will be SKIPPED!";
+		PMSLogging::PrintError( "", "", $msg, 1 );
+		$status = 0;
+	} else {
+		close( $fileHandle );
+	}
+	return $status;
+} # end of EmptyThisFile()
 
 sub OpenDownloadDestination( $$ ) {
 	my( $callbackStateRef, $linkToResults ) = @_;
@@ -1015,6 +1042,16 @@ sub ParsePMSTopTenHttpResponse( $$$$$$$ ) {
 #
 sub GetUSMSTopTenResults( $$$$$ ) {
 	my( $linkToResults, $baseURL, $org, $course, $destinationFileName ) = @_;
+	# the goal is to generate an "excel" file from the web page this routine will process.
+	# The web page will contain a button used to download the excel file, so we'll find
+	# that button and download the excel file into the file passed as "$destinationFileName".
+	# The first thing we'll do is convert it to a full path name, and then clear it out so if
+	# there is any failure we don't accidently use any data left there from a previous run:
+	my $resultFileName = "$sourceDataDir/$destinationFileName";
+	if( !EmptyThisFile( $resultFileName, $linkToResults ) ) {
+		return( 0, 0, 0, 0 );
+	}
+
 	# define our callback to handle the HTTP response containing USMS top ten results
 	my $excelLink = "";		# the link used to request the excel results
 	my %excelArgs = ();		# the query args used when requesting the excel results
@@ -1073,7 +1110,6 @@ sub GetUSMSTopTenResults( $$$$$ ) {
 		# all of the human-readable results have been parsed with no errors
 		if( $callbackState{"numDifferentResults"} ) {
 			# we've got at least one result to process - generate the excel result file
-			my $resultFileName = "$sourceDataDir/$destinationFileName";
 			PMSLogging::PrintLog( "", "", "Found $callbackState{'numDifferentResults'} different results, " .
 				"$callbackState{'numDifferentMeets'} newly seen swim meets, " .
 				$callbackState{"numLines"} . " lines.", 1 );
