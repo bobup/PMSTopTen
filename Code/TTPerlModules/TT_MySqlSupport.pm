@@ -2219,6 +2219,9 @@ sub GetLastRequestStats( $$ ) {
 	($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query1 );
 	my $resultHash = $sth->fetchrow_hashref;
 	my $count = $resultHash->{"Count"};
+
+PMSLogging::PrintLog( "", "", "GetLastRequestStats(): query='$query1', count='$count'", 1 );
+
 	
 	($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
 		"SELECT LinesRead, MeetsSeen, ResultsSeen, FilesSeen, RaceLines, Date " .
