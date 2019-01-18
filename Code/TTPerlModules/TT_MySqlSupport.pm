@@ -2290,14 +2290,11 @@ sub DidWeGetDifferentData( $$$$$$$ ) {
 					"RaceLines = '$raceLines', " .
 					"Date = '" . PMSStruct::GetMacrosRef()->{"MySqlDateTime"} . "' " .
 					"WHERE Season = '$season'";
-				my $rowsAffected = $dbh->do( $query );
-				if( $rowsAffected == 0 ) {
+				($sth, $rv, my $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+				if( $status ) {
 					# update failed - ERROR!
-					my $errStr = $dbh->errstr();
-					print "UPDATE of FetchStats failed (err='$errStr', query='$query')\n";
-					# oops - Update failed
 					PMSLogging::DumpError( 0, 0, "TT_MySqlSupport.pm::DidWeGetDifferentData(): " .
-						"UPDATE of FetchStats failed (err='$errStr', query='$query')", 1 );
+						"UPDATE of FetchStats failed (err='$status', query='$query')", 1 );
 				}
 			} else {
 				# we had errors so don't trust that results changed:

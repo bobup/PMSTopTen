@@ -1,6 +1,6 @@
 
 <pre style="margin-left: 50px">
-<h2 style="text-align:center">AGSOTY Generation Statistics as of {GenerationTimeDate}</h2>
+<h2 style="text-align:center">{YearBeingProcessed} AGSOTY Generation Statistics as of {GenerationTimeDate}</h2>
 
 [A]: Number of swimmers who swam in exactly one age group (with and without points) by gender:
 Number of Swimmers      Age Group       Gender
