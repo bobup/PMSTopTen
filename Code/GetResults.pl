@@ -541,7 +541,7 @@ foreach my $key (sort { $SwimMeets{$a} cmp $SwimMeets{$b} } keys %SwimMeets ) {
 	}
 }
 
-PMSLogging::PrintLog( "", "", "GetResults:: Totals:", 1);
+PMSLogging::PrintLog( "", "", "GetResults:: Final Totals:", 1);
 PMSLogging::PrintLog( "", "", "    Total number of lines read: $numLinesRead", 1);
 PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
 PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
