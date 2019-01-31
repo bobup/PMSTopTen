@@ -244,7 +244,7 @@ else
 		echo "...Starting $TOPTEN to process the NEW latest results for $1 (`date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
 		ExecuteTopten $1
 		LogMessage "$SEASON: A new Standings page has been generated on `hostname`" "$(cat <<- BUp2
-			A new Standings page has been generated for the year $1 by the $0 script on `hostname`..
+			A new Standings page has been generated for the year $1 by the $0 script on `hostname`.
 			Generation was completed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`.
 			Details from GetResults.pl:
 			------
