@@ -20,7 +20,7 @@
 STARTDATE=`date +'%a, %b %d %G at %l:%M:%S %p %Z'`
 EMAIL_NOTICE=bobup@acm.org
 SIMPLE_SCRIPT_NAME=`basename $0`
-DESTINATION_DIR=/usr/home/caroline/public_html/pacific-masters.org/sites/default/files/comp/points/standings-$1
+DESTINATION_DIR=/usr/home/pacdev/public_html/pacific-masters.org/sites/default/files/comp/points/standings-$1
 NOEMAIL=$3
 
 # FINAL_EXIT_STATUS is 0 if we successfully push to dev, or 1 if not

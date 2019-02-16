@@ -14,7 +14,7 @@
 
 SEASON=$1
 FORCE_PUSH=$2
-STANDINGSDIR=standings-$1
+STANDINGSDIR=standings-$SEASON
 STARTDATE=`date +'%a, %b %d %G at %l:%M:%S %p %Z'`
 EMAIL_NOTICE=bobup@acm.org
 SIMPLE_SCRIPT_NAME=`basename $0`
@@ -28,11 +28,11 @@ SCRIPT_DIR=$(dirname $0)
 CODE_DIR=$SCRIPT_DIR/../..
 
 # details of what we're pushing:
-TARBALL=TT_`date +'%d%b%Y'`.zip
+TARBALL=TT-$SEASON_`date +'%d%b%Y'`.zip
 STANDINGSDIRARCHIVE=${STANDINGSDIR}_`date +'%d%b%Y'`.zip
 TARDIR=~/Automation/TTPushes
-SOURCE_POINTS_DIR=/usr/home/caroline/public_html/pacific-masters.org/sites/default/files/comp/points/
-SOURCE_DIR=/usr/home/caroline/public_html/pacific-masters.org/sites/default/files/comp/points/$STANDINGSDIR
+SOURCE_POINTS_DIR=/usr/home/pacdev/public_html/pacific-masters.org/sites/default/files/comp/points/
+SOURCE_DIR=/usr/home/pacdev/public_html/pacific-masters.org/sites/default/files/comp/points/$STANDINGSDIR
 SOURCE_TTSTATS=$SOURCE_DIR/TTStats.html
 
 # temp diff:

@@ -268,7 +268,6 @@ cd <appRootDir>/SeasonData/Season-<season>
 mkdir PMSSwimmerData
 cd PMSSwimmerData
 ...get the RSIND file and put it here...
-... do the same for the 
 
 
 # At this point we have the source code but no "Generated Files", so we'll have 
@@ -305,7 +304,10 @@ cd PMSSwimmerData
 # You may want to change the 'EMAIL_NOTICE' variable in the GenTopten2 script used
 # next so it will send an email to the correct person.  Then execute the script:
     ----   no!   % Code/Scripts/GenTopten2 2017
-% Code/Scripts/DoFetchAndProcessTopten 2017
+% Code/Scripts/DoFetchAndProcessTopten 2017 y
+# The above will create the subdirectory GeneratedFiles (if it doesn't exist) and 
+# Generated-2017 (if it doesn't exist) and populate the Generated-2017 directory
+# with AGSOTY files.
 
 
 
@@ -433,6 +435,67 @@ https://pacificmasters.org/points/standings-2018/TTStats.html
 
 
 =========================================================================================
+How to set up a new dev server to support AGSOTY and open water points:
+(For example, in early 2019 we moved from one pair server [caroline.pairserver.com] to
+another [pacdev.pairserver.com])
+
+- On the new server create the Automation/ directory.
+
+- Using the scripts/backup.bash script on the old server create a backup.  This will contain 
+the Automation tree along with some other stuff.  Put that backup in the Automation/ 
+directory on the new server.
+
+- Extract the Automation files from the backup file.  For example, if the backup file
+is named "BackupAutomation-2019-02-15.tar.gz" and the path to the Automation/ directory
+on the old server is "usr/home/caroline/Automation" then do this:
+	% cd [the Automation/ directory created above]
+	% tar xf BackupAutomation-2019-02-15.tar.gz usr/home/caroline/Automation
+	
+- The above extract will create Automation/usr/home/caroline/Automation, so move the restored
+files to the root of the Automation/ directory created in the first step above.  E.g.
+	% cd usr/home/caroline/Automation
+	% mv * [the Automation/ directory created above]
+	% cd [the Automation/ directory created above]
+	% rm -rf usr
+	% mv BackupAutomation-2019-02-15.tar.gz Backups/   # move the backup into our Backups/ directory
+
+- Get the CPAN files and put them into Automation/PerlCpan/:
+	Excel::Writer::XLSX module is stored as Automation/PerlCpan/Excel-Writer-XLSX/
+	Spreadsheet::Read module is stored as Automation/PerlCpan/Spreadsheet-Read/
+	Spreadsheet::XLSX module is stored as Automation/PerlCpan/Spreadsheet-XLSX/
+	- take a look here:  https://www.cpan.org/modules/INSTALL.html for one way to do it.
+	- if the structure of the directories have changed since the last time the above modules
+		were installed it may be necessary to adjust the bup/initCron and bup/initbash scripts
+		to change the PERL5LIB environment variable.
+	
+
+
+- There might be some paths containing the old server name.  For example:
+	bup/init*
+  Fix them and re-run them if necessary.
+
+- If the new server and old server share the same filesystem there might be some permission
+	problems in /tmp.  You'll find them and have to fix them before the old server is turned off.
+	
+- Fix the PMS-specific scripts in Code/Scripts/PMSScripts/ to fix paths that depend on 
+	the old server.
+
+You now have the basic infrastructure in place on the new server, and also the DrPacm source
+code.  You have to decide whether or not this copy of DrPacm is the master development copy.
+Now you have to get the code to support AGSOTY and open water points from GitHub.
+
+For AGSOTY:
+See "****** Create a local repository from the PMSTopTen remote repository"
+NOTE:  "$rootDir" is the Automation/ directory created above.
+NOTE:  The 'properties_DB-{season}.txt' will have to change if the database server has to change.
+Make sure the generated files are as expected.
+
+- Test a push and make sure the TTPushes directory is created and populated.
+
+
+For PMS Open Water Points:
+
+
 =========================================================================================
 =========================================================================================
 =========================================================================================
