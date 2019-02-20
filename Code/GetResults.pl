@@ -1816,7 +1816,7 @@ sub GetPMSOWResults( $$ ) {
 	$listOfEvents =~ s/^,//;
 	$listOfEvents =~ s/,$//;
 	PMSLogging::PrintLog( "", "", "GetResults::GetPMSOWResults(): Found $numResultLines result lines and " .
-		"$numEvents different events ($listOfEvents)", 1 );
+		"$numEvents different events ($listOfEvents)\n", 1 );
 	return( $numResultLines, $numEvents );
 } # end of GetPMSOWResults()
 

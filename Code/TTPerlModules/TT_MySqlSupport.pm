@@ -2268,7 +2268,8 @@ sub DidWeGetDifferentData( $$$$$$$ ) {
 		my $prevFilesSeen = $resultHash->{FilesSeen};
 		my $prevRaceLines = $resultHash->{RaceLines};
 		my $prevDateTime = $resultHash->{Date};
-		if( ($prevLinesRead != $numLinesRead) ||
+		if( 
+			($prevLinesRead != $numLinesRead) ||
 			($prevMeetsSeen != $numDifferentMeetsSeen) ||
 			($prevResultsSeen != $numDifferentResultsSeen) ||
 			($prevFilesSeen != $numDifferentFiles) ||
@@ -2276,9 +2277,6 @@ sub DidWeGetDifferentData( $$$$$$$ ) {
 			# looks like the results we just fetched are different from the last time we
 			# fetched results.  But we'll not acknowledge the differences if any errors occurred:
 			if( PMSLogging::GetNumErrorsLogged() == 0 ) {
-				# Summarize the differences:
-				PMSLogging::PrintLog( "", "", "Results have changed since the last time we got results on $prevDateTime:", 1 );
-				LogPrevious( $prevLinesRead, $prevMeetsSeen, $prevResultsSeen, $prevFilesSeen, $prevRaceLines );
 				# now update this row with the new values
 				my $query = "UPDATE FetchStats SET LinesRead = '$numLinesRead', " .
 					"MeetsSeen = '$numDifferentMeetsSeen', " .
@@ -2292,6 +2290,27 @@ sub DidWeGetDifferentData( $$$$$$$ ) {
 					# update failed - ERROR!
 					PMSLogging::DumpError( 0, 0, "TT_MySqlSupport.pm::DidWeGetDifferentData(): " .
 						"UPDATE of FetchStats failed (err='$status', query='$query')", 1 );
+				}
+				# We will only log that there were differences IF the number of lines read this time is
+				# "substantially" different from the number of lines read last time.  Otherwise we will
+				# NOT log that any differences exist (thus we will likely not bother computing new
+				# top ten points.  We do this because we've seen differences of 1 line with no other
+				# differences and it's anoying being told that there are new top ten results when there
+				# really arn't!)
+				if( 
+					((abs($prevLinesRead - $numLinesRead)) > 3) ||		# difference in lines must be > some small amt
+					($prevMeetsSeen != $numDifferentMeetsSeen) ||
+					($prevResultsSeen != $numDifferentResultsSeen) ||
+					($prevFilesSeen != $numDifferentFiles) ||
+					($prevRaceLines != $raceLines) ) {
+					# Summarize the differences in the log:
+					PMSLogging::PrintLog( "", "", "Results have changed since the last time we got results on $prevDateTime:", 1 );
+					LogPrevious( $prevLinesRead, $prevMeetsSeen, $prevResultsSeen, $prevFilesSeen, $prevRaceLines );
+				} else {
+					PMSLogging::PrintLog( "", "", "NOTE:  there appears to be no change in results " .
+						"since $prevDateTime", 1 );
+					PMSLogging::PrintLog( "", "", "    (HOWEVER: Previous line read: $prevLinesRead, new lines read: " .
+						"$numLinesRead - difference ignored.)", 1 );
 				}
 			} else {
 				# we had errors so don't trust that results changed:
