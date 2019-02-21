@@ -306,6 +306,8 @@ mv $TMPFILE $ARCHIVED_TMPFILE
 mv $TMPFILE2 $ARCHIVED_TMPFILE2
 rm -f $AWKPROG
 rm -f $SEMAPHORE
+rm -f $DOFETCH_LOG
+
 
 echo ""; echo '******************** End' "$0"
 
