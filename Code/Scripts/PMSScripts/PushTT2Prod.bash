@@ -180,5 +180,5 @@ fi
 # clean up:
 rm -f $SERVER_TTSTATS $TTSTATS_DIFF $TTSTATS_DIFF2
 
-echo ""; echo '******************** Done!'
+echo ""; echo '******************** End' "$0"
 
