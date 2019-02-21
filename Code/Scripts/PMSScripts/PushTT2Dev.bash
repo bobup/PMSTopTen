@@ -9,12 +9,12 @@
 # PASSED:
 #	$1 - the season, e.g. 2017
 #	$2 - ignored, but must be supplied if $3 is supplied
-#	$3 - (optional) if passed, and equal to 'y', then don't send an email if we don't do the push because
+#	$3 - (optional) if passed, and equal to 'y', then don't send an email if we don't do the push when
 #		the index.html file can't be found.
 #
 # NOTES:
 #	The location of the "Generated files" directory is derived from the location of this script.
-#	This script is assumed to be located in the Top Ten Scripts directory.
+#	This script is assumed to be located in the Top Ten PMSScripts directory.
 #
 
 STARTDATE=`date +'%a, %b %d %G at %l:%M:%S %p %Z'`
