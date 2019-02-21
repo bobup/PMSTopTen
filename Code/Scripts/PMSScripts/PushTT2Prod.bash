@@ -33,8 +33,8 @@ USERHOST=$USER@`hostname`
 TARBALL=TT-$SEASON_`date +'%d%b%Y'`.zip
 STANDINGSDIRARCHIVE=${STANDINGSDIR}_`date +'%d%b%Y'`.zip
 TARDIR=~/Automation/TTPushes
-SOURCE_POINTS_DIR=/usr/home/pacdev/public_html/pacific-masters.org/sites/default/files/comp/points/
-SOURCE_DIR=/usr/home/pacdev/public_html/pacific-masters.org/sites/default/files/comp/points/$STANDINGSDIR
+SOURCE_POINTS_DIR=/usr/home/pacdev/public_html/pacmdev.org/sites/default/files/comp/points/
+SOURCE_DIR=/usr/home/pacdev/public_html/pacmdev.org/sites/default/files/comp/points/$STANDINGSDIR
 SOURCE_TTSTATS=$SOURCE_DIR/TTStats.html
 
 # temp diff:
@@ -137,8 +137,8 @@ if [ "$STATUS" -eq 22 ] ; then
 else
     # before we do anything first compare the current Production TTStats with the newly generated TTStats on dev
     diff $SERVER_TTSTATS $SOURCE_TTSTATS >$TTSTATS_DIFF
-#    # prepend every '<' and '>' line with a dot ('.') to avoid a problem with sendmail turning '>' into '|':
-#	sed <$TTSTATS_DIFF -e ' s/^</.</' -e ' s/^>/.>/' >$TTSTATS_DIFF2
+    # augment the diff output to indicate what lines come from what server, and to prepend every '<' 
+    # and '>' line with a dot ('.') to avoid a problem with sendmail turning '>' into '|':
     $CODE_DIR/TTStatsDiffFilter.pl $TTSTATS_DIFF >$TTSTATS_DIFF2
     
     SERVER_TOTAL_POINTS=`grep <$SERVER_TTSTATS "E1" | sed -e ' s/^....:[^0-9]*//'`
@@ -174,6 +174,9 @@ else
     echo The results on DEV look sane - do the push!
     DoThePush    
 fi
+
+# clean up:
+rm -f $SERVER_TTSTATS $TTSTATS_DIFF $TTSTATS_DIFF2
 
 echo ""; echo '******************** Done!'
 

@@ -21,12 +21,13 @@
 #	Update FetchStats set LinesRead=0 where FetchStatsId=1;
 #
 
+
+##################  INITIALIZATION   ################################################
+
 SEASON=$1
 STARTDATE=`date +'%a, %b %d %G at %l:%M:%S %p %Z'`
 TMPFILE=/tmp/DoFetchAndProcessTopten-$SEASON.$$
 TMPFILE2=/tmp/DoFetchAndProcessTopten_2-$SEASON.$$
-ARCHIVED_TMPFILE=/tmp/DoFetchAndProcessTopten-$SEASON.archive
-ARCHIVED_TMPFILE2=/tmp/DoFetchAndProcessTopten_2-$SEASON.archive
 AWKPROG=/tmp/DoFetchAndProcessTopten-awk.$$
 EMAIL_NOTICE=bobup@acm.org
 TOPTEN='./Topten2.pl'
@@ -63,9 +64,32 @@ popd >/dev/null												# cwd = script dir
 # log files produced by programs executed by this script:
 GETRESULTSLOG=$GENERATED_DIR/GetResultsLog-$1.txt
 TOPTENLOG=$GENERATED_DIR/TopTenLog-$1.txt
+# log files produced by this script:
+ARCHIVED_TMPFILE=$GENERATED_DIR/DoFetchAndProcessTopten-$SEASON.archive
+ARCHIVED_TMPFILE2=$GENERATED_DIR/DoFetchAndProcessTopten_2-$SEASON.archive
+
 # semaphore used to make sure we don't execute this script more than once at a time:
 SEMAPHORE=$GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
 
+##################  CHECK THE SEMAPHORE   ################################################
+if [ -e $SEMAPHORE ] ; then
+	# abort - program already running!
+	LogMessage "$SEASON Attempted parallel executions of $SIMPLE_SCRIPT_NAME on $USERHOST" "$(cat <<- BUp9 
+		ABORT - $SIMPLE_SCRIPT_NAME has been running since $(cat $SEMAPHORE) on $USERHOST
+		If you think this is wrong and $SIMPLE_SCRIPT_NAME is not running then do this:
+		   rm $SEMAPHORE
+		(STARTed on $STARTDATE, ABORTed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
+		BUp9
+		)"
+	exit 1
+else
+	echo $STARTDATE > $SEMAPHORE
+	echo "Process id: $$" >> $SEMAPHORE
+fi
+#######################  END OF SEMAPHORE - FINISH INITIALIZATION  #################################
+
+# remove script logs from the last time we ran this script:
+rm -f $ARCHIVED_TMPFILE $ARCHIVED_TMPFILE2
 # awk program used to generate a "summary" of GetResults:
 cat >$AWKPROG <<- BUpAWK
 	BEGIN {printLines=0}
@@ -73,17 +97,6 @@ cat >$AWKPROG <<- BUpAWK
 	/GetResults:: Final Totals:/ {printLines=1}
 	 {if( printLines == 1 ) print \$0}
 	BUpAWK
-
-
-
-# if we're running on the PMS server we need to initialize our Perl search path (@INC)
-#if hostname | grep -q "pair.com"  ; then
-#	# this is for dev
-#	export PERL5LIB=/usr/home/caroline/Automation/PerlCpan/Excel-Writer-XLSX-0.96/lib\
-#:/usr/home/caroline/Automation/PerlCpan/Spreadsheet-Read-0.75\
-#:/usr/home/caroline/Automation/PerlCpan/Spreadsheet-XLSX-0.15/lib
-#fi
-#echo "PERL5LIB is '$PERL5LIB'"
 
 ##########################################################################################
 # FUNCTIONS:
@@ -182,23 +195,8 @@ TailTheLog() {
 # END OF FUNCTIONS.
 ##########################################################################################
 
+#######################  END OF INITIALIZATION - GET TO WORK  #################################
 
-##################  CHECK THE SEMAPHORE   ################################################
-if [ -e $SEMAPHORE ] ; then
-	# abort - program already running!
-	LogMessage "$SEASON Attempted parallel executions of $SIMPLE_SCRIPT_NAME on $USERHOST" "$(cat <<- BUp9 
-		ABORT - $SIMPLE_SCRIPT_NAME has been running since $(cat $SEMAPHORE) on $USERHOST
-		If you think this is wrong and $SIMPLE_SCRIPT_NAME is not running then do this:
-		   rm $SEMAPHORE
-		(STARTed on $STARTDATE, ABORTed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
-		BUp9
-		)"
-	exit 1
-else
-	echo $STARTDATE > $SEMAPHORE
-	echo "Process id: $$" >> $SEMAPHORE
-fi
-#######################  END OF SEMAPHORE - GET TO WORK  #################################
 
 #echo "GETRESULTSLOG = $GETRESULTSLOG"
 #echo "TOPTENLOG = $TOPTENLOG"
@@ -301,7 +299,6 @@ else
 fi
 
 ####################################  ALL DONE  ##########################################
-rm -f $ARCHIVED_TMPFILE $ARCHIVED_TMPFILE2
 mv $TMPFILE $ARCHIVED_TMPFILE
 mv $TMPFILE2 $ARCHIVED_TMPFILE2
 rm -f $AWKPROG
