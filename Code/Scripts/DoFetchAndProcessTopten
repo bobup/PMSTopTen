@@ -33,12 +33,13 @@ TOPTEN='./Topten2.pl'
 TTSTATS='./TTStats.pl'
 SIMPLE_SCRIPT_NAME=`basename $0`
 DOFETCH_LOG=/tmp/DoFetchLog-$SEASON.txt
+USERHOST=$USER@`hostname`
 
 # debugging...
 #set -x
 
 if [ ."$1" = . ]  ; then 
-	echo "$SIMPLE_SCRIPT_NAME: Missing season on `hostname` - ABORT!"
+	echo "$SIMPLE_SCRIPT_NAME: Missing season on $USERHOST - ABORT!"
 	exit 1
 fi
 
@@ -105,7 +106,7 @@ ExecuteTopten() {
 	if [ ! -f $TOPTENLOG ] ; then
 		echo "$TOPTEN $SEASON failed to run (syntax error?), so we are GIVING UP"'!'
 		/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<-BUp0
-			Subject: $SEASON FATAL ERROR (syntax error?) during $TOPTEN $1 on `hostname`
+			Subject: $SEASON FATAL ERROR (syntax error?) during $TOPTEN $1 on $USERHOST
 			There was an error discovered when running $TOPTEN $1
 			preventing it from running and creating a log file.
 			(STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
@@ -119,7 +120,7 @@ ExecuteTopten() {
 		echo "$TOPTEN $SEASON got an ABORT, so we are GIVING UP"'!'
 		echo "See the TopTen log file: $TOPTENLOG"
 		/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<-BUp0
-			Subject: $SEASON FATAL ERROR during $TOPTEN $1 on `hostname`
+			Subject: $SEASON FATAL ERROR during $TOPTEN $1 on $USERHOST
 			There was an error discovered when running $TOPTEN $1
 			The TopTen log file is here:  $TOPTENLOG
 			(STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
@@ -185,8 +186,8 @@ TailTheLog() {
 ##################  CHECK THE SEMAPHORE   ################################################
 if [ -e $SEMAPHORE ] ; then
 	# abort - program already running!
-	LogMessage "$SEASON Attempted parallel executions of $SIMPLE_SCRIPT_NAME on `hostname`" "$(cat <<- BUp9 
-		ABORT - $SIMPLE_SCRIPT_NAME has been running since $(cat $SEMAPHORE) on `hostname`
+	LogMessage "$SEASON Attempted parallel executions of $SIMPLE_SCRIPT_NAME on $USERHOST" "$(cat <<- BUp9 
+		ABORT - $SIMPLE_SCRIPT_NAME has been running since $(cat $SEMAPHORE) on $USERHOST
 		If you think this is wrong and $SIMPLE_SCRIPT_NAME is not running then do this:
 		   rm $SEMAPHORE
 		(STARTed on $STARTDATE, ABORTed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
@@ -223,8 +224,8 @@ if grep -q "ERROR" < $GETRESULTSLOG ; then
 ########################  GOT ERROR WITH RESULT FILES  ###################################
 	echo "$SIMPLE_SCRIPT_NAME: GetResults.pl got an ERROR - exit."
 	TailTheLog "$GETRESULTSLOG" "$TMPFILE2"
-	LogMessage "$SEASON FATAL ERROR during GetResults.pl $1 on `hostname`, so we are GIVING UP!"  "$(cat <<- BUp1
-		There was an error discovered when running GetResults $1 on `hostname`
+	LogMessage "$SEASON FATAL ERROR during GetResults.pl $1 on $USERHOST, so we are GIVING UP!"  "$(cat <<- BUp1
+		There was an error discovered when running GetResults $1 on $USERHOST
 		Details from GetResults.pl:
 		------
 		`cat $TMPFILE2`
@@ -243,8 +244,8 @@ else
 		echo "$SIMPLE_SCRIPT_NAME:  GetResults.pl found new results..."
 		echo "...Starting $TOPTEN to process the NEW latest results for $1 (`date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
 		ExecuteTopten $1
-		LogMessage "$SEASON: A new Standings page has been generated on `hostname`" "$(cat <<- BUp2
-			A new Standings page has been generated for the year $1 by the $0 script on `hostname`.
+		LogMessage "$SEASON: A new Standings page has been generated on $USERHOST" "$(cat <<- BUp2
+			A new Standings page has been generated for the year $1 by the $0 script on $USERHOST.
 			Generation was completed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`.
 			Details from GetResults.pl:
 			------
@@ -264,11 +265,11 @@ else
 		echo "$SIMPLE_SCRIPT_NAME:  ...Starting $TOPTEN to process the PREVIOUS latest results for $1 (`date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
 		ExecuteTopten $1
 		LogMessage \
-			"$SEASON: Found NO changes in the USMS or PAC results, but we'll generate standings anyway on `hostname`" \
+			"$SEASON: Found NO changes in the USMS or PAC results, but we'll generate standings anyway on $USERHOST" \
 			"$(cat <<- BUp3
 			Even though there appear to be no changes in the PAC and USMS results we 
 			generated a new standings page AS REQUESTED for the year $1 using the 
-			$0 script on `hostname`.
+			$0 script on $USERHOST.
 			Generation was completed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`.
 			Details from GetResults.pl:
 			------
@@ -284,8 +285,8 @@ else
 ########################  NO NEW RESULT FILES - DON'T GENERATE TOP 10  ###################
 		TailTheLog "$GETRESULTSLOG" "$TMPFILE2"
 		echo "$SIMPLE_SCRIPT_NAME:  GetResults.pl found NO NEW results so we will exit."
-		LogMessage "$SEASON: No new Standings page on `hostname`" "$(cat <<- BUp4
-			There were no new changes for $1 on `hostname`.
+		LogMessage "$SEASON: No new Standings page on $USERHOST" "$(cat <<- BUp4
+			There were no new changes for $1 on $USERHOST.
 			(Results were fetched and compared with previous results on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 			Details from GetResults.pl:
 			------
