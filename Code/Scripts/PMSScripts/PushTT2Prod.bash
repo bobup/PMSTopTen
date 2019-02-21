@@ -33,6 +33,8 @@ USERHOST=$USER@`hostname`
 TARBALL=TT-$SEASON_`date +'%d%b%Y'`.zip
 STANDINGSDIRARCHIVE=${STANDINGSDIR}_`date +'%d%b%Y'`.zip
 TARDIR=~/Automation/TTPushes
+# make sure out TARDIR exists:
+mkdir -p $TARDIR
 SOURCE_POINTS_DIR=/usr/home/pacdev/public_html/pacmdev.org/sites/default/files/comp/points/
 SOURCE_DIR=/usr/home/pacdev/public_html/pacmdev.org/sites/default/files/comp/points/$STANDINGSDIR
 SOURCE_TTSTATS=$SOURCE_DIR/TTStats.html
