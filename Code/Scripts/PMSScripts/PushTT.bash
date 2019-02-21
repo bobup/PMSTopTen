@@ -18,11 +18,12 @@ SIMPLE_SCRIPT_NAME=`basename $0`
 # compute the full path name of the directory holding this script.  We'll find the
 # other scripts using this path:
 SCRIPT_DIR=$(dirname $0)
+USERHOST=$USER@`hostname`
 
 # Get to work!
 
 if [ ."$1" = . ]  ; then
-    echo "$SIMPLE_SCRIPT_NAME: Missing season on `hostname` - ABORT!"
+    echo "$SIMPLE_SCRIPT_NAME: Missing season on $USERHOST - ABORT!"
     exit 1
 fi
 

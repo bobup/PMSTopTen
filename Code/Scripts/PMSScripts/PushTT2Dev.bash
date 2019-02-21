@@ -22,6 +22,7 @@ EMAIL_NOTICE=bobup@acm.org
 SIMPLE_SCRIPT_NAME=`basename $0`
 DESTINATION_DIR=/usr/home/pacdev/public_html/pacmdev.org/sites/default/files/comp/points/standings-$1
 NOEMAIL=$3
+USERHOST=$USER@`hostname`
 
 # FINAL_EXIT_STATUS is 0 if we successfully push to dev, or 1 if not
 FINAL_EXIT_STATUS=0
@@ -53,7 +54,7 @@ LogMessage() {
 # Get to work!
 
 if [ ."$1" = . ]  ; then 
-	echo "$SIMPLE_SCRIPT_NAME: Missing season on `hostname` - ABORT!"
+	echo "$SIMPLE_SCRIPT_NAME: Missing season on $USERHOST - ABORT!"
 	exit 1
 fi
 
@@ -86,7 +87,7 @@ if [ -e "index.html" ] ; then
 	mkdir -p $DESTINATION_DIR
 	cp -r *  $DESTINATION_DIR
 	NOEMAIL=			# always send an email
-	LogMessage "$1 Top Ten standings pushed to dev by $SIMPLE_SCRIPT_NAME on `hostname`" \
+	LogMessage "$1 Top Ten standings pushed to dev by $SIMPLE_SCRIPT_NAME on $USERHOST" \
 		"$(cat <<- BUp9 
 		Destination Directory: $DESTINATION_DIR
 		(STARTed on $STARTDATE, FINISHed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
@@ -94,7 +95,7 @@ if [ -e "index.html" ] ; then
 		)"
 else
 	# NO!  Nothing to push:
-	LogMessage "$1 Top Ten standings NOT pushed to dev by $SIMPLE_SCRIPT_NAME on `hostname`" \
+	LogMessage "$1 Top Ten standings NOT pushed to dev by $SIMPLE_SCRIPT_NAME on $USERHOST" \
 		"$(cat <<- BUp9 
 		The file
         '$GENERATED_DIR/index.html'

@@ -26,6 +26,8 @@ SERVER_TTSTATS=/tmp/TTStats.$$      # a copy of TTStats from the server prior to
 SCRIPT_DIR=$(dirname $0)
 # from the SCRIPT_DIR compute the full path name of the directory holding our Code:
 CODE_DIR=$SCRIPT_DIR/../..
+USERHOST=$USER@`hostname`
+
 
 # details of what we're pushing:
 TARBALL=TT-$SEASON_`date +'%d%b%Y'`.zip
@@ -77,7 +79,7 @@ DoThePush() {
     cd $TARDIR >/dev/null
     ls -tp | grep -v '/$' | tail -n +61 | xargs -I {} rm -- {}
     
-    LogMessage "$SEASON Top Ten standings pushed to PRODUCTION by $SIMPLE_SCRIPT_NAME on `hostname`" \
+    LogMessage "$SEASON Top Ten standings pushed to PRODUCTION by $SIMPLE_SCRIPT_NAME on $USERHOST" \
         "$(cat <<- BUp9
 Destination Directory: $DESTINATION_DIR
 (STARTed on $STARTDATE, FINISHed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
@@ -110,7 +112,7 @@ DontDoThePush() {
 # Get to work!
 
 if [ ."$1" = . ]  ; then
-    echo "$SIMPLE_SCRIPT_NAME: Missing season on `hostname` - ABORT!"
+    echo "$SIMPLE_SCRIPT_NAME: Missing season on $USERHOST - ABORT!"
     exit 1
 fi
 
