@@ -496,11 +496,27 @@ if(1) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	my ($numResultLines, $numEvents) = 
 		GetPMSOWResults( "http://pacificmasters.org/points/OWPoints/$PMSOpenWaterResultFile",
-		"$sourceDataDir/$PMSOpenWaterResultFile" );
-	$numLinesRead += $numResultLines;
-	$numDifferentMeetsSeen += $numEvents;
-	$numDifferentResultsSeen += $numResultLines;
-	$numDifferentFiles += 1;
+			"$sourceDataDir/$PMSOpenWaterResultFile" );
+	if( $numResultLines == 0 ) {
+		# try historical data...
+		PMSLogging::PrintLog( "", "", "The first attempt to get OW results failed - we are going " .
+			"to try getting them from our Historical area.", 1 );
+		($numResultLines, $numEvents) = GetPMSOWResults( "http://pacificmasters.org/points/OWPoints/" .
+			"Historical/$yearBeingProcessed/GeneratedFiles/" .
+			"$PMSOpenWaterResultFile",
+			"$sourceDataDir/$PMSOpenWaterResultFile" );
+		if( $numResultLines == 0 ) {
+			# no data to get...
+			PMSLogging::PrintLog( "", "", "Unable to find any OW results - no points " .
+				"awarded for OW swims.", 1 );
+		}
+	}
+	if( $numResultLines > 0 ) {
+		$numLinesRead += $numResultLines;
+		$numDifferentMeetsSeen += $numEvents;
+		$numDifferentResultsSeen += $numResultLines;
+		$numDifferentFiles += 1;
+	}
 
 	if( $debug ) {
 		PMSLogging::PrintLog( "", "", "FINISH getting OW...", 1 );

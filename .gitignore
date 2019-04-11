@@ -22,3 +22,6 @@ properties_DB*.txt
 # store on a public repository
 *[rR][sS][iI][nN][dD]*
 *[rR][sS][iI][dD][nN]*
+# BUT... DON'T ignore code having RSIND in its name
+!*[rR][sS][iI][nN][dD]*.pl
+!*[rR][sS][iI][dD][nN]*.pl

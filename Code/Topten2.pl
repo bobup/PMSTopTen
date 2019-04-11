@@ -58,6 +58,7 @@ use File::Basename;
 use File::Path qw(make_path remove_tree);
 use Cwd 'abs_path';
 use HTTP::Tiny;
+use Data::Dumper;
 
 
 
@@ -3830,7 +3831,7 @@ sub PrintFullExcelResults($$$$) {
    	$formatKey->set_align( 'left' );
    	$formatKey->set_align( 'top' );
 	$worksheet->merge_range( "M5:S" . (3+$TT_Struct::NumHighPoints*2),
-		"  - PAC Swims '6+1' means the swimmer swam 6 PAC meets, 1 of which was\n" .
+		"  - PAC Swims '6+1' means the swimmer swam 7 PAC meets, 1 of which was\n" .
 		"      a hidden meet.  A hidden meet is a meet in which the swimmer did\n" .
 		"      not earn points towards AGSOTY.\n" .
 		"  - Only top swimmers (on left) who swam the minumum number of PAC\n" .
@@ -4576,7 +4577,7 @@ sub PrintResultsExcelSOTY($$$$) {
 		"  Points:  The total number of AGSOTY points earned by the swimmer.\n" .
 		"  # Age Group:  An approximation of the number of competitors in this swimmer's " .
 			"gender/age group (based on\n" .
-			"     the number of swimmers who swam the " .
+			"     the number of swimmers who swam the SCY " .
 			"50 free during the $yearBeingProcessed season.)\n" .
 		"  # USMS Records: Number of USMS records set by this swimmer during " .
 			"the $yearBeingProcessed season.\n" .
@@ -4934,7 +4935,7 @@ sub GetNumberPMSSanctionedMeets( $ ) {
 #
 # NOTES:
 #	Fetch the page:
-#		http://www.usms.org/comp/meets/?Season=2015&Sex=M&StrokeID=1&Distance=100&lowage=18highage=24&
+#		http://www.usms.org/comp/meets/?Season=2015&Sex=M&StrokeID=1&Distance=50&lowage=18highage=24&
 #			How_Many=500&CourseID=1&Submit=Start+Search
 #
 #	(Reference:  http://www.usms.org/comp/meets/toptimes.php?utm_campaign=top_nav&utm_medium=events_and_results)
@@ -4970,9 +4971,18 @@ sub GetNumberOfCompetitorsForGenderAgeGroup( $$$$ ) {
 		"CourseID" =>  "1",						# 1=SCY, 2=LCM, 3=SCM, 
 		"Submit"  => "Start Search"
 	};
-	my $response = $tinyHttp->post_form("http://www.usms.org/comp/meets/eventrank.php", $hashRef);
+	my $url = "https://www.usms.org/comp/meets/eventrank.php";
+	my $response = $tinyHttp->post_form($url, $hashRef);
 	my $content = $response->{'content'};
 	
+	#print "GetNumberOfCompetitorsForGenderAgeGroup(): dump of returned response:\n";
+	#print Dumper( $response );
+	#print "GetNumberOfCompetitorsForGenderAgeGroup(): end of dump\n";
+	
+	if( ($response->{'status'} != 200) || (length( $content ) < 500) ) {
+		PMSLogging::DumpError( "", "", "Topten::GetNumberOfCompetitorsForGenderAgeGroup(): " .
+			"Failed to get valid content from '$url'", 1 );
+	}
 	# count the number of lines that contain 'swim.php?s='
 	my $count = split( /swim.php/, $content )-1;
 	return $count;

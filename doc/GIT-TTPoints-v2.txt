@@ -477,8 +477,6 @@ files to the root of the Automation/ directory created in the first step above. 
 - If the new server and old server share the same filesystem there might be some permission
 	problems in /tmp.  You'll find them and have to fix them before the old server is turned off.
 	
-- Fix the PMS-specific scripts in Code/Scripts/PMSScripts/ to fix paths that depend on 
-	the old server.
 
 You now have the basic infrastructure in place on the new server, and also the DrPacm source
 code.  You have to decide whether or not this copy of DrPacm is the master development copy.
@@ -488,13 +486,28 @@ For AGSOTY:
 See "****** Create a local repository from the PMSTopTen remote repository"
 NOTE:  "$rootDir" is the Automation/ directory created above.
 NOTE:  The 'properties_DB-{season}.txt' will have to change if the database server has to change.
+NOTE:  There might be some paths containing the old server name.  For example:
+	Code/Scripts/PMSScripts/*
 Make sure the generated files are as expected.
 
-- Test a push and make sure the TTPushes directory is created and populated.
+- Test a push and make sure the <rootDir>/TTPushes directory is created and populated.  Make
+	sure a push to dev works, and then make sure a push to production works.  (For the production
+	push you'll either have to set up a key to the production server or enter the password
+	three times, which obviously won't work when using cron!)
 
 
 For PMS Open Water Points:
+See "****** Create a local repository from the PMSOWPoints remote repository"
+in the discussion for OW points.
+NOTE:  "$rootDir" is the Automation/ directory created above.
+NOTE:  There might be some paths containing the old server name.  For example:
+	Code/Scripts/PMSScripts/*
+Make sure the generated files are as expected.
 
+- Test a push and make sure the <rootDir>/OWPushes directory is created and populated.  Make
+	sure a push to dev works, and then make sure a push to production works.  (For the production
+	push you'll either have to set up a key to the production server or enter the password
+	three times, which obviously won't work when using cron!)
 
 =========================================================================================
 =========================================================================================

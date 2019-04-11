@@ -1,5 +1,5 @@
 "2018PacMasters:  Points for every swimmer who earned OW points."
-Generated on Wed Oct 10 2018 PDT 10:43:02 AM
+Generated on Sat Jan 05 2019 EST 10:26:42 PM
 "(We only consider Category 1 swims.)"
 
 Gender,Age Group,Place,Points,Last Name,First Name,Middle,Regnum,Meet Name,Event Name,Event Date,Duration
@@ -101,6 +101,18 @@ W,25-29,10,2,Baker,Brianna,K,3888-0A8S9,Lake Berryessa,Lake Berryessa 1 Mile,201
 W,25-29,10,2,Mohn,Jennifer,L,388C-09HD8,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,55:04.45
 W,25-29,10,2,Turner,Jordan,,388V-096YM,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,53:02.70
 W,25-29,10,2,Robertson,Lindsay,J,388P-04ZDB,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:16:21.53
+W,25-29,14,0,Johnston,Catherine,K,388N-08575,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:02:27.45
+W,25-29,13,0,Citek,Casey,,3887-0AGD6,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,34:55.15
+W,25-29,12,0,Silvas,Cara,,3888-07X87,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:01:23.25
+W,25-29,13,0,Li,Rebecca,D,3885-08EJU,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:01:28.90
+W,25-29,11,0,Doran,Rebekah,A,3883-0B0UF,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,55:51.40
+W,25-29,11,0,Gordon,Hether,J,388A-0A4EN,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,30:12.00
+W,25-29,11,0,O'Hearn,Hannah,,388Z-0B0A4,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:16:52.36
+W,25-29,12,0,Taylor,Bianca,,3882-3XTFF,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:17:41.88
+W,25-29,14,0,Linn,Elisabeth,A,388G-09A0P,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:23:50.34
+W,25-29,15,0,Poon,Jessica,W,388G-09YGB,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:24:16.33
+W,25-29,16,0,Parissenti,Katie,,388V-0A9HR,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:24:47.47
+W,25-29,12,0,Gregory,Madeline,,388H-5KCK0,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,31:46.05
 W,30-34,1,22,Lee,Alexandra,K,388Z-03WMW,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,46:49.70
 W,30-34,1,22,Lee,Alexandra,K,388Z-03WMW,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,24:02.70
 W,30-34,1,22,Lee,Alexandra,K,388Z-03WMW,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,36:20.10
@@ -171,6 +183,11 @@ W,30-34,11,0,Chaiyasane,Koung,,388F-09709,Lake Berryessa,Lake Berryessa 1 Mile,2
 W,30-34,10,2,Hannigan,Edith,,3884-07TXP,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,39:25.20
 W,30-34,10,2,Albers,Lynea,R,388K-06BMB,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,55:38.70
 W,30-34,10,2,Odden,Krista,,388N-VURXF,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:27:26.49
+W,30-34,13,0,Goodman,Arianne,M,3884-0B39B,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:19:09.95
+W,30-34,12,0,Ruether,Madeline,C,388E-099JR,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,58:48.55
+W,30-34,11,0,Edminster,Allison,C,3889-05Y0T,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,56:17.75
+W,30-34,11,0,Shiromizu,Randi,,388T-07E2J,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:27:57.43
+W,30-34,12,0,Hall,Kathryn,,388H-0B001,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,2:12:35.24
 W,35-39,1,22,Watanabe,Naoko,,388G-03DZ2,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,51:04.60
 W,35-39,1,22,Watanabe,Naoko,,388G-03DZ2,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,25:11.70
 W,35-39,1,22,Watanabe,Naoko,,388G-03DZ2,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,39:08.60
@@ -259,6 +276,20 @@ W,35-39,12,0,Schrik,Natalie,,3888-0B0B3,Santa Cruz Rough Water,Santa Cruz Rough 
 W,35-39,13,0,Schrik,Natalie,,3888-0B0B3,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,1:11:45.80
 W,35-39,10,2,Seto,Melodie,K,3887-05EE3,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:23:20.77
 W,35-39,10,2,Byrd,Sanomia,,388Z-078R5,Spring Lake,Spring Lake 1 Mile,2018-05-21,38:06.95
+W,35-39,12,0,Kordesch,Kristina,C,3887-06XKV,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,55:50.00
+W,35-39,25,0,Kordesch,Kristina,C,3887-06XKV,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:39:35.33
+W,35-39,11,0,Ritter,Jillian,,388U-08F9R,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2018-07-28,31:49.95
+W,35-39,26,0,Ritter,Jillian,,388U-08F9R,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:47:46.12
+W,35-39,11,0,Shimada,Tia,A,388G-03M99,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:23:37.96
+W,35-39,12,0,Maccaux,Monica,A,3883-07W3V,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:23:48.82
+W,35-39,14,0,Capell,Kelly,,3882-06EEZ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:25:11.49
+W,35-39,15,0,Muraki,Miya,,388V-05U76,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:26:05.43
+W,35-39,16,0,Jay,Elizabeth,A,388H-02CCG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:27:05.29
+W,35-39,17,0,Owens,Brianne,M,3884-03T28,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:27:46.80
+W,35-39,18,0,Stockton,Jill,B,388H-062K5,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:28:37.42
+W,35-39,19,0,Heape,Kelly,,388S-0UX1N,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:28:49.45
+W,35-39,21,0,Huddleston,Kelly,,3888-0B2G7,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:30:53.87
+W,35-39,24,0,Crespo,Sian,T,388R-06VP9,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:36:02.42
 W,40-44,1,22,Rowe,Michelle,J,388U-SWMRX,Spring Lake,Spring Lake 1 Mile,2018-05-21,24:32.10
 W,40-44,1,22,Rowe,Michelle,J,388U-SWMRX,Lake Del Valle,Lake Del Valle 5K,2018-06-09,1:24:47.10
 W,40-44,1,22,Rowe,Michelle,J,388U-SWMRX,Lake Del Valle,Lake Del Valle 1.2K,2018-06-10,21:11.40
@@ -330,6 +361,14 @@ W,40-44,9,4,Uldricks,Jennifer,,3886-0ZF4L,Spring Lake,Spring Lake 1 Mile,2018-05
 W,40-44,15,0,Uldricks,Jennifer,,3886-0ZF4L,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,40:22.80
 W,40-44,10,2,Atkins,Zarrin,T,3881-0BA8H,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,32:04.55
 W,40-44,10,2,Moore,Megan,,3888-0AFES,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:26:59.61
+W,40-44,12,0,Dabkowski,Rhiannon,,388S-0APCP,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:06:06.80
+W,40-44,13,0,Mo,Aileen,Y,388X-09WJJ,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:10:35.05
+W,40-44,13,0,Mo,Aileen,Y,388X-09WJJ,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,35:10.05
+W,40-44,12,0,Darling,Colleen,M,3884-03WVE,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,33:35.05
+W,40-44,13,0,Hurrey,Suzanne,,3884-0B1H5,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:40:39.74
+W,40-44,14,0,Brasch,Alicia,F,388U-02NDG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:42:44.87
+W,40-44,15,0,Parrish,Ariel,,3889-0B8G4,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:43:02.73
+W,40-44,16,0,Conroy,Shannon,M,388T-03PZ0,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:43:08.16
 W,45-49,1,22,Hertzer,Cynthia,J,3883-CHSWM,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,50:30.05
 W,45-49,1,22,Hertzer,Cynthia,J,3883-CHSWM,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,26:33.20
 W,45-49,1,22,Hertzer,Cynthia,J,3883-CHSWM,Lake Del Valle,Lake Del Valle 10K,2018-06-09,2:57:57.35
@@ -405,6 +444,14 @@ W,45-49,10,2,Barrett,Sue,,388G-03ZBD,Lake Berryessa,Lake Berryessa 2 Mile,2018-0
 W,45-49,10,2,Hottmann,Margot,C,388Y-05W1B,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,47:38.00
 W,45-49,11,0,Hottmann,Margot,C,388Y-05W1B,Lake Del Valle,Lake Del Valle 1.2K,2018-06-10,37:21.50
 W,45-49,10,2,Wilcox,Darcey,C,3886-0AV1F,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:30:49.77
+W,45-49,11,0,Blunk,Sherry,,3883-0AE5V,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:37:13.60
+W,45-49,12,0,Oporto,Nancy,P,388Y-09PTZ,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:50:18.10
+W,45-49,12,0,Chung,Heejay,A,3888-0680Y,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:34:52.24
+W,45-49,13,0,Stickler,Shii,N,388R-09GYF,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:37:46.10
+W,45-49,14,0,Wilson,Christi,A,388P-06YGJ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:39:14.44
+W,45-49,15,0,May,Tracy,E,3889-08DCS,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:39:28.62
+W,45-49,16,0,Kelly,Maureen,,388J-0A32N,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:42:46.41
+W,45-49,18,0,Kelly,Jessica,P,388T-0AAX3,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:47:01.80
 W,50-54,1,22,Curtin,Janice,A,388K-07UKC,Spring Lake,Spring Lake 1 Mile,2018-05-21,23:22.80
 W,50-54,1,22,Curtin,Janice,A,388K-07UKC,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,24:24.55
 W,50-54,1,22,Curtin,Janice,A,388K-07UKC,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,48:24.30
@@ -503,6 +550,26 @@ W,50-54,10,2,Mahnken,Linda,,388F-0AZWX,Santa Cruz Rough Water,Santa Cruz Rough W
 W,50-54,10,2,Viscardi,Josie,A,3888-03PT4,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,35:45.65
 W,50-54,10,2,Alvarez,Becky,,3885-07ZBG,Lake Del Valle,Lake Del Valle 5K,2018-06-09,2:00:41.35
 W,50-54,19,0,Alvarez,Becky,,3885-07ZBG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:41:22.48
+W,50-54,11,0,Scales,Colette,,388J-07DX2,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,1:04:20.20
+W,50-54,12,0,Scales,Colette,,388J-07DX2,Lake Del Valle,Lake Del Valle 5K,2018-06-09,2:22:52.60
+W,50-54,13,0,Nielsen,Sarah,E,388U-083V5,Lake Del Valle,Lake Del Valle 5K,2018-06-09,2:43:05.45
+W,50-54,11,0,Percin,Lydia,T,388E-05XY3,Lake Del Valle,Lake Del Valle 1.2K,2018-06-10,31:49.70
+W,50-54,15,0,Wu,Nan,,388T-03GDR,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:29:16.45
+W,50-54,12,0,Pierre,Stella,,388P-078G9,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,1:08:13.40
+W,50-54,13,0,Chachkin,Myra,,388G-0B1KC,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,1:08:21.90
+W,50-54,15,0,Woodward,Tia,A,388K-03RAK,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,44:32.85
+W,50-54,14,0,Viatella,Kathy,C,3888-0A2W1,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,43:07.15
+W,50-54,13,0,Donald,Fiona,A,3889-03F59,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,38:50.75
+W,50-54,11,0,Geisler,Karen Gray,J,388J-071K4,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:09:52.75
+W,50-54,12,0,Geisler,Karen Gray,J,388J-071K4,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,37:07.65
+W,50-54,12,0,Brown,Bonnie,M,3883-05GDW,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:30:21.29
+W,50-54,13,0,Greva,Suzanne,A,388Z-06A6K,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:30:37.28
+W,50-54,14,0,Dutra,Kelli,M,388P-03H9W,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:31:00.26
+W,50-54,18,0,Gilfillan,K Kiely,,388Z-03R8M,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:40:48.10
+W,50-54,20,0,Platts,Denise,E,388H-07ZDK,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:45:37.11
+W,50-54,21,0,Saba,Susan,A,3886-03WNA,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:47:30.58
+W,50-54,22,0,Asta,Lisa,M,3880-0715J,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,2:04:02.98
+W,50-54,23,0,Wagner,Karen,,388V-JU87C,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,2:20:50.57
 W,55-59,1,22,Elsbach,Kimberly,D,388Z-D0NUT,Spring Lake,Spring Lake 1 Mile,2018-05-21,22:57.80
 W,55-59,1,22,Elsbach,Kimberly,D,388Z-D0NUT,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,24:09.80
 W,55-59,1,22,Elsbach,Kimberly,D,388Z-D0NUT,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,48:28.05
@@ -618,6 +685,36 @@ W,55-59,12,0,Buckley,Kristine,E,388P-03H5H,Spring Lake,Spring Lake 1 Mile,2018-0
 W,55-59,10,2,Verwijst,Julie,,388U-02UT5,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,43:37.90
 W,55-59,10,2,Cagigas,Debbie,,388Y-081JU,Lake Del Valle,Lake Del Valle 1.2K,2018-06-10,22:52.50
 W,55-59,11,0,Cagigas,Debbie,,388Y-081JU,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,44:26.60
+W,55-59,12,0,Cholewinski,Rose,M,388S-03PTX,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,30:47.65
+W,55-59,11,0,Price,Patricia,L,3881-05U69,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,30:03.55
+W,55-59,14,0,Anderson,Laura,Q,3882-03TJN,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,32:19.70
+W,55-59,13,0,Carroll,Jennifer,L,388G-03KN4,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:02:01.10
+W,55-59,17,0,Greene-Janse,Judith,,388H-0A69V,Spring Lake,Spring Lake 1 Mile,2018-05-21,43:31.10
+W,55-59,15,0,Schultz,Christina,M,388W-03SZD,Spring Lake,Spring Lake 1 Mile,2018-05-21,42:40.70
+W,55-59,15,0,Casillas,Linda,M,388N-03PRE,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,35:00.15
+W,55-59,14,0,Ross,Lesa,R,3885-03HCV,Spring Lake,Spring Lake 1 Mile,2018-05-21,42:28.05
+W,55-59,24,0,Ross,Lesa,R,3885-03HCV,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,41:21.05
+W,55-59,14,0,Campione,Mary,,388G-0AHPD,Lake Del Valle,Lake Del Valle 1.2K,2018-06-10,29:46.70
+W,55-59,16,0,Lewitz,Polly,,388P-09NVS,Lake Del Valle,Lake Del Valle 1.2K,2018-06-10,29:51.40
+W,55-59,19,0,Field,Jean,,3881-CPJBJ,Lake Del Valle,Lake Del Valle 1.2K,2018-06-10,36:54.20
+W,55-59,11,0,Fitz-Faulkner,Eileen,,388F-03N0P,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:00:14.20
+W,55-59,13,0,Seitz,Chris,A,388F-03SAB,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,45:42.50
+W,55-59,16,0,Fornage,Julia,,3885-05VJU,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,36:47.75
+W,55-59,12,0,Grubb,Laura,L,388U-07GYU,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2018-07-28,32:11.85
+W,55-59,11,0,Bergmann,Susan,M,3885-03G8S,Spring Lake,Spring Lake 1 Mile,2018-05-21,33:45.50
+W,55-59,14,0,Bergmann,Susan,M,3885-03G8S,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:06:55.00
+W,55-59,19,0,Bowden,Melanie,,3882-03FZX,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,38:44.05
+W,55-59,25,0,Ferreira,Ines,C,3883-07W6D,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,45:37.55
+W,55-59,18,0,Mencarini,Susan,D,3881-03FB7,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:13:22.30
+W,55-59,20,0,Mencarini,Susan,D,3881-03FB7,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,39:09.70
+W,55-59,19,0,Aitkens,Susan,,3885-09WKX,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:19:25.60
+W,55-59,22,0,Aitkens,Susan,,3885-09WKX,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,39:17.15
+W,55-59,11,0,Blackstone,Elizabeth,A,388B-07XJG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:28:49.45
+W,55-59,12,0,Striebel,Kathryn,A,388N-03FFD,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:32:06.75
+W,55-59,13,0,McKenna,Mollie,C,388K-03RW3,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:51:01.34
+W,55-59,14,0,Roloff,Christine,A,388G-03NKC,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:51:17.33
+W,55-59,21,0,Forsey,Lynn,M,388J-06DEM,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,39:14.75
+W,55-59,23,0,Ramos,Margaret,,3888-K53DA,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,40:24.90
 W,60-64,1,22,Schmucker,Lindabeth,,388Z-03G04,Lake Del Valle,Lake Del Valle 5K,2018-06-09,1:31:15.90
 W,60-64,1,22,Schmucker,Lindabeth,,388Z-03G04,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,42:37.90
 W,60-64,1,22,Schmucker,Lindabeth,,388Z-03G04,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2018-07-28,23:48.15
@@ -708,6 +805,21 @@ W,60-64,10,2,Speers,Jo Anne,,388F-03R14,Lake Berryessa,Lake Berryessa 2 Mile,201
 W,60-64,10,2,Morgan,Leslie,L,388F-05UP7,Lake Del Valle,Lake Del Valle 1.2K,2018-06-10,32:40.70
 W,60-64,10,2,Franklin,Leslie,,388F-04Z1D,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2018-07-28,46:17.85
 W,60-64,10,2,Farmer,Elspeth,L,388P-03HZU,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:37:37.71
+W,60-64,15,0,Dellwo,Marcia,L,388A-03Y3B,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,40:30.40
+W,60-64,14,0,McDonald,Judy,C,388G-05H9B,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,37:05.30
+W,60-64,16,0,Yamashita,Lynn,R,388Z-06MKN,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,40:59.00
+W,60-64,12,0,O'Mara,Gina,,3888-0BAA9,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,36:05.05
+W,60-64,11,0,Griest,Kelley,L,388G-07VEV,Lake Del Valle,Lake Del Valle 1.2K,2018-06-10,33:41.40
+W,60-64,13,0,Lombard,Jane,T,388Z-03K9V,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:18:54.55
+W,60-64,12,0,Minalga,Cecilia,,388U-03NUC,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,1:20:51.60
+W,60-64,11,0,Olson,Karen,L,388D-03GXM,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,35:25.00
+W,60-64,11,0,Scholz,Sibylle,,3889-09525,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2018-07-28,56:43.45
+W,60-64,20,0,O'Rourke,Sheila,,3884-09G48,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,48:11.20
+W,60-64,14,0,Brydon,Barbara,,3886-PW5FH,Lake Del Valle,Lake Del Valle 1.2K,2018-06-10,38:56.80
+W,60-64,19,0,Brydon,Barbara,,3886-PW5FH,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,47:46.50
+W,60-64,12,0,Stine,Karen,L,388W-03GNW,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:43:19.81
+W,60-64,15,0,Perry,Laurie,S,388S-03VAV,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,2:03:52.99
+W,60-64,17,0,Johnson,Deanna,L,388N-041KE,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,41:31.85
 W,65-69,1,22,Val,Laura,B,388V-03H9F,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,48:23.50
 W,65-69,1,22,Val,Laura,B,388V-03H9F,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,24:25.60
 W,65-69,1,22,Val,Laura,B,388V-03H9F,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,36:34.80
@@ -887,6 +999,7 @@ M,25-29,7,8,Aguiar,Alexander,E,3881-0676E,Lake Berryessa,Lake Berryessa 1 Mile,2
 M,25-29,9,4,Anderson,Kyle,B,388C-04ZAK,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:09:12.28
 M,25-29,9,4,Christenson,Joel,G,388B-09JCP,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,57:08.55
 M,25-29,10,2,Luke,Kyle,,388K-YEYEF,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,58:13.60
+M,25-29,11,0,Gaeta,Sam,,3880-06YYY,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:27:38.33
 M,30-34,1,22,La Tourette,Chad,E,388W-09H5H,Spring Lake,Spring Lake 1 Mile,2018-05-21,19:30.50
 M,30-34,1,22,La Tourette,Chad,E,388W-09H5H,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,20:10.50
 M,30-34,1,22,La Tourette,Chad,E,388W-09H5H,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,40:25.40
@@ -1007,6 +1120,7 @@ M,35-39,9,4,Fernandez,Edward,,388B-03RFY,Donner Lake Swim,Donner Lake Swim 2.7 M
 M,35-39,10,2,Philley,Paul,P,388S-08FAV,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,34:18.90
 M,35-39,10,2,Wada,Ellison,R,388K-03H75,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:06:17.85
 M,35-39,10,2,Lancara,Matt,P,388P-03EFV,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:14:05.66
+M,35-39,11,0,Waterson,Kevin,,388W-08CRR,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:07:50.20
 M,40-44,1,22,Gillis,Trevor,D,3887-03J54,Spring Lake,Spring Lake 1 Mile,2018-05-21,19:35.40
 M,40-44,1,22,Gillis,Trevor,D,3887-03J54,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,20:42.70
 M,40-44,1,22,Gillis,Trevor,D,3887-03J54,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,41:02.50
@@ -1158,6 +1272,13 @@ M,45-49,9,4,McCausland,Vance,M,388J-05ZPT,Lake Berryessa,Lake Berryessa 1 Mile,2
 M,45-49,10,2,Adamson,John,C,388R-0AJ00,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:01:42.20
 M,45-49,10,2,Stickler,Jim,D,388C-0A6AJ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:34:00.50
 M,45-49,10,2,Reed,Doug,,388D-09A6A,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2018-07-28,27:32.25
+M,45-49,11,0,Allen,Robert,,3887-Y8PYJ,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2018-07-28,28:36.85
+M,45-49,12,0,Shriro,Daniel,,388V-083GT,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2018-07-28,34:14.05
+M,45-49,13,0,Vogler,Thaddeus,M,3886-07RM1,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2018-07-28,46:52.00
+M,45-49,12,0,Bundy,Jason,E,3882-040P2,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:47:17.10
+M,45-49,11,0,Rachwald,Robert,R,3880-04Z4H,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:35:54.28
+M,45-49,12,0,Cohen,David,G,3886-07XC5,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:44:23.90
+M,45-49,11,0,Scoble,Henry,B,388Z-06R7N,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:38:05.65
 M,50-54,1,22,Bond,Chris,S,388S-03H3C,Lake Del Valle,Lake Del Valle 5K,2018-06-09,1:17:32.25
 M,50-54,1,22,Bond,Chris,S,388S-03H3C,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,36:28.30
 M,50-54,1,22,Bond,Chris,S,388S-03H3C,Lake Del Valle,Lake Del Valle 1.2K,2018-06-10,19:00.90
@@ -1235,6 +1356,21 @@ M,50-54,10,2,Frew,James,J,3881-03JRJ,Santa Cruz Rough Water,Santa Cruz Rough Wat
 M,50-54,10,2,Andre,Michael,,3886-LJ7Y1,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:20:48.24
 M,50-54,10,2,Davis,Joe,,388X-06MF4,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,29:16.20
 M,50-54,11,0,Davis,Joe,,388X-06MF4,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:23:21.34
+M,50-54,13,0,McIntyre,Todd,R,3884-06BA2,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:13:24.95
+M,50-54,12,0,Haas,Eric,M,388T-06CXD,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:12:52.30
+M,50-54,11,0,Yerby,Michael,J,388W-0615X,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:05:52.35
+M,50-54,16,0,Griffiths,John,P,388P-075R1,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,39:52.80
+M,50-54,15,0,Lawrence,Robert,,3889-09RRA,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,39:22.05
+M,50-54,14,0,Feely,George,,388P-0A8T4,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,38:24.85
+M,50-54,13,0,Austin,Kurt,J,388B-094BM,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,35:58.85
+M,50-54,12,0,Mockus,Jeff,,3882-JM0KE,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:23:28.85
+M,50-54,13,0,Atkins,Steve,J,388U-0AZ8T,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:33:42.74
+M,50-54,14,0,Sasaki,Kent,K,388D-0AR6Y,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:37:19.43
+M,50-54,15,0,O malley daly,Patrick,D,388S-09E15,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:38:22.19
+M,50-54,16,0,Shahani,Lalit,K,388C-03EWM,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:41:03.61
+M,50-54,18,0,Avila,Anthony,,388H-TEDH8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,2:01:27.49
+M,50-54,12,0,Anderson,Mike,,388H-0927W,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,35:36.30
+M,50-54,11,0,Ehrenberger,Dennis,K,3888-08FJC,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,32:45.85
 M,55-59,1,22,Boone,Jon,,3881-05VDE,Lake Del Valle,Lake Del Valle 5K,2018-06-09,1:20:46.85
 M,55-59,1,22,Boone,Jon,,3881-05VDE,Lake Del Valle,Lake Del Valle 1.2K,2018-06-10,19:52.70
 M,55-59,1,22,Boone,Jon,,3881-05VDE,Keller Cove,Keller Cove 1/2 Mile,2018-09-22,8:53.10
@@ -1330,6 +1466,20 @@ M,55-59,9,4,Barton,Bruce,R,3885-04ZJK,Lake Del Valle,Lake Del Valle 5K,2018-06-0
 M,55-59,10,2,Deam,Eric,N,3888-03EYH,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,29:38.00
 M,55-59,10,2,Remington,Todd,E,3880-0B134,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,55:53.35
 M,55-59,10,2,Hart,James,D,388V-03MCH,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:19:33.61
+M,55-59,14,0,Ortman,John,,388K-0AEC5,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:33:39.93
+M,55-59,15,0,Ortman,John,,388K-0AEC5,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:12:29.90
+M,55-59,12,0,Moylan,Paul,,388M-04185,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,33:00.85
+M,55-59,11,0,Ensch,John,,388W-2974T,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,31:57.30
+M,55-59,16,0,Boucher,Laurent,P,3880-09M73,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,43:21.00
+M,55-59,12,0,Gee,Daven,R,3882-01NX1,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:01:56.25
+M,55-59,13,0,Gee,Daven,R,3882-01NX1,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,33:23.75
+M,55-59,14,0,Maggioncalda,Michael,D,388S-07BTB,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:11:40.85
+M,55-59,12,0,Kieckhefer,John,,388K-07KZF,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:24:50.34
+M,55-59,13,0,Buc,Richard,J,388G-0A1KW,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:32:23.70
+M,55-59,15,0,Hennessy,Robert,J,388A-03R30,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:35:05.98
+M,55-59,16,0,Reese,Tim,,388T-02MKM,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:39:23.30
+M,55-59,17,0,Nagamine,James,S,388A-04247,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:41:11.92
+M,55-59,14,0,Gaglianone,Marcos,,388J-03TE5,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,35:56.90
 M,60-64,1,22,Mac Donald,Sandy,M,388E-03H4C,Spring Lake,Spring Lake 1 Mile,2018-05-21,21:40.40
 M,60-64,1,22,Mac Donald,Sandy,M,388E-03H4C,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,23:29.05
 M,60-64,1,22,Mac Donald,Sandy,M,388E-03H4C,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,46:20.60
@@ -1428,6 +1578,31 @@ M,60-64,11,0,Crankshaw,David,R,388B-041H5,Donner Lake Swim,Donner Lake Swim 2.7 
 M,60-64,10,2,Wallace,Patrick,T,388Y-05W0U,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,54:30.90
 M,60-64,10,2,Korb,Orry,P,3881-03FGW,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2018-07-28,27:26.60
 M,60-64,10,2,Davis,Joseph,P,388E-03U4M,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:26:02.31
+M,60-64,19,0,Hitchner,Ken,,3889-09RPA,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,43:57.95
+M,60-64,18,0,Stanfield,Richard,,388W-I4ZZJ,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,43:50.05
+M,60-64,17,0,Yoder,John,I,388G-08EMY,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,41:36.60
+M,60-64,15,0,Newacheck,Rick,,3888-HCEBN,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,39:23.40
+M,60-64,15,0,Hubbard,Kyle,W,388C-06W7N,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:18:59.90
+M,60-64,16,0,Baum,Harlan,S,388Z-03EXJ,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:25:53.35
+M,60-64,12,0,Tsugawa,Peter,,388Y-07N2N,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:08:00.10
+M,60-64,13,0,Tsugawa,Peter,,388Y-07N2N,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,37:41.25
+M,60-64,13,0,Hahner,Joseph,,388X-0B6RE,Lake Del Valle,Lake Del Valle 1.2K,2018-06-10,32:08.30
+M,60-64,14,0,Ocano,Manny,D,388U-0AFPP,Lake Del Valle,Lake Del Valle 1.2K,2018-06-10,41:50.30
+M,60-64,14,0,Ranganathan,Vishnu,,3884-0646J,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,1:10:33.80
+M,60-64,17,0,Ranganathan,Vishnu,,3884-0646J,Spring Lake,Spring Lake 1 Mile,2018-05-21,42:13.20
+M,60-64,14,0,Spiker,Scott,E,388F-03MXK,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,38:17.90
+M,60-64,15,0,Spiker,Scott,E,388F-03MXK,Spring Lake,Spring Lake 1 Mile,2018-05-21,36:18.20
+M,60-64,12,0,Huwe,Terence,K,388N-0AD1S,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2018-07-28,28:31.65
+M,60-64,13,0,McCullough,John,R,388U-08FFE,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2018-07-28,32:26.60
+M,60-64,11,0,Joyce,Michael,J,388U-03NRU,Lake Del Valle,Lake Del Valle 1.2K,2018-06-10,30:26.20
+M,60-64,12,0,Joyce,Michael,J,388U-03NRU,Lake Del Valle,Lake Del Valle 2.5K,2018-06-10,59:17.70
+M,60-64,13,0,Joyce,Michael,J,388U-03NRU,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:12:51.35
+M,60-64,14,0,Joyce,Michael,J,388U-03NRU,Spring Lake,Spring Lake 1 Mile,2018-05-21,35:45.60
+M,60-64,16,0,Joyce,Michael,J,388U-03NRU,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,39:50.95
+M,60-64,13,0,Linthicum,Tom,W,3886-03MYW,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:42:25.63
+M,60-64,14,0,Conroy,Michael,Q,388A-06A9S,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2018-08-11,1:51:50.55
+M,60-64,11,0,Barry,Daniel,D,388C-03MZP,Spring Lake,Spring Lake 1 Mile,2018-05-21,29:16.55
+M,60-64,20,0,Burke,Thomas,K,3881-HYDR0,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,44:21.15
 M,65-69,1,22,McCaffery,Mike,,3881-03MY6,Spring Lake,Spring Lake 1 Mile,2018-05-21,22:53.30
 M,65-69,1,22,McCaffery,Mike,,3881-03MY6,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,46:36.15
 M,65-69,1,22,McCaffery,Mike,,3881-03MY6,Lake Del Valle,Lake Del Valle 5K,2018-06-09,1:19:53.90
@@ -1489,6 +1664,9 @@ M,65-69,9,4,Lennox,John,F,3882-03P27,Donner Lake Swim,Donner Lake Swim 2.7 Mile,
 M,65-69,10,2,Wheeler,William,J,388C-04ZA2,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:16:06.75
 M,65-69,10,2,Lavagnino,Luis,,388U-08FDC,Lake Del Valle,Lake Del Valle 1.2K,2018-06-10,37:50.00
 M,65-69,13,0,Lavagnino,Luis,,388U-08FDC,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,1:41:33.05
+M,65-69,14,0,Maxwell,Irving,E,3884-09USJ,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,2:00:39.60
+M,65-69,12,0,Offen,Naphtali,,388H-03JDY,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2018-07-28,38:20.55
+M,65-69,13,0,Cramer,Stephen,P,388M-03JA7,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2018-07-28,39:32.85
 M,70-74,1,22,Rudloff,Edward,,388M-03J62,Spring Lake,Spring Lake 1 Mile,2018-05-21,24:35.15
 M,70-74,1,22,Rudloff,Edward,,388M-03J62,Lake Berryessa,Lake Berryessa 1 Mile,2018-06-02,26:43.30
 M,70-74,1,22,Rudloff,Edward,,388M-03J62,Lake Berryessa,Lake Berryessa 2 Mile,2018-06-02,51:55.75
