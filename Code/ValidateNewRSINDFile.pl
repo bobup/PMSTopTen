@@ -140,7 +140,7 @@ if( ! -e $generatedDirName ) {
 ###
 ### Initialalize log file
 ###
-my $logFileName = $generatedDirName . "ValidateNewRSINDFile-$yearBeingProcessed.txt";
+my $logFileName = $generatedDirName . "ValidateNewRSINDFileLog-$yearBeingProcessed.txt";
 # open the log file so we can log errors and debugging info:
 if( my $tmp = PMSLogging::InitLogging( $logFileName )) { die $tmp; }
 print "Log File: $logFileName\n";
