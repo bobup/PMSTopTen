@@ -1,0 +1,19 @@
+### properties_DB-template.txt
+### This is the property file used by the AGSOTY program.
+
+# Copyright (c) 2018 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
+
+# DEFAULT database connection parameters.  This file is a template for the real one (named
+# properties_DB.txt) that you must construct for your
+# project.  This file is committed to the github master repository so it MUST NOT contain
+# sensitive information.  Your properties_DB.txt file must contain the four lines below
+# which will define your db host, name, user, and password.
+# The properties_DB.txt should be named in the .gitignore file
+
+dbHost		(hostname holding the database, e.g. localhost or xxx.yy.com)
+dbName		(database name, e.g. AGSOTY_DB_name)
+dbUser		(database user, e.g. AGSOTY_User)
+dbPass		(database password, e.g. secret-shhhh)
+
+>endoffile

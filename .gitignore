@@ -17,7 +17,7 @@ old/
 # BUT...DO ignore .DS_Store in Historical/
 /Historical/.DS_Store
 # ignore database configuration (passwords, etc.)
-properties_DB*.txt
+properties_DB.txt
 # don't save any of the RSIDN files - they contain personal information that we must not
 # store on a public repository
 *[rR][sS][iI][nN][dD]*
