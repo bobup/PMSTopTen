@@ -7,6 +7,7 @@ This are just some random notes used to write an eventual document
 		PMSTopTen - manage PMS AGSOTY (that's what this writeup is concentrating on)
 		PMSPerlModules - helper Perl modules used by the two above projects.
 	- appRootDir: the PMSTopTen directory, the parent of which is rootDir
+	- appDirName: the directory holding the code.  Usually PMSTopTen/Code/
 	- yearToProcess: the season to process, e.g. 2017
 	- new season (aka <new season>) - a season we haven't started processing yet, or we
 		just started computed.  We usually don't start thinking about the new season until 
@@ -221,6 +222,12 @@ OR
 # Create a brand new PMSTopTen directory:
 % git clone https://github.com/bobup/PMSTopTen
 
+****  need to add steps to get and maintain our RSIND files!  (We can't store them on github)
+...something like this:
+cd <appRootDir>/SeasonData/Season-<season>
+mkdir PMSSwimmerData
+cd PMSSwimmerData
+
 # Next, install the privileged files we gathered above:
 #	- put the properties_DB-{season}.txt file into the <appRootDir>/SeasonData/Season-<season> 
 #		directory
@@ -233,7 +240,19 @@ OR
 
 # Next, we need to be sure our database configuration parameters are set
 # correctly.  They are specified in the 'properties_DB-{season}.txt' file located in the
-# <appRootDir>/SeasonData/Season-<season> directory.  The checked in version
+# <appRootDir>/SeasonData/Season-<season> directory. If you don't have that file (the step
+# above copied a previous copy but maybe you didn't have a previous copy) then create it
+# from scratch.  To do that follow these steps:
+#	- cd <appRootDir>
+#	- cp Code/properties_DB-template.txt SeasonData/Season-<season>/properties_DB-<season>.txt
+# Then edit SeasonData/Season-<season>/properties_DB-<season>.txt supplying the correct values
+# for the 4 database parameters described in the template file.
+# NEVER CHECK THE properties_DB-<season>.txt FILE INTO THE github REPOSITORY!  Make sure the
+# .gitignore files guarantees that you won't check it in.
+
+---- cut all below ----
+
+The checked in version
 # has default values for the database host, database name, database user, 
 # and database password.  These need to be modified if necessary.  Don't 
 # bother checking in the modified properties_DB-{season}.txt file since it will contain
@@ -261,21 +280,17 @@ xxx2)    ----- for 2018
 xxx% cd PMSTopTen/Code
 xxx % cp ../../TT2018/properties.txt .
 
+---- cut all above ----
 
-****  need to add steps to get and maintain our RSIND files!  (We can't store them on github)
-...something like this:
-cd <appRootDir>/SeasonData/Season-<season>
-mkdir PMSSwimmerData
-cd PMSSwimmerData
-...get the RSIND file and put it here...
 
 
 # At this point we have the source code but no "Generated Files", so we'll have 
 # to generate some.  In the 'SeasonData' directory there should be one or more 
 # source directories named "Season-yyyy' where 'yyyy' is some year.  Here's how we'll
-# generate some results assuming we have data for 2017.  Plug in whatever year for which
-# you have data.
-# Next, set up your MySql server.  The following discussion assumes the default
+# generate some results assuming we have data for target year.  For example, we'll
+# use 2017.  Or, plug in whatever year for which you have data.
+
+# First, set up your MySql server.  The following discussion assumes the default
 # configuration define in the properties_DB-{season}.txt file described above.
 # You need to install MySql and create a root account
 # with all permissions.  Then do the following (you may have to change names/passwords
@@ -303,8 +318,10 @@ cd PMSSwimmerData
 % cd PMSTopTen		# Remember: you are now in $rootDir/PMSTopTen
 # You may want to change the 'EMAIL_NOTICE' variable in the GenTopten2 script used
 # next so it will send an email to the correct person.  Then execute the script:
-    ----   no!   % Code/Scripts/GenTopten2 2017
+#
 % Code/Scripts/DoFetchAndProcessTopten 2017 y
+# REMEMBER:  use the desired year above if you're not testing with 2017!
+#
 # The above will create the subdirectory GeneratedFiles (if it doesn't exist) and 
 # Generated-2017 (if it doesn't exist) and populate the Generated-2017 directory
 # with AGSOTY files.

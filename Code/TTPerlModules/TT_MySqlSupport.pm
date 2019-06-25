@@ -296,7 +296,7 @@ sub InitializeTopTenDB() {
 		    			"State Varchar(2), " .
 		    			"Zip Varchar(20), " .
 		    			"Country Varchar(20) " .
-		    			")" );
+		    			") CHARACTER SET utf8 COLLATE utf8_general_ci" );
 ### Points
     			} elsif( $tableName eq "Points" ) {
     				# --- SwimmerId - the swimmer who earned these points
@@ -389,7 +389,7 @@ sub InitializeTopTenDB() {
 		    			"AgeGroup2 Varchar(10) DEFAULT '', " .
 		    			"RegisteredTeamInitials Varchar(10), " .
 		    			"GotUSMSDirectoryInfo TINYINT(1) DEFAULT 0 " .
-		    			" )" );
+		    			" ) CHARACTER SET utf8 COLLATE utf8_general_ci" );
     			
 ### NumSwimmers
     			} elsif( $tableName eq "NumSwimmers" ) {

@@ -11,6 +11,10 @@
 #		if the results look different than the last time we fetched the results.  This is the default.
 #
 # NOTES:
+#	If the standings page is generated it is NOT installed anywhere except the appropriate
+#	GeneratedFiles directory.  If you want the generated files installed on dev or production
+#	you should use one of the PMSScripts.
+#
 #	When this script begins it will move the to-be generated index.html to index.html.old.  This
 #	way you can always tell if the last run of this script generated a new standings page.  If
 #	there is no index.html file in the "Generated files" directory then this means that the

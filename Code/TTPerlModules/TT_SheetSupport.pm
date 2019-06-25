@@ -56,7 +56,8 @@ sub OpenSheetFile($) {
         my @rows;
         my $csv = Text::CSV_XS->new ({ binary => 1, sep_char => $separator }) or
              die "Cannot use CSV: ".Text::CSV_XS->error_diag ();
-        open my $fh, "<:encoding(utf8)", "$fileName" or die "TT_SheetSupport::OpenSheetFile(): " .
+#        open my $fh, "<:encoding(utf8)", "$fileName" or die "TT_SheetSupport::OpenSheetFile(): " .
+        open my $fh, "<:encoding(iso-8859-1)", "$fileName" or die "TT_SheetSupport::OpenSheetFile(): " .
          	"ABORT: Can't open '$fileName': $!";
 		PMSLogging::PrintLog( "", "", "  TT_SheetSupport::OpenSheetFile(): file $fileName: Number of sheets:  1 (it's a " .
         	( $separator eq "," ? "comma-separated" : "tab-separated" ) . " .$ext file).", 1 ) if( $debug >= 1);
