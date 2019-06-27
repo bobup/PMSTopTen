@@ -75,6 +75,36 @@ ARCHIVED_TMPFILE2=$GENERATED_DIR/DoFetchAndProcessTopten_2-$SEASON.archive
 # semaphore used to make sure we don't execute this script more than once at a time:
 SEMAPHORE=$GENERATED_DIR/DoFetchAndProcessTopten_Semaphore
 
+
+#
+# LogMessage - generate a log message to various devices:  email, stdout, and a script 
+#	log file.
+#
+# PASSED:
+#	$1 - the subject of the log message.
+#	$2 - the log message
+#	$3 - if non-empty then write to the dedicated script log file ($DOFETCH_LOG)
+#	$4 - if non-empty then delete the semaphore
+#
+LogMessage() {
+	MSG=""
+	echo "$2"
+	if [ -n "$3" ] ; then
+		echo "$1" >$DOFETCH_LOG
+		echo "$2" >>$DOFETCH_LOG
+		MSG="(see log file $DOFETCH_LOG)"
+		echo $MSG
+	fi
+	/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<- BUpLM
+		Subject: $1
+		$2
+		$MSG
+		BUpLM
+	if [ -n "$4" ] ; then
+		rm -f $SEMAPHORE
+	fi
+} # end of LogMessage()
+
 ##################  CHECK THE SEMAPHORE   ################################################
 if [ -e $SEMAPHORE ] ; then
 	# abort - program already running!
@@ -150,35 +180,6 @@ ExecuteTopten() {
 	$TTSTATS $1
 }  # end of Executetopten()
 
-
-#
-# LogMessage - generate a log message to various devices:  email, stdout, and a script 
-#	log file.
-#
-# PASSED:
-#	$1 - the subject of the log message.
-#	$2 - the log message
-#	$3 - if non-empty then write to the dedicated script log file ($DOFETCH_LOG)
-#	$4 - if non-empty then delete the semaphore
-#
-LogMessage() {
-	MSG=""
-	echo "$2"
-	if [ -n "$3" ] ; then
-		echo "$1" >$DOFETCH_LOG
-		echo "$2" >>$DOFETCH_LOG
-		MSG="(see log file $DOFETCH_LOG)"
-		echo $MSG
-	fi
-	/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<- BUpLM
-		Subject: $1
-		$2
-		$MSG
-		BUpLM
-	if [ -n "$4" ] ; then
-		rm -f $SEMAPHORE
-	fi
-} # end of LogMessage()
 
 # 	TailTheLog "$GETRESULTSLOG" "$TMPFILE2" 
 # TailTheLog - fetch the tail end of the passed log file and write it to the pased file.
