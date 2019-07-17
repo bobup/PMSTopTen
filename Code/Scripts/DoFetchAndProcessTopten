@@ -178,6 +178,13 @@ ExecuteTopten() {
 	fi
 	# if we got here it looks like we generated top ten results!  Now generate statistics:
 	$TTSTATS $1
+	
+	# we're done ... but now we generate "special" AGSOTY results:
+	$TOPTEN $1 -sP -gDifferentPMSScoring
+	# we don't really care if there was an error...(there shouldn't be, since there was no error above)
+		LogMessage "$SEASON: A SPECIAL Standings page has been generated on $USERHOST" \
+			"Using new PMS points rules; Gen sub dir '/DifferentPMSScoring'" "x"
+	# done with "special" results
 }  # end of Executetopten()
 
 

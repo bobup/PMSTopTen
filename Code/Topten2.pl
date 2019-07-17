@@ -205,12 +205,19 @@ my $UsageString = <<bup
 Usage:  
 	$appProgName year
 			[-tPROPERTYFILE]
+			[-sSCORING]
 where:
 	year - the year to process, e.g. 2016.  
 	-tPROPERTYFILE - the FULL PATH NAME of the property.txt file.  The default is 
 		appDirName/Code/properties.txt, where
 		'appDirName' is the directory holding this script, and
 		'properties.txt' is the name of the properties files for this script.
+	-sSCORING - the scoring rules to follow.  If not supplied, or 0 is supplied, then
+		the default scoring rules are used.  Otherwise here are the legal values:
+		P - PMS Top Ten special scoring (1-20 scoring 21-19-18-17-16-15-14-13-12-11-10-9-8-7-6-5-4-3-2-1)
+	-gGenSubDir - if supplied the string 'GenSubDir' will be used as the name of a subdirectory of the 
+		generatedDirName directory (into which all generated files are placed.)  The use of this
+		argument allows one to create a full AGSOTY generation without overwriting a previous one.
 bup
 ;
 
@@ -240,8 +247,8 @@ if( $WRITE_EXCEL_FILES ) {
 
 sub ValidateAge($$);
 sub GetSwimmerDetailsFromPMS_DB($$$$);
-sub PMSProcessResults($);
-sub USMSProcessResults($);
+sub PMSProcessResults($$);
+sub USMSProcessResults($$);
 sub USMSProcessRecords($);
 sub PMSProcessOpenWater($);
 sub ProcessFakeSplashes($);
@@ -309,6 +316,14 @@ my $propertiesFileName = "properties.txt";
 # We also use the AppDirName in the properties file (it can't change)
 PMSStruct::GetMacrosRef()->{"AppDirName"} = $appDirName;	# directory containing the application we're running
 
+# scoring rules: number of points for 1st, 2nd, 3rd, etc...
+my @PMSTopTenScoringRules = (0, 11, 9, 8, 7, 6, 5, 4, 3, 2, 1);
+my @USMSTopTenScoringRules = (0, 22, 18, 16, 14, 12, 10, 8, 6, 4, 2);
+
+# all generated files will be put into the subdir of the $generatedDirName directory specified by
+# $genSugDir.  If empty all generated files will be put into $generatedDirName.
+my $genSubDir = "";
+
 ############################################################################################################
 # get to work - initialize the program
 ############################################################################################################
@@ -325,15 +340,23 @@ while( defined( $arg = shift ) ) {
 		# we have a flag with possible arg
 		$flag =~ s/(-.).*$/$1/;		# e.g. '-t'
 		$value =~ s/^-.//;			# e.g. '/a/b/c/d/Propertyfile.xtx'
-		SWITCH: {
-	        if( $flag =~ m/^-t$/ ) {
-				$propertiesDir = dirname($value);
-				$propertiesFileName = basename($value);
-				last SWITCH;
-	        }
+        if( $flag eq "-t" ) {
+			$propertiesDir = dirname($value);
+			$propertiesFileName = basename($value);
+        } elsif( $flag eq "-s" ) {
+        	# special scoring rules
+        	if( $value eq "P" ) {
+        		@PMSTopTenScoringRules = (0, 21, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
+        	} else {
+				print "${appProgName}:: ERROR:  Invalid scoring rule (-s value): '$value'\n";
+				$numErrors++;
+        	}
+        } elsif( $flag eq "-g" ) {
+        	$genSubDir = $value;
+        } else {
 			print "${appProgName}:: ERROR:  Invalid flag: '$arg'\n";
 			$numErrors++;
-		}
+        }
 	} else {
 		# we have the date only
 		if( $value ne "" ) {
@@ -342,6 +365,9 @@ while( defined( $arg = shift ) ) {
 	}
 } # end of while - done getting command line args
 
+if( $numErrors > 0 ) {
+	die "$appProgName: Invalid command arg[s] - Abort!";
+}
 if( $yearBeingProcessed eq "" ) {
 	# no year to process - abort!
 	die "$appProgName: no year to process - Abort!";
@@ -351,6 +377,8 @@ if( $yearBeingProcessed eq "" ) {
 }
 
 print "  ...and with the propertiesDir='$propertiesDir', and propertiesFilename='$propertiesFileName'\n";
+PMSStruct::GetMacrosRef()->{"PMSTopTenScoringRules"} = join( ",", @PMSTopTenScoringRules );
+PMSStruct::GetMacrosRef()->{"USMSTopTenScoringRules"} = join( ",", @USMSTopTenScoringRules );
 
 # various input files:
 # properties file:
@@ -372,6 +400,12 @@ if( ($yearBeingProcessed !~ m/^\d\d\d\d$/) ||
 PMSStruct::GetMacrosRef()->{"YearBeingProcessedPlusOne"} = $yearBeingProcessed+1;
 PMSStruct::GetMacrosRef()->{"YearBeingProcessedMinusOne"} = $yearBeingProcessed-1;
 print "  ...Year being analyzed: $yearBeingProcessed\n";
+
+print "  ...PMS scoring rules: " . join( ",", @PMSTopTenScoringRules) . "\n";
+print "  ...USMS scoring rules: " . join( ",", @USMSTopTenScoringRules) . "\n";
+if( $genSubDir ne "" ) {
+	print "  ...Generation sub dir: '$genSubDir'\n";
+}
 
 # define the date beyond which we will flag swimmers who haven't swum enough PMS events:
 $dateToStartTrackingPMSMeets = "$yearBeingProcessed-03-01";		# March 1 of the year being processed.
@@ -419,7 +453,10 @@ my $FakeSplashDataFile = PMSStruct::GetMacrosRef()->{"FakeSplashDataFile"};
 
 
 # Output file/directories:
-my $generatedDirName = "$appRootDir/GeneratedFiles/Generated-$yearBeingProcessed/";
+if( $genSubDir ne "" ) {
+	$genSubDir .= "/";
+}
+my $generatedDirName = "$appRootDir/GeneratedFiles/Generated-$yearBeingProcessed/$genSubDir";
 # does this directory exist?
 if( ! -e $generatedDirName ) {
 	# neither file nor directory with this name exists - create it
@@ -577,14 +614,14 @@ if( ($RESULT_FILES_TO_READ & 0b1) != 0 ) {
 	###
 	### Process PMS Top Ten results
 	###
-	PMSProcessResults( \%PMSResultFiles );
+	PMSProcessResults( \%PMSResultFiles, \@PMSTopTenScoringRules );
 }
 
 if( ($RESULT_FILES_TO_READ & 0b10) != 0 ) {
 	###
 	### Process USMS Top Ten results
 	###
-	USMSProcessResults( \%USMSResultFiles );
+	USMSProcessResults( \%USMSResultFiles, \@USMSTopTenScoringRules );
 }
 
 if( ($RESULT_FILES_TO_READ & 0b100) != 0 ) {
@@ -750,6 +787,10 @@ exit(0);
 # PASSED:
 #	$resultFilesRef - reference to an hash holding the full path file names of all 
 #		PMS result files and, for each file, the org and course.
+#	$placeToPointsRef - reference to an array holding the mapping of place to points.
+#		For example, if the array looks like this:
+#			(0, 11, 9, 8, 7, 6, 5, 4, 3, 2, 1)
+#		then this means 1st place gets 11 points, 2nd gets 9, etc.  Note that there is no "0th" place!
 #
 # NOTES:
 #	The files processed by this function come from USMS:
@@ -761,9 +802,8 @@ exit(0);
 #	 a PMS swimmer, so if we don't find their regnum in the RSIDN file we don't let us stop
 #	 accumulating their points.
 #
-sub PMSProcessResults($) {
-	my $resultFilesRef = $_[0];
-	my @placeToPoints = (0, 11, 9, 8, 7, 6, 5, 4, 3, 2, 1);
+sub PMSProcessResults($$) {
+	my ($resultFilesRef, $placeToPointsRef) = @_;
 	my $simpleFileName;
 	my $debug = 0;
 	my $debugMeetTitle = "xxxxx";
@@ -973,8 +1013,8 @@ sub PMSProcessResults($) {
 					
 					#compute the points they get for this swim:
 					my $points = 0;
-					if( ($place >= 1) && ($place <= 10) ) {
-						$points = $placeToPoints[$place];
+					if( ($place >= 1) && ($place <= $#$placeToPointsRef) ) {
+						$points = $placeToPointsRef->[$place];
 					}
 					
 					# add this swimmer to our DB if necessary
@@ -1031,15 +1071,18 @@ sub PMSProcessResults($) {
 # PASSED:
 #	$resultFilesRef - reference to an hash holding the full path file names of all 
 #		USMS result files and, for each file, the org and course.
+#	$placeToPointsRef - reference to an array holding the mapping of place to points.
+#		For example, if the array looks like this:
+#			(0, 22, 18, 16, 14, 12, 10, 8, 6, 4, 2)
+#		then this means 1st place gets 22 points, 2nd gets 18, etc.  Note that there is no "0th" place!
 #
 # NOTE:
 #	The USMS results do not have swim meet details, so we can't record meet information
 #	to go along with the results.
 #
 
-sub USMSProcessResults($) {
-	my $resultFilesRef = $_[0];
-	my @placeToPoints = (0, 22, 18, 16, 14, 12, 10, 8, 6, 4, 2);
+sub USMSProcessResults($$) {
+	my ($resultFilesRef, $placeToPointsRef) = @_;
 	my $debugLastName = "xxxxxxxx";
 	my $simpleFileName;
 	my $debug = 0;
@@ -1174,8 +1217,8 @@ sub USMSProcessResults($) {
 					
 					#compute the points they get for this swim:
 					my $points = 0;
-					if( ($place >= 1) && ($place <= 10) ) {
-						$points = $placeToPoints[$place];
+					if( ($place >= 1) && ($place <= $#$placeToPointsRef) ) {
+						$points = $placeToPointsRef->[$place];
 					}
 					
 					# add this swimmer to our DB if necessary
@@ -1193,7 +1236,7 @@ sub USMSProcessResults($) {
 				{
 					# TT_SheetSupport::ReadSheetRow() returned a 0 length row - end of file
 					TT_SheetSupport::CloseSheet( \%sheetHandle );
-					my $msg = "* Topten::PMSProcessResults(): Done with '$simpleFileName' - $lineNum lines read, $numResultLines lines " .
+					my $msg = "* Topten::USMSProcessResults(): Done with '$simpleFileName' - $lineNum lines read, $numResultLines lines " .
 						"stored.";
 					if( $numNotInSeason ) {
 						$msg .= "  ($numNotInSeason lines ignored: out of season.)";
@@ -1282,7 +1325,7 @@ sub USMSProcessRecords($) {
 		my %sheetHandle = TT_SheetSupport::OpenSheetFile($fileName);
 		if( $sheetHandle{"fileRef"} == 0 ) {
 			# couldn't open the file even though it exists - empty?
-			PMSLogging::DumpWarning( "", "", "!! Topten::USMSProcessResults(): UNABLE TO PROCESS $org_course (file " .
+			PMSLogging::DumpWarning( "", "", "!! Topten::USMSProcessRecords(): UNABLE TO PROCESS $org_course (file " .
 				"exists but unable to get handle - empty?) - INGORE THIS FILE:\n   '$fileName'", 1 );
 		} else {
 			# it looks like we have a non-empty file to read!
@@ -4764,34 +4807,6 @@ sub GetSwimmerMeetDetails( $ ) {
 ###################################################################################
 #### SUPPORT ######################################################################
 ###################################################################################
-
-
-
-# PlaceToPoints - convert the passed place (1-N) into points.
-#
-# PASSED:
-#	$org - either PMS or USMS.  Used to determine the max place we'll consider:
-#			PMS:  1-3
-#			USMS: 1-10
-#		Also used to determine the number of points per place
-#$ranke - the place used to determine the number of points	
-#	
-#
-sub PlaceToPoints_old($$) {
-	my $org = $_[0];
-	my $place = $_[1];
-	my $result = 0;
-	my @points = (0,10,8,6);		# assume PMS
-	my $maxPlace = 3;
-	if( $org eq "USMS" ) {
-		@points = (0,20,18,16,14,12,10,8,6,4,2);
-		$maxPlace = 10;
-	}
-	if( ($place >= 1) || ($place <= $maxPlace) ) {
-		$result = $points[$place];
-	}
-	return $result;
-} # end of PlaceToPoints()
 
 
 
