@@ -31,6 +31,7 @@ my $debug = 1;	# set >0 to turn on debugging
 sub OpenSheetFile($) {
 	my $fileName = $_[0];
 	my %ssHandle = (
+		"fileName" => "",		# will contain file name if the file was opened correctly
 		"fileRef" => 0,			# 0 -> unused/closed handle
 		"csv" => 0,				# 0 -> excel file, otherwise txt or csv file
 		"separator" => 0,		# 0 -> excel file, otherwise txt or csv file
@@ -54,6 +55,7 @@ sub OpenSheetFile($) {
     	my $separator = "\t";
     	$separator = "," if( $ext eq "csv" );
         my @rows;
+ #       my $csv = Text::CSV_XS->new ({ binary => 1, sep_char => $separator, keep_meta_info => 1 }) or
         my $csv = Text::CSV_XS->new ({ binary => 1, sep_char => $separator }) or
              die "Cannot use CSV: ".Text::CSV_XS->error_diag ();
 #        open my $fh, "<:encoding(utf8)", "$fileName" or die "TT_SheetSupport::OpenSheetFile(): " .
@@ -64,6 +66,7 @@ sub OpenSheetFile($) {
 		$ssHandle{"fileRef"} = $fh;
 		$ssHandle{"csv"} = $csv;
 		$ssHandle{"separator"} = $separator;
+		$ssHandle{"fileName"} = $fileName;		
     } elsif( $ext eq "xlsx") {
     	my $result = 0;
 	    # read the spreadsheet
@@ -94,6 +97,7 @@ sub OpenSheetFile($) {
 			$ssHandle{"fileRef"} = $g_sheet1_ref;
 			$ssHandle{"numRows"} = $numRows;
 			$ssHandle{"numCols"} = $numColumns;
+			$ssHandle{"fileName"} = $fileName;		
 		}
 
     } else {

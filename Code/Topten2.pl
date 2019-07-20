@@ -763,7 +763,7 @@ if( $WRITE_HTML_FILES ) {
 TT_MySqlSupport::DumpErrorsWithSwimmerNames();
 
 # log all the different aliases for swim strokes that we saw
-PMSUtil::DumpStrokes();
+#PMSUtil::DumpStrokes();
 	
 my $logLinesOnly = PMSLogging::GetLogOnlyLines();
 my $completionTimeDate = strftime( "%a %b %d %G - %X", localtime() );
@@ -905,7 +905,6 @@ sub PMSProcessResults($$) {
 					$date = $row[10];
 					$meetTitle = $row[11];
 					$meetTitle = "(unknown meet name)" if( !defined( $meetTitle ) );
-	
 					# convert the date to the conanical form 'yyyy-mm-dd'
 					my $convertedDateIsValid = 1;		# assume the passed $date is OK
 					my $convertedDate = PMSUtil::ConvertDateToISO( $date );
@@ -2358,112 +2357,114 @@ sub ComputePlaceForAllSwimmers() {
 	my $countSwimmers = 0;
 	my $query;
 
-	PMSLogging::PrintLog( "", "", "** Begin ComputePlaceForAllSwimmers (FinalPlaceSAG)", 1 );
-
-	# Compute the place for each swimmer, where we DO NOT combine split age groups.  This means
-	# that a swimmer whose age group changes during a season will accumulate points in two 
-	# age groups, and have a place in those two age groups:
-	foreach my $gender ( ('M', 'F') ) {
-		foreach my $ageGroup( @PMSConstants::AGEGROUPS_MASTERS ) {
-			my $order = 0;		# order of swimmer in results (1st place rank = 1st place order)
-			my $rank = 0;		# the swimmer's placing - two swimmers can have the same rank if tied.
-			my $previousPoints = -1;
-			$query = "SELECT Points.SwimmerId,SUM(Points.TotalPoints) as TotalPoints, " .
-				"FirstName,MiddleInitial,LastName,RegNum " .
-				"FROM Points JOIN Swimmer " .
-				"WHERE Points.swimmerid = Swimmer.swimmerid " . 
-				"AND Points.AgeGroup='$ageGroup' " .
-				"AND Swimmer.Gender='$gender' " .
-				"GROUP BY Swimmer.SwimmerId ORDER BY TotalPoints DESC,LastName ASC, RegNum ASC";
-			($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
-			while( defined(my $resultHash = $sth->fetchrow_hashref) ) {
-				$countSwimmers++;
-				$firstName = $resultHash->{'FirstName'};
-				$middleInitial = $resultHash->{'MiddleInitial'};
-				$lastName = $resultHash->{'LastName'};
-				$swimmerId = $resultHash->{'SwimmerId'};
-				$totalPoints = $resultHash->{'TotalPoints'};
-				
-				if( ($countSwimmers % 500) == 0) {
-					print "  ...$countSwimmers ($gender $ageGroup)...\n";
-				}
-				$order++;		# we have another swimmer, so they are the next in order
-				if( $totalPoints == $previousPoints ) {
-					# tie - don't increase their rank
-				} else {
-					$rank = $order;
-				}
-				$previousPoints = $totalPoints;
-				$query = "INSERT INTO FinalPlaceSAG (SwimmerId,AgeGroup,ListOrder,Rank) " .
-					"VALUES ('$swimmerId','$ageGroup','$order','$rank')";
-				my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
-
-
-				# get the FinalPlaceSAGId for the place we just entered just to make sure there were no errors
-			    my $finalPlaceSAGId = $dbh->last_insert_id(undef, undef, "FinalPlaceSAG", "FinalPlaceSAGId");
-			    die "Failed to insert place into FinalPlaceSAG for swimmerId=$swimmerId in ComputePlaceForAllSwimmers()" 
-			    	if( !defined( $finalPlaceSAGId ) );
-			} # end of while()
-		} # end of foreach my $ageGroup...
-	} # end of foreach my $gender...
-
-	PMSLogging::PrintLog( "", "", "** END ComputePlaceForAllSwimmers (FinalPlaceSAG) ($countSwimmers swimmers)", 1 );
-	PMSLogging::PrintLog( "", "", "** Begin ComputePlaceForAllSwimmers (FinalPlaceCAG)", 1 );
-
-
-	# Compute the place for each swimmer, where we combine split age groups.  This means
-	# that a swimmer whose age group changes during a season will accumulate points in both
-	# age groups but have the points from the younger age group merged into their
-	# oldest age group:
-	$countSwimmers = 0;
-	foreach my $gender ( ('M', 'F') ) {
-		foreach my $ageGroup( @PMSConstants::AGEGROUPS_MASTERS ) {
-			my $order = 0;		# order of swimmer in results (1st place rank = 1st place order)
-			my $rank = 0;		# the swimmer's placing - two swimmers can have the same rank if tied.
-			my $previousPoints = -1;
-			$query = "SELECT Points.SwimmerId,SUM(Points.TotalPoints) as TotalPoints," .
-				"FirstName,MiddleInitial,LastName,AgeGroup " .
-				"FROM Points JOIN Swimmer " .
-				"WHERE Points.swimmerid = Swimmer.swimmerid " .
-				"AND " .
-					"((Points.AgeGroup='$ageGroup' AND Swimmer.AgeGroup1='$ageGroup' AND Swimmer.AgeGroup2='') " .
-					"OR " .
-					"(Swimmer.AgeGroup2='$ageGroup' AND Points.AgeGroup LIKE '%:$ageGroup')) " .
-				"AND Swimmer.Gender='$gender' " .
-				"GROUP BY Swimmer.SwimmerId,Points.AgeGroup ORDER BY TotalPoints DESC,LastName ASC,RegNum ASC";
-			($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
-			while( defined(my $resultHash = $sth->fetchrow_hashref) ) {
-				$countSwimmers++;
-				$firstName = $resultHash->{'FirstName'};
-				$middleInitial = $resultHash->{'MiddleInitial'};	
-				$lastName = $resultHash->{'LastName'};
-				$swimmerId = $resultHash->{'SwimmerId'};
-				$totalPoints = $resultHash->{'TotalPoints'};
-				my $ageGroupSelected = $resultHash->{'AgeGroup'};
-				
-				if( ($countSwimmers % 500) == 0) {
-					print "  ...$countSwimmers ($gender $ageGroup)...\n";
-				}
-				$order++;		# we have another swimmer, so they are the next in order
-				if( $totalPoints == $previousPoints ) {
-					# tie - don't increase their rank
-				} else {
-					$rank = $order;
-				}
-				$previousPoints = $totalPoints;
-				$query = "INSERT INTO FinalPlaceCAG (SwimmerId,AgeGroup,ListOrder,Rank) " .
-					"VALUES ('$swimmerId','$ageGroupSelected','$order','$rank')";
-				my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
-
-				# get the FinalPlaceCAGId for the place we just entered just to make sure there were no errors
-			    my $finalPlaceCAGId = $dbh->last_insert_id(undef, undef, "FinalPlaceCAG", "FinalPlaceCAGId");
-			    die "Failed to insert place into FinalPlaceCAG for swimmerId=$swimmerId in ComputePlaceForAllSwimmers()" 
-			    	if( !defined( $finalPlaceCAGId ) );
-			} # end of while()
-		} # end of foreach my $ageGroup...
-	} # end of foreach my $gender...
+	if( $GENERATE_SPLIT_AGE_GROUPS ) {
+		PMSLogging::PrintLog( "", "", "** Begin ComputePlaceForAllSwimmers (FinalPlaceSAG)", 1 );
+		# Compute the place for each swimmer, where we DO NOT combine split age groups.  This means
+		# that a swimmer whose age group changes during a season will accumulate points in two 
+		# age groups, and have a place in those two age groups:
+		foreach my $gender ( ('M', 'F') ) {
+			foreach my $ageGroup( @PMSConstants::AGEGROUPS_MASTERS ) {
+				my $order = 0;		# order of swimmer in results (1st place rank = 1st place order)
+				my $rank = 0;		# the swimmer's placing - two swimmers can have the same rank if tied.
+				my $previousPoints = -1;
+				$query = "SELECT Points.SwimmerId,SUM(Points.TotalPoints) as TotalPoints, " .
+					"FirstName,MiddleInitial,LastName,RegNum " .
+					"FROM Points JOIN Swimmer " .
+					"WHERE Points.swimmerid = Swimmer.swimmerid " . 
+					"AND Points.AgeGroup='$ageGroup' " .
+					"AND Swimmer.Gender='$gender' " .
+					"GROUP BY Swimmer.SwimmerId ORDER BY TotalPoints DESC,LastName ASC, RegNum ASC";
+				($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+				while( defined(my $resultHash = $sth->fetchrow_hashref) ) {
+					$countSwimmers++;
+					$firstName = $resultHash->{'FirstName'};
+					$middleInitial = $resultHash->{'MiddleInitial'};
+					$lastName = $resultHash->{'LastName'};
+					$swimmerId = $resultHash->{'SwimmerId'};
+					$totalPoints = $resultHash->{'TotalPoints'};
+					
+					if( ($countSwimmers % 500) == 0) {
+						print "  ...$countSwimmers ($gender $ageGroup)...\n";
+					}
+					$order++;		# we have another swimmer, so they are the next in order
+					if( $totalPoints == $previousPoints ) {
+						# tie - don't increase their rank
+					} else {
+						$rank = $order;
+					}
+					$previousPoints = $totalPoints;
+					$query = "INSERT INTO FinalPlaceSAG (SwimmerId,AgeGroup,ListOrder,Rank) " .
+						"VALUES ('$swimmerId','$ageGroup','$order','$rank')";
+					my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
 	
-	PMSLogging::PrintLog( "", "", "** END ComputePlaceForAllSwimmers (FinalPlaceCAG) ($countSwimmers swimmers)", 1 );
+	
+					# get the FinalPlaceSAGId for the place we just entered just to make sure there were no errors
+				    my $finalPlaceSAGId = $dbh->last_insert_id(undef, undef, "FinalPlaceSAG", "FinalPlaceSAGId");
+				    die "Failed to insert place into FinalPlaceSAG for swimmerId=$swimmerId in ComputePlaceForAllSwimmers()" 
+				    	if( !defined( $finalPlaceSAGId ) );
+				} # end of while()
+			} # end of foreach my $ageGroup...
+		} # end of foreach my $gender...
+	
+		PMSLogging::PrintLog( "", "", "** END ComputePlaceForAllSwimmers (FinalPlaceSAG) ($countSwimmers swimmers)", 1 );
+	}
+	
+	if( $GENERATE_COMBINED_AGE_GROUPS ) {
+		PMSLogging::PrintLog( "", "", "** Begin ComputePlaceForAllSwimmers (FinalPlaceCAG)", 1 );
+		# Compute the place for each swimmer, where we combine split age groups.  This means
+		# that a swimmer whose age group changes during a season will accumulate points in both
+		# age groups but have the points from the younger age group merged into their
+		# oldest age group:
+		$countSwimmers = 0;
+		foreach my $gender ( ('M', 'F') ) {
+			foreach my $ageGroup( @PMSConstants::AGEGROUPS_MASTERS ) {
+				my $order = 0;		# order of swimmer in results (1st place rank = 1st place order)
+				my $rank = 0;		# the swimmer's placing - two swimmers can have the same rank if tied.
+				my $previousPoints = -1;
+				$query = "SELECT Points.SwimmerId,SUM(Points.TotalPoints) as TotalPoints," .
+					"FirstName,MiddleInitial,LastName,AgeGroup " .
+					"FROM Points JOIN Swimmer " .
+					"WHERE Points.swimmerid = Swimmer.swimmerid " .
+					"AND " .
+						"((Points.AgeGroup='$ageGroup' AND Swimmer.AgeGroup1='$ageGroup' AND Swimmer.AgeGroup2='') " .
+						"OR " .
+						"(Swimmer.AgeGroup2='$ageGroup' AND Points.AgeGroup LIKE '%:$ageGroup')) " .
+					"AND Swimmer.Gender='$gender' " .
+					"GROUP BY Swimmer.SwimmerId,Points.AgeGroup ORDER BY TotalPoints DESC,LastName ASC,RegNum ASC";
+				($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+				while( defined(my $resultHash = $sth->fetchrow_hashref) ) {
+					$countSwimmers++;
+					$firstName = $resultHash->{'FirstName'};
+					$middleInitial = $resultHash->{'MiddleInitial'};	
+					$lastName = $resultHash->{'LastName'};
+					$swimmerId = $resultHash->{'SwimmerId'};
+					$totalPoints = $resultHash->{'TotalPoints'};
+					my $ageGroupSelected = $resultHash->{'AgeGroup'};
+					
+					if( ($countSwimmers % 500) == 0) {
+						print "  ...$countSwimmers ($gender $ageGroup)...\n";
+					}
+					$order++;		# we have another swimmer, so they are the next in order
+					if( $totalPoints == $previousPoints ) {
+						# tie - don't increase their rank
+					} else {
+						$rank = $order;
+					}
+					$previousPoints = $totalPoints;
+					$query = "INSERT INTO FinalPlaceCAG (SwimmerId,AgeGroup,ListOrder,Rank) " .
+						"VALUES ('$swimmerId','$ageGroupSelected','$order','$rank')";
+					my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+	
+					# get the FinalPlaceCAGId for the place we just entered just to make sure there were no errors
+				    my $finalPlaceCAGId = $dbh->last_insert_id(undef, undef, "FinalPlaceCAG", "FinalPlaceCAGId");
+				    die "Failed to insert place into FinalPlaceCAG for swimmerId=$swimmerId in ComputePlaceForAllSwimmers()" 
+				    	if( !defined( $finalPlaceCAGId ) );
+				} # end of while()
+			} # end of foreach my $ageGroup...
+		} # end of foreach my $gender...
+		
+		PMSLogging::PrintLog( "", "", "** END ComputePlaceForAllSwimmers (FinalPlaceCAG) ($countSwimmers swimmers)", 1 );
+	}
 
 } # end of ComputePlaceForAllSwimmers()
 	

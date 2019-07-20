@@ -13,6 +13,7 @@ use FindBin;
 use File::Spec;
 use File::Basename;
 use lib File::Spec->catdir( $FindBin::Bin, '..',  '..', 'PMSPerlModules' );
+require PMSUtil;
 require PMS_MySqlSupport;
 require PMSLogging;
 require PMSStruct;
@@ -623,7 +624,7 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 		}
 
 		PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::AddNewSwimmerIfNecessary(): ('$fileName', $lineNum): " .
-			"Firstname in results ($firstName) != db (Swimmer table) ($resultHash->{'FirstName'}) for regNum $regNum. " .
+			"Firstname in results ('$firstName') != db (Swimmer table) ('$resultHash->{'FirstName'}') for regNum $regNum. " .
 			"(non-fatal)\n" ) 
 			if( lc($firstName) ne lc($resultHash->{'FirstName'}) );
 		PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::AddNewSwimmerIfNecessary(): ('$fileName', $lineNum): " .
@@ -781,7 +782,7 @@ sub AddNewMeetIfNecessary($$$$$$$$$) {
 				"\"" . $meetCourse . "\"," .
 				"\"" . $meetBeginDate . "\"," .
 				"\"" . $meetEndDate . "\"," .
-				"\"" . $meetIsPMS . "\" )" );
+				"\"" . $meetIsPMS . "\" )", "INSERT in AddNewMeetIfNecessary()");
 		# get the MeetId of the meet we just entered into our db
     	$meetId = $dbh->last_insert_id(undef, undef, "Meet", "MeetId");
 	}
