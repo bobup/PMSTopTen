@@ -19,6 +19,15 @@ RacesDataFile	races.txt
 # holding this property file.
 #RSIDNFileName	USMS-RSIND_04-23-2018xxx.csv
 
+# scoring rules: number of points for 1st, 2nd, 3rd, etc...
+# 2019 and older
+PMSTopTenScoringRules		0, 11, 9, 8, 7, 6, 5, 4, 3, 2, 1
+# 2020 and beyond
+#PMSTopTenScoringRules		0, 21, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+
+USMSTopTenScoringRules		0, 22, 18, 16, 14, 12, 10, 8, 6, 4, 2
+
+
 
 PMSResultFiles \
 						PACTOP10SCY-{YearBeingProcessed}.csv:PAC-SCY;	\

@@ -30,7 +30,7 @@ use warnings;
 #
 #	Allow one of '.,;:' in place of ":" and "."
 #
-sub GenerateCanonicalDurationForDB($$$) {
+sub GenerateCanonicalDurationForDB_old($$$) {
 	my ($passedDuration, $fileName, $lineNum) = @_;
 	my $convertedTime = $passedDuration;
 
@@ -51,24 +51,31 @@ sub GenerateCanonicalDurationForDB($$$) {
 		$min = $2;
 		$sec = $3;
 		$hundredths = $4;
+#print "GenerateCanonicalDurationForDB()-1: passed duration: $passedDuration, $hr, $min, $sec,$hundredths\n";
+
 	} elsif( $convertedTime =~ m/^(\d+)[.,;:](\d+)[.,;:](\d+)$/ ) {
 		# m:s.th
 		$hr = 0;
 		$min = $1;
 		$sec = $2;
 		$hundredths = $3;
+#print "GenerateCanonicalDurationForDB()-2: passed duration: $passedDuration, $hr, $min, $sec,$hundredths\n";
 	} elsif( $convertedTime =~ m/^(\d+)[.,;:](\d+)$/ ) {
 		# s.th
 		$hr = 0;
 		$min = 0;
 		$sec = $1;
 		$hundredths = $2;
+#print "GenerateCanonicalDurationForDB()-3: passed duration: $passedDuration, $hr, $min, $sec,$hundredths\n";
 	} elsif( $convertedTime =~ m/^(\d+)$/ ) {
-		# s.th
+		# this is something like "40", which probably means "40 seconds", not "40 ms", so that's how we
+		# will interpret it.
+		# s
 		$hr = 0;
 		$min = 0;
-		$sec = 0;
-		$hundredths = $1;
+		$sec = $1;
+		$hundredths = 0;
+#print "GenerateCanonicalDurationForDB()-4: passed duration: $passedDuration, $hr, $min, $sec,$hundredths\n";
 	} else {
 		# there is something wrong....
 		PMSLogging::DumpError( "", "", "TT_Util::GenerateCanonicalDurationForDB(): invalid time " .
@@ -80,6 +87,7 @@ sub GenerateCanonicalDurationForDB($$$) {
     $hundredths .= "0" if( length( $hundredths ) == 1 );
 	$convertedTime = "$hr:$min:$sec.$hundredths";
 	$returnedDuration = $hr*60*60*100 + $min*60*100 + $sec*100 + $hundredths;
+#print "GenerateCanonicalDurationForDB()-end: passed duration: $passedDuration, $returnedDuration, $hr, $min, $sec,$hundredths\n";
 	return $returnedDuration;
 } # end of GenerateCanonicalDurationForDB()
 

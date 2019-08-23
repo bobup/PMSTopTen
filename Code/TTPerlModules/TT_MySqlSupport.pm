@@ -147,11 +147,31 @@ sub InitializeTopTenDB() {
     				# Note that we record EVERY splash of a PMS swimmer, even those that
     				# do not earn points, and even those splashes whose points will not
     				# be used in top 10 calculations.  
-					# We'll then analyze all of these
-    				# splashes to populate the Points table.
+    				# Note that a single swim can be represented in the table up to 4 times:
+    				#	- where the Course is one of SCY, SCM, or LCM and the Org is PAC.  This is the case
+    				#		where the swim was a top 'N' swim for that course in Pacific Masters.
+    				#	- where the Course is one of SCY, SCM, or LCM and the Org is USMS.  This is the case
+    				#		where the swim was a top 'N' swim for that course in USMS.
+    				#	- where the Course is one of SCY Records, SCM Records, or LCM Records and the Org is PAC.
+    				#		This is the case where the swim is a PAC record in that course.
+    				#	- where the Course is one of SCY Records, SCM Records, or LCM Records and the Org is USMS.
+    				#		This is the case where the swim is a USMS record in that course.
+    				# In most cases (there has been one exception that I know about) if a single swim sets a USMS
+    				# record that swim will be a top PAC swim, a top USMS swim, and a PAC record.  Thus that swim
+    				# will be represented by 4 rows in this table.
+					# We'll then analyze all of these splashes to populate the Points table.
     				# --- SplashId : primary key
     				# --- Course : one of SCY, SCM, LCM, SCY Records, SCM Records, LCM Records, or OW
+    				#		- SCY, SCM, LCM:  this represents the swim in that length of pool
+    				#		- SCY Records, SCM Records, LCM Records: this represents the swim that set a record.
+    				#			Obviously, such a swim has another record in this table with the Course of
+    				#			SCY, SCM, or LCM as appropriate.  See the Note above.
+    				#		- OW: this represents an OW swim.
     				# --- Org : orginazation, one of PAC or USMS
+    				#		- PAC: this represents a top 'N' Pacific Masters swim.  Also includes open water swims.
+    				#		- USMS: this represents a top 'N' USMS swim.  Obviously if a swim is represented as a
+    				#			USMS swim in this table there is another row for that same swim representating 
+    				#			a PAC swim.
     				# --- EventId : reference to the exact event (e.g. '50 y freestyle') [0 for OW]
     				# --- Gender - one of M or F
 				  	# --- AgeGroup - their age group on the day of the swim, of the form 18-24, 25-29, etc.
@@ -375,8 +395,13 @@ sub InitializeTopTenDB() {
 				  	# --- AgeGroup1 - their age group during first event we found them in.
 				  	# --- AgeGroup2 - "", or a second age group we found them in.
 				  	# --- RegisteredTeamInitials:  (what if more than one?  Use the first one found)
+				  	# --- Sector: one of NULL, A, B, C, or D.  See the RankSectors package for the meaning of a Sector.
+				  	#		If NULL the sector for this swimmer was not computed.
+				  	# --- SectorReason: a string that explains the reason for the assigned Sector, or
+				  	#		NULL if no reason.
 				  	# --- GotUSMSDirectoryInfo: 1 if we've dug into their USMS Directory data and derived all
 				  	#		their hidden meets, 0 otherwise.
+				  	#
 		    		($sth,$rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
 		    			"CREATE TABLE Swimmer (SwimmerId INT AUTO_INCREMENT PRIMARY KEY, " .
 		    			"FirstName Varchar(100), " .
@@ -389,6 +414,8 @@ sub InitializeTopTenDB() {
 		    			"AgeGroup1 Varchar(10), " .
 		    			"AgeGroup2 Varchar(10) DEFAULT '', " .
 		    			"RegisteredTeamInitials Varchar(10), " .
+		    			"Sector Char(1) DEFAULT NULL, " .
+		    			"SectorReason Varchar(512) DEFAULT NULL, " .
 		    			"GotUSMSDirectoryInfo TINYINT(1) DEFAULT 0 " .
 		    			" ) CHARACTER SET utf8 COLLATE utf8_general_ci" );
     			
@@ -1951,6 +1978,7 @@ sub GetPlaceForSwimmer( $$ ) {
 #	$ageGroup - Either a single age group in the form "18-24", in which case it is the age group 
 #		we'll limit the points to.  Or two age groups in the form "18-24:25-29", in which case we'll
 #		get the points for all age groups the swimmer competed in.
+#	$displaySwimmersWithZeroPoints - 0 if we ignore swimmers who earned zero points, 1 otherwise.
 #
 # RETURNED:
 #	$totalPoints - the total number of points this swimmer earned, taking into account the
@@ -1961,8 +1989,8 @@ sub GetPlaceForSwimmer( $$ ) {
 #	$totalResultsAnalyzed - the total number of results we considered but not necessarily 
 # 		used (because they may have more than the limit)
 #
-sub ComputePointsForSwimmer( $$ ) {
-	my( $swimmerId, $ageGroup ) = @_;
+sub ComputePointsForSwimmer( $$$ ) {
+	my( $swimmerId, $ageGroup, $displaySwimmersWithZeroPoints ) = @_;
 	my $query;
 	my $ageGroupQuery = "";
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
@@ -2043,7 +2071,7 @@ sub ComputePointsForSwimmer( $$ ) {
 					}
 				}
 			} # end of while()...
-			if( $subTotalPoints > 0 ) {
+			if( $displaySwimmersWithZeroPoints || ($subTotalPoints > 0) ) {
 				StorePointsForSwimmer( $swimmerId, $ageGroup, $course, $org, $subTotalPoints,
 					$subTotalResultsCounted, $subTotalResultsAnalyzed );
 				$totalPoints += $subTotalPoints;			# the total number of points this swimmer earned

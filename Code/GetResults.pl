@@ -34,7 +34,7 @@
 #	PAC records:
 #	We'll fetch a page from the pacificmasters.org web site using an url something like this:
 #		http://pacificmasters.org/pacm/records?course=ind_scy&sort=desc&order=Date
-#	In this case we'll scrap the page and collect the actual records data for the season, writing it to the
+#	In this case we'll scrape the page and collect the actual records data for the season, writing it to the
 #	appropriate file which will be analyzed by Topten.pl.
 #
 #	USMS records:
@@ -642,7 +642,7 @@ sub GetSwimMeetDetails() {
 # GetPMSTopTenResults - get the Top 10 result files for PMS Top 10 in all courses (SCY, SCM, and LCM)
 #
 # PASSED:
-#	$linkToResults - the URL to the page containing the human-readable results.  We'll scrap this page
+#	$linkToResults - the URL to the page containing the human-readable results.  We'll scrape this page
 #		to get the URL requested to get the Excel version of the results, and also to get a list
 #		of all the swim meets represented.
 #	$baseURL - the base URL used when resolving all (partial) URLs found on the result page
@@ -1034,7 +1034,7 @@ sub ParsePMSTopTenHttpResponse( $$$$$$$ ) {
 # GetUSMSTopTenResults - get the Top 10 result files for USMS Top 10 in all courses (SCY, SCM, and LCM)
 #
 # PASSED:
-#	$linkToResults - the URL to the page containing the human-readable results.  We'll scrap this page
+#	$linkToResults - the URL to the page containing the human-readable results.  We'll scrape this page
 #		to get the URL requested to get the CSV version of the results, and also to get a list
 #		of all the swim meets represented.
 #	$baseURL - the base URL used when resolving all (partial) URLs found on the result page
@@ -1436,7 +1436,7 @@ sub ParseUSMSSwimDetails( $$$$ ) {
 # GetPMSRecords - get the PMS Records result files in all courses (SCY, SCM, and LCM)
 #
 # PASSED:
-#	$linkToResults - the URL to the page containing the human-readable records.  We'll scrap this page
+#	$linkToResults - the URL to the page containing the human-readable records.  We'll scrape this page
 #		to get the actual data.
 #	$org - the organization.  Always PMS Records
 #	$course - the course.  One of SCY, SCM, or LCM

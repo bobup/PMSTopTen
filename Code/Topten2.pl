@@ -67,7 +67,7 @@ my $WRITE_HTML_FILES = 1;
 
 # do we write EXCEL output files? 0 means "No", anything else means "Yes"
 my $WRITE_EXCEL_FILES = 1;
-$WRITE_EXCEL_FILES = 1;			# don't write EXCEL files
+$WRITE_EXCEL_FILES = 0;			# don't write EXCEL files
 
 # Do we generate results for "split age groups"?  If a swimmer changes age groups in the middle of a season
 # (which happens for every one of us once every 5 years, since a season spans more than 1 calendar year) we
@@ -124,6 +124,23 @@ my $RESULT_FILES_TO_READ = 	0b111111;			# process all result files (default)
 # swimmers' points since they have probably already been computed.
 my $COMPUTE_POINTS = ($RESULT_FILES_TO_READ != 0);
 #$COMPUTE_POINTS = 1;			# override above
+
+# Do we rank swimmers into different sectors?
+# This is an experiment by Bob Anderson June 2019:
+#	As an experiment we will rank our swimmers into sectors:
+#	 - A: those pool competitors that have achieved at least one national qualifying time; 
+#	 - B: those pool competitors who are within 20% of a national qualifying time; 
+#	 - C: those pool competitors who haven’t achieved a national qualifying time + 20%;
+#	 - D: those competitors who compete in open water only.
+my $GENERATE_RANK_SECTORS = 0;
+#$GENERATE_RANK_SECTORS = 1;			# override the default
+
+
+# Do we show swimmers that swam in 1 or more events but didn't score any points?
+# Usually we only want to show swimmers who score at least 1 point, but this will 
+# allow us to display swimmers who score 0 points through the season.  (Used mostly when
+# computing and showing the "sector" of a swimmer - see the RS_RankSectors package.)
+my $DISPLAY_SWIMMERS_WITH_ZERO_POINTS = 0;
 
 # Do we compute the place for every swimmer?  If we don't compute their points (above) there
 # isn't much reason to compute the place for every swimmer since their place shouldn't have changed.
@@ -212,9 +229,6 @@ where:
 		appDirName/Code/properties.txt, where
 		'appDirName' is the directory holding this script, and
 		'properties.txt' is the name of the properties files for this script.
-	-sSCORING - the scoring rules to follow.  If not supplied, or 0 is supplied, then
-		the default scoring rules are used.  Otherwise here are the legal values:
-		P - PMS Top Ten special scoring (1-20 scoring 21-19-18-17-16-15-14-13-12-11-10-9-8-7-6-5-4-3-2-1)
 	-gGenSubDir - if supplied the string 'GenSubDir' will be used as the name of a subdirectory of the 
 		generatedDirName directory (into which all generated files are placed.)  The use of this
 		argument allows one to create a full AGSOTY generation without overwriting a previous one.
@@ -237,6 +251,12 @@ use lib File::Spec->catdir( $FindBin::Bin, '..', '..', '..', 'PMSPerlModules' );
 require PMS_ImportPMSData;
 require PMSMacros;
 require PMSLogging;
+
+if( $GENERATE_RANK_SECTORS ) {
+use lib File::Spec->catdir( $FindBin::Bin, '..', '..', 'PMSRankSectors/Code' );
+require RS_RankSectors;
+}
+
 
 PMSStruct::GetMacrosRef()->{"RESULT_FILES_TO_READ"} = $RESULT_FILES_TO_READ;
 PMSStruct::GetMacrosRef()->{"COMPUTE_POINTS"} = $COMPUTE_POINTS;
@@ -316,7 +336,8 @@ my $propertiesFileName = "properties.txt";
 # We also use the AppDirName in the properties file (it can't change)
 PMSStruct::GetMacrosRef()->{"AppDirName"} = $appDirName;	# directory containing the application we're running
 
-# scoring rules: number of points for 1st, 2nd, 3rd, etc...
+# DEFAULT scoring rules: number of points for 1st, 2nd, 3rd, etc...
+# NOTE:  can be changed in properties file (see below)
 my @PMSTopTenScoringRules = (0, 11, 9, 8, 7, 6, 5, 4, 3, 2, 1);
 my @USMSTopTenScoringRules = (0, 22, 18, 16, 14, 12, 10, 8, 6, 4, 2);
 
@@ -343,14 +364,6 @@ while( defined( $arg = shift ) ) {
         if( $flag eq "-t" ) {
 			$propertiesDir = dirname($value);
 			$propertiesFileName = basename($value);
-        } elsif( $flag eq "-s" ) {
-        	# special scoring rules
-        	if( $value eq "P" ) {
-        		@PMSTopTenScoringRules = (0, 21, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
-        	} else {
-				print "${appProgName}:: ERROR:  Invalid scoring rule (-s value): '$value'\n";
-				$numErrors++;
-        	}
         } elsif( $flag eq "-g" ) {
         	$genSubDir = $value;
         } else {
@@ -376,10 +389,6 @@ if( $yearBeingProcessed eq "" ) {
 	PMSStruct::GetMacrosRef()->{"YearBeingProcessed"} = $yearBeingProcessed;
 }
 
-print "  ...and with the propertiesDir='$propertiesDir', and propertiesFilename='$propertiesFileName'\n";
-PMSStruct::GetMacrosRef()->{"PMSTopTenScoringRules"} = join( ",", @PMSTopTenScoringRules );
-PMSStruct::GetMacrosRef()->{"USMSTopTenScoringRules"} = join( ",", @USMSTopTenScoringRules );
-
 # various input files:
 # properties file:
 # Read the properties.txt file and set the necessary properties by setting name/values in 
@@ -401,10 +410,30 @@ PMSStruct::GetMacrosRef()->{"YearBeingProcessedPlusOne"} = $yearBeingProcessed+1
 PMSStruct::GetMacrosRef()->{"YearBeingProcessedMinusOne"} = $yearBeingProcessed-1;
 print "  ...Year being analyzed: $yearBeingProcessed\n";
 
-print "  ...PMS scoring rules: " . join( ",", @PMSTopTenScoringRules) . "\n";
-print "  ...USMS scoring rules: " . join( ",", @USMSTopTenScoringRules) . "\n";
+# use any scoring rules found in the properties file:
+if( defined PMSStruct::GetMacrosRef()->{"PMSTopTenScoringRules"} ) {
+	@PMSTopTenScoringRules = split( /,\s*/, PMSStruct::GetMacrosRef()->{"PMSTopTenScoringRules"} );
+} else {
+	PMSStruct::GetMacrosRef()->{"PMSTopTenScoringRules"} = join( ",", @PMSTopTenScoringRules );
+}
+if( defined PMSStruct::GetMacrosRef()->{"USMSTopTenScoringRules"} ) {
+	@USMSTopTenScoringRules = split( /,\s*/, PMSStruct::GetMacrosRef()->{"USMSTopTenScoringRules"} );
+} else {
+	PMSStruct::GetMacrosRef()->{"USMSTopTenScoringRules"} = join( ",", @USMSTopTenScoringRules );
+}
+
+
+print "  ...PMS scoring rules: " . PMSStruct::GetMacrosRef()->{"PMSTopTenScoringRules"} . "\n";
+print "  ...USMS scoring rules: " . PMSStruct::GetMacrosRef()->{"USMSTopTenScoringRules"} . "\n";
 if( $genSubDir ne "" ) {
 	print "  ...Generation sub dir: '$genSubDir'\n";
+}
+if( $GENERATE_RANK_SECTORS ) {
+	print "  ...We are going to compute each swimmer's SECTOR (normally we don't)\n";
+}
+
+if( $DISPLAY_SWIMMERS_WITH_ZERO_POINTS ) {
+	print "...We are going to display swimmers who earned ZERO points (normally we don't)\n";
 }
 
 # define the date beyond which we will flag swimmers who haven't swum enough PMS events:
@@ -606,6 +635,7 @@ if( $RESULT_FILES_TO_READ != 0 ) {
 }
 
 
+
 #####################################################
 ################ PROCESSING #########################
 #####################################################
@@ -674,6 +704,16 @@ if( $COMPUTE_PLACE ) {
 	ComputePlaceForAllSwimmers();
 }
 
+
+###
+### initialize National Qualifying Times (if we need them) and then rank our swimmers
+###
+
+if( $GENERATE_RANK_SECTORS ) {
+	RS_RankSectors::InitializeAllQualifyingTimes( $yearBeingProcessed, 112 );
+	RS_RankSectors::RankAllSwimmersIntoExactlyOneSector( );
+}
+
 if($WRITE_HTML_FILES) {
 	# full path name of the master HTML file we're generating:
 	if( $GENERATE_SPLIT_AGE_GROUPS ) {
@@ -684,7 +724,6 @@ if($WRITE_HTML_FILES) {
 		PrintResultsHTML( "FinalPlaceCAG", $masterGeneratedCAGHTMLFileName, $generatedHTMLFileSubDir . "-CAG" );
 	}
 } # end of if($WRITE_HTML_FILES...
-
 
 if( $WRITE_EXCEL_FILES ) {
 	###
@@ -898,7 +937,8 @@ sub PMSProcessResults($$) {
 					my ($RSIDNFirstName, $RSIDNMiddleInitial, $RSIDNLastName, $RSIDNTeam);
 					$place = $row[4];
 					$time = $row[5];		# e.g. '1:38.41'
-					$time = TT_Util::GenerateCanonicalDurationForDB( $time, $fileName, $lineNum );
+					$time = PMSUtil::GenerateCanonicalDurationForDB_v2( $time, 0, "", "", 
+						"File: '$fileName', line $lineNum" );
 					my $fullName = $row[6];
 					$team = $row[8];
 					$regNum = $row[9];
@@ -1031,7 +1071,6 @@ sub PMSProcessResults($$) {
 					
 					TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $currentAgeGroup, $currentGender, 
 						$place, $points, $swimmerId, $currentEventId, $org, $course, $meetId, $time, $date );
-		
 				} else # end of if( $length...
 				{
 					# TT_SheetSupport::ReadSheetRow() returned a 0 length row - end of file
@@ -1167,7 +1206,9 @@ sub USMSProcessResults($$) {
 					$time = $row[7];	# (e.g. '1:38.41Y')
 					$units = $time;		# (e.g. '1:38.41Y')
 					$time =~ s/\w$//;	# (e.g. '1:38.41')
-					$time = TT_Util::GenerateCanonicalDurationForDB( $time, $fileName, $lineNum );
+#					$time = TT_Util::GenerateCanonicalDurationForDB( $time, $fileName, $lineNum );
+					$time = PMSUtil::GenerateCanonicalDurationForDB_v2( $time, 0, "", "", 
+						"File: '$fileName', line $lineNum" );
 					$units =~ s/^[\d:.]+//;		# (e.g. 'Y') Y or M for yards or meters....?
 					if( $units eq "Y" ) {
 						$units = "Yard";
@@ -1456,7 +1497,9 @@ sub USMSProcessRecordRow( $$$$$$ ) {
 	$date = $rowRef->[3];			# 05-18-14
 	$time = $rowRef->[4];			# '1:38.41L'
 	$time =~ s/.$//;			# '1:38.41'
-	$time = TT_Util::GenerateCanonicalDurationForDB( $time, $simpleFileName, $lineNum );
+#	$time = TT_Util::GenerateCanonicalDurationForDB( $time, $simpleFileName, $lineNum );
+	$time = PMSUtil::GenerateCanonicalDurationForDB_v2( $time, 0, "", "", 
+		"File: '$simpleFileName', line $lineNum" );
 	$gender =~ s/^(.).*$/$1/;	# W
 	$gender = PMSUtil::GenerateCanonicalGender( $simpleFileName, $lineNum, $gender );	# M or F
 	$ageGroup =~ s/^.//;		# 50-54
@@ -1678,7 +1721,9 @@ sub PMSProcessRecords($) {
 					$eventName = $row[2] . " " . $row[3];
 					$fullName = $row[4];
 					$date = $row[5];		# of the form '1/30/16'
-					$time = TT_Util::GenerateCanonicalDurationForDB( $row[6], $simpleFileName, $lineNum );
+#					$time = TT_Util::GenerateCanonicalDurationForDB( $row[6], $simpleFileName, $lineNum );
+					$time = PMSUtil::GenerateCanonicalDurationForDB_v2( $row[6], 0, "", "", 
+						"File: '$simpleFileName', line $lineNum" );
 	
 					# assume the date is in ISO format, but confirm it anyway:
 					if( !PMSUtil::ValidateISODate( $date ) ) {
@@ -1882,7 +1927,9 @@ sub PMSProcessOpenWater($) {
 						}
 						
 						# convert the duration into an int (hundredths of a second)
-						$duration = TT_Util::GenerateCanonicalDurationForDB( $duration, $fileName, $lineNum );
+#						$duration = TT_Util::GenerateCanonicalDurationForDB( $duration, $fileName, $lineNum );
+						$duration = PMSUtil::GenerateCanonicalDurationForDB_v2( $duration, 0, "", "", 
+							"File: '$fileName', line $lineNum" );
 			
 						if( $debugRegNum eq $regNum ) {
 							print "PMSProcessOpenWater(): Line #$lineNum: gender=$gender, ageGroup=$ageGroup, " .
@@ -2038,8 +2085,10 @@ sub ProcessFakeSplashes($) {
 					   ) = @row;
 						
 					# convert the duration into an int (hundredths of a second)
-					$duration = TT_Util::GenerateCanonicalDurationForDB( $duration, $fileName, $lineNum );
-		
+#					$duration = TT_Util::GenerateCanonicalDurationForDB( $duration, $fileName, $lineNum );
+					$duration = PMSUtil::GenerateCanonicalDurationForDB_v2( $duration, 0, "", "", 
+						"File: '$fileName', line $lineNum" );
+
 					if( $debugRegNum eq $regNum ) {
 						print "ProcessFakeSplashes(): Line #$lineNum: " .
 							"regNum='$regNum', firstName=$firstName, middleInitial='$middleInitial', " .
@@ -2155,21 +2204,21 @@ sub ComputePointsForAllSwimmers() {
 		
 		# compute points for each age group separately:
 		( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed ) = 
-			TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, $ageGroup1 );
-		$TT_Struct::numInGroup{"$gender:$ageGroup1%split"}++ if( $totalPoints > 0 );
+			TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, $ageGroup1, $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+		$TT_Struct::numInGroup{"$gender:$ageGroup1%split"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
 		if( $ageGroup2 ne "" ) {
 			( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed ) = 
-				TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, $ageGroup2 );
-			$TT_Struct::numInGroup{"$gender:$ageGroup2%split"}++ if( $totalPoints > 0 );
+				TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, $ageGroup2, $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+			$TT_Struct::numInGroup{"$gender:$ageGroup2%split"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
 		}
 		
 		# swimmers in two age groups have their age groups "merged":
 		if( $ageGroup2 ne "" ) {
 			( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed ) = 
-				TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, "$ageGroup1:$ageGroup2" );
-			$TT_Struct::numInGroup{"$gender:$ageGroup2%combined"}++ if( $totalPoints > 0 );
+				TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, "$ageGroup1:$ageGroup2", $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+			$TT_Struct::numInGroup{"$gender:$ageGroup2%combined"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
 		} else {
-			$TT_Struct::numInGroup{"$gender:$ageGroup1%combined"}++ if( $totalPoints > 0 );
+			$TT_Struct::numInGroup{"$gender:$ageGroup1%combined"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
 		}
 	} # end of while...
 	
@@ -2644,8 +2693,16 @@ sub PrintResultsHTML($$$) {
 			my $gender = $resultHash->{'Gender'};
 			my $swimmerId = $resultHash->{'SwimmerId'};
 			my $regNum = $resultHash->{'RegNum'};
+			my $sector = $resultHash->{'Sector'};
+			my $sectorReason = $resultHash->{'SectorReason'};
 			my $thisGenderAgegroup = "$gender:$ageGroupCAG";
-
+			# display this swimmer's "sector" - see the RS_RankSectors.pm module
+			my $SectorStr = "";
+			if( $GENERATE_RANK_SECTORS ) {
+				if( (defined $sector) && $sector ) {
+					$SectorStr = " ($sector)";
+				}
+			}
 			if( lc($lastName) eq $debugLastName) {
 				print "\nPrintResultsHTML(): found $debugLastName: ageGroup=$ageGroup, ageGroupCAG=$ageGroupCAG, $previousGenderAgegroup, $thisGenderAgegroup\n";
 			}
@@ -2731,7 +2788,20 @@ sub PrintResultsHTML($$$) {
 			$uniquePersonId =~ s,/,-,;		# now in the form "W-18-24"
 			$uniquePersonId .= "-$category-$numSwimmersSeenSoFar";		# now in the form "W-18-24-1-5"
 			PMSStruct::GetMacrosRef()->{"UniquePersonId"} = $uniquePersonId;
-			PMSStruct::GetMacrosRef()->{"SwimmersPlace"} = $rank;
+			PMSStruct::GetMacrosRef()->{"SwimmersPlace"} = "$rank$SectorStr";
+			
+			
+			if( $GENERATE_RANK_SECTORS &&
+				((defined $sector) && $sector) &&
+				((defined $sectorReason) && $sectorReason) ) {
+				PMSStruct::GetMacrosRef()->{"SectorExplain"} = 
+					"<tr><td width=\"92%\">This swimmer was put into Sector $sector.  " .
+					"$sectorReason" .
+					"</td></tr>";
+			} else {
+				PMSStruct::GetMacrosRef()->{"SectorExplain"} = "";
+			}
+			
 			PMSStruct::GetMacrosRef()->{"SwimmersPoints"} = 
 				"$minSwimMeetsFlag$points$minSwimMeetsFlag";
 			PMSStruct::GetMacrosRef()->{"SwimmersName"} = 
@@ -2953,6 +3023,8 @@ sub PrintResultsHTML($$$) {
 					TT_Template::ProcessHTMLTemplate( $templateEndCourseDetails, $virtualGeneratedHTMLFileHandle );
 				}
 			}
+
+####
 			TT_Template::ProcessHTMLTemplate( $templateEndDetails, $virtualGeneratedHTMLFileHandle );
 
 			# all done with this person...
@@ -3232,7 +3304,8 @@ sub GetPlaceOrderedSwimmersQuery {
 		$query =
 			"SELECT FirstName,MiddleInitial,LastName,RegisteredTeamInitials,FinalPlaceSAG.AgeGroup as AgeGroup, " .
 				"Rank,ListOrder,SUM(TotalPoints) as Points,FinalPlaceSAG.AgeGroup AS AgeGroupCAG, " .
-				"Swimmer.Gender as Gender,Swimmer.SwimmerId as SwimmerId, Swimmer.RegNum as RegNum " .
+				"Swimmer.Gender as Gender,Swimmer.SwimmerId as SwimmerId, Swimmer.RegNum as RegNum," .
+				"Sector,SectprReason " .
 				"FROM (FinalPlaceSAG JOIN Swimmer) JOIN Points " .
 				"WHERE Swimmer.SwimmerId=FinalPlaceSAG.SwimmerId " .
 				$genderPart .
@@ -3247,7 +3320,8 @@ sub GetPlaceOrderedSwimmersQuery {
 			"SELECT FirstName,MiddleInitial,LastName,RegisteredTeamInitials," .
 				"(IF(Swimmer.AgeGroup2='',Swimmer.AgeGroup1,Swimmer.AgeGroup2)) as AgeGroupCAG, " .
 				"Rank,ListOrder,SUM(TotalPoints) AS Points,FinalPlaceCAG.AgeGroup AS AgeGroup, " .
-				"Swimmer.Gender as Gender,Swimmer.SwimmerId as SwimmerId, Swimmer.RegNum as RegNum " .
+				"Swimmer.Gender as Gender,Swimmer.SwimmerId as SwimmerId, Swimmer.RegNum as RegNum," .
+				"Sector,SectorReason " .
 				"FROM (FinalPlaceCAG JOIN Swimmer) JOIN Points 
 				WHERE Swimmer.SwimmerId=FinalPlaceCAG.SwimmerId " .
 				$genderPart .
