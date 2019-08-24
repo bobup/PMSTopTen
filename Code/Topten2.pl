@@ -67,7 +67,7 @@ my $WRITE_HTML_FILES = 1;
 
 # do we write EXCEL output files? 0 means "No", anything else means "Yes"
 my $WRITE_EXCEL_FILES = 1;
-$WRITE_EXCEL_FILES = 0;			# don't write EXCEL files
+#$WRITE_EXCEL_FILES = 0;			# don't write EXCEL files
 
 # Do we generate results for "split age groups"?  If a swimmer changes age groups in the middle of a season
 # (which happens for every one of us once every 5 years, since a season spans more than 1 calendar year) we
