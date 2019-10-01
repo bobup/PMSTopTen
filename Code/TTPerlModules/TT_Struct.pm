@@ -12,49 +12,154 @@ use warnings;
 ### General Structures used by our modules
 ###
 
-#my $resultHash;
-
 # we use %hashOfInvalidRegNums just so we don't report the same invalid reg num more than once.
 # Currently populated when processing PMS top 10 only (other results either don't include reg numbers or
 # are trusted to always have correct reg nums.)
 our %hashOfInvalidRegNums = ();		# {regnum} = ""; if we don't find the regnum
 									# in the RSIDN file.
 
-# used in excel
-#our %results;			# $results{gender:ageGroup-org-course}{swimmerId} = points for PMS SCY, etc...
-						# $results{gender:ageGroup-org-course-COUNT}{swimmerId} = count of # times this
-						#	swimmer scored points in a org-course event.  E.g. if they scored points
-						#	5 times in a PAC-SCM event then all 5 of those scores will be used to
-						#	calculate their points; but if they scored 9 times only the best 8
-						#	scores will count (if the rules say only count the best 8)
-						
-
-
-# used in excel
-#our %points;			# $points{gender:ageGroup}{SwimmerId} = total top 10 points for this swimmer
-#sub GetPointsRef() {
-#	return \%points;
-#}
-
-#used in excel:
-#our %team;				# $team{$swimmerId} = the team for the swimmer
-
-
-
-
 our %numInGroup;			# $numInGroup{gender:ageGroup} = number of swimmers in this gender/age group
 
-#our %place;				# $place{gender:ageGroup}[SwimmerId] = their place in this gender/age group.
-#our %place;				# $place{gender:ageGroup}[order] = points:rank:SwimmerId = their points and place
-						# in this gender/age 
-						# group and the swimmer's internal swimmerId.  E.g. "123:3:234" which means that
-						# the swimmer with the swimmerId of "234" is 3rd in their gender/age group with 123 points.
-						# Note that multiple swimmers could have the same place if there is a tie but
-						# their order will be different and consistent across executions of this program.
-						# 'order' begins with 0.
-#sub GetPlaceRef() {
-#	return \%place;
-#}
+# fetchStats - mirriors the table of the same name (field names of the FetchStats table must be
+#	match exactly the key names in this hash table)  IF YOU ADD A FIELD HERE YOU PROBABLY SHOULD
+# 	ADD THE SAME COLUMN IN THE TABLE (see TT_MySqlSupport.pm)
+our %fetchStats = (
+	FS_NumLinesRead						=> 0,
+		FS_NumLinesRead_Desc			=> "number of lines read",
+	FS_NumDifferentMeetsSeen			=> 0,
+		FS_NumDifferentMeetsSeen_Desc	=> "number of meets discovered",
+	FS_NumDifferentResultsSeen			=> 0,
+		FS_NumDifferentResultsSeen_Desc	=> "number of results found",
+	FS_NumDifferentFiles				=> 0,
+		FS_NumDifferentFiles_Desc		=> "number of files processed",
+	FS_NumRaceLines						=> 0,
+		FS_NumRaceLines_Desc			=> "number of meets written to races.txt",
+	FS_CurrentSCYRecords				=> 0,
+		FS_CurrentSCYRecords_Desc		=> "number of Current SCY Records",
+	FS_CurrentSCMRecords				=> 0,
+		FS_CurrentSCMRecords_Desc		=> "number of Current SCM Records",
+	FS_CurrentLCMRecords				=> 0,
+		FS_CurrentLCMRecords_Desc		=> "number of Current LCM Records",
+	FS_HistoricalSCYRecords				=> 0,
+		FS_HistoricalSCYRecords_Desc	=> "number of Historical SCY Records",
+	FS_HistoricalSCMRecords				=> 0,
+		FS_HistoricalSCMRecords_Desc	=> "number of Historical SCM Records",
+	FS_HistoricalLCMRecords				=> 0,
+		FS_HistoricalLCMRecords_Desc	=> "number of Historical LCM Records",
+);
+# $fetchStats{'NumLinesRead'} = total number of lines read from the web pages that we process
+#		to get the result files that we'll process to compute points.  PLUS, the number of lines in the
+#		open water file that we process.
+# $fetchStats{'NumDifferentMeetsSeen'} = total number of UNIQUE meets we see in the web pages we process, 
+#		PLUS the number of open water events.
+# $fetchStats{'NumDifferentResultsSeen'} = total number of result lines we see when processing the web 
+#		pages and OW results.  Should be less than NumLinesRead since some lines 
+#		read are not result lines.
+# $fetchStats{'NumDifferentFiles'} = number of different result files we find while analyzing the web pages,
+#		PLUS 1 for the OW results.  This number will increase throughout the season as more result files
+#		become available.
+# $fetchStats{'CurrentSCYRecords'} = the number of "current "records for this course that earned points
+# $fetchStats{'CurrentSCMRecords'} = (ditto)
+# $fetchStats{'CurrentLCMRecords'} = (ditto)
+# $fetchStats{'HistoricalSCYRecords'} = the number of "historical "records for this course that earned points
+# $fetchStats{'HistoricalSCMRecords'} = (ditto)
+# $fetchStats{'HistoricalLCMRecords'} = (ditto)
+
+my @fetchStatsOrder = (
+	"FS_NumLinesRead",
+	"FS_NumDifferentMeetsSeen",
+	"FS_NumDifferentResultsSeen",
+	"FS_NumDifferentFiles",
+	"FS_NumRaceLines",
+	"FS_CurrentSCYRecords",
+	"FS_CurrentSCMRecords",
+	"FS_CurrentLCMRecords",
+	"FS_HistoricalSCYRecords",
+	"FS_HistoricalSCMRecords",
+	"FS_HistoricalLCMRecords",
+	);
+
+sub SetFetchStat( $$ ) {
+	$fetchStats{$_[0]} = $_[1];
+} # end of SetFetchStat()
+
+sub IncreaseFetchStat( $$ ) {
+	$fetchStats{$_[0]} += $_[1];
+} # end of IncreaseFetchStat()
+
+
+sub GetFetchStat( $ ) {
+	return $fetchStats{$_[0]};
+} # end of GetFetchStat()
+
+sub GetFetchStatRef() {
+	return \%fetchStats;
+} # end of GetFetchStatRef()
+
+sub PopulatePMSMacrosWithFetchStat() {
+	foreach my $key ( keys %fetchStats ) {
+		PMSStruct::GetMacrosRef()->{$key} = $fetchStats{$key};
+	}
+} # end of PopulatePMSMacrosWithFetchStat()
+
+# 		if( HashesAreDifferent( TT_Struct::GetFetchStatRef(), $prevResultsHash ) ) {
+# RETURNED:
+#	$result - >0 if the two hashes are different, which means at least one of the following is true:
+#		- there exists a key in $masterRef that does not exist in $copyRef, or
+#		- there exists a key/value in $masterRef where the value for the corresponding key
+#			in $copyRef is different.
+#		The value of $result is the number of differences found.
+#
+# NOTES:
+#	If a key exists in $copyRef that does NOT exist in $masterRef we just ignore it.
+#
+sub HashesAreDifferent( $$ ) {
+	my ($masterRef, $copyRef) = @_;
+	my $result = 0;		# assume the two hashes are identical
+	
+	foreach my $key ( keys %{$masterRef} ) {
+		if( ($key !~ m/_Desc/) && ($key =~ m/^FS_/) ) {
+			if( (!defined $copyRef->{$key}) ||
+				($masterRef->{$key} ne $copyRef->{$key}) ) {
+				# found a difference!
+	if(1) {
+	if( (!defined ($copyRef->{$key})) ) {
+		print "key '$key' not defined\n";
+	} else {
+		print "key $key is different: $masterRef->{$key} ne $copyRef->{$key}\n";
+	}
+	}
+				$result++;
+			}
+		}
+	}
+	return $result;
+} # end of HashesAreDifferent()
+
+#PMSLogging::PrintLog( "", "", "    Total number of lines read: " . TT_Struct::GetFetchStat("NumLinesRead"), 1);
+
+# TT_Struct::PrintStats( "Total", TT_Struct::GetStruct(), $console );
+sub PrintStats( $$$ ) {
+	my ($heading, $hashRef, $console) = @_;
+	foreach my $key (@fetchStatsOrder) {
+		my $desc = $fetchStats{$key . "_Desc"};
+		my $value = $hashRef->{$key};
+		PMSLogging::PrintLog( "", "", "    $heading $desc: $value", $console);
+	}
+} # end of PrintStats()
+
+# my $string = TT_Struct::PrintStatsString( "Total", TT_Struct::GetStruct() );
+sub PrintStatsString( $$ ) {
+	my ($heading, $hashRef) = @_;
+	my $str = "";
+	foreach my $key (@fetchStatsOrder) {
+		my $desc = $fetchStats{$key . "_Desc"};
+		my $value = $hashRef->{$key};
+		$str .= "    $heading $desc: $value\n";
+	}
+	return $str;
+} # end of PrintStatsString()
+
 
 
 #  ------  Swimmer(s) Of The Year  --------

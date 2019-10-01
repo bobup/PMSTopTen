@@ -2,7 +2,8 @@
 
 
 # TTStats.pl - a program to generate statistics about the current Top Ten data in the database.
-#	See Topten2.pl (or it's current name if it changed) for details on how those data are generated. 
+#	See GetResults.pl and Topten2.pl (or their current names if they changed) for details on 
+#	how those data are generated. 
 #
 # OUTPUT:  This program will produce its results as single html file (.html)
 #
@@ -68,7 +69,6 @@ require TT_SheetSupport;
 require TT_Struct;
 require TT_Logging;
 require TT_USMSDirectory;
-require TT_Template;
 
 
 use FindBin;
@@ -77,6 +77,7 @@ use lib File::Spec->catdir( $FindBin::Bin, '..', '..', '..', 'PMSPerlModules' );
 require PMS_ImportPMSData;
 require PMSMacros;
 require PMSLogging;
+require PMSTemplate;
 
 
 sub GenerateHTMLStats( $ );
@@ -235,7 +236,7 @@ PMS_MySqlSupport::SetSqlParameters( 'default',
 	PMSStruct::GetMacrosRef()->{"dbName"},
 	PMSStruct::GetMacrosRef()->{"dbUser"},
 	PMSStruct::GetMacrosRef()->{"dbPass"} );
-	
+
 
 #####################################################
 ################ PROCESSING #########################
@@ -466,46 +467,31 @@ sub GenerateHTMLStats( $ ) {
 ###
 ### GetResults statistics:
 ###
-	$sth = TT_MySqlSupport::GetLastRequestStats( $dbh, $yearBeingProcessed );
-	# did we find exactly one row?
-	my $numRows = $sth->rows();
+	my $numRows;
+	($numRows,$resultHash) = TT_MySqlSupport::GetLastRequestStats( $dbh, $yearBeingProcessed );
+	# did we find any rows?
 	if( $numRows >= 1 ) {
 		# yes!  get the data
-		my $resultHash = $sth->fetchrow_hashref;
-		my $LinesRead = $resultHash->{LinesRead};
-		my $MeetsSeen = $resultHash->{MeetsSeen};
-		my $ResultsSeen = $resultHash->{ResultsSeen};
-		my $FilesSeen = $resultHash->{FilesSeen};
-		my $RaceLines = $resultHash->{RaceLines};
-		my $DateTime = $resultHash->{Date};
-		PMSStruct::GetMacrosRef()->{"numLinesRead"} = $LinesRead;
-		PMSStruct::GetMacrosRef()->{"numDifferentMeetsSeen"} = $MeetsSeen;
-		PMSStruct::GetMacrosRef()->{"numDifferentResultsSeen"} = $ResultsSeen;
-		PMSStruct::GetMacrosRef()->{"numDifferentFiles"} = $FilesSeen;
-		PMSStruct::GetMacrosRef()->{"raceLines"} = $RaceLines;
-		PMSStruct::GetMacrosRef()->{"prevDateTime"} = $DateTime;
+		my $stats = TT_Struct::PrintStatsString( "Total", $resultHash );
+		PMSStruct::GetMacrosRef()->{"GetStats"} = $stats;
+		PMSStruct::GetMacrosRef()->{"prevDateTime"} = $resultHash->{"Date"};
 		PMSStruct::GetMacrosRef()->{"extraNote"} = "";
 		if( $numRows > 1 ) {
-			PMSStruct::GetMacrosRef()->{"extraNote"} = "(WARNING: Found $numRows rows for season $yearBeingProcessed " .
+			PMSStruct::GetMacrosRef()->{"extraNote"} = "(ERROR: Found $numRows rows for season $yearBeingProcessed " .
 				"in the FetchStats table. Above data is ambiguious!)";
 		}
 	} else {
-		# this isn't right!
-		PMSStruct::GetMacrosRef()->{"numLinesRead"} = "?";
-		PMSStruct::GetMacrosRef()->{"numDifferentMeetsSeen"} = "?";
-		PMSStruct::GetMacrosRef()->{"numDifferentResultsSeen"} = "?";
-		PMSStruct::GetMacrosRef()->{"numDifferentFiles"} = "?";
-		PMSStruct::GetMacrosRef()->{"raceLines"} = "?";
+		# no stats for this season - this isn't right!
+		PMSStruct::GetMacrosRef()->{"GetStats"} = "";
 		PMSStruct::GetMacrosRef()->{"prevDateTime"} = "?";
 		PMSStruct::GetMacrosRef()->{"extraNote"} = "(WARNING: No rows for season $yearBeingProcessed " .
 			"in the FetchStats table. Above data is missing!)";
 	}
 
 	# we've got all the data - create the stats file:
-	
 	open( my $masterGeneratedHTMLFileHandle, ">", $generatedHTMLStatsFullName ) or
 		die( "Can't open $generatedHTMLStatsFullName: $!" );
-	TT_Template::ProcessHTMLTemplate( $templateStats, $masterGeneratedHTMLFileHandle );
+	PMSTemplate::ProcessHTMLTemplate( $templateStats, $masterGeneratedHTMLFileHandle );
 	close( $masterGeneratedHTMLFileHandle );
 } # GenerateHTMLStats()
 

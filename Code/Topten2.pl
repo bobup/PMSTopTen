@@ -49,6 +49,9 @@
 #	a number of tables of a MySql database.  It's assumed that the mysql server is running.  See the
 #	modules TT_MySqlSupport and PMS_MySqlSupport and the call to PMS_MySqlSupport::SetSqlParameters below.
 #
+# TODO:
+#	- If a swimmer's name and reg # matches make sure their gender matches, too.
+#	- if two swimmer's tie make sure they have the same time.
 
 use strict;
 use sigtrap;
@@ -132,6 +135,8 @@ my $COMPUTE_POINTS = ($RESULT_FILES_TO_READ != 0);
 #	 - B: those pool competitors who are within 20% of a national qualifying time; 
 #	 - C: those pool competitors who haven’t achieved a national qualifying time + 20%;
 #	 - D: those competitors who compete in open water only.
+# NOTE: the "20%" above can actually be different - see the call to RS_RankSectors::InitializeAllQualifyingTimes()
+# and the second parameter passed in the call.  It is the actual precentage X 100, e.g. 112 means "11.2%".
 my $GENERATE_RANK_SECTORS = 0;
 #$GENERATE_RANK_SECTORS = 1;			# override the default
 
@@ -243,7 +248,6 @@ require TT_SheetSupport;
 require TT_Struct;
 require TT_Logging;
 require TT_USMSDirectory;
-require TT_Template;
 
 use FindBin;
 use File::Spec;
@@ -251,6 +255,7 @@ use lib File::Spec->catdir( $FindBin::Bin, '..', '..', '..', 'PMSPerlModules' );
 require PMS_ImportPMSData;
 require PMSMacros;
 require PMSLogging;
+require PMSTemplate;
 
 if( $GENERATE_RANK_SECTORS ) {
 use lib File::Spec->catdir( $FindBin::Bin, '..', '..', 'PMSRankSectors/Code' );
@@ -508,25 +513,19 @@ my $worksheet;
 my $TopNExcelResults;
 my $sotyWorkbook;
 my $worksheetTopN;
-my $FullExcelResultsCAG;		# combine age groups
-my $TopNExcelResultsCAG;		# combine age groups
 # use this to help with SOTY work:
 my $TopSOTYExcelResults;
 if( $WRITE_EXCEL_FILES ) {
 	if( $TOP_NUMBER_OF_PLACES_TO_SHOW_EXCEL >= 0 ) {
 		$FullExcelResults =  $generatedDirName . "FullExcelResults-$yearBeingProcessed.xlsx";
-		$FullExcelResultsCAG = $FullExcelResults;
-		$FullExcelResultsCAG =~ s/.xlsx/_cag.xlsx/;
 		# remove our excel files so we know they are up-to-date
-		unlink $FullExcelResults, $FullExcelResultsCAG;
+		unlink $FullExcelResults;
 	}
 	if($TOP_N_PLACES_TO_SHOW_EXCEL > 0) {
 		$TopNExcelResults =  $generatedDirName . "Top_" . $TOP_N_PLACES_TO_SHOW_EXCEL .
 			"_ExcelResults-$yearBeingProcessed.xlsx";
-		$TopNExcelResultsCAG = $TopNExcelResults;
-		$TopNExcelResultsCAG =~ s/.xlsx/_cag.xlsx/;
 		# remove our excel files so we know they are up-to-date
-		unlink $TopNExcelResults, $TopNExcelResultsCAG;
+		unlink $TopNExcelResults;
 	}
 	if( $TOP_SOTY_CONTENDERS_EXCEL > 0 ) {
 		$TopSOTYExcelResults = $generatedDirName . "TopSOTYContenders-$yearBeingProcessed.xlsx";
@@ -727,7 +726,7 @@ if($WRITE_HTML_FILES) {
 
 if( $WRITE_EXCEL_FILES ) {
 	###
-	###initialize split agegroup Excel output file
+	### initialize split agegroup Excel output file
 	###
 	if( $TOP_NUMBER_OF_PLACES_TO_SHOW_EXCEL >= 0 ) {
 	    # Create a new Excel workbook for the full excel file
@@ -762,33 +761,14 @@ if( $WRITE_EXCEL_FILES ) {
 		$workbook->close();
 	}
 	
-if(0) {
-	if( $GENERATE_COMBINED_AGE_GROUPS ) {
-		###
-		###initialize combined age groups Excel output file
-		###
-	    # Create a new Excel workbook for the full excel file
-	    $workbook = Excel::Writer::XLSX->new( $FullExcelResultsCAG );
-	    # Add a worksheet
-	    $worksheet = $workbook->add_worksheet();
-	
-	    # Create a new Excel workbook for the top 'N' excel file
-#	    $workbookTopN = Excel::Writer::XLSX->new( $TopNExcelResultsCAG );
-	    # Add a worksheet
-#	    $worksheetTopN = $workbookTopN->add_worksheet();
-	
-	    # generate the files
-#		PrintResultsExcel( $workbook, $worksheet, $workbookTopN, $worksheetTopN, 0 );
-	}
-}
-
 } # end of if( $WRITE_EXCEL_FILES...
 
-
-# generate an HTML file giving details of all the swimmers who have split age groups during
-# this season.
-if( $WRITE_HTML_FILES ) {
-	TT_MySqlSupport::DumpStatsFor2GroupSwimmers( "$generatedHTMLFileDir/cag.html", $generationDate );
+if(0) {
+	# generate an HTML file giving details of all the swimmers who have split age groups during
+	# this season.
+	if( $WRITE_HTML_FILES ) {
+		TT_MySqlSupport::DumpStatsFor2GroupSwimmers( "$generatedHTMLFileDir/cag.html", $generationDate );
+	}
 }
 
 ###
@@ -2456,7 +2436,8 @@ sub ComputePlaceForAllSwimmers() {
 		} # end of foreach my $gender...
 	
 		PMSLogging::PrintLog( "", "", "** END ComputePlaceForAllSwimmers (FinalPlaceSAG) ($countSwimmers swimmers)", 1 );
-	}
+	} # end of 	if( $GENERATE_SPLIT_AGE_GROUPS ....
+	
 	
 	if( $GENERATE_COMBINED_AGE_GROUPS ) {
 		PMSLogging::PrintLog( "", "", "** Begin ComputePlaceForAllSwimmers (FinalPlaceCAG)", 1 );
@@ -2513,7 +2494,7 @@ sub ComputePlaceForAllSwimmers() {
 		} # end of foreach my $gender...
 		
 		PMSLogging::PrintLog( "", "", "** END ComputePlaceForAllSwimmers (FinalPlaceCAG) ($countSwimmers swimmers)", 1 );
-	}
+	} # end of if( $GENERATE_COMBINED_AGE_GROUPS )...
 
 } # end of ComputePlaceForAllSwimmers()
 	
@@ -2596,7 +2577,8 @@ sub ComputePlaceForAllSwimmers() {
 # PASSED:
 #	$finalPlaceTableName - 
 #	$masterGeneratedHTMLFileName - 
-#	$generatedHTMLFileSubDir
+#	$generatedHTMLFileSubDir - the subdirectory of the directory holding the $masterGeneratedHTMLFileName used
+#		to hold the HTML snippits we generate for each gender/age group, one snippit file per gender/age group.
 #	AND we use data from the database
 #
 # RETURNED:
@@ -2664,7 +2646,7 @@ sub PrintResultsHTML($$$) {
 	my $virtualGeneratedHTMLFileName;
 
 	# first, the initial part of the master HTML file
-	TT_Template::ProcessHTMLTemplate( $templateStartHead, $masterGeneratedHTMLFileHandle );
+	PMSTemplate::ProcessHTMLTemplate( $templateStartHead, $masterGeneratedHTMLFileHandle );
 
 	# Since we have already computed the points and places for every swimmer we are going to 
 	# print them out in order of gender and age group, ordered highest to lowest points 
@@ -2713,10 +2695,10 @@ sub PrintResultsHTML($$$) {
 				if( $previousGenderAgegroup ne "" ) {
 					# every age group ends with a hidden "Click here for more..."
 					PMSStruct::GetMacrosRef()->{"DisplayForMoreThan10"} = "none";		# ...
-					TT_Template::ProcessHTMLTemplate( $templateMoreThan10, $virtualGeneratedHTMLFileHandle );
+					PMSTemplate::ProcessHTMLTemplate( $templateMoreThan10, $virtualGeneratedHTMLFileHandle );
 					# now end the age group
-					TT_Template::ProcessHTMLTemplate( $templateEndGenAgeGrp, $masterGeneratedHTMLFileHandle );
-					TT_Template::ProcessHTMLTemplate( $templateEndGenAgeGrp, $virtualGeneratedHTMLFileHandle );
+					PMSTemplate::ProcessHTMLTemplate( $templateEndGenAgeGrp, $masterGeneratedHTMLFileHandle );
+					PMSTemplate::ProcessHTMLTemplate( $templateEndGenAgeGrp, $virtualGeneratedHTMLFileHandle );
 					close($virtualGeneratedHTMLFileHandle);
 				}
 				$previousGenderAgegroup = $thisGenderAgegroup;
@@ -2748,8 +2730,8 @@ sub PrintResultsHTML($$$) {
 				open( $virtualGeneratedHTMLFileHandle, ">", $virtualGeneratedHTMLFileName ) or
 					die( "Can't open $virtualGeneratedHTMLFileName: $!" );
 				# now begin generation of this new gender/age group:
-				TT_Template::ProcessHTMLTemplate( $templateStartGenAgeGrp, $masterGeneratedHTMLFileHandle );
-				TT_Template::ProcessHTMLTemplate( $templateStartGenAgeGrp, $virtualGeneratedHTMLFileHandle );
+				PMSTemplate::ProcessHTMLTemplate( $templateStartGenAgeGrp, $masterGeneratedHTMLFileHandle );
+				PMSTemplate::ProcessHTMLTemplate( $templateStartGenAgeGrp, $virtualGeneratedHTMLFileHandle );
 			} # end of are we starting a new gender and/or age group?
 			# set the age group(s) for the swimmer we're now working on:
 			PMSStruct::GetMacrosRef()->{"SwimmersAgeGroups"} = $ageGroup;
@@ -2810,7 +2792,7 @@ sub PrintResultsHTML($$$) {
 				"class='$thisGenderAgegroup-Collapse'";		# default collapse swimmers >= 11
 			if( $numSwimmersSeenSoFar <= 10 ) {
 				# the master html file only shows the top 10 swimmers
-				TT_Template::ProcessHTMLTemplate( $templateStartPersonRow, $masterGeneratedHTMLFileHandle );
+				PMSTemplate::ProcessHTMLTemplate( $templateStartPersonRow, $masterGeneratedHTMLFileHandle );
 				PMSStruct::GetMacrosRef()->{"Collapse"} = "DontCollapse";	# don't remove this swimmer when collapsing
 				PMSStruct::GetMacrosRef()->{"ClassCollapse"} = "";		# don't allow collapse of swimmers <= 10
 				PMSStruct::GetMacrosRef()->{"LessThan11"} = "xx";	# see MoreThan10.html
@@ -2818,11 +2800,11 @@ sub PrintResultsHTML($$$) {
 				# the master html file will show a link allowing the user to view swimmers
 				# past #10 if there are 11 or more swimmers in this gender/age group
 				PMSStruct::GetMacrosRef()->{"DisplayForMoreThan10"} = "";		# ...
-				TT_Template::ProcessHTMLTemplate( $templateMoreThan10, $masterGeneratedHTMLFileHandle );
+				PMSTemplate::ProcessHTMLTemplate( $templateMoreThan10, $masterGeneratedHTMLFileHandle );
 				PMSStruct::GetMacrosRef()->{"ClassCollapse"} = "class='$thisGenderAgegroup-Collapse'";		# ...
 				PMSStruct::GetMacrosRef()->{"LessThan11"} = "";		# see MoreThan10.html
 			}
-			TT_Template::ProcessHTMLTemplate( $templateStartPersonRow, $virtualGeneratedHTMLFileHandle );
+			PMSTemplate::ProcessHTMLTemplate( $templateStartPersonRow, $virtualGeneratedHTMLFileHandle );
 
 			# now generate the details of this swimmer's swims
 			PMSStruct::GetMacrosRef()->{"NumSwimmersMeets"} = $countPoints+$countHidden;
@@ -2889,7 +2871,7 @@ sub PrintResultsHTML($$$) {
 			PMSStruct::GetMacrosRef()->{"SwimmersMeetDetails"} = $swimmersMeetDetails;
 			PMSStruct::GetMacrosRef()->{"SwimmersTeams"} = $team;
 
-			TT_Template::ProcessHTMLTemplate( $templateStartDetails, $virtualGeneratedHTMLFileHandle );
+			PMSTemplate::ProcessHTMLTemplate( $templateStartDetails, $virtualGeneratedHTMLFileHandle );
 			my $courseNum = 0;
 			foreach my $org( @PMSConstants::arrOfOrg ) {
 				foreach my $course( @PMSConstants::arrOfCourse ) {
@@ -2921,7 +2903,7 @@ sub PrintResultsHTML($$$) {
 					PMSStruct::GetMacrosRef()->{"CoursePoints"} = $totalPoints;
 					PMSStruct::GetMacrosRef()->{"PointsWord"} = "points";
 					PMSStruct::GetMacrosRef()->{"PointsWord"} = "point" if( PMSStruct::GetMacrosRef()->{"CoursePoints"} == 1 );
-					TT_Template::ProcessHTMLTemplate( $templateStartCourseDetails, $virtualGeneratedHTMLFileHandle );
+					PMSTemplate::ProcessHTMLTemplate( $templateStartCourseDetails, $virtualGeneratedHTMLFileHandle );
 
 					# now generate the details for this org-course (multiple rows, each row represents
 					# a single point-earning swim for this org-course).  The rows are in order of points earned
@@ -3018,33 +3000,33 @@ sub PrintResultsHTML($$$) {
 							PMSStruct::GetMacrosRef()->{"PointsEnd"} = "";
 						}
 
-						TT_Template::ProcessHTMLTemplate( $templateSingleEvent, $virtualGeneratedHTMLFileHandle );
+						PMSTemplate::ProcessHTMLTemplate( $templateSingleEvent, $virtualGeneratedHTMLFileHandle );
 					} # end of for( my $i = 1; $i <= $detailsNum; ...
-					TT_Template::ProcessHTMLTemplate( $templateEndCourseDetails, $virtualGeneratedHTMLFileHandle );
+					PMSTemplate::ProcessHTMLTemplate( $templateEndCourseDetails, $virtualGeneratedHTMLFileHandle );
 				}
 			}
 
 ####
-			TT_Template::ProcessHTMLTemplate( $templateEndDetails, $virtualGeneratedHTMLFileHandle );
+			PMSTemplate::ProcessHTMLTemplate( $templateEndDetails, $virtualGeneratedHTMLFileHandle );
 
 			# all done with this person...
 			if( $numSwimmersSeenSoFar <=10 ) {
-				TT_Template::ProcessHTMLTemplate( $templateEndPersonRow, $masterGeneratedHTMLFileHandle );
+				PMSTemplate::ProcessHTMLTemplate( $templateEndPersonRow, $masterGeneratedHTMLFileHandle );
 			}
-			TT_Template::ProcessHTMLTemplate( $templateEndPersonRow, $virtualGeneratedHTMLFileHandle );
+			PMSTemplate::ProcessHTMLTemplate( $templateEndPersonRow, $virtualGeneratedHTMLFileHandle );
 		} # end of while( defined(my $resultHash...
 
 	# All Done!  finish the currently generating GenAgeGrp (if one, which there is if we have
 	# any data at all!) :
 	if( $previousGenderAgegroup ne "" ) {
-		TT_Template::ProcessHTMLTemplate( $templateEndGenAgeGrp, $masterGeneratedHTMLFileHandle );
-		TT_Template::ProcessHTMLTemplate( $templateEndGenAgeGrp, $virtualGeneratedHTMLFileHandle );
+		PMSTemplate::ProcessHTMLTemplate( $templateEndGenAgeGrp, $masterGeneratedHTMLFileHandle );
+		PMSTemplate::ProcessHTMLTemplate( $templateEndGenAgeGrp, $virtualGeneratedHTMLFileHandle );
 		# every age group ends with a hidden "Click here for more..."
 		close($virtualGeneratedHTMLFileHandle);
 	}
 	
 	# next, finish the master HTML file and then close it:
-	TT_Template::ProcessHTMLTemplate( $templateEndHead, $masterGeneratedHTMLFileHandle );
+	PMSTemplate::ProcessHTMLTemplate( $templateEndHead, $masterGeneratedHTMLFileHandle );
 	close( $masterGeneratedHTMLFileHandle );
 	print("\n");
 	
@@ -3157,7 +3139,7 @@ sub PrintResultsHTML($$$) {
 	my($num, $numWithPoints) = TT_MySqlSupport::GetNumberOfSwimmers();
 	PMSStruct::GetMacrosRef()->{"NumberOfCompetingSwimmers"} = $num;
 	PMSStruct::GetMacrosRef()->{"NumberOfSwimmersEarnedPoints"} = $numWithPoints;
-	TT_Template::ProcessHTMLTemplate( $templateSOTY, $sotyGeneratedHTMLFileHandle );
+	PMSTemplate::ProcessHTMLTemplate( $templateSOTY, $sotyGeneratedHTMLFileHandle );
 	
 	PMSLogging::PrintLog( "", "", "** End PrintResultsHTML ($finalPlaceTableName)", 1 );
 	

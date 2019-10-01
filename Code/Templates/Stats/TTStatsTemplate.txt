@@ -46,18 +46,14 @@ Number OW Splashes
 {NumberOWSplashes}
 
 
-[H]: Number of swimmers who swam at least one Open Water event (with and without points):
-Number of OW Swimmers
+[H]: Number of swimmers who swam at least one Cat 1 Open Water event (with and without points):
+Number of  Cat 1 OW Swimmers
 ---------------------
 {NumberOWSwimmers}
 
 ==============================================================================
 GetResults:: Totals (as of {prevDateTime}):
-      Total number of lines read: {numLinesRead}
-      Total number of unique meets discovered: {numDifferentMeetsSeen}
-      Total number of different results found: {numDifferentResultsSeen}
-      Total number of different files processed: {numDifferentFiles}
-      Total number of different meets seen: {raceLines}
+{GetStats}
       {extraNote}
 
 

@@ -8,6 +8,7 @@ use sigtrap;
 use warnings;
 
 use DBI;
+#use Data::Dumper;
 
 use FindBin;
 use File::Spec;
@@ -124,6 +125,7 @@ sub InitializeTopTenDB() {
 	my $yearBeingProcessed = PMSStruct::GetMacrosRef()->{"YearBeingProcessed"};
 	my $xxx = $PMSConstants::MAX_LENGTH_TEAM_ABBREVIATION;		# avoid compiler warning
 	
+
 	if( $dbh ) {
 		# get our database parameters
 		PMS_MySqlSupport::GetTableList( \%ttTableList, \$ttTableListInitialized );
@@ -440,22 +442,43 @@ sub InitializeTopTenDB() {
 # results tables:
 ### FetchStats
     			} elsif( $tableName eq "FetchStats" ) {
+    				# NOTE: IF YOU ADD A COLUMN TO THIS TABLE YOU PROBABLY NEED TO ADD THE SAME
+    				#	FIELD TO THE %fetchStats HASH (see TT_Struct.pm)
 				  	# --- Season - The season for which the data were fetched, e.g. 2016
-				  	# --- LinesRead - number of lines read when fetching the data
-				  	# --- MeetsSeen - number of different meets seen
-				  	# --- ResultsSeen - number of results seen when fetching the data
-				  	# --- FilesSeen - number of files read when fetching the data
-				  	# --- RaceLines - number of lines written to the races.txt file
+				  	# --- FS_NumLinesRead - number of lines read when fetching the data
+				  	# --- FS_NumDifferentMeetsSeen - number of different meets seen
+				  	# --- FS_NumDifferentResultsSeen - number of results seen when fetching the data
+				  	# --- FS_NumDifferentFiles - number of files read when fetching the data
+				  	# --- FS_NumRaceLines - number of lines written to the races.txt file
+				  	# --- FS_CurrentSCYRecords - the number of "current "records for this course that earned 
+				  	#		points for a swimmer during this season.  A "current" record is a record that
+				  	#		is currently the record (vs a "historical" record.)
+				  	# --- FS_CurrentSCMRecords - (ditto)
+				  	# --- FS_CurrentLCMRecords - (ditto)
+				  	# --- FS_HistoricalSCYRecords - the number of "historical" records for this course that earned 
+				  	#		points for a swimmer during this season.  A "historical" record is a 
+				  	#		record that was set during the season but then broken after the end
+				  	#		of the season.  Thus the record is no longer the "current" one, but the swimmer
+				  	#		still deserves points for the record since she/he set it during the season.
+				  	# --- FS_HistoricalSCMRecords - (ditto)
+				  	# --- FS_HistoricalLCMRecords - (ditto)
 				  	# --- Date - the date and time this row was written/updated
+				  	# 
 		    		($sth,$rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
 		    			"CREATE TABLE FetchStats (FetchStatsId INT AUTO_INCREMENT PRIMARY KEY, " .
-		    			"Season Varchar(4), " .
-		    			"LinesRead INT, " .
-		    			"MeetsSeen INT, " .
-		    			"ResultsSeen INT, " .
-		    			"FilesSeen INT, " .
-		    			"RaceLines INT, " .
-		    			"Date DATETIME " .
+		    			"Season Varchar(4) NOT NULL UNIQUE, " .
+		    			"Date DATETIME, " .
+		    			"FS_NumLinesRead INT DEFAULT 0, " .
+		    			"FS_NumDifferentMeetsSeen INT DEFAULT 0, " .
+		    			"FS_NumDifferentResultsSeen INT DEFAULT 0, " .
+		    			"FS_NumDifferentFiles INT DEFAULT 0, " .
+		    			"FS_NumRaceLines INT DEFAULT 0, " .
+		    			"FS_CurrentSCYRecords INT DEFAULT 0, " .
+		    			"FS_CurrentSCMRecords INT DEFAULT 0, " .
+		    			"FS_CurrentLCMRecords INT DEFAULT 0, " .
+		    			"FS_HistoricalSCYRecords INT DEFAULT 0, " .
+		    			"FS_HistoricalSCMRecords INT DEFAULT 0, " .
+		    			"FS_HistoricalLCMRecords INT DEFAULT 0 " .
 		    			" )" );
     			}
 			}
@@ -1137,27 +1160,6 @@ sub GetNumberOfSwimmers() {
 
 	return ($num, $numWithPoints);
 } # end of GetNumberOfSwimmers()
-
-
-
-
-sub GetSwimmerResultSpecs_old( $$$$ ) {
-	my( $swimmerId, $org, $course, $ageGroup ) = @_;
-	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
-	my $query = "SELECT TotalPoints,ResultsCounted,ResultsAnalyzed " .
-		"FROM Points WHERE SwimmerId=$swimmerId AND Org='$org' AND " .
-		"Course='$course' AND AgeGroup='$ageGroup'";
-	my( $totalPoints, $resultsCounted, $resultsAnalyzed ) = 0,0,0;
-		
-	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query, "TT_MySqlSupport::GetSwimmerResultSpecs" );
-	if( defined(my $resultHash = $sth->fetchrow_hashref) ) {
-		$totalPoints = $resultHash->{'TotalPoints'};
-		$resultsCounted = $resultHash->{'ResultsCounted'};
-		$resultsAnalyzed = $resultHash->{'ResultsAnalyzed'};
-	}
-	return( $totalPoints, $resultsCounted, $resultsAnalyzed );
-}
-
 
 
 #	if( AgeGroupsClose( $ageGroup, $ageGroup1 ) ) {
@@ -2235,32 +2237,68 @@ sub ReadSwimMeetData( $ ) {
 #	$season -
 #
 # RETURNED:
-#	$count -
-#	$sth - mysql statement handle from which our statistics can be fetched.
+#	$count - the number of different rows found for the passed season.  Should be 1 (or 0 if no stats
+#		for that season.)
+#	$resultHash - the result hash for the (hopefully) single row returned.  If $count = 0 then
+#		$resultHash will be 0.  If $count > 1 then only the first row in the result set will be returned.
+
+#	$sth - mysql statement handle from which our statistics can be fetched.  0 if there were no 
+#		rows to return.  If $count > 1 then there will likely be multiple values for each column
+#		so the caller should check for that and handle it accordingly.
 #
 sub GetLastRequestStats( $$ ) { 
 	my $dbh = $_[0];
 	my $season = $_[1];
 	my $status = "x";		# initialize to any non-empty value
 	my ($sth, $rv) = (0, 0);
+	my ($resultHash, $count) = (0, 0);
 	
-	my $query1 = "SELECT COUNT(*) as Count FROM FetchStats WHERE Season = \"$season\"";
-	($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query1 );
-	my $resultHash = $sth->fetchrow_hashref;
-	my $count = $resultHash->{"Count"};
+	# first, make sure we have the FetchStats table:
+	my $exists = DoesTableExist( "FetchStats" );
+	
+	if( $exists ) {
+		my $query1 = "SELECT COUNT(*) as Count FROM FetchStats WHERE Season = \"$season\"";
+		($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query1, "" );
+		$resultHash = $sth->fetchrow_hashref;
+		$count = $resultHash->{"Count"};
+	
+		if( $count >= 1 ) {
+			my $query = 
+				"SELECT * FROM FetchStats WHERE Season = \"$season\"";
+			($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+			$resultHash = $sth->fetchrow_hashref;
+		}
+	} else { 
+		PMSLogging::DumpError( 0, 0, "TT_MySqlSupport::GetLastRequestStats(): The " .
+			"'FetchStats' table doesn't exist - we will treat this as though there are no " .
+			"statistics for $season", 1 );
+	}
 
-	($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
-		"SELECT LinesRead, MeetsSeen, ResultsSeen, FilesSeen, RaceLines, Date " .
-		"FROM FetchStats " .
-		"WHERE Season = \"$season\"" );
-
-	return ($count, $sth);
+	return ($count, $resultHash);
 
 } # end of GetLastRequestStats()
+
+
+
+sub DoesTableExist( $ ) {
+	my $tableName = uc($_[0]);
+	my $exists = 0;
+	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
+	my ($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh, "SHOW TABLES" );
+	while( defined(my $resulArrRef = $sth->fetchrow_arrayref) ) {
+		my $existingTableName = $resulArrRef->[0];
+		if( uc($existingTableName) eq $tableName ) {
+			$exists = 1;
+			last;
+		}
+	}
+    return $exists;
+} # end of DoesTableExist()
+
+
+
 	
-	
-#TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, $numLinesRead, $numDifferentMeetsSeen, 
-#	$numDifferentResultsSeen, $numDifferentFiles, $raceLines );
+#TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, $raceLines, $PMSSwimmerData );
 # DidWeGetDifferentData - (Used by GetResults) see if the results we just fetched are different from
 #	the results we last fetched.
 #
@@ -2279,63 +2317,60 @@ sub GetLastRequestStats( $$ ) {
 # NOTES:
 #	Instead of returing a value, this routine will log its results.
 #
-sub DidWeGetDifferentData( $$$$$$$ ) {
-	my( $season, $numLinesRead, $numDifferentMeetsSeen, 
-		$numDifferentResultsSeen, $numDifferentFiles, $raceLines, $PMSSwimmerData ) = @_;
+
+# $numLinesRead, $numDifferentMeetsSeen, 
+#		$numDifferentResultsSeen, $numDifferentFiles
+		
+		
+sub DidWeGetDifferentData( $$$ ) {
+	my( $season, $raceLines, $PMSSwimmerData ) = @_;
 	my ($sth, $rv, $numRows) = (0, 0, 0);
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
-	
+
+	# get the statistics generated by this run of GetResults:
+	my $numLinesRead = TT_Struct::GetFetchStat("FS_NumLinesRead");
+
 	# get the request statistics from the last time we got request data:
-	($numRows, $sth) = GetLastRequestStats( $dbh, $season );
+	my $resultHash;
+	($numRows, $resultHash) = GetLastRequestStats( $dbh, $season );
 	# did we find exactly one row?
 	if( $numRows == 1 ) {
 		# yes!  Compare with passed data.
-		my $resultHash = $sth->fetchrow_hashref;
-		my $prevLinesRead = $resultHash->{LinesRead};
-		my $prevMeetsSeen = $resultHash->{MeetsSeen};
-		my $prevResultsSeen = $resultHash->{ResultsSeen};
-		my $prevFilesSeen = $resultHash->{FilesSeen};
-		my $prevRaceLines = $resultHash->{RaceLines};
+		my $prevLinesRead = $resultHash->{FS_NumLinesRead};
 		my $prevDateTime = $resultHash->{Date};
-		if( 
-			($prevLinesRead != $numLinesRead) ||
-			($prevMeetsSeen != $numDifferentMeetsSeen) ||
-			($prevResultsSeen != $numDifferentResultsSeen) ||
-			($prevFilesSeen != $numDifferentFiles) ||
-			($prevRaceLines != $raceLines) ) {
+		if( my $numDiffs = TT_Struct::HashesAreDifferent( TT_Struct::GetFetchStatRef(), $resultHash ) ) {
 			# looks like the results we just fetched are different from the last time we
 			# fetched results.  But we'll not acknowledge the differences if any errors occurred:
 			if( PMSLogging::GetNumErrorsLogged() == 0 ) {
-				# now update this row with the new values
-				my $query = "UPDATE FetchStats SET LinesRead = '$numLinesRead', " .
-					"MeetsSeen = '$numDifferentMeetsSeen', " .
-					"ResultsSeen = '$numDifferentResultsSeen', " .
-					"FilesSeen = '$numDifferentFiles', " .
-					"RaceLines = '$raceLines', " .
-					"Date = '" . PMSStruct::GetMacrosRef()->{"MySqlDateTime"} . "' " .
-					"WHERE Season = '$season'";
-				($sth, $rv, my $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
-				if( $status ) {
-					# update failed - ERROR!
-					PMSLogging::DumpError( 0, 0, "TT_MySqlSupport.pm::DidWeGetDifferentData(): " .
-						"UPDATE of FetchStats failed (err='$status', query='$query')", 1 );
-				}
+				# no errors occurred - now update this row with the new values
+				UpdateFetchStats( $season, TT_Struct::GetFetchStatRef(), 
+					PMSStruct::GetMacrosRef()->{"MySqlDateTime"}, 1 );
+				# Next, log the fact that we found different results, which USUALLY means we need to 
+				# regenerate top ten results.  But not so! ...
 				# We will only log that there were differences IF the number of lines read this time is
-				# "substantially" different from the number of lines read last time.  Otherwise we will
+				# "substantially" different from the number of lines read last time, OR there were
+				# other differences.  Otherwise (if the only difference was with the number of lines
+				# read and that difference is very minor) we will
 				# NOT log that any differences exist (thus we will likely not bother computing new
 				# top ten points.  We do this because we've seen differences of 1 line with no other
 				# differences and it's anoying being told that there are new top ten results when there
 				# really arn't!)
 				if( 
-					((abs($prevLinesRead - $numLinesRead)) > 3) ||		# difference in lines must be > some small amt
-					($prevMeetsSeen != $numDifferentMeetsSeen) ||
-					($prevResultsSeen != $numDifferentResultsSeen) ||
-					($prevFilesSeen != $numDifferentFiles) ||
-					($prevRaceLines != $raceLines) ) {
-					# Summarize the differences in the log:
-					PMSLogging::PrintLog( "", "", "Results have changed since the last time we got results on $prevDateTime:", 1 );
-					LogPrevious( $prevLinesRead, $prevMeetsSeen, $prevResultsSeen, $prevFilesSeen, $prevRaceLines );
+					( (abs($prevLinesRead - $numLinesRead)) > 3 ) ||	# There was a significant 
+																		# difference in the total number of lines seen
+					( $prevLinesRead == $numLinesRead ) ||				# The total number of lines seen isn't
+																		# different so there must be other differences
+					( (abs($prevLinesRead - $numLinesRead) <= 3 ) && ($numDiffs >= 2) )	# There was an
+																		# INSIGNIFICANT difference in the number of
+																		# lines seen, but there were other differences
+																		# for which we must recalculate top ten.
+					) {
+					# We must recalculate top ten - summarize the differences in the log:
+					PMSLogging::PrintLog( "", "", "Results have changed ($numDiffs changes) " .
+						"since the last time we got results on $prevDateTime:", 1 );
+					TT_Struct::PrintStats( "Previous", $resultHash, 1 );
 				} else {
+					# We don't need to recalculate top ten EVEN THOUGH we found slight differences in the results
 					PMSLogging::PrintLog( "", "", "NOTE:  there appears to be no change in results " .
 						"since $prevDateTime", 1 );
 					PMSLogging::PrintLog( "", "", "    (HOWEVER: Previous line read: $prevLinesRead, new lines read: " .
@@ -2347,9 +2382,10 @@ sub DidWeGetDifferentData( $$$$$$$ ) {
 					"got results on $prevDateTime...\n    >>>BUT errors were detected, so we're ignoring the " .
 					"possible changes.\n    >>>We'll act as though results DID NOT change " .
 					"and NOT update our FetchStats.", 1 );
-				LogPrevious( $prevLinesRead, $prevMeetsSeen, $prevResultsSeen, $prevFilesSeen, $prevRaceLines );
+				TT_Struct::PrintStats( "Previous", $resultHash, 1 );
 			}
 		} else {
+			# we found no differences in the results since the last time we looked...
 			if( PMSLogging::GetNumErrorsLogged() == 0 ) {
 				# if we have a new RSIND file to process we'll pretend that results have changed because
 				# the new RSIND file may give us new swimmers who deserve points that didn't get point
@@ -2403,32 +2439,87 @@ sub DidWeGetDifferentData( $$$$$$$ ) {
 		PMSLogging::PrintLog( "", "", "TT_MySqlSupport::DidWeGetDifferentData(): Found $numRows rows for season $season " .
 			"in the FetchStats table.  This must be investigated since we determine whether or not " .
 			"results have changed (and we're not updating the FetchStats table even if we should)!", 1 );
-	} else {
+	} else { # ($numRows == 0)...
 		# first time we've gathered results for this year?  Act as though results have changed
 		# so we generate a new standings page:
 		PMSLogging::PrintLog( "", "", "Results have changed because this is the first time we've seen results " .
 		"for $season. ($numRows)", 1 );
 		# no rows.  Add this one
-		my $query = "INSERT INTO FetchStats " .
-				"(Season, LinesRead, MeetsSeen, ResultsSeen, FilesSeen, RaceLines, Date) " .
-				"VALUES (\"$season\",\"$numLinesRead\",\"$numDifferentMeetsSeen\",\"$numDifferentResultsSeen\", " .
-				"\"$numDifferentFiles\",\"$raceLines\", \"" . PMSStruct::GetMacrosRef()->{"MySqlDateTime"} . "\" )";
-		my($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
-		
-		# get the FetchStatsId of the row we just entered into our db just to make sure it worked
-    	my $fetchStatsId = $dbh->last_insert_id(undef, undef, "FetchStats", "FetchStatsId");
-    	die "TT_MySqlSupport::DidWeGetDifferentData(): Insert of row for season $season into FetchStats " .
-    		"failed." if( !defined( $fetchStatsId ) );
+		UpdateFetchStats( $season, TT_Struct::GetFetchStatRef(), 
+			PMSStruct::GetMacrosRef()->{"MySqlDateTime"}, 0 );
 	}
 } # end of DidWeGetDifferentData()
 
 
-sub LogPrevious($$$$$) {
-	my( $prevLinesRead, $prevMeetsSeen, $prevResultsSeen, $prevFilesSeen, $prevRaceLines ) = @_;
-	PMSLogging::PrintLog( "", "", "    Previous number of lines read: $prevLinesRead", 1 );
-	PMSLogging::PrintLog( "", "", "    Previous number of unique meets discovered: $prevMeetsSeen", 1 );
-	PMSLogging::PrintLog( "", "", "    Previous number of different results found: $prevResultsSeen", 1 );
-	PMSLogging::PrintLog( "", "", "    Previous number of files processed: $prevFilesSeen", 1 );
-	PMSLogging::PrintLog( "", "", "    Previous number of different meets written to races.txt: $prevRaceLines", 1 );
-} # end of LogPrevious()
+
+
+
+
+# 	UpdateFetchStats( $season, TT_Struct::GetFetchStatRef(), 
+#	PMSStruct::GetMacrosRef()->{"MySqlDateTime"}, 1 );
+# UpdateFetchStats - update the FetchStats database table
+#
+# PASSED:
+#	$season - the season being processed, e.g. "2019"
+#	$hashRef - a reference to a hashtable containing the data to be used to update the db table
+#	$date - the date that is used to set the Date field in the db table.
+#	$update - TRUE if we perform an UPDATE, false if instead we need to perform in INSERT.
+#
+# RETURNED:
+#	n/a
+#
+# NOTES:
+#	If there are any errors they are logged but otherwise ignored.
+#
+sub UpdateFetchStats( $$$$ ) {
+	my ($season, $hashRef, $date, $update) = @_;
+	my $query = "";
+	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
+
+	if( $update ) {
+		# construct an UPDATE query:
+		$query = "UPDATE FetchStats SET Season = '$season', Date = '$date'";
+		foreach my $key (keys %{$hashRef}) {
+			if( $key !~ m/^.*_Desc/ ) {
+				$query .= ", $key = '" . $hashRef->{$key} . "'";
+			}
+		}
+		$query .= "WHERE Season = '$season'";
+	} else {
+		# construct an INSERT query:
+		$query = "INSERT INTO FetchStats (Season,Date";
+		my $values = "VALUES ('$season','$date'";
+		foreach my $key (keys %{$hashRef}) {
+			if( $key !~ m/^.*_Desc/ ) {
+				$query .= ", $key";
+				$values .= ", '" . $hashRef->{$key} . "'";
+			}
+		}
+		$query .= ") $values)";
+	}
+	
+	# execute the query:
+	my ($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+	if( $update ) {
+		# did the UPDATE go OK?
+		if( $status ) {
+			# update failed - ERROR!
+			PMSLogging::DumpError( 0, 0, "TT_MySqlSupport::UpdateFetchStats(): " .
+				"UPDATE of FetchStats failed (season=$season, err='$status', query='$query')", 1 );
+		}
+	} else {
+		# did the INSERT go OK?
+		# get the FetchStatsId of the row we just entered into our db just to make sure it worked
+    	my $fetchStatsId = $dbh->last_insert_id(undef, undef, "FetchStats", "FetchStatsId");
+    	if( !defined( $fetchStatsId ) ) {
+    		# insert failed - ERROR!
+	    	PMSLogging::DumpError( 0, 0, "TT_MySqlSupport::UpdateFetchStats(): Insert of row for " .
+	    		"season $season into FetchStats " .
+	    		"failed (season=$season, query='$query')" );
+    	}
+	}
+} # end of UpdateFetchStats()
+				
+			
+
 1;  # end of module

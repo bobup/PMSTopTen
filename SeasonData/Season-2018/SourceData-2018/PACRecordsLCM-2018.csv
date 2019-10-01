@@ -1,37 +1,43 @@
-M,75-79,50,Free,Richard Burns,2018-08-04,29.70
-F,30-34,50,Breast,Kathleen E McGraw,2018-08-03,34.84
-M,75-79,50,Back,Richard Burns,2018-08-02,34.45
-F,18-24,50,Back,Kali L Conlon,2018-08-02,31.29
-F,65-69,50,Back,Laura B Val,2018-08-02,33.59
-M,80-84,200,Free,William G Van Horn,2018-07-31,3:07.24
-M,75-79,100,Back,Richard Burns,2018-07-31,1:17.17
-M,75-79,50,Fly,Richard Burns,2018-07-31,32.17
-F,65-69,100,Back,Laura B Val,2018-07-31,1:14.49
-M,75-79,100,Free,Richard Burns,2018-07-30,1:08.46
-M,80-84,100,Free,William G Van Horn,2018-07-30,1:20.52
-M,65-69,200,Back,Fred Ferroggiaro,2018-07-30,2:39.44
-M,75-79,200,Back,Richard Burns,2018-07-30,2:50.25
-F,65-69,100,Free,Laura B Val,2018-07-30,1:04.89
-M,80-84,50,Free,William G Van Horn,2018-07-29,33.99
-F,65-69,50,Free,Laura B Val,2018-07-29,29.17
-M,65-69,800,Free,Fred Ferroggiaro,2018-07-28,10:31.70
-F,70-74,800,Free,Ruth Y Shaps,2018-07-15,13:10.11
-M,50-54,100,Back,Rick Gould,2018-07-11,1:02.17
-M,75-79,200,Breast,David R Gildea,2018-07-11,3:35.51
-M,75-79,200,I.M.,Richard Burns,2018-07-11,3:02.57
-F,65-69,400,Free,Laura B Val,2018-07-11,5:18.04
-F,60-64,100,Back,Bonnie M Bilich,2018-07-11,1:14.50
-F,60-64,50,Breast,Barbara C Wheeler,2018-07-11,42.57
-F,55-59,200,Breast,Merrie E Walts,2018-07-11,3:20.11
-F,65-69,50,Fly,Laura B Val,2018-07-11,33.34
-M,50-54,50,Back,Rick Gould,2018-07-10,28.58
-M,55-59,50,Back,Jean-Philippe M Riblet,2018-07-10,31.18
-M,50-54,200,Back,Rick Gould,2018-07-10,2:16.79
-M,75-79,100,Breast,David R Gildea,2018-07-10,1:34.71
-M,75-79,100,Fly,Richard Burns,2018-07-10,1:20.68
-F,75-79,50,Free,Nancy J Ridout,2018-07-10,39.61
-F,60-64,200,Back,Bonnie M Bilich,2018-07-10,2:42.42
-F,60-64,100,Breast,Bonnie M Bilich,2018-07-10,1:29.39
-M,35-39,200,Free,Tamas Kerekjarto,2018-07-09,1:59.43
-M,50-54,800,Free,Barton S Wells,2018-07-08,9:21.11
-F,70-74,1500,Free,Ruth Y Shaps,2018-07-08,25:01.08
+M,75-79,50,Freestyle,James E Elder,2018-07-29,00:00:29.87,
+M,75-79,50,Freestyle,Richard Burns,2018-08-04,00:00:29.70,
+M,80-84,50,Freestyle,William G Van Horn,2018-07-29,00:00:33.99,
+M,75-79,100,Freestyle,Richard Burns,2018-07-30,00:01:08.46,
+M,80-84,100,Freestyle,William G Van Horn,2018-07-30,00:01:20.52,
+M,35-39,200,Freestyle,Tamas Kerekjarto,2018-07-09,00:01:59.43,
+M,80-84,200,Freestyle,William G Van Horn,2018-07-31,00:03:07.24,
+M,50-54,800,Freestyle,Barton S Wells,2018-07-08,00:09:21.11,
+M,65-69,800,Freestyle,Fred Ferroggiaro,2018-07-28,00:10:31.70,
+M,50-54,50,Backstroke,Rick Gould,2018-07-10,00:00:28.58,
+M,55-59,50,Backstroke,Jean-Philippe M Riblet,2018-07-10,00:00:31.18,
+M,75-79,50,Backstroke,Richard Burns,2018-08-02,00:00:34.45,
+M,50-54,100,Backstroke,Rick Gould,2018-07-11,00:01:02.17,
+M,75-79,100,Backstroke,Richard Burns,2018-07-31,00:01:17.17,
+M,50-54,200,Backstroke,Rick Gould,2018-07-10,00:02:16.79,
+M,65-69,200,Backstroke,Fred Ferroggiaro,2018-07-10,00:02:41.49,
+M,65-69,200,Backstroke,Fred Ferroggiaro,2018-07-30,00:02:39.44,
+M,75-79,200,Backstroke,Richard Burns,2018-07-30,00:02:50.25,
+M,75-79,50,Breaststroke,David R Gildea,2018-07-11,00:00:42.76,
+M,75-79,100,Breaststroke,David R Gildea,2018-07-10,00:01:34.71,
+M,75-79,200,Breaststroke,David R Gildea,2018-07-11,00:03:35.51,
+M,75-79,50,Butterfly,Richard Burns,2018-07-31,00:00:32.17,
+M,75-79,100,Butterfly,Richard Burns,2018-07-10,00:01:20.68,
+M,75-79,200,Individual Medley,Richard Burns,2018-07-11,00:03:02.57,
+F,65-69,50,Freestyle,Laura B Val,2018-07-29,00:00:29.17,
+F,75-79,50,Freestyle,Nancy J Ridout,2018-07-10,00:00:39.61,
+F,65-69,100,Freestyle,Laura B Val,2018-07-30,00:01:04.89,
+F,65-69,400,Freestyle,Laura B Val,2018-07-11,00:05:18.04,
+F,40-44,800,Freestyle,Heidi S George,2018-07-08,00:09:21.19,
+F,70-74,800,Freestyle,Ruth Y Shaps,2018-07-15,00:13:10.11,
+F,70-74,1500,Freestyle,Ruth Y Shaps,2018-07-08,00:25:01.08,
+F,18-24,50,Backstroke,Kali L Conlon,2018-08-02,00:00:31.29,
+F,65-69,50,Backstroke,Laura B Val,2018-08-02,00:00:33.59,
+F,60-64,100,Backstroke,Bonnie M Bilich,2018-07-11,00:01:14.50,
+F,65-69,100,Backstroke,Laura B Val,2018-07-31,00:01:14.49,
+F,70-74,100,Backstroke,Ruth Y Shaps,2018-07-11,00:01:40.48,
+F,60-64,200,Backstroke,Bonnie M Bilich,2018-07-10,00:02:42.42,
+F,75-79,200,Backstroke,Leslie M Westergaard,2018-07-10,00:04:08.72,
+F,30-34,50,Breaststroke,Kathleen E McGraw,2018-08-03,00:00:34.84,
+F,60-64,50,Breaststroke,Barbara C Wheeler,2018-07-11,00:00:42.57,
+F,60-64,100,Breaststroke,Bonnie M Bilich,2018-07-10,00:01:29.39,
+F,55-59,200,Breaststroke,Merrie E Walts,2018-07-11,00:03:20.11,
+F,65-69,50,Butterfly,Laura B Val,2018-07-11,00:00:33.34,

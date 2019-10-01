@@ -58,8 +58,7 @@ use File::Basename;
 use File::Path qw(make_path remove_tree);
 use Cwd 'abs_path';
 use HTTP::Tiny;
-#use LWP::Simple;
-#use LWP::Simple qw/get $ua/;
+use Data::Dumper;
 
 my $debug;
 my $appProgName;	# the name of this program
@@ -117,23 +116,26 @@ where:
 bup
 ;
 
-use lib "$appDirName/TTPerlModules";
-require TT_MySqlSupport;
-require TT_Logging;
-
 use FindBin;
 use File::Spec;
-use lib File::Spec->catdir( $FindBin::Bin, '..', '..', '..', 'PMSPerlModules' );
+use lib File::Spec->catdir( $FindBin::Bin, '..',  '..', 'PMSPerlModules' );
 require PMSLogging;
 require PMSMacros;
 require PMSUtil;
+use lib File::Spec->catdir( $FindBin::Bin, '..', '..', 'PACWebService/Client/Perl' );
+require WebServiceClient;
 
+use lib "$appDirName/TTPerlModules";
+require TT_Struct;
+require TT_MySqlSupport;
+require TT_Logging;
+use JSON::MaybeXS;
 
 
 sub GetUSMSTopTenResults( $$$$$ );
 sub GetPMSTopTenResults( $$$$$ );
 sub GetSwimMeetDetails();
-sub GetPMSRecords( $$$$$$ );
+sub GetPMSRecords2( $$$$$ );
 sub GetUSMSRecords( $$$ );
 sub GetPMSOWResults( $$ );
 
@@ -142,7 +144,8 @@ sub GetPMSOWResults( $$ );
 #my %tinyAttributes = ("agent" => "WikiBot/0.1");
 #my %tinyAttributes = ("agent" => "Mozilla/5.0 (Macintosh; Intel) Gecko/20100101 Firefox/59.0");
 #my $tinyHttp = HTTP::Tiny->new( %tinyAttributes );
-my $tinyHttp = HTTP::Tiny->new( );
+# create a new HTTP::Tiny object in every object that needs it...
+#my $tinyHttp = HTTP::Tiny->new( );
 my $httpResponse;
 
 # $SwimMeets{title of meet} = "ORG|COURSE|link to details for meet";
@@ -284,9 +287,6 @@ PMSLogging::DumpNote( "", "", "$appProgName: get results for the year $yearBeing
 ###
 ### initialize database
 ###
-# We need to initialize FetchStats but we'll initialize all the tables
-# my $dbh = TT_MySqlSupport::InitializeTopTenDB();
-
 # First, initialize the database parameters:
 PMS_MySqlSupport::SetSqlParameters( 'default',
 	PMSStruct::GetMacrosRef()->{"dbHost"},
@@ -294,6 +294,7 @@ PMS_MySqlSupport::SetSqlParameters( 'default',
 	PMSStruct::GetMacrosRef()->{"dbUser"},
 	PMSStruct::GetMacrosRef()->{"dbPass"} );
 
+# We need to initialize FetchStats but we'll initialize all the tables
 my $dbh = TT_MySqlSupport::InitializeTopTenDB();
 
 # the result files that we get:
@@ -303,69 +304,29 @@ my %PMSRecordsFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"PMSRecordsFiles
 my %USMSRecordsFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"USMSRecordsFiles"};
 my $PMSOpenWaterResultFile = PMSStruct::GetMacrosRef()->{"PMSOpenWaterResultFile"};
 
-
-
-#	# lines read - the number of lines read from the web page pointed to by $linkToResults.
-#	# different meets seen - the number of UNIQUE swim meets referenced in the web page.
-#	# different results seen - the number of result lines in the web page.  Less than # lines read.
-#	# different files - there is only 1 result file we'll get from this web page.
-
-
-
-# While we collect all the result files to process we're going to keep track of a few statistics:
-#	$numLinesRead - this will be the total number of lines read from the web pages that we process
-#		to get the result files that we'll process to compute points.  PLUS, the number of lines in the
-#		open water file that we process.
-#	$numDifferentMeetsSeen - the number of UNIQUE meets we see in the web pages we process, PLUS the 
-#		number of open water events.
-#	$numDifferentResultsSeen - the total number of result lines we see when processing the web 
-#		pages and OW results.
-#	$numDifferentFiles - number of different result files we find while analyzing the web pages, PLUS
-#		1 for the OW results.  This number will increase throughout the season as more result files become
-#		available.
-#
-my ($numLinesRead, $numDifferentMeetsSeen, $numDifferentResultsSeen, $numDifferentFiles) = (0,0,0,0);
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET PMS Top Ten POINTS
 ####
 if(1) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	foreach my $simpleFileName ( sort keys %PMSResultFiles ) {
-		my ($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = (0,0,0,0);
 		my $org_course = $PMSResultFiles{$simpleFileName};
 		if( $org_course eq "PAC-SCY") {
 			## Get SCY results:
-			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-				GetPMSTopTenResults( "https://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=1&ZoneID=&LMSCID=38&Club=",
-					"https://www.usms.org", "PAC", "SCY", $simpleFileName );
+			GetPMSTopTenResults( "https://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=1&ZoneID=&LMSCID=38&Club=",
+				"https://www.usms.org", "PAC", "SCY", $simpleFileName );
 		} elsif( $org_course eq "PAC-SCM") {
 			## Get SCM results:
-			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-				GetPMSTopTenResults( "https://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=3&ZoneID=&LMSCID=38&Club=",
-					"https://www.usms.org", "PAC", "SCM", $simpleFileName );
+			GetPMSTopTenResults( "https://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=3&ZoneID=&LMSCID=38&Club=",
+				"https://www.usms.org", "PAC", "SCM", $simpleFileName );
 		} elsif( $org_course eq "PAC-LCM") {
 			## Get LCM results:
-			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-				GetPMSTopTenResults( "https://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=2&ZoneID=&LMSCID=38&Club=",
-					"https://www.usms.org", "PAC", "LCM", $simpleFileName );
+			GetPMSTopTenResults( "https://www.usms.org/comp/meets/toptenlocalind.php?Year=$yearBeingProcessed&CourseID=2&ZoneID=&LMSCID=38&Club=",
+				"https://www.usms.org", "PAC", "LCM", $simpleFileName );
 		} else {
 			PMSLogging::DumpError( "", "", "GetResults::Illegal org_course ($org_course) when getting PMS Top Ten POINTS" );		
 		}
-		$numLinesRead += $numLinesReadTemp;
-		$numDifferentMeetsSeen += $numDifferentMeetsSeenTemp;
-		$numDifferentResultsSeen += $numDifferentResultsSeenTemp;
-		$numDifferentFiles += $numDifferentFilesTemp;
 	} # end of foreach( ...
-	if( $debug ) {
-		PMSLogging::PrintLog( "", "", "FINISH getting PMS top 10...", 1 );
-		PMSLogging::PrintLog( "", "", "GetResults:: Totals:", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of lines read: $numLinesRead", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-		#TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
-		#PMSLogging::PrintLog( "", "", "Did query after getting PMS top 10.", 1 );
-	}
 } # end of if(1)...
 
 
@@ -377,41 +338,23 @@ if(1) {
 if(1) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	foreach my $simpleFileName ( sort keys %USMSResultFiles ) {
-		my ($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = (0,0,0,0);
 		my $org_course = $USMSResultFiles{$simpleFileName};
 		if( $org_course eq "USMS-SCY" ) {
 			## Get SCY results:
-			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-				GetUSMSTopTenResults( "http://www.usms.org/comp/tt/toptenlmsc.php?Year=$yearBeingProcessed&CourseID=1&ZoneID=&LMSCID=38&ClubAbbr=",
-					"https://www.usms.org", "USMS", "SCY", $simpleFileName );
+			GetUSMSTopTenResults( "http://www.usms.org/comp/tt/toptenlmsc.php?Year=$yearBeingProcessed&CourseID=1&ZoneID=&LMSCID=38&ClubAbbr=",
+				"https://www.usms.org", "USMS", "SCY", $simpleFileName );
 		} elsif( $org_course eq "USMS-SCM" ) {
 			## Get SCM results:
-			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-				GetUSMSTopTenResults( "http://www.usms.org/comp/tt/toptenlmsc.php?Year=$yearBeingProcessed&CourseID=3&ZoneID=&LMSCID=38&ClubAbbr=",
-					"https://www.usms.org", "USMS", "SCM", $simpleFileName );
+			GetUSMSTopTenResults( "http://www.usms.org/comp/tt/toptenlmsc.php?Year=$yearBeingProcessed&CourseID=3&ZoneID=&LMSCID=38&ClubAbbr=",
+				"https://www.usms.org", "USMS", "SCM", $simpleFileName );
 		} elsif( $org_course eq "USMS-LCM" ) {
 			## Get LCM results:
-			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-				GetUSMSTopTenResults( "http://www.usms.org/comp/tt/toptenlmsc.php?Year=$yearBeingProcessed&CourseID=2&ZoneID=&LMSCID=38&ClubAbbr=",
-					"https://www.usms.org", "USMS", "LCM", $simpleFileName );
+			GetUSMSTopTenResults( "http://www.usms.org/comp/tt/toptenlmsc.php?Year=$yearBeingProcessed&CourseID=2&ZoneID=&LMSCID=38&ClubAbbr=",
+				"https://www.usms.org", "USMS", "LCM", $simpleFileName );
 		} else {
 			PMSLogging::DumpError( "", "", "GetResults::Illegal org_course ($org_course) when getting USMS Top Ten POINTS" );		
 		}
-		$numLinesRead += $numLinesReadTemp;
-		$numDifferentMeetsSeen += $numDifferentMeetsSeenTemp;
-		$numDifferentResultsSeen += $numDifferentResultsSeenTemp;
-		$numDifferentFiles += $numDifferentFilesTemp;
 	} # end of foreach( ...
-	if( $debug ) {
-		PMSLogging::PrintLog( "", "", "FINISH getting USMS top 10...", 1 );
-		PMSLogging::PrintLog( "", "", "GetResults:: Totals:", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of lines read: $numLinesRead", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-		#TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
-		#PMSLogging::PrintLog( "", "", "Did query after getting USMS top 10.", 1 );
-	}
 } # end of if(1)...
 
 
@@ -422,44 +365,23 @@ if(1) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	my $previousYear = $yearBeingProcessed-1;
 	foreach my $simpleFileName ( sort keys %PMSRecordsFiles ) {
-		my ($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = (0,0,0,0);
 		my $org_course = $PMSRecordsFiles{$simpleFileName};
 		if( $org_course eq "PAC-SCY" ) {
 			## Get SCY results:
-			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-				GetPMSRecords( "http://pacificmasters.org/pacm/records?course=ind_scy&sort=desc&order=Date",
-					"PAC", "SCY Records", "$previousYear-06-01", "$yearBeingProcessed-05-31",
-					$simpleFileName );
+			GetPMSRecords2( "PAC", "SCY Records", "$previousYear-06-01", "$yearBeingProcessed-05-31",
+				$simpleFileName );
 		} elsif( $org_course eq "PAC-SCM" ) {
 			## Get SCM results:
-			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-				GetPMSRecords( "http://pacificmasters.org/pacm/records?course=ind_scm&sort=desc&order=Date",
-					"PAC", "SCM Records", "$yearBeingProcessed-01-01", "$yearBeingProcessed-12-31",
-					$simpleFileName );
+			GetPMSRecords2( "PAC", "SCM Records", "$yearBeingProcessed-01-01", "$yearBeingProcessed-12-31",
+				$simpleFileName );
 		} elsif( $org_course eq "PAC-LCM" ) {
 			## Get LCM results:
-			($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-				GetPMSRecords( "http://pacificmasters.org/pacm/records?course=ind_lcm&sort=desc&order=Date",
-					"PAC", "LCM Records", "$previousYear-10-01", "$yearBeingProcessed-09-30",
-					$simpleFileName );
+			GetPMSRecords2( "PAC", "LCM Records", "$previousYear-10-01", "$yearBeingProcessed-09-30",
+				$simpleFileName );
 		} else {
 			PMSLogging::DumpError( "", "", "GetResults::Illegal org_course ($org_course) when getting PMS Records" );		
 		}
-		$numLinesRead += $numLinesReadTemp;
-		$numDifferentMeetsSeen += $numDifferentMeetsSeenTemp;
-		$numDifferentResultsSeen += $numDifferentResultsSeenTemp;
-		$numDifferentFiles += $numDifferentFilesTemp;
 	} # end of foreach( ...
-	if( $debug ) {
-		PMSLogging::PrintLog( "", "", "FINISH getting PMS records...", 1 );
-		PMSLogging::PrintLog( "", "", "GetResults:: Totals:", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of lines read: $numLinesRead", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-		#TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
-		#PMSLogging::PrintLog( "", "", "Did query after getting PMS records.", 1 );
-	}
 } # end of if(1)...
 
 
@@ -468,23 +390,7 @@ if(1) {
 ####
 if(1) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
-	my ($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
-		GetUSMSRecords( "http://www.usms.org/comp/recordexport.php", \%USMSRecordsFiles, $yearBeingProcessed );
-	$numLinesRead += $numLinesReadTemp;
-	$numDifferentMeetsSeen += $numDifferentMeetsSeenTemp;
-	$numDifferentResultsSeen += $numDifferentResultsSeenTemp;
-	$numDifferentFiles += $numDifferentFilesTemp;
-
-	if( $debug ) {
-		PMSLogging::PrintLog( "", "", "FINISH getting USMS records...", 1 );
-		PMSLogging::PrintLog( "", "", "GetResults:: Totals:", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of lines read: $numLinesRead", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-		#TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
-		#PMSLogging::PrintLog( "", "", "Did query after getting USMS records.", 1 );
-	}
+	GetUSMSRecords( "http://www.usms.org/comp/recordexport.php", \%USMSRecordsFiles, $yearBeingProcessed );
 } # end of if(1)...
 
 
@@ -511,24 +417,7 @@ if(1) {
 				"awarded for OW swims.", 1 );
 		}
 	}
-	if( $numResultLines > 0 ) {
-		$numLinesRead += $numResultLines;
-		$numDifferentMeetsSeen += $numEvents;
-		$numDifferentResultsSeen += $numResultLines;
-		$numDifferentFiles += 1;
-	}
-
-	if( $debug ) {
-		PMSLogging::PrintLog( "", "", "FINISH getting OW...", 1 );
-		PMSLogging::PrintLog( "", "", "GetResults:: Totals:", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of lines read: $numLinesRead", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
-		PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-		#TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, 0, 0, 0, 0, 0, $PMSSwimmerData );
-		#PMSLogging::PrintLog( "", "", "Did query after getting OW.", 1 );
-	}
-} # end of if(1)...
+} # end of if(1)...GET PMS OW results...
 
 
 
@@ -556,18 +445,12 @@ foreach my $key (sort { $SwimMeets{$a} cmp $SwimMeets{$b} } keys %SwimMeets ) {
 		print $racesFileHandle "$key\t$isPMS\t$org\t$course\t$date\t$USMSMeetId\t$value2\n";
 	}
 }
-
+TT_Struct::SetFetchStat( "FS_NumRaceLines", $raceLines );
 PMSLogging::PrintLog( "", "", "GetResults:: Final Totals:", 1);
-PMSLogging::PrintLog( "", "", "    Total number of lines read: $numLinesRead", 1);
-PMSLogging::PrintLog( "", "", "    Total number of unique meets discovered: $numDifferentMeetsSeen", 1);
-PMSLogging::PrintLog( "", "", "    Total number of different results found: $numDifferentResultsSeen", 1);
-PMSLogging::PrintLog( "", "", "    Total number of different files processed: $numDifferentFiles", 1);
-PMSLogging::PrintLog( "", "", "    Total number of different meets written to $racesFileName: $raceLines", 1);
-TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, $numLinesRead, $numDifferentMeetsSeen, 
-	$numDifferentResultsSeen, $numDifferentFiles, $raceLines, $PMSSwimmerData );
+TT_Struct::PrintStats( "Total", TT_Struct::GetFetchStatRef(), $racesFileName, 1 );
+TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, $raceLines, $PMSSwimmerData );
+
 PMSLogging::PrintLog( "", "", "Done with $appProgName!", 1);
-
-
 
 # end of main
 
@@ -594,7 +477,8 @@ PMSLogging::PrintLog( "", "", "Done with $appProgName!", 1);
 #		$SwimMeets{title of meet} = "date|USMSMeetId|ORG|COURSE|USMSMeetId|link to details for meet|(IS a PAC sanctioned meet)"
 #
 sub GetSwimMeetDetails() {
-#	my $tinyHttp = HTTP::Tiny->new();
+	my $tinyHttp = HTTP::Tiny->new( );
+	
 	foreach my $key (keys %SwimMeets) {
 		my $value = $SwimMeets{$key};		# ORD|COURSE|LINK
 		$value =~ m/^([^\|]*)\|([^\|]*)\|(.*$)/;
@@ -652,11 +536,7 @@ sub GetSwimMeetDetails() {
 #		to a full file name putting it into the "correct" directory.
 #
 # RETURNED:
-#		return(	$lineNum, $numDifferentMeets, $numDifferentResults, 1 );
-#	# lines read - the number of lines read from the web page pointed to by $linkToResults.
-#	# different meets seen - the number of UNIQUE swim meets referenced in the web page.
-#	# different results seen - the number of result lines in the web page.  Less than # lines read.
-#	# different files - there is only 1 result file we'll get from this web page.
+#	n/a
 #
 # NOTES:
 #	This routine will read the result page ($linkToResults) gathering the following:
@@ -678,9 +558,10 @@ sub GetPMSTopTenResults( $$$$$ ) {
 	# there is any failure we don't accidently use any data left there from a previous run:
 	my $resultFileName = "$sourceDataDir/$destinationFileName";
 	if( !EmptyThisFile( $resultFileName, $linkToResults ) ) {
-		return( 0, 0, 0, 0 );
+		return;
 	}
 
+	my $tinyHttp = HTTP::Tiny->new( );
 	# define our callback to handle the HTTP response containing PMS top ten results
 	my $excelLink = "";		# the link used to request the excel results
 	my %excelArgs = ();		# the query args used when requesting the excel results
@@ -783,11 +664,13 @@ my $httpResponseRef = $tinyHttp->get( $linkToResults, \%options );
 		}
 	}
 	
-	return (
-		$callbackState{"numLines"},
-		$callbackState{"numDifferentMeets"},
-		$callbackState{"numDifferentResults"},
-		1 );
+	# record some statistics gathered while processing these results:
+	TT_Struct::IncreaseFetchStat( "FS_NumLinesRead", $callbackState{"numLines"} );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentMeetsSeen", $callbackState{"numDifferentMeets"} );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentResultsSeen", $callbackState{"numDifferentResults"} );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentFiles", 1 );
+	
+	return;
 		
 } # end of GetPMSTopTenResults()
 
@@ -1035,7 +918,7 @@ sub ParsePMSTopTenHttpResponse( $$$$$$$ ) {
 #
 # PASSED:
 #	$linkToResults - the URL to the page containing the human-readable results.  We'll scrape this page
-#		to get the URL requested to get the CSV version of the results, and also to get a list
+#		to get the URL used to get the CSV version of the results, and also to get a list
 #		of all the swim meets represented.
 #	$baseURL - the base URL used when resolving all (partial) URLs found on the result page
 #	$org - the organization.  Always USMS
@@ -1044,11 +927,7 @@ sub ParsePMSTopTenHttpResponse( $$$$$$$ ) {
 #		to a full file name putting it into the "correct" directory.
 #
 # RETURNED:
-#		return(	$lineNum, $numDifferentMeets, $numDifferentResults, 1 );
-#	# lines read
-#	# different meets seen
-#	# different results seen
-#	# different files
+#	n/a
 #
 # NOTES:
 #	This routine will read the result page ($linkToResults) gathering the following:
@@ -1065,9 +944,10 @@ sub GetUSMSTopTenResults( $$$$$ ) {
 	# there is any failure we don't accidently use any data left there from a previous run:
 	my $resultFileName = "$sourceDataDir/$destinationFileName";
 	if( !EmptyThisFile( $resultFileName, $linkToResults ) ) {
-		return( 0, 0, 0, 0 );
+		return;
 	}
-
+	
+	my $tinyHttp = HTTP::Tiny->new( );
 	# define our callback to handle the HTTP response containing USMS top ten results
 	my $excelLink = "";		# the link used to request the excel results
 	my %excelArgs = ();		# the query args used when requesting the excel results
@@ -1153,7 +1033,11 @@ sub GetUSMSTopTenResults( $$$$$ ) {
 				#PMSLogging::DumpNote( "", "", "    baseURL='$baseURL', excelLink='$excelLink'" );
 			}
 			OpenDownloadDestination( \%callbackFileDownloadState, $linkToResults );
-			my $httpResponseRef = $tinyHttp->get( $linkToResults, \%optionsFileDownload );
+
+			# for some reason we get HTTP errors when we re-use the $tinnyHttp object again here.  So
+			# I create a new one here and all works fine...
+			my $tinyHttp3 = HTTP::Tiny->new( );
+			my $httpResponseRef = $tinyHttp3->get( $linkToResults, \%optionsFileDownload );
 			CloseDownloadDestination( \%callbackFileDownloadState );
 			# we get here under TWO conditions:
 			#	- the entire response has been processed by data_callback routine and all is good, or
@@ -1180,11 +1064,14 @@ sub GetUSMSTopTenResults( $$$$$ ) {
 			$callbackState{"numLines"} . ", callbackState{numDifferentMeets}=" . $callbackState{"numDifferentMeets"} .
 			", callbackState{numDifferentResults}=" . $callbackState{"numDifferentResults"} . "\n", 1 );
 	}
-	return (
-		$callbackState{"numLines"},
-		$callbackState{"numDifferentMeets"},
-		$callbackState{"numDifferentResults"},
-		1 );
+	
+	# record some statistics gathered while processing these results:
+	TT_Struct::IncreaseFetchStat( "FS_NumLinesRead", $callbackState{"numLines"} );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentMeetsSeen", $callbackState{"numDifferentMeets"} );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentResultsSeen", $callbackState{"numDifferentResults"} );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentFiles", 1 );
+
+	return;
 
 } # end of GetUSMSTopTenResults()
 
@@ -1446,21 +1333,19 @@ sub ParseUSMSSwimDetails( $$$$ ) {
 #		to a full file name putting it into the "correct" directory.
 #
 # RETURNED:
-#		return(	$lineNum, $numDifferentMeets, $numDifferentResults, 1 );
-#	# lines read
-#	# different meets seen (will be 0)
-#	# different results seen (number of different records we find)
-#	# different files (will be 1)
+#	n/a
 #
 # NOTES:
 #	This routine will read the records page ($linkToResults) gathering the information for every
 #		record in the season.
 #	Files are created and global variables are modified and used later.
 #
-sub GetPMSRecords( $$$$$$ ) {
+sub GetPMSRecords_old( $$$$$$ ) {
 	my( $linkToResults, $org, $course, $minDate, $maxDate, $destinationFileName ) = @_;
 	my $recordsFileName = "$sourceDataDir/$destinationFileName";
 	my $recordsFileHandle;
+	my $tinyHttp = HTTP::Tiny->new( );
+
 	# define our callback to handle the HTTP response containing PMS records
 	my %callbackState = (
 		"numCallbackCalls"		=> 	0,
@@ -1504,15 +1389,21 @@ sub GetPMSRecords( $$$$$$ ) {
 				" callbacks.", 1 );
 		}
 	}
-	
-	return ($callbackState{"numLines"}, 0, $callbackState{'numDifferentRecords'}, 1);
+
+	# record some statistics gathered while processing these results:
+	TT_Struct::IncreaseFetchStat( "FS_NumLinesRead", $callbackState{"numLines"} );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentMeetsSeen", 0 );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentResultsSeen", $callbackState{"numDifferentRecords"} );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentFiles", 1 );
+
+	return;
 	
 } # end of GetPMSRecords()
 		
 
 # ParsePMSRecordsHttpResponse - parse the response to the request made by GetPMSRecords() above.
 #
-sub ParsePMSRecordsHttpResponse( $$$$$$$$ ) {
+sub ParsePMSRecordsHttpResponse_old( $$$$$$$$ ) {
 	my( $callbackStateRef, $linkToResults, $org, $course, $minDate, $maxDate,
 		$content, $httpResponseRef ) = @_;
 	my $numCallbackCalls = $callbackStateRef->{"numCallbackCalls"}+1;
@@ -1654,11 +1545,7 @@ sub ParsePMSRecordsHttpResponse( $$$$$$$$ ) {
 #	$yearBeingProcessed - e.g. 2017
 #
 # RETURNED:
-#		return(	$lineNum, $numDifferentMeets, $numDifferentResults, $numFiles );
-#	# lines read
-#	# different meets seen
-#	# different results seen
-#	# different files
+#	n/a
 #
 # NOTES:
 #	This routine will use the passed $linkToResults to request each of the record pages.:
@@ -1670,6 +1557,7 @@ sub GetUSMSRecords( $$$ ) {
 	my %courses = ( "SCY" => 1, "LCM" => 2, "SCM" => 3 );
 	my $numFiles = 0;
 
+	my $tinyHttp = HTTP::Tiny->new( );
 	foreach my $simpleFileName ( sort keys %{$USMSRecordsFilesRef} ) {
 		my $course = $USMSRecordsFilesRef->{$simpleFileName};	# looks like this: USMS-SCY@M
 		$course =~ m/^(.*)-(.*)@(.)$/;
@@ -1734,13 +1622,19 @@ sub GetUSMSRecords( $$$ ) {
 			$numFiles++;
 		}
 	} # end of foreach my $simpleFileName...
-	return(	0, 0, 0, $numFiles );
+	
+	# record some statistics gathered while processing these results:
+	TT_Struct::IncreaseFetchStat( "FS_NumLinesRead", 0 );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentMeetsSeen", 0 );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentResultsSeen", 0 );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentFiles", $numFiles );
+
+	return;
 } # end of GetUSMSRecords()
 
 
 
 
-# my ($numLinesReadTemp, $numDifferentMeetsSeenTemp, $numDifferentResultsSeenTemp, $numDifferentFilesTemp) = 
 #	GetPMSOWResults( "http://pacificmasters.org/points/OWPoints/$PMSOpenWaterResultFile" );
 # GetPMSOWResults - get the open water result file 
 #
@@ -1763,6 +1657,7 @@ sub GetPMSOWResults( $$ ) {
 	my $org = "PMS";
 	my $course = "OW";
 
+	my $tinyHttp = HTTP::Tiny->new( );
 	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSOWResults(): Get the results for PAC open water...", 1 );
 	PMSLogging::PrintLogNoNL( "", "", "url='$linkToResults',\n  destination='$resultFileName'...", 1 );
 
@@ -1833,6 +1728,13 @@ sub GetPMSOWResults( $$ ) {
 	$listOfEvents =~ s/,$//;
 	PMSLogging::PrintLog( "", "", "GetResults::GetPMSOWResults(): Found $numResultLines result lines and " .
 		"$numEvents different events ($listOfEvents)\n", 1 );
+		
+	# record some statistics gathered while processing these results:
+	TT_Struct::IncreaseFetchStat( "FS_NumLinesRead", $numResultLines );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentMeetsSeen", $numEvents );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentResultsSeen", $numResultLines );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentFiles", 1 );
+		
 	return( $numResultLines, $numEvents );
 } # end of GetPMSOWResults()
 
@@ -1845,6 +1747,244 @@ sub CleanMeetTitle( $ ) {
 	$meetTitle =~ s/&amp;/&/g;
 	return $meetTitle;
 } # end of CleanMeetTitle()
+
+
+#################################################################################################
+#################################################################################################
+#################################################################################################
+
+#	GetPMSRecords2( "PAC", "SCM Records", "$yearBeingProcessed-01-01", "$yearBeingProcessed-12-31",
+#	$simpleFileName );
+#	return ($callbackState{"numLines"}, 0, $callbackState{'numDifferentRecords'}, 1);
+
+
+# GetPMSRecords2 - get the PMS Records result files in all courses (SCY, SCM, and LCM)
+#
+# PASSED:
+#	$org - the organization.  Always "PAC"
+#	$course - the course (sort of...).  One of "SCY Records", "SCM Records", or "LCM Records"
+#	$minDate - date in the form yyyy-mm-dd
+#	$maxDate - date in the form yyyy-mm-dd
+#	$destinationFileName - the simple file name of the file we create with the results.  We'll convert
+#		to a full file name putting it into the "correct" directory.
+#
+# RETURNED:
+#	n/a
+#
+# NOTES:
+#	This routine will use the PACWebService named "GetRecords" to get all PMS records, and then
+#	pass over them looking for all records for the current season (set between $minDate and $maxDate,
+#	inclusive.)  Depending on the AGSOTY rules either the most recent record set during the season
+#	for a specific event/gender/age group will be collected, or all records set during the season
+#	for that event/gender/age group.
+#	NOTE:  Definition:  a "record set" is a set of 1 or more records where the gender, stroke, distance, 
+#	and age group are the same.
+#	Files are created and global variables are modified and used later.
+#
+sub GetPMSRecords2( $$$$$ ) {
+	my( $org, $course, $minDate, $maxDate, $destinationFileName ) = @_;
+	my $recordsFileName = "$sourceDataDir/$destinationFileName";
+	my $recordsFileHandle;
+	my $totalNumCurrentRecords = 0;
+	my $totalNumHistoricalRecords = 0;
+	my $totalNumSavedRecords = 0;
+	my $totalNumRecords = 0;
+	my $ftimeCurrent = 1;
+	my $ftimeHistorical = 0;
+	
+	
+	# get the "true course, e.g. SCY":
+	my $trueCourse = $course;		# e.g. "SCY Records"
+	$trueCourse =~ s/\s.*$//;		# e.g. "SCY"
+
+	# create the file we'll use for accumulating the records we find:
+	open( $recordsFileHandle, ">$recordsFileName" ) || 
+		die "GetResults::GetPMSRecords2(): Can't open $recordsFileName: $!\nAbort.\n";
+
+	# fetch the JSON results
+	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSRecords2(): Get the results for $org $course in " .
+		"the range $minDate - $maxDate...", 1 );
+		
+	my $JSONdata = WebServiceClient::GetRecords( $trueCourse );
+	my $data = decode_json( $JSONdata );
+	
+	# we get here with two possibilities:
+	#	- we got all the records for the requested $course, or
+	#	- we got an error
+	if( $data->{'status'} <= 0 ) {
+		# failure - display message and give up on this one
+		# NOTE; we're considering a status of 0 to be an error.  The web service doesn't think it's an
+		# error, but since it means we got 0 records, which is obviously wrong, we'll caount it
+		# as an error, even though this will "never happen".
+		PMSLogging::PrintLog( "", "", "FAILED!!  (status=" . $data->{'status'} . ", error='" .
+			$data->{'error'} . "'", 1 );
+	} else {
+		# we got all records (current, historical, invalid, etc) for this course
+		my $arrOfRecords = decode_json( $data->{'content'} );
+		$totalNumRecords = @$arrOfRecords;
+		PMSLogging::PrintLog( "", "", "Found $totalNumRecords total records to analyze", 1 );
+
+		my $count = 0;
+		my @listOfThisSeasonsCurrentRecords = ();
+		my @listOfThisSeasonsHistoricalRecords = ();
+		my ($previousGender, $previousStroke, $previousDistance, $previousAgeGroup) = ("", "", 0, "");
+		foreach my $recHashRef (@$arrOfRecords) {
+			$count++;
+			#print "Record #$count: ";
+			#print Dumper( $recHashRef );
+			my ($currentGender, $currentStroke, $currentDistance, $currentAgeGroup) =
+				($recHashRef->{'gender'},		# "M" or "F"
+				 $recHashRef->{'stroke'},		# "Freestyle", "Butterfly", "Backstroke", "Breaststroke", "Individual Medley"
+				 $recHashRef->{'distance'},		# e.g. "50" or "400", etc.
+				 $recHashRef->{'age_group'}		# e.g. "18-24" or "85-89", etc.
+				);
+			if( 
+				($previousGender ne $currentGender) ||
+				($previousStroke ne $currentStroke) ||
+				($previousDistance ne $currentDistance) ||
+				($previousAgeGroup ne $currentAgeGroup) ) {
+					# This is a new record set
+					my($numCurrentRecords, $numHistoricalRecords, $numSavedRecords) =
+						ComputePointsForPreviousRecordSet( \@listOfThisSeasonsCurrentRecords, 
+							\@listOfThisSeasonsHistoricalRecords, $recordsFileHandle );
+					$totalNumCurrentRecords += $numCurrentRecords;
+					$totalNumHistoricalRecords += $numHistoricalRecords;
+					$totalNumSavedRecords += $numSavedRecords;
+					$previousGender = $currentGender;
+					$previousStroke = $currentStroke;
+					$previousDistance = $currentDistance;
+					$previousAgeGroup = $currentAgeGroup;
+					### --- initialize our state to begin a new record set:
+				}
+			# analyze the current record:
+			my $curentDate = $recHashRef->{'date'};
+			my $currentFTime = $recHashRef->{'ftime'};
+			my $dateAnalysis = PMSUtil::ValidateDateWithinSeason( $curentDate, $course, $yearBeingProcessed );
+			if( index( $dateAnalysis, "Illegal" ) >= 0 ) {
+				# ValidateDateWithinSeason() had a problem...
+				PMSLogging::DumpError( "", "", "GetPMSRecords2(): Error from " .
+					"ValidateDateWithinSeason(): '$dateAnalysis'", 1 );
+				# we'll keep going but this should be fixed!
+			}
+			if( $dateAnalysis eq "" ) {
+				# this is a record within the current season, but is it a true record?  historical?
+				if( $currentFTime == $ftimeCurrent ) {
+					# this is the current record for this gender, stroke, distance, and age group:
+					push( @listOfThisSeasonsCurrentRecords, $recHashRef );
+				} elsif( $currentFTime == $ftimeHistorical ) {
+					push( @listOfThisSeasonsHistoricalRecords, $recHashRef );
+				} # else we ignore this invalid record...
+			} # end of record within the current season
+		} # end of foreach my $recHashRef...
+		# we're done analyzing all the records for this course.
+		# Clean up by handling any records we have that we didn't write out
+		my($numCurrentRecords, $numHistoricalRecords, $numSavedRecords) =
+			ComputePointsForPreviousRecordSet( \@listOfThisSeasonsCurrentRecords, 
+				\@listOfThisSeasonsHistoricalRecords, $recordsFileHandle );
+		$totalNumCurrentRecords += $numCurrentRecords;
+		$totalNumHistoricalRecords += $numHistoricalRecords;
+		$totalNumSavedRecords += $numSavedRecords;
+	} # end of we got all records...
+	close( $recordsFileHandle );
+		
+	PMSLogging::PrintLog( "", "", "Total current records found: $totalNumCurrentRecords, " .
+		"Total historical records found: $totalNumHistoricalRecords, " .
+		"Total saved records: $totalNumSavedRecords", 1 );
+	
+	# update FetchStats to show how many records that earned points were current and how many were historical:
+	my $historicalOnly = $totalNumSavedRecords - $totalNumCurrentRecords;	
+	# record some statistics gathered while processing these results:
+	TT_Struct::IncreaseFetchStat( "FS_NumLinesRead", $totalNumRecords );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentMeetsSeen", 0 );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentResultsSeen", $totalNumSavedRecords );
+	TT_Struct::IncreaseFetchStat( "FS_NumDifferentFiles", 1 );
+	TT_Struct::IncreaseFetchStat( "FS_Current${trueCourse}Records", $totalNumCurrentRecords );
+	TT_Struct::IncreaseFetchStat( "FS_Historical${trueCourse}Records", $historicalOnly );
+	
+	return;
+	
+} # end of GetPMSRecords2()
+		
+
+
+#			ComputePointsForPreviousRecordSet( \@listOfThisSeasonsCurrentRecords, 
+#				\@listOfThisSeasonsHistoricalRecords, $recordsFileHandle );
+#
+# ComputePointsForPreviousRecordSet - write out the records found for a specific record set.
+#
+sub ComputePointsForPreviousRecordSet($$) {
+	my ($listOfThisSeasonsCurrentRecordsRef, $listOfThisSeasonsHistoricalRecordsRef,
+		$recordsFileHandle) = @_;
+	my ($numCurrentRecords, $numHistoricalRecords, $numSavedRecords) = (0,0,0);
+
+	if(0) {
+		print "\nlistOfThisSeasonsCurrentRecordsRef = \n";
+		print Dumper( $listOfThisSeasonsCurrentRecordsRef );
+		print "end of listOfThisSeasonsCurrentRecordsRef\n";
+		print "listOfThisSeasonsHistoricalRecordsRef = \n";
+		print Dumper( $listOfThisSeasonsHistoricalRecordsRef );
+		print "end of listOfThisSeasonsHistoricalRecordsRef\n";
+	}
+
+	# write the data to the output file in this order (csv):
+	# Gender (M/F)
+	# age group (e.g. 35-39)
+	# distance (y or m)
+	# event (Breast,Back,I.M.,Free,Fly)
+	# full name
+	# date of swim
+	# time in form [[hh:]mm:]ss.hh
+	
+	# Does this record set have a current record?
+	if( scalar @{$listOfThisSeasonsCurrentRecordsRef} > 0 ) {
+		# YES!  Use all of them (if more than one there is a tie for this record)
+		foreach my $rec (@{$listOfThisSeasonsCurrentRecordsRef}) {
+			print $recordsFileHandle
+				"$rec->{'gender'}," .
+				"$rec->{'age_group'}," .
+				"$rec->{'distance'}," .
+				"$rec->{'stroke'}," .
+				"$rec->{'name'}," .
+				"$rec->{'date'}," .
+				"$rec->{'duration'}," .
+				"\n";
+			$numSavedRecords++;
+		}
+	} elsif( scalar @{$listOfThisSeasonsHistoricalRecordsRef} > 0 ) {
+		# NO! In this case check for an 'historical' record that was set during the season
+		# of question but has been replaced by a newer record set outside the season.  For example,
+		# Sally sets a SCY record on Feb 3, 2019 which applies to the 2019 season.  Jane breaks
+		# her record on July 23, 2019 but this record applies to the 2020 season.  However, if
+		# we run our code on Aug 7, 2019 to compute points for the 2019 season we'll find Jane's
+		# record as the current record, but since it's outside the 2019 season we won't give
+		# Jane points for her record (which is correct.)  But if we fail to notice that Sally has
+		# a historical record then she won't get points for her record during the 2019 season.  So
+		# here is where we will do that.
+		#print "Use one of these historical records:\n";
+		foreach my $rec (@{$listOfThisSeasonsHistoricalRecordsRef}) {
+			print $recordsFileHandle
+				"$rec->{'gender'}," .
+				"$rec->{'age_group'}," .
+				"$rec->{'distance'}," .
+				"$rec->{'stroke'}," .
+				"$rec->{'name'}," .
+				"$rec->{'date'}," .
+				"$rec->{'duration'}," .
+				"\n";
+			$numSavedRecords++;
+		}
+	}
+	
+					
+
+	$numCurrentRecords = @$listOfThisSeasonsCurrentRecordsRef;
+	$numHistoricalRecords = @$listOfThisSeasonsHistoricalRecordsRef;
+	
+	@$listOfThisSeasonsCurrentRecordsRef = ();
+	@$listOfThisSeasonsHistoricalRecordsRef = ();
+
+	return ($numCurrentRecords, $numHistoricalRecords, $numSavedRecords);
+} # end of ComputePointsForPreviousRecordSet()
 
 
 

@@ -36,8 +36,8 @@ sub HandleHTTPFailure( $$$$ ) {
 	if( ($status == 599) || ($status == 500) ) {
 		$textOfException = "    Text of Exception (http $status) ({content}): '$content',\n";
 	}
-	my $trace = Devel::StackTrace->new;
-	my $stackTraceAsString = $trace->as_string; # like carp
+	
+	my $stackTraceAsString = PMSUtil::GetStackTrace();
 	PMSLogging::PrintLog( "", "", "HandleHTTPFailure(): HTTP Request to '$linkToResults'\n" .
 		"    (org:'$org', course:'$course') failed. {success}: $success, " .
 		"{status}: '$status', {reason}: '$httpResponse->{reason}',\n" .
@@ -45,7 +45,7 @@ sub HandleHTTPFailure( $$$$ ) {
 		"    {url}: '$httpResponse->{url}$extraNote'\n" .
 		# comment the following line to remove the stack trace.  Uncomment it when you are getting
 		# http errors but can't figure out where they are coming from.
-		"Stack Trace:\n$stackTraceAsString" .
+		$stackTraceAsString .
 		 "", 1 );
 
 } # end of HandleHTTPFailure()

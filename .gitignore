@@ -5,6 +5,7 @@
 # ignore Eclipse files
 .project
 .settings
+.includepath
 GetResults.pl.launch
  # ignore the top level GeneratedFiles, but don't ignore the GeneratedFiles in Historical/
 /Generated*/
