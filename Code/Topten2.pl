@@ -89,6 +89,13 @@ my $GENERATE_SPLIT_AGE_GROUPS = 0;
 # NOTE!!  ON AND AFTER THE 2018 SEASON THIS SHOULD ALWAYS BE '1'!
 my $GENERATE_COMBINED_AGE_GROUPS = 1;
 
+# Do we generate results considering all PAC swimmers, or just for a specific team(s)?
+my $GENERATE_FULL_AGSOTY = 1;
+my $GENERATE_TEAM_AGSOTY = 0;
+
+# Here is the list of teams for which we'll generate team-AGSOTY pages (when requested)
+my @TEAM_AGSOTY_LIST = ("ALB", "DAM", "MEMO", "PCCM", "SRM", "WCM", "TOC", "MAM");
+
 # This is the number of SOTY swimmers for each gender we'll show in the generated HTML and Excel files.
 $TT_Struct::NumHighPoints=5;
 
@@ -192,7 +199,6 @@ my $dateToStartTrackingPMSMeets = "";		# defined below
 my $appProgName;	# name of this program
 my $appDirName;     # directory containing the application we're running
 my $appRootDir;		# directory containing the appDirName directory
-my $sourceData;		# full path of directory containing the "source data" which we process to create the generated files
 
 BEGIN {
 	# Get the name of the program we're running:
@@ -218,9 +224,6 @@ BEGIN {
 	die( "${appProgName}:: The parent directory of '$appDirName' is not a directory! (A permission problem?)" )
 		if( !-d $appRootDir );
 	print "  ...with the app dir name '$appDirName' and app root of '$appRootDir'...\n";
-	
-	# initialize our source data directory name:
-	$sourceData = "$appRootDir/SeasonData";	
 }
 
 my $UsageString = <<bup
@@ -237,6 +240,7 @@ where:
 	-gGenSubDir - if supplied the string 'GenSubDir' will be used as the name of a subdirectory of the 
 		generatedDirName directory (into which all generated files are placed.)  The use of this
 		argument allows one to create a full AGSOTY generation without overwriting a previous one.
+	-e[+] - generate team-AGSOTY results.  If the -e is followed + we also generate full AGSOTY results.
 bup
 ;
 
@@ -281,11 +285,11 @@ sub CalculatePointsForSwimmers($);
 sub PrintFullExcelResults($$$$);
 sub PrintResultsExcelTopN($$$$);
 sub PrintResultsExcelSOTY($$$$);
-sub InitializeMissingResults();
+sub InitializeMissingResults($);
 sub PMSProcessRecords($);
 sub ComputePointsForAllSwimmers();
-sub ComputePlaceForAllSwimmers();
-sub PrintResultsHTML($$$);
+sub ComputePlaceForAllSwimmers;
+sub PrintResultsHTML($$$$);
 sub ComputeTopPoints($$);
 sub GetPlaceOrderedSwimmersQuery;
 
@@ -327,13 +331,6 @@ my %missingResults;		# $missingResults{org-course} is 1 IFF
 						#   org:  @PMSConstants::arrOfOrg
 						#	course: @PMSConstants::arrOfCourse
 						
-# We initialize a structure that is used to track exactly what result files we process.
-# We do this so that our results make it clear some results were not processed if
-# that's the case.
-if( $RESULT_FILES_TO_READ != 0 ) {
-	InitializeMissingResults();
-}
-
 # initialize property file details:
 my $propertiesDir = $appDirName;		# Directory holding the properties.txt file.
 my $propertiesFileName = "properties.txt";
@@ -371,6 +368,13 @@ while( defined( $arg = shift ) ) {
 			$propertiesFileName = basename($value);
         } elsif( $flag eq "-g" ) {
         	$genSubDir = $value;
+        } elsif( $flag eq "-e" ) {
+			$GENERATE_TEAM_AGSOTY = 1;
+			if( $value eq "" ) {
+				$GENERATE_FULL_AGSOTY = 0;
+				$RESULT_FILES_TO_READ = 0;			# process none of the result files (use DB only)
+				$COMPUTE_POINTS = 0;
+			}
         } else {
 			print "${appProgName}:: ERROR:  Invalid flag: '$arg'\n";
 			$numErrors++;
@@ -393,6 +397,16 @@ if( $yearBeingProcessed eq "" ) {
 	# we store the year to process as a macro so we've got it handy
 	PMSStruct::GetMacrosRef()->{"YearBeingProcessed"} = $yearBeingProcessed;
 }
+
+# We initialize a structure that is used to track exactly what result files we process.
+# We do this so that our results make it clear some results were not processed if
+# that's the case.
+if( $RESULT_FILES_TO_READ != 0 ) {
+	InitializeMissingResults(1);		# initialize as missing results
+} else {
+	InitializeMissingResults(0);		# initialize as NO missing results
+}
+
 
 # various input files:
 # properties file:
@@ -515,7 +529,7 @@ my $sotyWorkbook;
 my $worksheetTopN;
 # use this to help with SOTY work:
 my $TopSOTYExcelResults;
-if( $WRITE_EXCEL_FILES ) {
+if( $WRITE_EXCEL_FILES && $GENERATE_FULL_AGSOTY ) {
 	if( $TOP_NUMBER_OF_PLACES_TO_SHOW_EXCEL >= 0 ) {
 		$FullExcelResults =  $generatedDirName . "FullExcelResults-$yearBeingProcessed.xlsx";
 		# remove our excel files so we know they are up-to-date
@@ -558,17 +572,27 @@ if( $yearBeingProcessed >= 2018 ) {
 
 # if we're generating HTML files then we're going to remove them (if they exist) so
 # it's clear that whatever we generate is the most up-to-date:
-if( $WRITE_HTML_FILES ) {
+if( $WRITE_HTML_FILES && $GENERATE_FULL_AGSOTY ) {
 	unlink $masterGeneratedSAGHTMLFileName, $masterGeneratedCAGHTMLFileName;
 }
+# same for team-AGSOTY files...
+if( $WRITE_HTML_FILES && $GENERATE_TEAM_AGSOTY ) {
+	foreach my $teamInitials (@TEAM_AGSOTY_LIST) {
+		unlink "$generatedHTMLFileDir/$teamInitials-AGSOTY.html";
+	}
+}
+
+
 # same idea for an optionally generated statistics file that we can generate.  We'll remove
 # it now just so there is no confusion on whether or not the statistics match the data
 # we're about to generate.  Note that this file ("TTStats.txt") is generated by a different
 # program.
-my $generatedTXTStatSimpleName = "TTStats.txt";
-my $generatedTXTStatsFullName = "$generatedHTMLFileDir/$generatedTXTStatSimpleName";
-# even though we don't generate this file we're going to remove it (see above)
-unlink $generatedTXTStatsFullName;
+if( $GENERATE_FULL_AGSOTY ) {
+	my $generatedTXTStatSimpleName = "TTStats.txt";
+	my $generatedTXTStatsFullName = "$generatedHTMLFileDir/$generatedTXTStatSimpleName";
+	# even though we don't generate this file we're going to remove it (see above)
+	unlink $generatedTXTStatsFullName;
+}
 
 
 my $virtualGeneratedHTMLFileHandle;		# defined when needed
@@ -597,8 +621,11 @@ if( $RESULT_FILES_TO_READ != 0 ) {
 	# Get the PMS-supplied data about every PMS member	
 	PMSLogging::PrintLog( "", "", "Using the RSIDN file '$swimmerDataFile", 1 );
 	PMS_ImportPMSData::ReadPMS_RSIDNData( $swimmerDataFile, $yearBeingProcessed );
-	# Get the data we've accumulated about swim meets seen in results
-#	my $racesDataFile = "$sourceDataDir/races.txt";
+	
+	# if necessary, read in the database of legal PMS teams:
+	my $clubDataFile = "$PMSSwimmerData/" . PMSStruct::GetMacrosRef()->{"ClubFileName"};
+	PMS_ImportPMSData::GetPMSTeams( $clubDataFile, $yearBeingProcessed );
+
 	# Read info about all the swim meets we know about:
 # TODO:  BEFORE THIS MAKE SURE THE SOURCEDATADIR EXISTS AND HAS A THE RACESDATAFILE IN IT.  IF NOT
 # THIS MEANS SOMEONE FORGOT TO RUN THE GETRESULTS.PL SCRIPT.
@@ -632,6 +659,7 @@ if( $RESULT_FILES_TO_READ != 0 ) {
 	# is a good thing.)
 	my $dbh = TT_MySqlSupport::InitializeTopTenDB();
 }
+
 
 
 
@@ -696,72 +724,121 @@ if( $COMPUTE_POINTS ) {
 }
 
 
-###
-### Compute the place for all swimmers
-###
-if( $COMPUTE_PLACE ) {
-	ComputePlaceForAllSwimmers();
-}
+if( $GENERATE_FULL_AGSOTY ) {
+	# generate full AGSOTY page
 
-
-###
-### initialize National Qualifying Times (if we need them) and then rank our swimmers
-###
-
-if( $GENERATE_RANK_SECTORS ) {
-	RS_RankSectors::InitializeAllQualifyingTimes( $yearBeingProcessed, 112 );
-	RS_RankSectors::RankAllSwimmersIntoExactlyOneSector( );
-}
-
-if($WRITE_HTML_FILES) {
-	# full path name of the master HTML file we're generating:
-	if( $GENERATE_SPLIT_AGE_GROUPS ) {
-		PrintResultsHTML( "FinalPlaceSAG", $masterGeneratedSAGHTMLFileName, $generatedHTMLFileSubDir . "-SAG" );
-	}
-
-	if( $GENERATE_COMBINED_AGE_GROUPS ) {
-		PrintResultsHTML( "FinalPlaceCAG", $masterGeneratedCAGHTMLFileName, $generatedHTMLFileSubDir . "-CAG" );
-	}
-} # end of if($WRITE_HTML_FILES...
-
-if( $WRITE_EXCEL_FILES ) {
 	###
-	### initialize split agegroup Excel output file
+	### Compute the place for all swimmers
 	###
-	if( $TOP_NUMBER_OF_PLACES_TO_SHOW_EXCEL >= 0 ) {
-	    # Create a new Excel workbook for the full excel file
-	    $workbook = Excel::Writer::XLSX->new( $FullExcelResults );
-	    # Add a worksheet
-	    $worksheet = $workbook->add_worksheet();
-	    # generate the file
-		PrintFullExcelResults( $workbook, $worksheet, $TOP_NUMBER_OF_PLACES_TO_SHOW_EXCEL, 0 );
-		# done with this workbook:
-		$workbook->close();
-	}
-
-	if( $TOP_N_PLACES_TO_SHOW_EXCEL > 0 ) {
-	    # Create a new Excel workbook for the top 'N' excel file
-	    $workbook = Excel::Writer::XLSX->new( $TopNExcelResults );
-	    # Add a worksheet
-	    $worksheet = $workbook->add_worksheet();
-	    # generate the file
-		PrintResultsExcelTopN( $workbook, $worksheet, $TOP_N_PLACES_TO_SHOW_EXCEL, 0 );
-		# done with this workbook:
-		$workbook->close();
-	}
-
-	if( $TOP_SOTY_CONTENDERS_EXCEL > 0 ) {
-		# Create a new Excel workbook for the SOTY contenders:
-	    $workbook = Excel::Writer::XLSX->new( $TopSOTYExcelResults );
-	    # Add a worksheet
-	    $worksheet = $workbook->add_worksheet();
-	    # generate the file
-		PrintResultsExcelSOTY( $workbook, $worksheet, $TOP_SOTY_CONTENDERS_EXCEL, 0 );
-		# done with this workbook:
-		$workbook->close();
+	if( $COMPUTE_PLACE ) {
+		ComputePlaceForAllSwimmers();
 	}
 	
-} # end of if( $WRITE_EXCEL_FILES...
+	
+	###
+	### initialize National Qualifying Times (if we need them) and then rank our swimmers
+	###
+	
+	if( $GENERATE_RANK_SECTORS ) {
+		RS_RankSectors::InitializeAllQualifyingTimes( $yearBeingProcessed, 112 );
+		RS_RankSectors::RankAllSwimmersIntoExactlyOneSector( );
+	}
+	
+	# Set the "team title" to an empty string and then set it appropately when/if generating
+	# team-AGSOTY pages:
+	PMSStruct::GetMacrosRef()->{"TeamTitle"} = "";
+	PMSStruct::GetMacrosRef()->{"ShowRules"} = "block";
+	PMSStruct::GetMacrosRef()->{"DontShowRules"} = "none";	# must be "none" if ShowRules (above) is not "none"
+	PMSStruct::GetMacrosRef()->{"PacificMasters"} = "Pacific Masters";
+
+	if($WRITE_HTML_FILES) {
+		# full path name of the master HTML file we're generating:
+		if( $GENERATE_SPLIT_AGE_GROUPS ) {
+			PrintResultsHTML( "FinalPlaceSAG", $masterGeneratedSAGHTMLFileName, $generatedHTMLFileSubDir, "SAG" );
+		}
+	
+		if( $GENERATE_COMBINED_AGE_GROUPS ) {
+			PrintResultsHTML( "FinalPlaceCAG", $masterGeneratedCAGHTMLFileName, $generatedHTMLFileSubDir, "CAG" );
+		}
+	} # end of if($WRITE_HTML_FILES...
+	
+	if( $WRITE_EXCEL_FILES ) {
+		###
+		### initialize split agegroup Excel output file
+		###
+		if( $TOP_NUMBER_OF_PLACES_TO_SHOW_EXCEL >= 0 ) {
+		    # Create a new Excel workbook for the full excel file
+		    $workbook = Excel::Writer::XLSX->new( $FullExcelResults );
+		    # Add a worksheet
+		    $worksheet = $workbook->add_worksheet();
+		    # generate the file
+			PrintFullExcelResults( $workbook, $worksheet, $TOP_NUMBER_OF_PLACES_TO_SHOW_EXCEL, 0 );
+			# done with this workbook:
+			$workbook->close();
+		}
+	
+		if( $TOP_N_PLACES_TO_SHOW_EXCEL > 0 ) {
+		    # Create a new Excel workbook for the top 'N' excel file
+		    $workbook = Excel::Writer::XLSX->new( $TopNExcelResults );
+		    # Add a worksheet
+		    $worksheet = $workbook->add_worksheet();
+		    # generate the file
+			PrintResultsExcelTopN( $workbook, $worksheet, $TOP_N_PLACES_TO_SHOW_EXCEL, 0 );
+			# done with this workbook:
+			$workbook->close();
+		}
+	
+		if( $TOP_SOTY_CONTENDERS_EXCEL > 0 ) {
+			# Create a new Excel workbook for the SOTY contenders:
+		    $workbook = Excel::Writer::XLSX->new( $TopSOTYExcelResults );
+		    # Add a worksheet
+		    $worksheet = $workbook->add_worksheet();
+		    # generate the file
+			PrintResultsExcelSOTY( $workbook, $worksheet, $TOP_SOTY_CONTENDERS_EXCEL, 0 );
+			# done with this workbook:
+			$workbook->close();
+		}
+		
+	} # end of if( $WRITE_EXCEL_FILES...
+}
+
+if( $GENERATE_TEAM_AGSOTY ) {
+	# just to be clear...
+	$GENERATE_SPLIT_AGE_GROUPS = 0;
+	$GENERATE_COMBINED_AGE_GROUPS = 1;
+	foreach my $teamInitials (@TEAM_AGSOTY_LIST) {
+		my $fullTeamName = PMS_MySqlSupport::GetFullTeamName( $teamInitials );
+		if( $fullTeamName eq "" ) {
+			PMSLogging::DumpError( "", "", "Topten.pl: Invalid team initials '$teamInitials' - " .
+				"team results for this team not computed.", 1 );
+			next;
+		}
+		
+		# Set the "team title" to the name of the team for which we're about to generate a team-AGSOTY page for:
+		PMSStruct::GetMacrosRef()->{"TeamTitle"} = 
+			"<h2 style=\"text-align:center\">Custom Built for $fullTeamName ($teamInitials)</h2>";
+		PMSStruct::GetMacrosRef()->{"ShowRules"} = "none";
+		PMSStruct::GetMacrosRef()->{"DontShowRules"} = "block";	# must NOT be "none" if ShowRules (above) is "none"
+		PMSStruct::GetMacrosRef()->{"PacificMasters"} = "";
+
+		my $dbh = PMS_MySqlSupport::GetMySqlHandle();
+		my ($sth,$rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, "DELETE FROM FinalPlaceCAG" );
+		###
+		### Compute the place for swimmers from a specific team
+		###
+		
+		if( $COMPUTE_PLACE ) {
+			ComputePlaceForAllSwimmers( $teamInitials );
+		}
+			
+		if($WRITE_HTML_FILES) {
+			my $teamFileName = $masterGeneratedCAGHTMLFileName;
+			$teamFileName =~ s/index/$teamInitials-AGSOTY/;
+			PrintResultsHTML( "FinalPlaceCAG", $teamFileName, $generatedHTMLFileSubDir, 
+				$teamInitials );
+		} # end of if($WRITE_HTML_FILES...
+	} # end of foreach my $teamInitials...
+} # end of if( $GENERATE_TEAM_AGSOTY...
 
 if(0) {
 	# generate an HTML file giving details of all the swimmers who have split age groups during
@@ -1814,7 +1891,8 @@ sub PMSProcessOpenWater($) {
 	my $simpleFileName = $_[0];
 	my $debugRegNum = "xxxxx";
 	my $debug = 0;
-
+	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
+	
 	my $course = "OW";
 	my $org = "PAC";
 	$missingResults{"$org-$course"} = 0;
@@ -1927,11 +2005,34 @@ sub PMSProcessOpenWater($) {
 						$stroke =~ s/\s*$//;		# e.g. "Lake Berryessa"
 						my $eventId = TT_MySqlSupport::AddNewEventIfNecessary( $distance, $eventCourse,
 							$stroke, $eventName );
+							
+						# Since we're reading a file based on OW Accumulated Points we can assume all the data
+						# are valid.  But we're going to check anyway!  (Anyway, we need their team...)
+						my $team;
+						# Get the USMS Swimmer id, e.g. regnum 384x-abcde gives us 'abcde'
+						my $regNumRt = PMSUtil::GetUSMSSwimmerIdFromRegNum( $regNum );
+					
+						my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
+							"SELECT RegisteredTeamInitialsStr FROM RSIDN_$yearBeingProcessed " .
+							"WHERE RegNum LIKE \"38%-$regNumRt\"" );
+							
+						if( defined(my $resultHash = $sth->fetchrow_hashref) ) {
+							# this swimmer exists in our RSIDN file - get the particulars
+							$team = $resultHash->{'RegisteredTeamInitialsStr'};
+						} else {
+							# regnum not found = This is a problem!  We're going to generate an error
+							# but keep going.
+							PMSLogging::DumpError( "", "", "Topten::PMSProcessOpenWater(): Line $lineNum of $simpleFileName: " .
+								"Couldn't find this swimmer in the RSIND file, but we'll keep " .
+								"going anyway and give them their points.  INVESTIGATE THIS!", 1 );
+							$team = "UNKN";
+						}
+							
 						# add this swimmer to our DB if necessary
 						# (NOTE: we assume the passed name and regnum are valid)
 						my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
 							$firstName, $middleInitial, $lastName,
-							$gender, $regNum, 0, $ageGroup, "" );
+							$gender, $regNum, 0, $ageGroup, $team );
 						# add this meet to our DB if necessary
 		
 						# filename, linenum, meetitle, meetlink, meetorg, meetcourse, meetbegindate, meetenddate, 
@@ -2380,14 +2481,23 @@ sub InsertSOTY( $$$$ ) {
 
 
 sub ComputePlaceForAllSwimmers() {
+	my $teamName = $_[0];			# optional
 	my( $firstName, $middleInitial, $lastName, $swimmerId, $totalPoints );
 	my( $sth, $rv );
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	my $countSwimmers = 0;
 	my $query;
 
+	my $teamQuery = "";
+	if( defined $teamName ) {
+		$teamQuery = "AND Swimmer.RegisteredTeamInitials = '$teamName' ";
+	} else {
+		$teamName = "(All PAC Swimmers)";
+	}
+
+
 	if( $GENERATE_SPLIT_AGE_GROUPS ) {
-		PMSLogging::PrintLog( "", "", "** Begin ComputePlaceForAllSwimmers (FinalPlaceSAG)", 1 );
+		PMSLogging::PrintLog( "", "", "** Begin ComputePlaceForAllSwimmers (FinalPlaceSAG-$teamName)", 1 );
 		# Compute the place for each swimmer, where we DO NOT combine split age groups.  This means
 		# that a swimmer whose age group changes during a season will accumulate points in two 
 		# age groups, and have a place in those two age groups:
@@ -2435,12 +2545,12 @@ sub ComputePlaceForAllSwimmers() {
 			} # end of foreach my $ageGroup...
 		} # end of foreach my $gender...
 	
-		PMSLogging::PrintLog( "", "", "** END ComputePlaceForAllSwimmers (FinalPlaceSAG) ($countSwimmers swimmers)", 1 );
+		PMSLogging::PrintLog( "", "", "** END ComputePlaceForAllSwimmers (FinalPlaceSAG-$teamName) ($countSwimmers swimmers)", 1 );
 	} # end of 	if( $GENERATE_SPLIT_AGE_GROUPS ....
 	
 	
 	if( $GENERATE_COMBINED_AGE_GROUPS ) {
-		PMSLogging::PrintLog( "", "", "** Begin ComputePlaceForAllSwimmers (FinalPlaceCAG)", 1 );
+		PMSLogging::PrintLog( "", "", "** Begin ComputePlaceForAllSwimmers (FinalPlaceCAG-$teamName)", 1 );
 		# Compute the place for each swimmer, where we combine split age groups.  This means
 		# that a swimmer whose age group changes during a season will accumulate points in both
 		# age groups but have the points from the younger age group merged into their
@@ -2460,6 +2570,7 @@ sub ComputePlaceForAllSwimmers() {
 						"OR " .
 						"(Swimmer.AgeGroup2='$ageGroup' AND Points.AgeGroup LIKE '%:$ageGroup')) " .
 					"AND Swimmer.Gender='$gender' " .
+					$teamQuery .
 					"GROUP BY Swimmer.SwimmerId,Points.AgeGroup ORDER BY TotalPoints DESC,LastName ASC,RegNum ASC";
 				($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
 				while( defined(my $resultHash = $sth->fetchrow_hashref) ) {
@@ -2493,7 +2604,7 @@ sub ComputePlaceForAllSwimmers() {
 			} # end of foreach my $ageGroup...
 		} # end of foreach my $gender...
 		
-		PMSLogging::PrintLog( "", "", "** END ComputePlaceForAllSwimmers (FinalPlaceCAG) ($countSwimmers swimmers)", 1 );
+		PMSLogging::PrintLog( "", "", "** END ComputePlaceForAllSwimmers (FinalPlaceCAG-$teamName) ($countSwimmers swimmers)", 1 );
 	} # end of if( $GENERATE_COMBINED_AGE_GROUPS )...
 
 } # end of ComputePlaceForAllSwimmers()
@@ -2577,8 +2688,11 @@ sub ComputePlaceForAllSwimmers() {
 # PASSED:
 #	$finalPlaceTableName - 
 #	$masterGeneratedHTMLFileName - 
-#	$generatedHTMLFileSubDir - the subdirectory of the directory holding the $masterGeneratedHTMLFileName used
-#		to hold the HTML snippits we generate for each gender/age group, one snippit file per gender/age group.
+#	$generatedHTMLFileSubDirBase - full path + partail name of the directory holding the HTML snippits 
+#		we generate for each gender/age group, one snippit file per gender/age group. 
+#	$generatedHTMLFileSubDirExt - an extension added to the $generatedHTMLFileSubDirBase to construct
+#		the full path of the directory.
+#
 #	AND we use data from the database
 #
 # RETURNED:
@@ -2589,8 +2703,10 @@ sub ComputePlaceForAllSwimmers() {
 #		$generatedHTMLFileDir - the master file directory
 #		$generatedHTMLFileSubDir - the "virtual" HTML files directory
 #
-sub PrintResultsHTML($$$) {
-	my ( $finalPlaceTableName, $masterGeneratedHTMLFileName, $generatedHTMLFileSubDir ) = @_;
+sub PrintResultsHTML($$$$) {
+	my ( $finalPlaceTableName, $masterGeneratedHTMLFileName, $generatedHTMLFileSubDirBase,
+		$generatedHTMLFileSubDirExt ) = @_;
+	my $generatedHTMLFileSubDir = $generatedHTMLFileSubDirBase . "-" . $generatedHTMLFileSubDirExt;
 	my $templateStartHead = "$templateDir/AGSOTY-StartHead.html";
 	my $templateStartGenAgeGrp = "$templateDir/AGSOTY-StartGenAgeGrp.html";
 	my $templateStartPersonRow = "$templateDir/AGSOTY-StartPersonRow.html";
@@ -2610,7 +2726,7 @@ sub PrintResultsHTML($$$) {
 	my $query;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	
-	my $debugLastName = "xxxxx";
+	my $debugLastName = "xxxx";
 
 	my $category = 1;		# we only consider Cat 1 swims
 	my $personBackgroundColor = "WHITE";		# background color for each row (computed below)
@@ -2621,11 +2737,11 @@ sub PrintResultsHTML($$$) {
 	if( $finalPlaceTableName eq "FinalPlaceCAG" ) {
 		# combine age groups
 		$splitAgeGroups = 0;
-		PMSStruct::GetMacrosRef()->{"HTMLVSupportDir"} = "HTMLVSupport-CAG";		# ...
+		PMSStruct::GetMacrosRef()->{"HTMLVSupportDir"} = "HTMLVSupport-$generatedHTMLFileSubDirExt";		# ...
 	} else {
 		# split age groups
 		$splitAgeGroups = 1;
-		PMSStruct::GetMacrosRef()->{"HTMLVSupportDir"} = "HTMLVSupport-SAG";		# ...
+		PMSStruct::GetMacrosRef()->{"HTMLVSupportDir"} = "HTMLVSupport-$generatedHTMLFileSubDirExt";		# ...
 	}
 	
 	# make sure our subdirectory of HTML snippets exists:
@@ -2637,10 +2753,11 @@ sub PrintResultsHTML($$$) {
 	####################
 	# Begin processing our templates, generating our accumulated result file in the process
 	####################
-	PMSLogging::PrintLog( "", "", "** Begin PrintResultsHTML ($finalPlaceTableName)", 1 );
+	PMSLogging::PrintLog( "", "", "** Begin PrintResultsHTML ($finalPlaceTableName-$generatedHTMLFileSubDirExt)", 1 );
 
 	open( my $masterGeneratedHTMLFileHandle, ">", $masterGeneratedHTMLFileName ) or
 		die( "Can't open $masterGeneratedHTMLFileName: $!" );
+	
 	# full path name of a "virtual" HTML file we are going to generate (we'll generate lots
 	# of them!)
 	my $virtualGeneratedHTMLFileName;
@@ -2890,6 +3007,12 @@ sub PrintResultsHTML($$$) {
 					my $detailsRef = \@details;
 					my ($detailsNum, $totalPoints, $resultsCounted) = 
 						TT_MySqlSupport::GetSwimmersSwimDetails2( $swimmerId, $org, $course, $ageGroup, $detailsRef );
+					if( lc($lastName) eq $debugLastName) {
+						print "$debugLastName: $swimmerId, $detailsNum, $totalPoints, $resultsCounted\n";
+					}
+
+
+
 					# if we don't have any points
 					# for this org-course for this swimmer we set the value to 0.
 					# (e.g. the swimmer has results for short course PMS, but
@@ -3141,7 +3264,7 @@ sub PrintResultsHTML($$$) {
 	PMSStruct::GetMacrosRef()->{"NumberOfSwimmersEarnedPoints"} = $numWithPoints;
 	PMSTemplate::ProcessHTMLTemplate( $templateSOTY, $sotyGeneratedHTMLFileHandle );
 	
-	PMSLogging::PrintLog( "", "", "** End PrintResultsHTML ($finalPlaceTableName)", 1 );
+	PMSLogging::PrintLog( "", "", "** End PrintResultsHTML ($finalPlaceTableName-$generatedHTMLFileSubDirExt)", 1 );
 	
 } # end of PrintResultsHTML()
 
@@ -3371,478 +3494,6 @@ sub ProcessFile_xxx( $$ ) {
 } # end of ProcessFile()
 
 	
-	
-	
-# PrintResultsExcel - generate the Excel file with our results.
-#
-# PASSED:
-#	$workbook - a Excel::Writer::XLSX workbook.
-#	$worksheet - a Excel::Writer::XLSX worksheet.
-#	$workbookTopN, $worksheetTopN
-#
-#
-# doc:  http://search.cpan.org/~jmcnamara/Excel-Writer-XLSX/lib/Excel/Writer/XLSX.pm
-#
-sub PrintResultsExcel_notused($$$$$) {
-	my ($workbook, $worksheet, $workbookTopN, $worksheetTopN, $splitAgeGroups) = @_;
-	my( $firstName, $middleInitial, $lastName, $regNum );
-	my $resultHash;
-	my $query;
-	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
-	my ($sth, $rv);
-
-	PMSLogging::PrintLog( "", "", "\n** Begin PrintResultsExcel (" . 
-		($splitAgeGroups == 1 ? "Split Age Groups" : "Combine Age Groups") . ")", 1 );
-
-	####
-	#### READY TO PRINT THE TOP 'N' RESULTS
-	####
-	# title format for this excel file
-	my $titleFormatTopN = $workbookTopN->add_format();		# initialize a null format
-	$titleFormatTopN->set_size( 20 );
-	$titleFormatTopN->set_center_across();
-	# Next, some headings
-	my $columnTopN = 0;
-	my $rowTopN = 0;
-	my $dataCellFormatTopN = $workbookTopN->add_format();				# format for (almost all) non-points data cells (not centered)
-   	$dataCellFormatTopN->set_text_wrap();
-	$worksheetTopN->merge_range( "A1:G2", "Pacific Masters Top $TOP_N_PLACES_TO_SHOW_EXCEL Swimmers for each Age Group for $yearBeingProcessed", $titleFormatTopN  );
-
-	####
-	#### READY TO PRINT THE TOP 10 RESULTS
-	####
-	# title format for this excel file
-	my $titleFormat = $workbook->add_format();		# initialize a null format
-	$titleFormat->set_size( 20 );
-	$titleFormat->set_center_across();
-	# Next, some headings
-	my $column = 0;
-	my $row = 0;
-	my $format = $workbook->add_format();		# initialize a null default format
-	my $LIGHT_YELLOW = '#FFF380';
-	my $LIGHT_GRAY = '#D1D0CE';
-	my $LIGHT_RED = '#FF99CC';
-	my $LIGHT_BLUE = '#CCFFFF';
-	
-	my $dataCellFormat = $workbook->add_format();				# format for (almost all) non-points data cells (not centered)
-	my $data1stFemaleCellFormat = $workbook->add_format();		# format for non-points data cells 1st place female
-	my $data1stMaleCellFormat = $workbook->add_format();		# format for non-points data cells 1st place male
-	my $pointsFormat = $workbook->add_format();					# for cells displaying points LABELS
-	my $pointsDataFormat = $workbook->add_format();				# for cells displaying points DATA for all others
-	my $pointsDataFormat1stFemale = $workbook->add_format();	# for cells displaying points DATA 1st place females
-	my $pointsDataFormat1stMale = $workbook->add_format();		# for cells displaying points DATA 1st place males
-    $worksheet->set_landscape();    # Landscape mode when printing
-    $worksheet->repeat_rows( 7 ); 	# top of each printed page past 1st page will have the column headings
-    $worksheet->hide_gridlines(0);	# don't hide gridlines on screen or printed paper
-   	$format->set_text_wrap();
-   	$dataCellFormat->set_text_wrap();
-   	$data1stFemaleCellFormat->set_text_wrap();
-   	$data1stFemaleCellFormat->set_bg_color( $LIGHT_RED );		
-   	$data1stMaleCellFormat->set_text_wrap();
-   	$data1stMaleCellFormat->set_bg_color( $LIGHT_BLUE );	
-   	$pointsFormat->set_text_wrap();
-   	$pointsFormat->set_align( 'center' );
-   	$pointsDataFormat1stFemale->set_text_wrap();
-   	$pointsDataFormat->set_text_wrap();
-   	$pointsDataFormat1stFemale->set_align( 'center' );
-   	$pointsDataFormat1stMale->set_align( 'center' );
-   	$pointsDataFormat1stFemale->set_bg_color( $LIGHT_RED );		# 
-   	$pointsDataFormat1stMale->set_text_wrap();
-   	$pointsDataFormat1stMale->set_bg_color( $LIGHT_BLUE );			# 
-   	$pointsDataFormat->set_align( 'center' );
-
-	$worksheet->merge_range( "A1:S2", "Pacific Masters Top 10 Swimmers of the Year for $yearBeingProcessed", $titleFormat  );
-	$row++;
-	my $subTitleFormat = $workbook->add_format();		# initialize a null format
-	$subTitleFormat->set_size( 10 );
-	$subTitleFormat->set_center_across();
-	$worksheet->merge_range( "A3:S3", "Generated on $generationTimeDate by BUp", $subTitleFormat  );
-	$row++;
-
-	# now display the top point-winning Swimmers of the Year:
-	my $SOTY_TitleFormatF = $workbook->add_format();	
-	$SOTY_TitleFormatF->set_size(14);
-	$SOTY_TitleFormatF->set_bold();
-	$SOTY_TitleFormatF->set_color( 'pink' );
-	$worksheet->merge_range( "A4:C4", "Female with the most points:", $SOTY_TitleFormatF  );
-	$row = 3;
-	$column = 4;
-	my $formatTotalPoints = $workbook->add_format();
-	my $minSwimMeetsFlag;
-
-	# work on the top females first:
-	$sth = ComputeTopPoints( 'F', $splitAgeGroups );
-	my $previousPoints = -1;
-	my $numTopPoints=0;
-	while( $numTopPoints <= $TT_Struct::NumHighPoints ) {
-		my $resultHash = $sth->fetchrow_hashref;
-		if( !defined $resultHash ) {
-			PMSLogging::DumpError( "", "", "PrintResultsExcel(): Ran out of top female point getters!", 1 );
-			last;
-		}
-		my $swimmerId = $resultHash->{"SwimmerId"};
-		my $numPMSSanctionedMeets = GetNumberPMSSanctionedMeets( $swimmerId );
-print "F Excel: swimmerid=$swimmerId, #meets=$numPMSSanctionedMeets\n";
-		if( $numPMSSanctionedMeets < $minMeetsForConsideration ) {
-			# skip this swimmer - not enough PMS meets
-			next;
-		}
-		my $firstName = $resultHash->{"FirstName"};
-		my $middleInitial = $resultHash->{"MiddleInitial"};
-		my $lastName = $resultHash->{"LastName"};
-		my $totalPoints = $resultHash->{"TotalPoints"};
-		my $ageGroup = $resultHash->{'AgeGroup'};
-		# get points for this swimmer:
-		my ( $countPoints, $countPMSPoints, $countHidden, $countPMSHidden) = GetSwimmerMeetDetails($swimmerId);
-
-		$numTopPoints++ if( $previousPoints != $totalPoints );
-		$previousPoints = $totalPoints;
-		if( $numTopPoints <= $TT_Struct::NumHighPoints ) {
-			$worksheet->write( $row, $column++, $firstName, $SOTY_TitleFormatF );
-			$worksheet->write( $row, $column++, $middleInitial, $SOTY_TitleFormatF );
-			$worksheet->write( $row, $column++, $lastName, $SOTY_TitleFormatF );
-			$column++;
-			if( $trackPMSSwims && 
-				(($countPMSPoints + $countPMSHidden) < $minMeetsForConsideration) && 
-				($mysqlDate ge $dateToStartTrackingPMSMeets) ) {
-				$minSwimMeetsFlag = "*";
-			} else {
-				$minSwimMeetsFlag = "";
-			}
-			$worksheet->write( $row, $column++, "(".$totalPoints.")$minSwimMeetsFlag", 
-				$formatTotalPoints );
-			$worksheet->write( $row, $column++, "PAC: $countPMSPoints" . "+" . $countPMSHidden, $formatTotalPoints ) 
-				if( $trackPMSSwims );
-			$row++;
-			$column = 4;
-		}
-	}
-	print( "  - There were $numTopPoints female top point-winning swimmers of the year\n" );
-
-	# next, work on the top males:
-	my $SOTY_TitleFormatM = $workbook->add_format();	
-	$SOTY_TitleFormatM->set_size(14);
-	$SOTY_TitleFormatM->set_bold();
-	$SOTY_TitleFormatM->set_color( 'blue' );
-	$worksheet->merge_range( "A".($row+1).":C".($row+1), "Male with the most points:", $SOTY_TitleFormatM  );
-	$column = 4;
-	$sth = ComputeTopPoints( 'M', $splitAgeGroups );
-	$previousPoints = -1;
-	$numTopPoints=0;
-	while( $numTopPoints <= $TT_Struct::NumHighPoints ) {
-		my $resultHash = $sth->fetchrow_hashref;
-		if( !defined $resultHash ) {
-			PMSLogging::DumpError( "", "", "PrintResultsExcel(): Ran out of top male point getters!", 1 );
-			last;
-		}
-		my $swimmerId = $resultHash->{"SwimmerId"};
-		my $numPMSSanctionedMeets = GetNumberPMSSanctionedMeets( $swimmerId );
-print "M Excel: swimmerid=$swimmerId, #meets=$numPMSSanctionedMeets\n";
-		if( $numPMSSanctionedMeets < $minMeetsForConsideration ) {
-			# skip this swimmer - not enough PMS meets
-			next;
-		}
-		my $firstName = $resultHash->{"FirstName"};
-		my $middleInitial = $resultHash->{"MiddleInitial"};
-		my $lastName = $resultHash->{"LastName"};
-		my $totalPoints = $resultHash->{"TotalPoints"};
-		my $ageGroup = $resultHash->{'AgeGroup'};
-		# get points for this swimmer:
-		my ( $countPoints, $countPMSPoints, $countHidden, $countPMSHidden) = GetSwimmerMeetDetails($swimmerId);
-
-		$numTopPoints++ if( $previousPoints != $totalPoints );
-		$previousPoints = $totalPoints;
-		if( $numTopPoints <= $TT_Struct::NumHighPoints ) {
-			$worksheet->write( $row, $column++, $firstName, $SOTY_TitleFormatM );
-			$worksheet->write( $row, $column++, $middleInitial, $SOTY_TitleFormatM );
-			$worksheet->write( $row, $column++, $lastName, $SOTY_TitleFormatM );
-			$column++;
-			if( $trackPMSSwims && 
-				(($countPMSPoints + $countPMSHidden) < $minMeetsForConsideration) && 
-				($mysqlDate ge $dateToStartTrackingPMSMeets) ) {
-				$minSwimMeetsFlag = "*";
-			} else {
-				$minSwimMeetsFlag = "";
-			}
-			$worksheet->write( $row, $column++, "(".$totalPoints.")$minSwimMeetsFlag", 
-				$formatTotalPoints );
-			$worksheet->write( $row, $column++, "PAC: $countPMSPoints" . "+" . $countPMSHidden, $formatTotalPoints ) 
-				if( $trackPMSSwims );
-			$row++;
-			$column = 4;
-		}
-		
-	}
-	print( "  - There were $numTopPoints male top point-winning swimmers of the year\n" );
-
-	# show a key to our display
-	if(1 && ($mysqlDate ge $dateToStartTrackingPMSMeets)) {
-		my $formatKeyTitle = $workbook->add_format();
-		$formatKeyTitle->set_size(14);
-		$formatKeyTitle->set_bold();
-	   	$formatKeyTitle->set_text_wrap();
-		$worksheet->merge_range( "K4:M4", "Key for table below:", $formatKeyTitle );
-		
-		my $formatKey = $workbook->add_format();
-	   	$formatKey->set_text_wrap();
-	   	$formatKey->set_align( 'left' );
-	   	$formatKey->set_align( 'top' );
-		$worksheet->merge_range( "K5:S6", "* indicates a swimmer who has not swum the " .
-			"minimum number of events to be considered for Top 10.", $formatKey );
-	
-	}
-
-	# now for the complete list of swimmers and their points
-	$row += 2;
-	$worksheet->freeze_panes( $row+1, 0 );
-
-	# print the heading line in the generated top N result file:
-	$columnTopN = 0;
-	$rowTopN+=3;		# blank lines between title and heading line
-	$worksheetTopN->freeze_panes( $rowTopN+1, 0 );
-	$worksheetTopN->set_column( 0, 18, 15 );
-	$worksheetTopN->write( $rowTopN, $columnTopN++, "Gender:AG", $dataCellFormatTopN );
-	$worksheetTopN->set_column( 1, 1, 8 );
-	$worksheetTopN->write( $rowTopN, $columnTopN++, "Rank", $dataCellFormatTopN );
-	$worksheetTopN->set_column( 2, 2, 20 );
-	$worksheetTopN->write( $rowTopN, $columnTopN++, "First Name", $dataCellFormatTopN );
-	$worksheetTopN->set_column( 3, 3, 5 );
-	$worksheetTopN->write( $rowTopN, $columnTopN++, "MI", $dataCellFormatTopN );
-	$worksheetTopN->set_column( 4, 4, 20 );
-	$worksheetTopN->write( $rowTopN, $columnTopN++, "Last Name", $dataCellFormatTopN );
-	$worksheetTopN->write( $rowTopN, $columnTopN++, "# PAC Swims", $dataCellFormatTopN );
-	$rowTopN++;
-
-
-	# print the heading line in the generated top 10 result file:
-	$column = 0;
-	$worksheet->set_column( 0, 18, 10 );
-	$worksheet->write( $row, $column++, "Gender:AG\nor Rank", $format );
-	$worksheet->set_column( 1, 1, 11 );
-	$worksheet->write( $row, $column++, "RegNum\n(team)", $format );
-	$worksheet->write( $row, $column++, "First Name", $format );
-	$worksheet->set_column( 3, 3, 3 );
-	$worksheet->write( $row, $column++, "MI", $format );
-	$worksheet->write( $row, $column++, "Last Name", $format );
-	
-	$worksheet->set_column( 5, 8, 8 );
-	$worksheet->set_column( 9, 11, 10 );		# wrap
-	$worksheet->set_column( 12, 14, 9 );
-	$worksheet->set_column( 15, 17, 10 );		# wrap
-	$worksheet->set_column( 18, 18, 10 );
-	foreach my $org( @PMSConstants::arrOfOrg ) {
-		foreach my $course( @PMSConstants::arrOfCourse ) {
-			my $heading;
-			# there is no such thing as "USMS-OW"
-			next if( ($org eq "USMS") && ($course eq "OW") );
-			# ugh!  special case for special formatting...
-			if( $course =~ m/Record/ ) {
-				$heading = "$org\n$course";
-			} else {
-				$heading = "$org $course";
-			}
-			$worksheet->write( $row, $column++, $heading, $pointsFormat );
-		}
-	}
-	$worksheet->write( $row, $column++, "Total Points", $pointsFormat );
-	$worksheet->write( $row, $column++, "# PAC Swims", $pointsFormat ) if( $trackPMSSwims );
-
-	# Since we have already computed the points and places for every swimmer we are going to 
-	# print them out in order of gender and age group, ordered highest to lowest points 
-	# (lowest to highest place) for each gender / age group:
-	# The query we use to get the place for every swimmer depends on what rule we're following:
-	# are we considering a swimmer with a split age group as two swimmers (one in each age group)
-	# or are we combining the two age groups, thus the swimmer is placed in the older age group?
-	# The passed $splitAgeGroups tells us what to do:
-	$query = GetPlaceOrderedSwimmersQuery( $splitAgeGroups );
-	($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
-	# we've got the list of swimmers in order of:
-	#   Gender   AgeGroup   ListOrder
-	my $previousGenderAgegroup = "";
-	my $previousGender = "";
-	my $numSwimmersSeenSoFar = 0;
-	#
-	my $topN_NumRowsInGenderAgegroup;		# number of rows (1 - K) in the top N file for current
-	# gender age group.  If there are no ties, then K will be 'N', i.e. $TOP_N_PLACES_TO_SHOW_EXCEL (e.g. '3')
-	# but this may not include the top '3' point earners, because one (or more) may not have swum
-	# the minimum number of PAC meets.  If there are ties K could be larger (if the tie includes what
-	# would be the 'N' row and one or more following)
-	my $topN_LastRankWritten = 0;			# The rank of the swimmer last written to the topN file.
-		# Used to recognize a tie allowing us to write more than 
-		# $TOP_N_PLACES_TO_SHOW_EXCEL (e.g. '3') rows when the tie occurs with would would normally
-		# be with the last row and the one (or more) following.
-	# pass through the list in order of gender, agegroup, and list order:
-	while( defined(my $resultHash = $sth->fetchrow_hashref) ) {
-			my $firstName = $resultHash->{'FirstName'};
-			my $middleInitial = $resultHash->{'MiddleInitial'};
-			my $lastName = $resultHash->{'LastName'};
-			my $team = $resultHash->{'RegisteredTeamInitials'};
-			my $ageGroup = $resultHash->{'AgeGroup'};
-			my $rank = $resultHash->{'Rank'};						# rank of swimmer in their gender/agegroup
-			my $points = $resultHash->{'Points'};
-			my $listOrder = $resultHash->{'ListOrder'};
-			my $ageGroupCAG = $resultHash->{'AgeGroupCAG'};
-			my $gender = $resultHash->{'Gender'};
-			my $swimmerId = $resultHash->{'SwimmerId'};
-			my $regNum = $resultHash->{'RegNum'};
-			my $thisGenderAgegroup = "$gender:$ageGroupCAG";
-
-			$row++;
-			$column = 0;
-			### we need to do some reference magic here to easily use the correct format for the row
-			### we're about to write out:
-			my $pointsDataFormatRef = \$pointsDataFormat;
-			my $dataCellFormatRef =  \$dataCellFormat;
-			# are we starting a new gender and/or age group?
-			if( $previousGenderAgegroup ne $thisGenderAgegroup ) {
-				# YES - new gender/age group.
-				# Display gender:age group since it's the first time for this gender/age group:
-				#... topN sheet:
-				$topN_NumRowsInGenderAgegroup = 0;
-				$topN_LastRankWritten = 0;		# bogus rank:  we haven't written any rows for this gender/age group yet
-				$columnTopN = 0;
-				$rowTopN++;		# blank line between different gender/age groups
-				$worksheetTopN->write( $rowTopN, $columnTopN++, $thisGenderAgegroup, $dataCellFormatTopN );
-				#... full sheet:
-				$row++;		# blank line between different gender/age groups
-				$worksheet->write( $row, $column++, $thisGenderAgegroup, $$dataCellFormatRef );
-				### a little logging to stdout to keep us informed...
-				if( $previousGender eq "" ) {
-					$previousGender = $gender;
-					print "  ...";
-				} elsif( $previousGender ne $gender ) {
-					print "\n  ...";
-					$previousGender = $gender;
-				}
-				print " $thisGenderAgegroup";
-				###
-			} else {
-				#... full sheet:
-				$worksheet->write( $row, $column++, "# $rank", $$dataCellFormatRef );
-			}
-				
-			# increment the number of swimmers we've seen in this gender/age group so far:
-			$numSwimmersSeenSoFar++;
-			# if this is the first place swimmer in this gender / age group then color their row
-			# top female:  light yellow
-			# top male: light gray
-			if( $rank == 1 ) {
-				if( $gender eq 'M' ) {
-					$pointsDataFormatRef = \$pointsDataFormat1stMale;
-					$dataCellFormatRef =  \$data1stMaleCellFormat;
-				} else {
-					$pointsDataFormatRef = \$pointsDataFormat1stFemale;
-					$dataCellFormatRef =  \$data1stFemaleCellFormat;
-				}
-			}
-			
-			# get points for this swimmer:
-			my ( $countPoints, $countPMSPoints, $countHidden, $countPMSHidden) = GetSwimmerMeetDetails($swimmerId);
-			# if this swimmer swam less than $minMeetsForConsideration meets then we'll flag them
-			if( $trackPMSSwims && 
-				(($countPMSPoints+$countPMSHidden) < $minMeetsForConsideration) && 
-				($mysqlDate ge $dateToStartTrackingPMSMeets) ) {
-				$minSwimMeetsFlag = "*";
-			} else {
-				$minSwimMeetsFlag = "";
-			}
-
-			if( $rank == 1 ) {
-				$worksheet->write( $row, $column++, "$regNum\n($team)", $$dataCellFormatRef );
-			} else {
-				$worksheet->write( $row, $column++, $regNum, $$dataCellFormatRef );
-			}
-			$worksheet->write( $row, $column++, "$minSwimMeetsFlag$firstName", $$dataCellFormatRef );
-			$worksheet->write( $row, $column++, $middleInitial, $$dataCellFormatRef );
-			$worksheet->write( $row, $column++, $lastName, $$dataCellFormatRef );
-
-
-			# do we write out a row in our top 'N' excel file?  Yes if we haven't written out
-			# 'N' (or more in case of ties) rows for the current gender/age group AND if 
-			# we have a row that represents a swimmer who has swum at least $minMeetsForConsideration
-			# PAC meets:
-			if( (($rank == $topN_LastRankWritten) ||
-				($topN_NumRowsInGenderAgegroup < $TOP_N_PLACES_TO_SHOW_EXCEL)) &&
-				(($countPMSPoints+$countPMSHidden) >= $minMeetsForConsideration) ) {
-				# this swimmer is a top 'N' swimmer in their age group
-				# add this swimmer to the top 'N' excel file
-				$worksheetTopN->write( $rowTopN, $columnTopN++, "# $rank", $dataCellFormatTopN );
-				$worksheetTopN->write( $rowTopN, $columnTopN++, $firstName, $dataCellFormatTopN );
-				$worksheetTopN->write( $rowTopN, $columnTopN++, $middleInitial, $dataCellFormatTopN );
-				$worksheetTopN->write( $rowTopN, $columnTopN++, $lastName, $dataCellFormatTopN );
-				$worksheetTopN->write( $rowTopN, $columnTopN++, $countPMSPoints . "+" . $countPMSHidden, $dataCellFormatTopN );
-				# increment the number of rows we've added to the top 'N' file for this
-				# gender/age group.  We stop when we've written out the max for the age group AND
-				# there are no more ties with would would have been the last row.
-				$topN_NumRowsInGenderAgegroup++;
-				$topN_LastRankWritten = $rank;
-				$rowTopN++;
-				$columnTopN = 1;
-			}
-
-			$previousGenderAgegroup = $thisGenderAgegroup;
-
-			foreach my $org( @PMSConstants::arrOfOrg ) {
-				foreach my $course( @PMSConstants::arrOfCourse ) {
-					# there is no such thing as "USMS-OW"
-					next if( ($org eq "USMS") && ($course eq "OW") );
-					my( $detailsNum, $pointsForThisOrgCourse, $resultsCounted, $resultsAnalyzed );
-
-
-					# if we did NOT read any results for this org and course then we set
-					# the value for this swimmer to '-' (should never happen when we've
-					# got all the data.)  Otherwise if we don't have a defined value
-					# for this org-course for this swimmer we set the value to 0.
-					if( $missingResults{"$org-$course"} ) {
-						$pointsForThisOrgCourse = "-";
-					} else {
-						( $detailsNum, $pointsForThisOrgCourse, $resultsCounted ) = 
-							TT_MySqlSupport::GetSwimmersSwimDetails2( $swimmerId, $org, $course, $ageGroup );
-					}
-					$worksheet->write( $row, $column++, $pointsForThisOrgCourse, $$pointsDataFormatRef );
-				}
-			}
-			# write out the total points for this swimmer, along with the "not enough events" flag
-			$worksheet->write( $row, $column++, "$minSwimMeetsFlag$points$minSwimMeetsFlag", 
-				$$pointsDataFormatRef );
-			$worksheet->write( $row, $column++, $countPMSPoints . "+" . $countPMSHidden, $$pointsDataFormatRef );			
-		} # end of while( defined(my $resultHash....
-
-
-	$row += 5;
-	# now for more details
-	$worksheet->merge_range( "A$row:M$row", "List of results processed:", $format );
-	$row++;
-	my $meetList = "";
-	my ($statementHandle, $numPoolMeets, $numOWMeets, $numPMSMeets) = TT_MySqlSupport::GetListOfMeets( );
-	my $meetCount = 0;
-	while( defined(my $resultHash = $statementHandle->fetchrow_hashref) ) {
-		$meetCount++;
-		$meetList .= "    $meetCount:   " . $resultHash->{'MeetTitle'} . "\n";
-	}
-	my $row2 = $row+$meetCount;
-	$worksheet->merge_range( "A$row:M$row2", $meetList, $format );
-	
-	my($num, $numWithPoints) = TT_MySqlSupport::GetNumberOfSwimmers();
-	$row = $row2+1;
-	$worksheet->merge_range( "A$row:M$row", "Number of Competing Swimmers:  $num", $format );
-	$row++;
-	$worksheet->merge_range( "A$row:M$row", "Number of Swimmers who earned points:  $numWithPoints", $format );
-	
-	$workbook->close();
-	$workbookTopN->close();
-
-	PMSLogging::PrintLog( "", "", "\n** End PrintResultsExcel (" . 
-		($splitAgeGroups == 1 ? "Split Age Groups" : "Combine Age Groups") . ")", 1 );
-
-} # end of PrintResultsExcel_notused()
-
-
-
-
-
-
-
 
 
 
@@ -4951,11 +4602,16 @@ sub GetSwimmerDetailsFromPMS_DB($$$$) {
 # InitializeMissingResults - initialize the %missingResults hash to the state that implies that
 #	we haven't found any result files.
 #
-sub InitializeMissingResults() {
+# PASSED:
+#	$missing = 1 means all results are initialized as missing, 0 means that all results are 
+#		initialized as not missing.
+#
+sub InitializeMissingResults($) {
+	my $missing = $_[0];
 	foreach my $org( @PMSConstants::arrOfOrg ) {
 		foreach my $course( @PMSConstants::arrOfCourse ) {
 			my $pointsHashKey = "$org-$course";
-			$missingResults{$pointsHashKey} = 1;
+			$missingResults{$pointsHashKey} = $missing;
 		}
 	}
 

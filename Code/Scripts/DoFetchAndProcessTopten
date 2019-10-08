@@ -9,6 +9,7 @@
 #	$2 - (optional) If present and equal to 'y' we'll force generation of the standings page after fetching
 #		the results. If present and equal to anything else (or not present) we will generate the standings page only
 #		if the results look different than the last time we fetched the results.  This is the default.
+#	$3 - an argument passed to topten.  Optional.
 #
 # NOTES:
 #	If the standings page is generated it is NOT installed anywhere except the appropriate
@@ -29,6 +30,9 @@
 ##################  INITIALIZATION   ################################################
 
 SEASON=$1
+FORCEGEN=$2
+ARGUMENT=$3
+
 STARTDATE=`date +'%a, %b %d %G at %l:%M:%S %p %Z'`
 TMPFILE=/tmp/DoFetchAndProcessTopten-$SEASON.$$
 TMPFILE2=/tmp/DoFetchAndProcessTopten_2-$SEASON.$$
@@ -148,13 +152,13 @@ cat >$AWKPROG <<- BUpAWK
 #
 ExecuteTopten() {
 	rm -f $TOPTENLOG
-	$TOPTEN $1
+	$TOPTEN $1 $ARGUMENT
 	# first check to see if Topten ran at all...
 	if [ ! -f $TOPTENLOG ] ; then
 		echo "$TOPTEN $SEASON failed to run (syntax error?), so we are GIVING UP"'!'
 		/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<-BUp0
 			Subject: $SEASON FATAL ERROR (syntax error?) during $TOPTEN $1 on $USERHOST
-			There was an error discovered when running $TOPTEN $1
+			There was an error discovered when running $TOPTEN $1 $ARGUMENT
 			preventing it from running and creating a log file.
 			(STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 			BUp0
@@ -164,11 +168,11 @@ ExecuteTopten() {
 	fi
 	# Topten ran, but did it get an error...?
 	if grep -q "ABORT" <$TOPTENLOG ; then
-		echo "$TOPTEN $SEASON got an ABORT, so we are GIVING UP"'!'
+		echo "$TOPTEN $SEASON $ARGUMENT got an ABORT, so we are GIVING UP"'!'
 		echo "See the TopTen log file: $TOPTENLOG"
 		/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<-BUp0
-			Subject: $SEASON FATAL ERROR during $TOPTEN $1 on $USERHOST
-			There was an error discovered when running $TOPTEN $1
+			Subject: $SEASON FATAL ERROR during $TOPTEN $1 $ARGUMENT on $USERHOST
+			There was an error discovered when running $TOPTEN $1 $ARGUMENT
 			The TopTen log file is here:  $TOPTENLOG
 			(STARTed on $STARTDATE, ABORTed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 			BUp0
@@ -181,7 +185,7 @@ ExecuteTopten() {
 	
 	if [ x == y ] ; then
 		# we're done ... but now we generate "special" AGSOTY results:
-		$TOPTEN $1 -sP -gDifferentPMSScoring
+		$TOPTEN $1 $ARGUMENT -sP -gDifferentPMSScoring
 		# we don't really care if there was an error...(there shouldn't be, since there was no error above)
 			LogMessage "$SEASON: A SPECIAL Standings page has been generated on $USERHOST" \
 				"Using new PMS points rules; Gen sub dir '/DifferentPMSScoring'" "x"
@@ -265,11 +269,11 @@ else
 			------
 			Script logs can be viewed on $ARCHIVED_TMPFILE and $ARCHIVED_TMPFILE2
 			GetResults.pl logs are at:  $GETRESULTSLOG
-			TopTen.pl logs are at: $TOPTENLOG
+			$TOPTEN logs are at: $TOPTENLOG
 			(STARTed on $STARTDATE, Terminated on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 			BUp2
 			)" "x"
-	elif [ ."$2" == .y ] ; then
+	elif [ ."$FORCEGEN" == .y ] ; then
 ########################  NO NEW RESULT FILES BUT GENERATE TOP 10 ANYWAY  ################
 		# even though there are no changes we're going to generate the standings anyway
 		TailTheLog "$GETRESULTSLOG" "$TMPFILE2"
@@ -289,7 +293,7 @@ else
 			------
 			Script logs can be viewed on $ARCHIVED_TMPFILE and $ARCHIVED_TMPFILE2
 			GetResults.pl logs are at:  $GETRESULTSLOG
-			TopTen.pl logs are at: $TOPTENLOG
+			$TOPTEN logs are at: $TOPTENLOG
 			(STARTed on $STARTDATE, Terminated on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
 			BUp3
 			)" "x"

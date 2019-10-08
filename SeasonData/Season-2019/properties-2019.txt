@@ -3,9 +3,14 @@
 
 # Copyright (c) 2016 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
+# PMS Club info file name  (This is actually not the list of clubs during any past year,
+# but it shouldn't matter.)  Relative to PMSSwimmerData subdirectory of the directory
+# containing this file.
+ClubFileName		USMS-Club_06-10-2019.csv
 
-# All file names are relative to the SourceData directory, which is the directory
-# containing this property file.
+# UNLESS OTHERWISE STATED:
+# All file names are relative to the SourceData directory, which is a subdirectory
+# of the directory containing this property file.
 
 # This file contains information about every swim meet discovered when downloading
 # the results to be processed:
@@ -54,3 +59,4 @@ USMSRecordsFiles \
 
 PMSOpenWaterResultFile \
 						{YearBeingProcessed}PacMastersOWPlacesForEachSwimmer.csv
+

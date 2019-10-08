@@ -10,7 +10,7 @@
 	<script type="text/javascript" src="Support/jquery.floatThead.min.js"></script>
 	<script type="text/javascript" src="Support/Standings.js"></script>
 
-	<title>Pacific Masters {YearBeingProcessed} Swimmer Age Group Standings</title>
+	<title>{PacificMasters}{YearBeingProcessed} Swimmer Age Group Standings</title>
 
 
 </head>
@@ -22,7 +22,8 @@
 <a href="/"><img src="Support/horizontal-logo.jpg" height="134" border="0" width="320"></a>
 </center>
 <p>&nbsp;</p>
-<h1 style="text-align:center">Pacific Masters {YearBeingProcessed} Swimmer Age Group Standings</h1>
+<h1 style="text-align:center">{PacificMasters}{YearBeingProcessed} Swimmer Age Group Standings</h1>
+{TeamTitle}
 <h2 style="text-align:center">as of {GenerationDate}</h2>
 
 <p>&nbsp;</p>
@@ -59,7 +60,10 @@
 </div>		<!-- End of Jump Area -->
 
 <p>&nbsp;</p>
-<div style=" margin-left: 40px">
+<div style=" margin-left: 40px; display:{DontShowRules}">
+Based on <a href="index.html">Pacific Masters Age Group Standings Points</a>.
+</div>
+<div style=" margin-left: 40px; display:{ShowRules}">
 	This page displays Age Group Standings for Pacific Masters swimmers.  
 	These standings are determined by awarding swimmers points for:
 	<ul>

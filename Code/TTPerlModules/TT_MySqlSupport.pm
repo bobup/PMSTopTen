@@ -44,6 +44,7 @@ my %ttTableList = (
 	'Meet' => 0,
 	'FetchStats' => 0,
 	'USMSDirectory' => 0,
+	'PMSTeams' => 0,
 	# results tables:
 	'FetchStats' => 0,
 );
@@ -51,6 +52,7 @@ my %ttTableList = (
 my @ttTableListNotDropped = (
 	"Meta",
 	"RSIDN_.*\$",
+	'PMSTeams' => 0,
 	# results tables are never automatically dropped:
 	'FetchStats',
 	);
@@ -125,7 +127,6 @@ sub InitializeTopTenDB() {
 	my $yearBeingProcessed = PMSStruct::GetMacrosRef()->{"YearBeingProcessed"};
 	my $xxx = $PMSConstants::MAX_LENGTH_TEAM_ABBREVIATION;		# avoid compiler warning
 	
-
 	if( $dbh ) {
 		# get our database parameters
 		PMS_MySqlSupport::GetTableList( \%ttTableList, \$ttTableListInitialized );
@@ -438,7 +439,17 @@ sub InitializeTopTenDB() {
 		    			"SplitAgeGroupTag Varchar(10), " .
 		    			"NumSwimmers INT DEFAULT 0 " .
 		    			" )" );
-    			
+		    			    			
+### PMSTeams
+    			} elsif( $tableName eq "PMSTeams" ) {
+    				# --- Table of PMS teams - legal PMS teams only.
+    				#		See the table 'ReferencedTeams' for a list of teams referenced in race
+    				#		entries, along with the swimmer referencing the team.
+    				# --- TeamAbbr = WCM or CALM - always capitalized.
+		    		($sth,$rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
+		    			"CREATE TABLE PMSTeams (PMSTeamsId INT AUTO_INCREMENT PRIMARY KEY, " .
+		    			"TeamAbbr VARCHAR($PMSConstants::MAX_LENGTH_TEAM_ABBREVIATION) UNIQUE, " .
+		    			"FullTeamName VARCHAR(200) )" );
 # results tables:
 ### FetchStats
     			} elsif( $tableName eq "FetchStats" ) {
