@@ -94,7 +94,7 @@ my $GENERATE_FULL_AGSOTY = 1;
 my $GENERATE_TEAM_AGSOTY = 0;
 
 # Here is the list of teams for which we'll generate team-AGSOTY pages (when requested)
-my @TEAM_AGSOTY_LIST = ("ALB", "DAM", "MEMO", "PCCM", "SRM", "WCM", "TOC", "MAM");
+my @TEAM_AGSOTY_LIST = ("ALB", "DAM", "MEMO", "PCCM", "SRM", "WCM", "TOC");
 
 # This is the number of SOTY swimmers for each gender we'll show in the generated HTML and Excel files.
 $TT_Struct::NumHighPoints=5;
@@ -240,7 +240,8 @@ where:
 	-gGenSubDir - if supplied the string 'GenSubDir' will be used as the name of a subdirectory of the 
 		generatedDirName directory (into which all generated files are placed.)  The use of this
 		argument allows one to create a full AGSOTY generation without overwriting a previous one.
-	-e[+] - generate team-AGSOTY results.  If the -e is followed + we also generate full AGSOTY results.
+	-e[+] - generate team-AGSOTY results.  If the -e is followed + we first generate full AGSOTY results and then
+		the team-AGSOTY results.
 bup
 ;
 
@@ -374,6 +375,9 @@ while( defined( $arg = shift ) ) {
 				$GENERATE_FULL_AGSOTY = 0;
 				$RESULT_FILES_TO_READ = 0;			# process none of the result files (use DB only)
 				$COMPUTE_POINTS = 0;
+			} elsif( $value ne "+" ) {
+				print "${appProgName}:: ERROR:  Invalid value following the '-e' flag: '$arg'\n";
+				$numErrors++;
 			}
         } else {
 			print "${appProgName}:: ERROR:  Invalid flag: '$arg'\n";
