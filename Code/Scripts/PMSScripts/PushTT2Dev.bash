@@ -85,6 +85,13 @@ cd $GENERATED_DIR
 if [ -e "index.html" ] ; then
 	# yes!  get to work:
 	mkdir -p $DESTINATION_DIR
+	# remove old files from DESTINATION_DIR
+	for filename in * ; do
+		if [ .$filename != .Support ] ; then
+			rm -rf $filename
+		fi
+	done
+	# now, do the push:	
 	cp -r *  $DESTINATION_DIR
 	NOEMAIL=			# always send an email
 	LogMessage "$1 Top Ten standings pushed to dev by $SIMPLE_SCRIPT_NAME on $USERHOST" \

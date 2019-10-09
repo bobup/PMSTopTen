@@ -6,6 +6,7 @@
 #
 # PASSED:
 #	$1 - the season, e.g. 2017
+#	other arguments are optional and passed to Topten2.pl
 #
 #
 
