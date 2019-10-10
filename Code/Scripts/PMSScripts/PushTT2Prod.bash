@@ -75,7 +75,7 @@ DoThePush() {
     # push tarball to production
     scp -p $TARBALL pacmasters@pacmasters.pairserver.com:~/public_html/pacificmasters.org/sites/default/files/comp/points
     ssh pacmasters@pacmasters.pairserver.com \
-        "( cd ~/public_html/pacificmasters.org/sites/default/files/comp/points; tar zcf Attic/$STANDINGSDIRARCHIVE $STANDINGSDIR; rm -rf $STANDINGSDIR; tar xf $TARBALL; mv $TARBALL Attic; cd Attic; ls -tp | grep -v '/$' | grep $STANDINGSDIR | tail -n +21 | xargs -I {} rm -- {}; ls -tp | grep -v '/$' | grep TT_ | tail -n +21 | xargs -I {} rm -- {} )"
+        "( cd ~/public_html/pacificmasters.org/sites/default/files/comp/points; tar zcf Attic/$STANDINGSDIRARCHIVE $STANDINGSDIR; rm -rf $STANDINGSDIR; tar xf $TARBALL; mv $TARBALL Attic; cd Attic; ls -tp | grep -v '/$' | grep $STANDINGSDIR | tail -n +21 | xargs -I {} rm -- {}; ls -tp | grep -v '/$' | grep TT- | tail -n +21 | xargs -I {} rm -- {} )"
     
     # clean up old tarballs keeping only the most recent 60
     cd $TARDIR >/dev/null
@@ -83,6 +83,7 @@ DoThePush() {
     
     LogMessage "$SEASON Top Ten standings pushed to PRODUCTION by $SIMPLE_SCRIPT_NAME on $USERHOST" \
         "$(cat <<- BUp9
+Source Directory (dev points dir): $SOURCE_POINTS_DIR
 Destination Directory: $DESTINATION_DIR
 (STARTed on $STARTDATE, FINISHed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
 diff $SERVER_TTSTATS $SOURCE_TTSTATS :
