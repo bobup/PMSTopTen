@@ -86,8 +86,9 @@ if [ -e "index.html" ] ; then
 	# yes!  get to work:
 	mkdir -p $DESTINATION_DIR
 	# remove old files from DESTINATION_DIR
-	for filename in * ; do
-		if [ .$filename != .Support ] ; then
+	for filename in $DESTINATION_DIR/* ; do
+		if [[ $filename != *"Support" ]] ; then
+			#echo "remove '$filename'"
 			rm -rf $filename
 		fi
 	done
@@ -96,6 +97,7 @@ if [ -e "index.html" ] ; then
 	NOEMAIL=			# always send an email
 	LogMessage "$1 Top Ten standings pushed to dev by $SIMPLE_SCRIPT_NAME on $USERHOST" \
 		"$(cat <<- BUp9 
+		Generated Directory: $GENERATED_DIR
 		Destination Directory: $DESTINATION_DIR
 		(STARTed on $STARTDATE, FINISHed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
 		BUp9
