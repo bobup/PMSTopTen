@@ -639,9 +639,9 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 	$resultHash = $sth->fetchrow_hashref;
 	if( $debugLastName eq $lastName ) {
 		if( defined($resultHash) ) {
-			PMSLogging::PrintLog( "", "", "Williams found with $regNumRt\n", 1 );
+			PMSLogging::PrintLog( "", "", "$debugLastName found with $regNumRt\n", 1 );
 		} else {
-			PMSLogging::PrintLog( "", "", "Williams NOT found with $regNumRt\n", 1 );
+			PMSLogging::PrintLog( "", "", "$debugLastName NOT found with $regNumRt\n", 1 );
 		}
 	}
 	if( defined($resultHash) ) {
@@ -843,7 +843,7 @@ sub AddNewMeetIfNecessary($$$$$$$$$) {
 				"\"" . $meetCourse . "\"," .
 				"\"" . $meetBeginDate . "\"," .
 				"\"" . $meetEndDate . "\"," .
-				"\"" . $meetIsPMS . "\" )", "INSERT in AddNewMeetIfNecessary()");
+				"\"" . $meetIsPMS . "\" )", "");
 		# get the MeetId of the meet we just entered into our db
     	$meetId = $dbh->last_insert_id(undef, undef, "Meet", "MeetId");
 	}
@@ -1000,8 +1000,9 @@ sub GetSwimmersSwimDetails2($$$$) {
 		$ageGroupQuery .
 		"ORDER BY Points DESC,Date DESC";
 	
-	
-	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query, "" );
+	my $debugQuery = "";
+	$debugQuery = "GetSwimmersSwimDetails2: Val" if( $swimmerId == -1 );
+	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query, "$debugQuery" );
 	
 	my %hashOfEvents = ();		# used to remove duplicates
 	# $hashOfEvents{eventId-$course} = points : the swimmer swam in event # 'eventId' 
@@ -2398,33 +2399,17 @@ sub DidWeGetDifferentData( $$$ ) {
 		} else {
 			# we found no differences in the results since the last time we looked...
 			if( PMSLogging::GetNumErrorsLogged() == 0 ) {
-				# if we have a new RSIND file to process we'll pretend that results have changed because
-				# the new RSIND file may give us new swimmers who deserve points that didn't get point
+				# If we have a new RSIND file to process we'll pretend that results have changed because
+				# the new RSIND file may give us new swimmers who deserve points that didn't get points
 				# before.  We will NOT USE the RSIND file here - just see if it's different from the last
 				# one used by Topten2.pl:
-				# location of the RSIDN file that we'll use
-				my $swimmerDataFile;
-				if( ! defined( PMSStruct::GetMacrosRef()->{"RSIDNFileName"} ) ) {
-					# We will use the most recent version of the RSIDN file we can find in the $PMSSwimmerData
-					# directory:
-					$swimmerDataFile = 	PMSUtil::GetMostRecentVersion( '^(.*RSIND.*)|(.*RSIDN.*)$', $PMSSwimmerData );
-					# NOTE: $swimmerDataFile is a FULL PATH NAME!  The RSIDNFileName macro is supposed to be the simple name
-					if( defined $swimmerDataFile ) {
-						PMSStruct::GetMacrosRef()->{"RSIDNFileName"} = basename( $swimmerDataFile );
-					}
-				} else {
-					$swimmerDataFile = $PMSSwimmerData . PMSStruct::GetMacrosRef()->{"RSIDNFileName"};
-				}
-				if( ! defined( PMSStruct::GetMacrosRef()->{"RSIDNFileName"} ) ) {
-					PMSLogging::DumpError( 0, 0, "TT_MySqlSupport::DidWeGetDifferentData(): " .
-						"A RSIDN file wasn't found in '$PMSSwimmerData'.  Act as though results did NOT change." );
-				} elsif( ! -f $swimmerDataFile ) {
-					PMSLogging::DumpError( 0, 0, "TT_MySqlSupport::DidWeGetDifferentData(): " .
-						"The RSIDN file '$swimmerDataFile' does not exist -\n" .
-						"    (check your property files!)  Act as though results did NOT change." );
-				} else {
-					# we have identified the RSIND file that we'd likely use if we analyzed the results now -
-					# is it different from the RSIND file we last used when analyzing the results?
+				# Get the full path name to the PMS member file (the "RSIND" file)
+				# that contains PMS supplied swimmer data (e.g. name, regnum, team, etc.).  
+				# First, we need to get the pattern that we'll use to find the file:
+				my $fileNamePattern = PMSStruct::GetMacrosRef()->{"RSIDNFileNamePattern"};
+				my $swimmerDataFile = PMSUtil::GetFullFileNameFromPattern( $fileNamePattern, $PMSSwimmerData, "RSIND" );
+				if( defined $swimmerDataFile ) {
+					# we have a RSIND file - is it newer than the last one?  should Topten use it?  We'll decide here:
 					my( $simpleName, $dirs, $suffix ) = fileparse( $swimmerDataFile );		# get last simple name in filename
 					my ($refreshRSIDNFile, $lastRSIDNFileName) = 
 						PMS_ImportPMSData::RSINDFileIsNew( $simpleName, $season);

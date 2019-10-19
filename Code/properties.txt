@@ -6,6 +6,23 @@
 # get database parameters:
 >include ../SeasonData/Season-{YearBeingProcessed}/properties_DB-{YearBeingProcessed}.txt
 
+# RSIND file name pattern - the regexp pattern to recognize the RSIND file to be used by this program.
+# The RSIND file name pattern will match the simple file name, and is assumed to be relative 
+# to <appRootDir>/SourceData/PMSSwimmerData
+# If this needs to be overridden for some reason it should be done in the year-specific property file.
+# The RSIND file name pattern may allow a few different spellings for the file, but the substring "RSIND"
+# is the preferred substring match.
+RSIDNFileNamePattern		^(.*RSIND.*)|(.*RSIDN.*)$
+
+# Merged Member data file name pattern - the regexp pattern to recognize the merged member file to be used by this program.  
+# Relative to SourceData/PMSSwimmerData
+# If this needs to be overridden for some reason it should be done in the year-specific property file.
+MergedMemberFileNamePattern		^.*MergedMembers.*$
+
+# PMS Club info file name pattern - the regexp pattern to recognize the club info file to be used by this program.  
+# Relative to SourceData/PMSSwimmerData
+# If this needs to be overridden for some reason it should be done in the year-specific property file.
+ClubFileNamePattern		^.*[cC][lL][uU][bB].*$
 
 >include ../SeasonData/Season-{YearBeingProcessed}/properties-{YearBeingProcessed}.txt
 

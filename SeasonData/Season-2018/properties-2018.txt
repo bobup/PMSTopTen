@@ -3,21 +3,13 @@
 
 # Copyright (c) 2016 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
-
+# UNLESS OTHERWISE STATED:
 # All file names are relative to the SourceData directory, which is the directory
 # containing this property file.
 
 # This file contains information about every swim meet discovered when downloading
 # the results to be processed:
 RacesDataFile	races.txt
-
-# The Registered Swimmer IDentification Number file (RSIDN file) contains a list
-# of currently registered PMS swimmers with their reg numbers and other useful data
-# used to recognize and identify valid PMS swimmers.  If the macro 'RSIDNFileName'
-# it is the name of the RSIDN file to use.  Otherwise the code will use the most
-# recent version it can find in PMSSwimmerData/ subdirectory of the directory
-# holding this property file.
-#RSIDNFileName	USMS-RSIND_04-23-2018xxx.csv
 
 
 PMSResultFiles \

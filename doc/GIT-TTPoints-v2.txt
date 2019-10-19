@@ -62,13 +62,17 @@ Calendar of Actions:
 		- rename the "properties_DB-<old season>.txt" to "properties_DB-<new season>.txt"
 		- edit "properties-<new season>.txt" and make necessary changes, e.g.:
 			- comment line with name of file
+			- Copyright year
+			- ClubFileName
+			- almost everything else is parameterized with the year so you don't have to change those.
 		- edit "properties_DB-<new season>.txt" and make necessary changes, e.g.:
 			(Some installations will require a different
 			MySQL user name and/or password for each new database.  In addition, some 
 			installations will not allow a simple database name like "TopTen_2017" so the
 			below "Initialize our database" instructions will have to be modified, requiring 
 			a modification of the 'properties_DB-{new season}.txt' property file.)
-			- change the name of the new season's database (see Initialize our database below.)
+			- change the name of the new season's database (dbName - 
+				see Initialize our database below.)
 			- change the Username and password of the MySQL user for this new database (if 
 				necessary)
 			
@@ -89,7 +93,8 @@ Calendar of Actions:
 		- from Eclipse:  Run GetResults.pl with the parameter <new season>, or
 		- from Terminal: <appRootDir>/Code/Scripts/FetchTopten <new season>
 		
-	- Add a link to the Support directory to the Generated-<new season> directory:
+	- Add a link to the Support directory to the Generated-<new season> directory (but ONLY
+		if you want to request any of the generated HTML files via a browser):
 		- copy the Support directory alias from Generated-<old season> 
 			to Generated-<new season>, e.g.:
 				% cd Generated-<old season>

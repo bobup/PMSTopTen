@@ -75,7 +75,6 @@ BEGIN {
 	$appProgName = basename( $0 );
 	die( "Can't determine the name of the program being run - did you use/require 'File::Basename' and its prerequisites?")
 		if( (!defined $appProgName) || ($appProgName eq "") );
-	print "Starting $appProgName...\n";
 
 	# The program we're running is in a directory we call the "appDirName".  The files we
 	# use for input and the files we generate are all located in directories relative to the
@@ -93,7 +92,6 @@ BEGIN {
 	$appRootDir = dirname($appDirName);		# e.g. /Users/bobup/Development/PacificMasters/PMSOWPoints/
 	die( "${appProgName}:: The parent directory of '$appDirName' is not a directory! (A permission problem?)" )
 		if( !-d $appRootDir );
-	print "  ...with the app dir name '$appDirName' and app root of '$appRootDir'...\n";
 	
 	# initialize our source data directory name:
 	$sourceData = "$appRootDir/SeasonData";	
@@ -162,6 +160,17 @@ PMSStruct::GetMacrosRef()->{"AppDirName"} = $appDirName;	# directory containing 
 # get to work - initialize the program
 ############################################################################################################
 
+# the date of executation, in the form 24Mar16
+my $dateString = strftime( "%d%b%g", localtime() );
+# ... and in the form March 24, 2016
+my $generationDate = strftime( "%B %e, %G", localtime() );
+PMSStruct::GetMacrosRef()->{"GenerationDate"} = $generationDate;
+# ... and in the form Fri Sep 30 16:29:04 2016
+my $generationTimeDate = strftime( "%a %b %d %G - %X", localtime() );
+PMSStruct::GetMacrosRef()->{"GenerationTimeDate"} = $generationTimeDate;
+my $mysqlDateTime = strftime( "%F %H:%M:%S", localtime() );		 # 'YYYY-MM-DD HH:MM:SS'
+PMSStruct::GetMacrosRef()->{"MySqlDateTime"} = $mysqlDateTime;
+
 # get the arguments:
 my $yearBeingProcessed ="";
 
@@ -201,7 +210,37 @@ if( $yearBeingProcessed eq "" ) {
 #	PMSStruct::GetMacrosRef()->{"YearBeingProcessedPlusOne"} = $yearBeingProcessed+1;
 }
 
-print "  ...and with the propertiesDir='$propertiesDir', and propertiesFilename='$propertiesFileName'\n";
+# Output file/directories:
+my $generatedDirName = "$appRootDir/GeneratedFiles/Generated-$yearBeingProcessed/";
+# does this directory exist?
+if( ! -e $generatedDirName ) {
+	# neither file nor directory with this name exists - create it
+	my $count = File::Path::make_path( $generatedDirName );
+	if( $count == 0 ) {
+		die "Attempting to create '$generatedDirName' failed to create any directories.";
+	}
+}
+# something with this name exists - is it a writable directory?
+if( ! -d $generatedDirName ) {
+	die "A file with the name '$generatedDirName' exists - it must be a directory.  Abort.";
+} elsif( ! -w $generatedDirName ) {
+	die "The directory '$generatedDirName' is not writable.  Abort.";
+}
+
+# initialize our logging:
+###
+### Initialalize log file
+###
+my $logFileName = $generatedDirName . "GetResultsLog-$yearBeingProcessed.txt";
+# open the log file so we can log errors and debugging info:
+if( my $tmp = PMSLogging::InitLogging( $logFileName )) { die $tmp; }
+
+
+PMSLogging::PrintLog( "", "", "Starting $appProgName on $generationTimeDate...", 1 );
+PMSLogging::PrintLog( "", "", "  ...get results for the year $yearBeingProcessed...", 1 );
+PMSLogging::PrintLog( "", "", "  ...with the app dir name '$appDirName' and app root of '$appRootDir'...", 1 );
+PMSLogging::PrintLog( "", "", "  ...and with the propertiesDir='$propertiesDir', and propertiesFilename='$propertiesFileName'...", 1 );
+
 
 # various input files:
 # Read the properties.txt file for this program and set the necessary properties by setting name/values in 
@@ -212,8 +251,6 @@ print "  ...and with the propertiesDir='$propertiesDir', and propertiesFilename=
 # Note that the full path name of the properties file is set to its default value when
 # $propertiesDir and $propertiesFileName are initialized above.
 PMSMacros::GetProperties( $propertiesDir, $propertiesFileName, $yearBeingProcessed );			
-
-print "  ...Year being analyzed: $yearBeingProcessed\n";
 
 ###
 ### file names
@@ -245,44 +282,8 @@ my $PMSSwimmerData = "$seasonData/PMSSwimmerData/";
 # template directory:
 #my $templateDir = "$appDirName/Templates";
 
-# the date of executation, in the form 24Mar16
-my $dateString = strftime( "%d%b%g", localtime() );
-# ... and in the form March 24, 2016
-my $generationDate = strftime( "%B %e, %G", localtime() );
-PMSStruct::GetMacrosRef()->{"GenerationDate"} = $generationDate;
-# ... and in the form Fri Sep 30 16:29:04 2016
-my $generationTimeDate = strftime( "%a %b %d %G - %X", localtime() );
-PMSStruct::GetMacrosRef()->{"GenerationTimeDate"} = $generationTimeDate;
-my $mysqlDateTime = strftime( "%F %H:%M:%S", localtime() );		 # 'YYYY-MM-DD HH:MM:SS'
-PMSStruct::GetMacrosRef()->{"MySqlDateTime"} = $mysqlDateTime;
-
-# Output file/directories:
-my $generatedDirName = "$appRootDir/GeneratedFiles/Generated-$yearBeingProcessed/";
-# does this directory exist?
-if( ! -e $generatedDirName ) {
-	# neither file nor directory with this name exists - create it
-	my $count = File::Path::make_path( $generatedDirName );
-	if( $count == 0 ) {
-		die "Attempting to create '$generatedDirName' failed to create any directories.";
-	}
-}
-# something with this name exists - is it a writable directory?
-if( ! -d $generatedDirName ) {
-	die "A file with the name '$generatedDirName' exists - it must be a directory.  Abort.";
-} elsif( ! -w $generatedDirName ) {
-	die "The directory '$generatedDirName' is not writable.  Abort.";
-}
 
 
-# initialize our logging:
-###
-### Initialalize log file
-###
-my $logFileName = $generatedDirName . "GetResultsLog-$yearBeingProcessed.txt";
-# open the log file so we can log errors and debugging info:
-if( my $tmp = PMSLogging::InitLogging( $logFileName )) { die $tmp; }
-PMSLogging::DumpNote( "", "", "Log file created on $generationTimeDate" );
-PMSLogging::DumpNote( "", "", "$appProgName: get results for the year $yearBeingProcessed" );
 
 ###
 ### initialize database
@@ -439,8 +440,8 @@ foreach my $key (sort { $SwimMeets{$a} cmp $SwimMeets{$b} } keys %SwimMeets ) {
 	my ($date, $USMSMeetId,$org,$course,$isPMS) = ($1,$2,$3,$4,$6);
 	$value2 = $5;
 	if( ! defined $isPMS ) {
-		print "While Generating Swim Meet Data, isPMS is undefined.  raceLines=$raceLines, " .
-			"key='$key', racesFileName='$racesFileName', value1='$value1', value2='$value2'\n";
+		PMSLogging::PrintLog( "", "", "While Generating Swim Meet Data, isPMS is undefined.  raceLines=$raceLines, " .
+			"key='$key', racesFileName='$racesFileName', value1='$value1', value2='$value2'", 1 );
 	} else {
 		print $racesFileHandle "$key\t$isPMS\t$org\t$course\t$date\t$USMSMeetId\t$value2\n";
 	}
@@ -1816,13 +1817,13 @@ sub GetPMSRecords2( $$$$$ ) {
 		# NOTE; we're considering a status of 0 to be an error.  The web service doesn't think it's an
 		# error, but since it means we got 0 records, which is obviously wrong, we'll caount it
 		# as an error, even though this will "never happen".
-		PMSLogging::PrintLog( "", "", "FAILED!!  (status=" . $data->{'status'} . ", error='" .
+		PMSLogging::DumpError( "", "", "FAILED!!  (status=" . $data->{'status'} . ", error='" .
 			$data->{'error'} . "'", 1 );
 	} else {
 		# we got all records (current, historical, invalid, etc) for this course
 		my $arrOfRecords = decode_json( $data->{'content'} );
 		$totalNumRecords = @$arrOfRecords;
-		PMSLogging::PrintLog( "", "", "Found $totalNumRecords total records to analyze", 1 );
+		PMSLogging::DumpNote( "", "", "Found $totalNumRecords total records to analyze", 1 );
 
 		my $count = 0;
 		my @listOfThisSeasonsCurrentRecords = ();
@@ -1830,8 +1831,6 @@ sub GetPMSRecords2( $$$$$ ) {
 		my ($previousGender, $previousStroke, $previousDistance, $previousAgeGroup) = ("", "", 0, "");
 		foreach my $recHashRef (@$arrOfRecords) {
 			$count++;
-			#print "Record #$count: ";
-			#print Dumper( $recHashRef );
 			my ($currentGender, $currentStroke, $currentDistance, $currentAgeGroup) =
 				($recHashRef->{'gender'},		# "M" or "F"
 				 $recHashRef->{'stroke'},		# "Freestyle", "Butterfly", "Backstroke", "Breaststroke", "Individual Medley"
@@ -1868,6 +1867,15 @@ sub GetPMSRecords2( $$$$$ ) {
 			}
 			if( $dateAnalysis eq "" ) {
 				# this is a record within the current season, but is it a true record?  historical?
+				# --- debugging:
+				if( $trueCourse eq "xxx" ) {		# e.g. test for SCM or SCY or LCM
+					my $swimmerid = $recHashRef->{'swimmer_id'};
+					if( ($swimmerid eq "03H9F") && ($currentStroke eq "Backstroke") && ($currentDistance == 50) ) {
+						print "Record #$count: ";
+						print Dumper( $recHashRef );
+					}
+				}
+				# --- end of debugging
 				if( $currentFTime == $ftimeCurrent ) {
 					# this is the current record for this gender, stroke, distance, and age group:
 					push( @listOfThisSeasonsCurrentRecords, $recHashRef );
@@ -1911,6 +1919,10 @@ sub GetPMSRecords2( $$$$$ ) {
 #				\@listOfThisSeasonsHistoricalRecords, $recordsFileHandle );
 #
 # ComputePointsForPreviousRecordSet - write out the records found for a specific record set.
+#
+#	NOTE:  Definition:  a "record set" is a set of 1 or more records where the gender, stroke, distance, 
+#	and age group are the same.
+
 #
 sub ComputePointsForPreviousRecordSet($$) {
 	my ($listOfThisSeasonsCurrentRecordsRef, $listOfThisSeasonsHistoricalRecordsRef,
@@ -1960,26 +1972,31 @@ sub ComputePointsForPreviousRecordSet($$) {
 		# Jane points for her record (which is correct.)  But if we fail to notice that Sally has
 		# a historical record then she won't get points for her record during the 2019 season.  So
 		# here is where we will do that.
-		#print "Use one of these historical records:\n";
+		#
+		# NOTE:  currently we only use ONE of these historical records - the newest one:
+		my $newestHistoricalRecord = undef;
+		my $newestHistoricalDate = "0000-00-00";
 		foreach my $rec (@{$listOfThisSeasonsHistoricalRecordsRef}) {
+			if( $rec->{'date'} gt $newestHistoricalDate ) {
+				$newestHistoricalRecord = $rec;
+				$newestHistoricalDate = $rec->{'date'};
+			}
+		}
+		if( defined $newestHistoricalRecord ) {
 			print $recordsFileHandle
-				"$rec->{'gender'}," .
-				"$rec->{'age_group'}," .
-				"$rec->{'distance'}," .
-				"$rec->{'stroke'}," .
-				"$rec->{'name'}," .
-				"$rec->{'date'}," .
-				"$rec->{'duration'}," .
+				"$newestHistoricalRecord->{'gender'}," .
+				"$newestHistoricalRecord->{'age_group'}," .
+				"$newestHistoricalRecord->{'distance'}," .
+				"$newestHistoricalRecord->{'stroke'}," .
+				"$newestHistoricalRecord->{'name'}," .
+				"$newestHistoricalRecord->{'date'}," .
+				"$newestHistoricalRecord->{'duration'}," .
 				"\n";
 			$numSavedRecords++;
 		}
 	}
-	
-					
-
 	$numCurrentRecords = @$listOfThisSeasonsCurrentRecordsRef;
 	$numHistoricalRecords = @$listOfThisSeasonsHistoricalRecordsRef;
-	
 	@$listOfThisSeasonsCurrentRecordsRef = ();
 	@$listOfThisSeasonsHistoricalRecordsRef = ();
 

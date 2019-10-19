@@ -252,7 +252,7 @@ GenerateHTMLStats( $generatedHTMLStatsFullName );
 my $logLinesOnly = PMSLogging::GetLogOnlyLines();
 my $completionTimeDate = strftime( "%a %b %d %G - %X", localtime() );
 
-PMSLogging::PrintLog( "", "", "\nDone at $completionTimeDate.\n  See the $logLinesOnly lines (beginning with '+') logged ONLY to the log file.", 1 );
+PMSLogging::PrintLog( "", "", "\nDone with $appProgName at $completionTimeDate.\n  See the $logLinesOnly lines (beginning with '+') logged ONLY to the log file.", 1 );
 exit(0);
 
 

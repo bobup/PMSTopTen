@@ -76,7 +76,7 @@ my $WRITE_EXCEL_FILES = 1;
 # (which happens for every one of us once every 5 years, since a season spans more than 1 calendar year) we
 # generate split age groups if such a swimmer accumulates points in their two age groups.  This means they have
 # two entries in the AGSOTY, one entry for their younger age group, and another for their older age group.
-# NOTE!!  ON AND AFTER THE 2018 SEASON THIS CAN ALWAYS BE '0'!
+# NOTE!!  ON AND AFTER THE 2018 SEASON THIS CAN ALWAYS BE '0'!   THIS MAY ALSO BE SET BELOW BASED ON $yearBeingProcessed
 my $GENERATE_SPLIT_AGE_GROUPS = 0;
 
 # Do we generate results for "combined age groups"?  If a swimmer changes age groups in the middle of a 
@@ -86,10 +86,11 @@ my $GENERATE_SPLIT_AGE_GROUPS = 0;
 # events (if a swimmer is ranked 2nd in the 100 free SCY in their younger age group, and then swims the
 # same event in their older age group and gets ranked 1st, they only get points for the higher ranked place,
 # which, in this case, is 1st.)
-# NOTE!!  ON AND AFTER THE 2018 SEASON THIS SHOULD ALWAYS BE '1'!
+# NOTE!!  ON AND AFTER THE 2018 SEASON THIS CAN ALWAYS BE '1'!  THIS MAY ALSO BE SET BELOW BASED ON $yearBeingProcessed
 my $GENERATE_COMBINED_AGE_GROUPS = 1;
 
 # Do we generate results considering all PAC swimmers, or just for a specific team(s)?
+# This can change using the -e flag
 my $GENERATE_FULL_AGSOTY = 1;
 my $GENERATE_TEAM_AGSOTY = 0;
 
@@ -484,6 +485,11 @@ if( $GENERATE_TEAM_AGSOTY ) {
 if( !$GENERATE_FULL_AGSOTY && !$GENERATE_TEAM_AGSOTY ) {
 	PMSLogging::DumpNote( "", "", "  ...We're NOT generating ANYTHING!!  (Probably not what you wanted)", 1 );
 }
+if( $WRITE_EXCEL_FILES ) {
+	PMSLogging::DumpNote( "", "", "  ...Generate AGSOTY Excel results.", 1 );
+} else {
+	PMSLogging::DumpNote( "", "", "  ...DO NOT Generate AGSOTY Excel results.", 1 );
+}
 PMSLogging::DumpNote( "", "", "  ...PMS scoring rules: " . 
 	PMSStruct::GetMacrosRef()->{"PMSTopTenScoringRules"}, 1 );
 PMSLogging::DumpNote( "", "", "  ...USMS scoring rules: " . 
@@ -517,21 +523,85 @@ my $templateDir = "$appDirName/Templates";
 # swimmer data (not race results) directory
 my $PMSSwimmerData = "$seasonData/PMSSwimmerData/";
 
-# location of the RSIDN file that we'll use
-my $swimmerDataFile;
-if( ! defined( PMSStruct::GetMacrosRef()->{"RSIDNFileName"} ) ) {
-	# We will use the most recent version of the RSIDN file we can find in the $PMSSwimmerData
-	# directory:
-	$swimmerDataFile = 	PMSUtil::GetMostRecentVersion( '^(.*RSIND.*)|(.*RSIDN.*)$', $PMSSwimmerData );
-	PMSStruct::GetMacrosRef()->{"RSIDNFileName"} = $swimmerDataFile;
+
+
+
+###
+### initialize database
+###
+# Initialize the database parameters:
+PMS_MySqlSupport::SetSqlParameters( 'default',
+	PMSStruct::GetMacrosRef()->{"dbHost"},
+	PMSStruct::GetMacrosRef()->{"dbName"},
+	PMSStruct::GetMacrosRef()->{"dbUser"},
+	PMSStruct::GetMacrosRef()->{"dbPass"} );
+if( $RESULT_FILES_TO_READ != 0 ) {
+	TT_MySqlSupport::DropTTTables ();
+	my $dbh = TT_MySqlSupport::InitializeTopTenDB();
+	
+	# Get the PMS-supplied data about every PMS member	
+	
+	# get the full path name to the PMS member file (known as an "RSIND" file to some people)
+	# that contains PMS supplied swimmer data (e.g. name, regnum, team, etc.).  
+	# First, we need to get the pattern that we'll use to find the file:
+	my $fileNamePattern = PMSStruct::GetMacrosRef()->{"RSIDNFileNamePattern"};
+	my $swimmerDataFile = PMSUtil::GetFullFileNameFromPattern( $fileNamePattern, $PMSSwimmerData, "RSIND" );
+	if( defined $swimmerDataFile ) {
+		# we have a RSIND file - is it newer than the last one?  should we use it?  We'll decide here:
+		PMSStruct::GetMacrosRef()->{"RSIDNFileName"} = $swimmerDataFile;
+		PMS_ImportPMSData::ReadPMS_RSIDNData( $swimmerDataFile, $yearBeingProcessed );
+	}
+	
+	# get the full path name to the PMS club data file (contains a list of all PMS clubs, their full
+	# names, etc.)
+	$fileNamePattern = PMSStruct::GetMacrosRef()->{"ClubFileNamePattern"};
+	my $clubDataFile = PMSUtil::GetFullFileNameFromPattern( $fileNamePattern, $PMSSwimmerData, "PAC Club" );
+	if( defined $clubDataFile ) {
+		# we have a Club file - is it newer than the last one?  should we use it?  We'll decide here:
+		PMS_ImportPMSData::GetPMSTeams( $clubDataFile, $yearBeingProcessed );
+	}
+	
+	# get the full path name to the merged members data file (contains a list of all PMS members who have
+	# two or more swimmer ids.)
+	$fileNamePattern = PMSStruct::GetMacrosRef()->{"MergedMemberFileNamePattern"};
+	my $mergedMemberDataFile = PMSUtil::GetFullFileNameFromPattern( $fileNamePattern, $PMSSwimmerData, "Merged Member" );
+	if( defined $mergedMemberDataFile ) {
+		# we have a merged member file - is it newer than the last one?  should we use it?  We'll decide here:
+		PMS_ImportPMSData::GetMergedMembers( $mergedMemberDataFile, $yearBeingProcessed );
+	}	
+		
+	# Read info about all the swim meets we know about:
+# TODO:  BEFORE THIS MAKE SURE THE SOURCEDATADIR EXISTS AND HAS A THE RACESDATAFILE IN IT.  IF NOT
+# THIS MEANS SOMEONE FORGOT TO RUN THE GETRESULTS.PL SCRIPT.
+	TT_MySqlSupport::ReadSwimMeetData( "$sourceDataDir/" . PMSStruct::GetMacrosRef()->{"RacesDataFile"} );
+	# get our "fake" data that allows us to handle special cases:
+	my $fakeMeetDataFile = PMSStruct::GetMacrosRef()->{"FakeMeetDataFile"};
+	if( (defined $fakeMeetDataFile) && ($fakeMeetDataFile ne "" ) ) {
+		# we have some "fake" meets to handle
+		PMSLogging::PrintLog( "", "", "We have a FakeMeetDataFile to process ($fakeMeetDataFile)", 1 );
+		TT_MySqlSupport::ReadSwimMeetData( $PMSSwimmerData . PMSStruct::GetMacrosRef()->{"FakeMeetDataFile"} );
+	} else {
+		PMSLogging::PrintLog( "", "", "FakeMeetDataFile is either not defined or is empty, so no fake meets", 1 );
+	}
 } else {
-	$swimmerDataFile = $PMSSwimmerData . PMSStruct::GetMacrosRef()->{"RSIDNFileName"};
-}
-if( ! defined( PMSStruct::GetMacrosRef()->{"RSIDNFileName"} ) ) {
-	die "A RSIDN file wasn't found in '$PMSSwimmerData' - ABORT!.";
-} elsif( ! -f $swimmerDataFile ) {
-	die "The RSIDN file '$swimmerDataFile' does not exist -\n" .
-		"    (check your property files!) - ABORT!.";
+	# since we didn't drop any of our DB tables we need these special cases to handle the situation
+	# where we are going to re-compute every swimmer's points and/or place.
+	if( $COMPUTE_POINTS ) {
+		# we always need to start with a clean Points table:
+		TT_MySqlSupport::DropTable( "Points" );
+		TT_MySqlSupport::DropTable( "USMSDirectory" );
+	}
+	if( $COMPUTE_PLACE ) {
+		# we always need to start with a clean FinalPlace table:
+		TT_MySqlSupport::DropTable( "FinalPlaceSAG" );
+		TT_MySqlSupport::DropTable( "FinalPlaceCAG" );
+	}
+	# since we didn't drop our tables (except maybe the Points and FinalPlace tables) 
+	# the following call will only
+	# initialze those tables (unless, of course, something else dropped our tables outside
+	# this program, in which case the following call will re-create the other missing tables, which 
+	# is a good thing.)
+	my $dbh = TT_MySqlSupport::InitializeTopTenDB();
 }
 
 # the input result files that we process:
@@ -578,6 +648,8 @@ if( $WRITE_EXCEL_FILES && $GENERATE_FULL_AGSOTY ) {
 my $generatedHTMLFileDir = $generatedDirName;
 my $generatedHTMLFileSubDir = "$generatedHTMLFileDir/HTMLVSupport";		# this will be modified before used
 
+# full path name of default AGSOTY html file:
+my $masterGeneratedAGSOTYHtmlFileName = "$generatedHTMLFileDir/index.html";
 # full path name of the split age group master HTML file we're generating:
 my $masterGeneratedSAGHTMLFileName;
 # full path name of the combined age group master HTML file we're generating:
@@ -586,14 +658,14 @@ my $masterGeneratedCAGHTMLFileName;
 # THIS DEPENDS ON WHAT SEASON WE'RE GENERATING!!
 if( $yearBeingProcessed >= 2018 ) {
 	# on/after 2018 we default to combining split age groups
+	$GENERATE_COMBINED_AGE_GROUPS = 1;
 	$masterGeneratedSAGHTMLFileName = "$generatedHTMLFileDir/index-sag.html";
-	$masterGeneratedCAGHTMLFileName =$masterGeneratedSAGHTMLFileName;
-	$masterGeneratedCAGHTMLFileName =~ s/-sag.html/.html/;		# index.html
+	$masterGeneratedCAGHTMLFileName =$masterGeneratedAGSOTYHtmlFileName;
 } else {
 	# on/before 2017 we default to split age groups
-	$masterGeneratedSAGHTMLFileName = "$generatedHTMLFileDir/index.html";
-	$masterGeneratedCAGHTMLFileName =$masterGeneratedSAGHTMLFileName;
-	$masterGeneratedCAGHTMLFileName =~ s/\.html/_cag.html/;		# index_cag.html
+	$GENERATE_SPLIT_AGE_GROUPS = 1;
+	$masterGeneratedSAGHTMLFileName = $masterGeneratedAGSOTYHtmlFileName;
+	$masterGeneratedCAGHTMLFileName = "$generatedHTMLFileDir/index-cag.html";
 }
 
 # if we're generating HTML files then we're going to remove them (if they exist) so
@@ -631,62 +703,6 @@ if( $GENERATE_FULL_AGSOTY ) {
 
 
 my $virtualGeneratedHTMLFileHandle;		# defined when needed
-
-
-###
-### initialize database
-###
-# Initialize the database parameters:
-PMS_MySqlSupport::SetSqlParameters( 'default',
-	PMSStruct::GetMacrosRef()->{"dbHost"},
-	PMSStruct::GetMacrosRef()->{"dbName"},
-	PMSStruct::GetMacrosRef()->{"dbUser"},
-	PMSStruct::GetMacrosRef()->{"dbPass"} );
-if( $RESULT_FILES_TO_READ != 0 ) {
-	TT_MySqlSupport::DropTTTables ();
-	my $dbh = TT_MySqlSupport::InitializeTopTenDB();
-	# Get the PMS-supplied data about every PMS member	
-	PMSLogging::PrintLog( "", "", "Using the RSIDN file '$swimmerDataFile", 1 );
-	PMS_ImportPMSData::ReadPMS_RSIDNData( $swimmerDataFile, $yearBeingProcessed );
-	
-	# if necessary, read in the database of legal PMS teams:
-	my $clubDataFile = "$PMSSwimmerData/" . PMSStruct::GetMacrosRef()->{"ClubFileName"};
-	PMS_ImportPMSData::GetPMSTeams( $clubDataFile, $yearBeingProcessed );
-
-	# Read info about all the swim meets we know about:
-# TODO:  BEFORE THIS MAKE SURE THE SOURCEDATADIR EXISTS AND HAS A THE RACESDATAFILE IN IT.  IF NOT
-# THIS MEANS SOMEONE FORGOT TO RUN THE GETRESULTS.PL SCRIPT.
-	TT_MySqlSupport::ReadSwimMeetData( "$sourceDataDir/" . PMSStruct::GetMacrosRef()->{"RacesDataFile"} );
-	# get our "fake" data that allows us to handle special cases:
-	my $fakeMeetDataFile = PMSStruct::GetMacrosRef()->{"FakeMeetDataFile"};
-	if( (defined $fakeMeetDataFile) && ($fakeMeetDataFile ne "" ) ) {
-		# we have some "fake" meets to handle
-		PMSLogging::PrintLog( "", "", "We have a FakeMeetDataFile to process ($fakeMeetDataFile)", 1 );
-		TT_MySqlSupport::ReadSwimMeetData( $PMSSwimmerData . PMSStruct::GetMacrosRef()->{"FakeMeetDataFile"} );
-	} else {
-		PMSLogging::PrintLog( "", "", "FakeMeetDataFile is either not defined or is empty, so no fake meets", 1 );
-	}
-} else {
-	# since we didn't drop any of our DB tables we need these special cases to handle the situation
-	# where we are going to re-compute every swimmer's points and/or place.
-	if( $COMPUTE_POINTS ) {
-		# we always need to start with a clean Points table:
-		TT_MySqlSupport::DropTable( "Points" );
-		TT_MySqlSupport::DropTable( "USMSDirectory" );
-	}
-	if( $COMPUTE_PLACE ) {
-		# we always need to start with a clean FinalPlace table:
-		TT_MySqlSupport::DropTable( "FinalPlaceSAG" );
-		TT_MySqlSupport::DropTable( "FinalPlaceCAG" );
-	}
-	# since we didn't drop our tables (except maybe the Points and FinalPlace tables) 
-	# the following call will only
-	# initialze those tables (unless, of course, something else dropped our tables outside
-	# this program, in which case the following call will re-create the other missing tables, which 
-	# is a good thing.)
-	my $dbh = TT_MySqlSupport::InitializeTopTenDB();
-}
-
 
 
 
@@ -859,7 +875,7 @@ if( $GENERATE_TEAM_AGSOTY ) {
 		}
 			
 		if($WRITE_HTML_FILES) {
-			my $teamFileName = $masterGeneratedCAGHTMLFileName;
+			my $teamFileName = $masterGeneratedAGSOTYHtmlFileName;
 			$teamFileName =~ s/index/$teamInitials-AGSOTY/;
 			PrintResultsHTML( "FinalPlaceCAG", $teamFileName, $generatedHTMLFileSubDir, 
 				$teamInitials );
@@ -891,7 +907,7 @@ TT_MySqlSupport::DumpErrorsWithSwimmerNames();
 my $logLinesOnly = PMSLogging::GetLogOnlyLines();
 my $completionTimeDate = strftime( "%a %b %d %G - %X", localtime() );
 
-PMSLogging::PrintLog( "", "", "\nDone at $completionTimeDate.\n  See the $logLinesOnly lines (beginning with '+') logged ONLY to the log file.", 1 );
+PMSLogging::PrintLog( "", "", "\nDone with $appProgName at $completionTimeDate.\n  See the $logLinesOnly lines (beginning with '+') logged ONLY to the log file.", 1 );
 exit(0);
 
 
@@ -1919,6 +1935,7 @@ sub PMSProcessOpenWater($) {
 	my $debugRegNum = "xxxxx";
 	my $debug = 0;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
+	PMSLogging::PrintLog( "", "", "" );
 	
 	my $course = "OW";
 	my $org = "PAC";
@@ -2753,7 +2770,7 @@ sub PrintResultsHTML($$$$) {
 	my $query;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	
-	my $debugLastName = "xxxx";
+	my $debugLastName = lc("xxx");
 
 	my $category = 1;		# we only consider Cat 1 swims
 	my $personBackgroundColor = "WHITE";		# background color for each row (computed below)
@@ -3035,7 +3052,7 @@ sub PrintResultsHTML($$$$) {
 					my ($detailsNum, $totalPoints, $resultsCounted) = 
 						TT_MySqlSupport::GetSwimmersSwimDetails2( $swimmerId, $org, $course, $ageGroup, $detailsRef );
 					if( lc($lastName) eq $debugLastName) {
-						print "$debugLastName: $swimmerId, $detailsNum, $totalPoints, $resultsCounted\n";
+						print "$debugLastName: $swimmerId, $detailsNum, $totalPoints, $resultsCounted, org=$org, course=$course\n";
 					}
 
 
@@ -3123,7 +3140,7 @@ sub PrintResultsHTML($$$$) {
 							$ageGroup =~ m/^(.*):(.*)$/;
 							my $lowerAgeGroup = $1;
 							my $upperAgeGroup = $2;
-							my $pointsStartString = "- upgraded in other age group";
+							my $pointsStartString = "- upgraded in other age group ";
 							if( !defined $lowerAgeGroup ) {
 								# oops - not a split age group...weird...
 								PMSLogging::DumpError( "", "", "PrintResultsHTML: Found a swimmer " .
@@ -3132,9 +3149,9 @@ sub PrintResultsHTML($$$$) {
 									"'", 1 );
 							} else {
 								if( $detailsAgeGroup eq $lowerAgeGroup ) {
-									$pointsStartString = "- using points earned in $upperAgeGroup";
+									$pointsStartString = "- using points earned in $upperAgeGroup ";
 								} else {
-									$pointsStartString = "- using points earned in $lowerAgeGroup";
+									$pointsStartString = "- using points earned in $lowerAgeGroup ";
 								}
 							}
 							PMSStruct::GetMacrosRef()->{"PointsStart"} = "$pointsStartString<!-- ";
@@ -3437,7 +3454,7 @@ sub GetPlaceOrderedSwimmersQuery {
 			"SELECT FirstName,MiddleInitial,LastName,RegisteredTeamInitials,FinalPlaceSAG.AgeGroup as AgeGroup, " .
 				"Rank,ListOrder,SUM(TotalPoints) as Points,FinalPlaceSAG.AgeGroup AS AgeGroupCAG, " .
 				"Swimmer.Gender as Gender,Swimmer.SwimmerId as SwimmerId, Swimmer.RegNum as RegNum," .
-				"Sector,SectprReason " .
+				"Sector,SectorReason " .
 				"FROM (FinalPlaceSAG JOIN Swimmer) JOIN Points " .
 				"WHERE Swimmer.SwimmerId=FinalPlaceSAG.SwimmerId " .
 				$genderPart .

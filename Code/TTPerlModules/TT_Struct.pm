@@ -122,7 +122,7 @@ sub HashesAreDifferent( $$ ) {
 			if( (!defined $copyRef->{$key}) ||
 				($masterRef->{$key} ne $copyRef->{$key}) ) {
 				# found a difference!
-	if(1) {
+	if(0) {
 	if( (!defined ($copyRef->{$key})) ) {
 		print "key '$key' not defined\n";
 	} else {

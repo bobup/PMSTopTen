@@ -3,11 +3,6 @@
 
 # Copyright (c) 2016 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
-# PMS Club info file name  (This is actually not the list of clubs during any past year,
-# but it shouldn't matter.)  Relative to PMSSwimmerData subdirectory of the directory
-# containing this file.
-ClubFileName		USMS-Club_06-10-2019.csv
-
 # UNLESS OTHERWISE STATED:
 # All file names are relative to the SourceData directory, which is a subdirectory
 # of the directory containing this property file.
@@ -15,14 +10,6 @@ ClubFileName		USMS-Club_06-10-2019.csv
 # This file contains information about every swim meet discovered when downloading
 # the results to be processed:
 RacesDataFile	races.txt
-
-# The Registered Swimmer IDentification Number file (RSIDN file) contains a list
-# of currently registered PMS swimmers with their reg numbers and other useful data
-# used to recognize and identify valid PMS swimmers.  If the macro 'RSIDNFileName'
-# it is the name of the RSIDN file to use.  Otherwise the code will use the most
-# recent version it can find in PMSSwimmerData/ subdirectory of the directory
-# holding this property file.
-#RSIDNFileName	USMS-RSIND_04-23-2018xxx.csv
 
 # scoring rules: number of points for 1st, 2nd, 3rd, etc...
 # 2019 and older

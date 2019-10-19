@@ -257,7 +257,11 @@ else
 ##############################  GOT NEW RESULT FILES  ####################################
 		# looks like we've got some changes!
 		TailTheLog "$GETRESULTSLOG" "$TMPFILE2"
-		echo "$SIMPLE_SCRIPT_NAME:  GetResults.pl found new results..."
+		ADDITIONAL=
+		if grep -q "need to process a new RSIND file" < $GETRESULTSLOG ; then
+			ADDITIONAL=" (a new RSIND file)"
+		fi
+		echo "$SIMPLE_SCRIPT_NAME:  GetResults.pl found new results$ADDITIONAL..."
 		echo "...Starting $TOPTEN to process the NEW latest results for $1 (`date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
 		ExecuteTopten $1
 		LogMessage "$SEASON: A new Standings page has been generated on $USERHOST" "$(cat <<- BUp2
