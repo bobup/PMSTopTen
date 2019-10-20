@@ -321,6 +321,37 @@ function ShowSoty(event, HTMLVSupportDir) {
 	}
 } // end of ShowSoty()
 
+
+// ShowSotyClick - same idea as ShowSoty() except when called it will always toggle the state
+// of the SOTY section regardless of the state of the keyboard.  Used on phones, etc.
+function ShowSotyClick(event, HTMLVSupportDir) {
+	var mydisplay = document.all['details'].style.display;
+	if( mydisplay == "none" ) {
+		// we need to show details....
+		var r = confirm( "Show Details?" );
+		if( r ) {
+			ShowDetails =  true;
+			mydisplay = "";
+			var remoteFile = HTMLVSupportDir + "/soty.html";
+			$("#soty").load( remoteFile, function() {
+			}  // end of anonymous function
+			);  // end of load()
+			ponclick('pageStats');
+		} else {
+			ShowDetails = false;
+		}
+	} else {
+		// we need to hide the details
+		mydisplay = "none";
+		ShowDetails = false;
+		document.all['pageStats'].style.display=mydisplay;
+	}
+	document.all['details'].style.display=mydisplay;
+} // end of ShowSotyClick()
+
+
+
+
 // ShowStats - show statistics generated when top ten page was generated
 function ShowStats( event, statFile ) {
 

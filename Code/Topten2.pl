@@ -70,7 +70,7 @@ my $WRITE_HTML_FILES = 1;
 
 # do we write EXCEL output files? 0 means "No", anything else means "Yes"
 my $WRITE_EXCEL_FILES = 1;
-#$WRITE_EXCEL_FILES = 0;			# don't write EXCEL files
+$WRITE_EXCEL_FILES = 0;			# don't write EXCEL files
 
 # Do we generate results for "split age groups"?  If a swimmer changes age groups in the middle of a season
 # (which happens for every one of us once every 5 years, since a season spans more than 1 calendar year) we
@@ -535,6 +535,9 @@ PMS_MySqlSupport::SetSqlParameters( 'default',
 	PMSStruct::GetMacrosRef()->{"dbName"},
 	PMSStruct::GetMacrosRef()->{"dbUser"},
 	PMSStruct::GetMacrosRef()->{"dbPass"} );
+
+# If we are reading any result files then we'll also read swimmer data (RSIND, etc.)
+PMSStruct::GetMacrosRef()->{"RSIDNFileName"} = "(RSIND file not read - using DB contents only)";
 if( $RESULT_FILES_TO_READ != 0 ) {
 	TT_MySqlSupport::DropTTTables ();
 	my $dbh = TT_MySqlSupport::InitializeTopTenDB();
