@@ -15,6 +15,8 @@
 # NOTES:
 #	The location of the "Generated files" directory is derived from the location of this script.
 #	This script is assumed to be located in the Top Ten PMSScripts directory.
+#	NOTE: the Support directory (usually pointed to by a link in the standings page to the real
+#	Support directory located in the Dev points page) is NOT updated by this script.
 #
 
 STARTDATE=`date +'%a, %b %d %G at %l:%M:%S %p %Z'`
