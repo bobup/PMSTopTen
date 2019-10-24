@@ -52,10 +52,13 @@ Calendar of Actions:
 		(at this point we have at least two Season directories:  Season-<old season> and
 		 Season-<new season>.  For example, Season-2016/ and Season-2017/)
 		- cd to "Season-<new season>"
-		- remove SourceData-<old season>  (remember, this is still in the Season-<old season> directory)
+		- remove SourceData-<old season>  (remember, this is still in the 
+			Season-<old season> directory)
 		- create the SourceData-<new season> directory
 		- cd PMSSwimmerData
 		- remove all old RSIDN files and get a new one (or use an old one for now)
+			- Same idea for the Club data file and the Merged Members file.  Note that those
+				files are optional but you should probably get them if you don't have them.
 		- cd ..   (cwd=Season-<new season>)
 
 		- rename the "properties-<old season>.txt" to "properties-<new season>.txt"
@@ -63,8 +66,8 @@ Calendar of Actions:
 		- edit "properties-<new season>.txt" and make necessary changes, e.g.:
 			- comment line with name of file
 			- Copyright year
-			- ClubFileName
-			- almost everything else is parameterized with the year so you don't have to change those.
+			- almost everything else is parameterized with the year by using "{YearBeingProcessed}"
+				so you don't have to change those.
 		- edit "properties_DB-<new season>.txt" and make necessary changes, e.g.:
 			(Some installations will require a different
 			MySQL user name and/or password for each new database.  In addition, some 
@@ -78,7 +81,7 @@ Calendar of Actions:
 			
 	- Initialize our database:
 	  (NOTE:  this is platform-dependent, so you may have to adjust depending on your
-	   installation.  These instructions assume a simple MySQL platform.)
+	   installation.  These instructions assume a simple MySQL platform on a MAC.)
 		- mysql -u root -p<MySql root password>   
 			- CREATE DATABASE TopTen_<new season>;  # (DB name may be platform-dependent)
 			- GRANT ALL ON TopTen_<new season>.* TO DBTopTen IDENTIFIED BY 'TopTen';
@@ -98,9 +101,7 @@ Calendar of Actions:
 		- copy the Support directory alias from Generated-<old season> 
 			to Generated-<new season>, e.g.:
 				% cd Generated-<old season>
-				% cp -a Support Generated-<new season>
-		- on PMS dev:  see "Begin a new season on PMS Dev" below
-		- on PMS Prod:  see "Begin a new season on PMS Prod" below
+				% cp -a Support ../Generated-<new season>
 				
 	- use Topten2.pl to process the fetched files and make sure we get the expected results
 		in the <appRootDir>/SeasonData/Season-<new season> directory:
@@ -108,24 +109,52 @@ Calendar of Actions:
 		- from Terminal: <appRootDir>/Code/Scripts/GenTopten2 <new season>
 	
 	- Clean up:
-		- Remove all the files in the <appRootDir>/GeneratedFiles/Generated-<new season>
-			directory EXCEPT the Support symbolic link.
-		- Remove all the files in the 
+		- Clean out any old files in the <appRootDir>/GeneratedFiles/Generated-<new season>
+			directory EXCEPT the Support symbolic link.  (There shouldn't be any, but if there
+			are then remove them since they probably belong to a previous season.)
+		- Clean out any old files in the 
 			<appRootDir>/SeasonData/Season-<new season>/SourceData-<new season>/ 
-			directory.  This is where the new seasons Top Ten results will be placed.
-		
-???	- Refresh your Eclipse project.
+			directory.  (There shouldn't be any, but if there
+			are then remove them since they probably belong to a previous season.)
+		- Commit and push the new season's files -
+			- DO NOT PUSH THE "properties_DB-<new season>.txt" FILE!
+			- DO NOT PUSH ANY "RSIND" FILE!
+			- It's not necessary to push generated files (yet).
+
+	- Set up the PMS servers:
+		- on PMS dev:  see "Begin a new season on PMS Dev" below
+		- on PMS Prod:  see "Begin a new season on PMS Prod" below
+
+	- Refresh your Eclipse project to see any newly created files/directories.
 
 =========================================================================================
 *** Begin a new season on PMS Dev:
 	ON DEV MACHINE (www1.g13.pair.com at the time of this writing):
-	- Add a link to the Support directory to the Generated-<new season> directory:
-		- copy the Support directory alias from Generated-<old season> 
-			to Generated-<new season>, e.g.:
-				% cd /usr/home/caroline/public_html/pacific-masters.org/sites/default/files/
-					comp/points/standings-<old season>
-				% cp -a Support /usr/home/caroline/public_html/pacific-masters.org/sites/default/
-					files/comp/points/standings-<new season>
+	- If necessary, create the standings-<new season> in the web tree:
+		% cd /usr/home/pacdev/public_html/pacmdev.org/sites/default/files/comp/points/
+		% mkdir standings-<new season>
+	- Add a link to the Support directory to the standings-<new season> directory:
+		- copy the Support directory alias from standings-<old season> 
+			to standings-<new season>, e.g.:
+				% cd /usr/home/pacdev/public_html/pacmdev.org/sites/default/
+					files/comp/points/standings-<old season>
+				% cp -a Support ../standings-<new season>
+	- Since you've pushed the <new season> files to github you can pull them to our dev machine:
+		- cd /usr/home/pacdev/Automation/PMSTopTen
+		- git pull
+	- Set up your database and populate the properties_DB-<new season>.txt:
+		- if necessary (probably won't be since the pull above should do this)
+			% cd /usr/home/pacdev/Automation/PMSTopTen/SeasonData/
+			% mkdir Season-<new season>
+		% cd Season-<new season>
+		- create and populate the properties_DB-<new season>.txt file.
+		- set permissions:
+			% chmod go-rwx properties_DB-<new season>.txt
+		
+		 
+	- We're ready to generate an AGSOTY page for dev:
+		% DoTopten <new season>
+		
 	- Update the "Swimmer of the Year Awards" page:
 		(https://pacific-masters.org/content/laura-val-swimmer-year-awards)
 		This page will show a link to the AGSOTY page for the "Current Year" and the
