@@ -25,6 +25,8 @@
 # To force GetResults to detect a change in data, simply set a stat to 0.  For example:
 #	Update FetchStats set LinesRead=0 where FetchStatsId=1;
 #
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
 
 
 ##################  INITIALIZATION   ################################################

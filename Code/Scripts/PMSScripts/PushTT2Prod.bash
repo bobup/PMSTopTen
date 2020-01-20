@@ -11,6 +11,8 @@
 #   $1 - the season, e.g. 2017
 #	$2 - (optional) if passed, and equal to 'y', then do the push even if results don't appear 'sane'
 #
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
 
 SEASON=$1
 FORCE_PUSH=$2

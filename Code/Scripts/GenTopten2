@@ -9,6 +9,8 @@
 #	other arguments are optional and passed to Topten2.pl
 #
 #
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
 
 TMPFILE=/tmp/GenTopten2-$1.$$
 EMAIL_NOTICE=bobup@acm.org

@@ -48,6 +48,7 @@
 #	used as a START, as there can be "hidden meets" that we'll discover during Topten.pl execuation.  See that
 #	program for more information.
 #
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
 use strict;
 use sigtrap;

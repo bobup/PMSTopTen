@@ -1,5 +1,7 @@
 #!/usr/bin/perl -w
 # TT_MySqlSupport.pm - support routines and values used by the MySQL based code.
+#
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
 package TT_MySqlSupport;
 

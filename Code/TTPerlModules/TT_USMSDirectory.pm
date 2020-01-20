@@ -5,6 +5,8 @@
 #	swim meet for the current season for a specific swimmer.  In addition, we'll look up each of those meets
 #	to see if they are a PMS sanctioned meet.  This information is important since we use it to determine
 #	whether or not a prospective SOTY has swum the minumum number of PMS meets.
+#
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
 package TT_USMSDirectory;
 

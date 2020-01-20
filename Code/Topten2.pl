@@ -52,6 +52,9 @@
 # TODO:
 #	- If a swimmer's name and reg # matches make sure their gender matches, too.
 #	- if two swimmer's tie make sure they have the same time.
+#
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
 
 use strict;
 use sigtrap;

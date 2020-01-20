@@ -13,6 +13,8 @@
 #	$3 - (optional) if passed, and equal to 'y', then don't send an email if we don't do the push because
 #		the index.html file can't be found.  This is just passed to PushTT2Dev.bash.
 #
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
 
 SIMPLE_SCRIPT_NAME=`basename $0`
 # compute the full path name of the directory holding this script.  We'll find the

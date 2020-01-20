@@ -1,5 +1,7 @@
 #!/usr/bin/perl -w
 # TT_Struct.pm - support data structures.
+#
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
 package TT_Struct;
 

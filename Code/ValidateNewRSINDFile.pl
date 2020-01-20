@@ -7,6 +7,9 @@
 # This program is executed with two required arguments:
 #   $1:  the (full path) name of the RSIND file to analyze
 #   $2:  the year being processed
+#
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
 
 
 my $debug = 1;

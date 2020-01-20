@@ -18,6 +18,8 @@
 #	NOTE: the Support directory (usually pointed to by a link in the standings page to the real
 #	Support directory located in the Dev points page) is NOT updated by this script.
 #
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
 
 STARTDATE=`date +'%a, %b %d %G at %l:%M:%S %p %Z'`
 EMAIL_NOTICE=bobup@acm.org

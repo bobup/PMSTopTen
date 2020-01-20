@@ -1,6 +1,8 @@
 #!/usr/bin/perl -w
 # TT_Logging.pm - support utility routines.
 
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
 package TT_Logging;
 
 use strict;

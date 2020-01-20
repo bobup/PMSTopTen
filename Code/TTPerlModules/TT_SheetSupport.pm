@@ -1,5 +1,7 @@
 #!/usr/bin/perl -w
 # TT_SheetSupport.pm - support routines for Excel files.
+#
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
 package TT_SheetSupport;
 

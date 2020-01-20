@@ -1,5 +1,7 @@
 #!/usr/bin/perl -w
 # TT_Util.pm - support utility routines.
+#
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
 package TT_Util;
 

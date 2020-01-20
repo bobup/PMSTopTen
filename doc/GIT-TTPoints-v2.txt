@@ -561,6 +561,50 @@ Make sure the generated files are as expected.
 	three times, which obviously won't work when using cron!)
 
 =========================================================================================
+Push generated AGSOTY from Dev to Production
+
+This explanation is written assuming the current season is 2020.  This example occurred on
+January 7, 2020.
+
+This normally happens automatically when a new AGSOTY page is generated on dev.  But sometimes
+the script will refuse to push a new AGSOTY to production if it thinks there might be something wrong
+with it.  For example, we get an email that says this:
+  (subject:)  2020: Unexpected Total Points on Dev - it's less than 95% of what's on the SERVER
+  (body:)
+	The SERVER was NOT updated!
+				SERVER Total Points is 2239 (95%=2128), DEV Total Points is 1850
+		   diff /tmp/TTStats.16937
+					/usr/home/pacdev/public_html/pacmdev.org/sites/default/files/comp/points/standings-2020/TTStats.html :
+			
+	NOTE:  .< lines: PRODUCTION server (old version), .> lines: DEV server (new version)
+
+	(etc...)
+
+The "problem" detected above is that the "new" AGSOTY file is substantially smaller (less than 95%) than the 
+previous AGSOTY file generated.  
+The above happened right after the 2020 new year after a new RSIND file was uploaded.  The previous RSIND file contained 
+members from 2019 and 2020 since it was uploaded on Dec 30.  Then the new RSIND file uploaded on Jan 6 only contained 
+members who joined since Oct 1, 2019, not all of 2019.  So it's quite a bit smaller.  And, in all likelihood,
+swimmers who may be in PMS top 10 for SCY for the 2020 season (which started on June 1, 2019) may not be PMS
+members in 2020 (yet.)  So they will NOT be part of 2020 AGSOTY when computed using the 2020 RSIND file.  Thus, it's
+not surprising that the size of the 2020 AGSOTY file generated with the 2020 membership is smaller than the 2020
+AGSOTY file generated with the 2019 membership. 
+If this happens, you'll need to look at the new (smaller) AGSOTY file and make sure it looks right.  Compare it with
+the previous one and look at a few swimmers who show up in the larger one but not the smaller one.  (The diff included
+in the email will help.)  Confirm that the last 2019 RSIND file has the missing swimmers but not the 2020 RSIND file.
+Once you're convinced that the new AGSOTY file is actually correct push the AGSOTY results from dev to production:
+	- log into dev
+	% cd ~/Automation/PMSTopTen/Code/Scripts/PMSScripts
+	% ./PushTT2Prod.bash 2020 y
+
+Note that the passed 'y' to the script above forces the push to happen even though the numbers indicate a possible
+problem.
+
+
+
+
+
+
 =========================================================================================
 =========================================================================================
 =========================================================================================

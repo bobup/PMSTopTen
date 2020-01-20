@@ -7,7 +7,8 @@
 #
 # OUTPUT:  This program will produce its results as single html file (.html)
 #
-#
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
 
 use strict;
 use sigtrap;

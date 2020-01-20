@@ -3,6 +3,8 @@
 # TTStatsDiffFilter - process the file produced by diff showing the difference between AGSOTY on dev with
 #	AGSOTY on prod.  This filter will make the diff file a bit more human friendly.
 #
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
 
 use strict;
 use DateTime::Format::Strptime;
