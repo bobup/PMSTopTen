@@ -44,7 +44,8 @@ TOPTEN='./Topten2.pl'
 TTSTATS='./TTStats.pl'
 SIMPLE_SCRIPT_NAME=`basename $0`
 DOFETCH_LOG=/tmp/DoFetchLog-$SEASON.txt
-USERHOST=$USER@`hostname`
+USERHOST=$USER" at "`hostname`
+
 
 # debugging...
 #set -x
