@@ -28,7 +28,7 @@ SERVER_TTSTATS=/tmp/TTStats.$$      # a copy of TTStats from the server prior to
 SCRIPT_DIR=$(dirname $0)
 # from the SCRIPT_DIR compute the full path name of the directory holding our Code:
 CODE_DIR=$SCRIPT_DIR/../..
-USERHOST=$USER@`hostname`
+USERHOST=$USER" on "`hostname`
 
 
 # details of what we're pushing:
@@ -85,7 +85,7 @@ DoThePush() {
     
     LogMessage "$SEASON Top Ten standings pushed to PRODUCTION by $SIMPLE_SCRIPT_NAME on $USERHOST" \
         "$(cat <<- BUp9
-Source Directory (dev points dir): $SOURCE_POINTS_DIR
+Source Directory (dev points dir): $SOURCE_DIR
 Destination Directory: $DESTINATION_DIR
 (STARTed on $STARTDATE, FINISHed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
 diff $SERVER_TTSTATS $SOURCE_TTSTATS :

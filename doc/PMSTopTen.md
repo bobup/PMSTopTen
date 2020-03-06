@@ -1,5 +1,5 @@
 # PMSTopTen Internal Documentation
-<h5 style="text-align: center">30May2018 - Bob Upshaw</h5>
+<h5 style="text-align: center">1Mar2020 - Bob Upshaw</h5>
 
 
 TBD:  
@@ -333,6 +333,82 @@ All three are simple scalars, and are chosen to likely increase or stay constant
 
 <a name="maintenanceTasks"></a>
 ## Maintenance Tasks
+Here is a list of tasks performed by or on behalf of the PMSTopTen project.  Some are automated, others are manual.  Both are clearly marked as such.
+
+1.  (Automated) Twice a day the cron job runs that will fetch new results (if any), and if there are any new results, this job will compute a new AGSOTY page and push it to the production server.
+2. (Manual) January 1 (or slightly after):  Confirm the "Laura Val Swimmer of the Year Awards" page (<https://pacificmasters.org/content/laura-val-swimmer-year-awards> at the time of this writing) points to the AGSOTY page for the current season (aka the new season) and the old season.
+2.  (Manual) The first Monday following March 1 of the current year:  The final AGSOTY standings for the old season will be computed on this day (or soon thereafter, depending on the availability of the person managing AGSOTY standings.)  Deliver AGSOTY spreadsheets to the Laura Val Swimmer of the Year Committee.  The spreadsheets include:
+	* FullExcelResults-\<old season\>.xlsx
+		- Full results showing all CAT 1 competing swimmers.  This spreadsheet basically has the same data as https://pacificmasters.org/points/standings-\<old season\>/ , but as a spreadsheet in case you want to manipulate the data.  It also tells you the top 5 point earners for each gender.
+
+	* Top\_3_ExcelResults\-\<old season>.xlsx
+		- Shows the top 3 CAT 1 swimmers for each gender and age group.  Note that this sheet only shows swimmers who meet all necessary criteria for top 3 AGSOTY, e.g. only those swimmers who swam in at least 3 PAC sanctioned pool meets, etc.
+
+	* TopSOTYContenders-\<old season>.xlsx
+		- The top 'N' (e.g. 10) CAT 1 male and female swimmers.  This spreadsheet shows you the top 10 male and female swimmers, by points.  We can change ’10’ to anything you want, but 10 is probably enough.  There are other interesting data on this sheet not found anywhere else, like the approximate number of people competing in each swimmer’s age group and number of various 1st, 2nd, and 3rd place swims.  If you want other data let me know.
+
+
+	Each of the above spreadsheets can be fetched via an http request to the same server that hosts the AGSOTY page, e.g. 
+<https://pacificmasters.org/points/standings-2018/TopSOTYContenders-2018.xlsx>
+
+3.  (Manual) After the final AGSOTY standings are computed for the old season (after the first Monday following March 1 - see above) the old season is archived and moved into the Historical area.  See "Move an Old Season into Historical" below.
+4. (Manual) When a new season begins (June 1, or soon thereafter) begin the new season.  See "Begin a New Season" below.
+
+<a name="BeginSeason"></a>
+### Begin a New Season
+A new season begins with the start of the SCY season, which is on June 1 of each year.  Note that just because a new season begins on June 1, the previous season is NOT over.  Seasons last 16 calendar months (see ["What is a Season"](#seasons) above.) In order to begin a new season follow these steps:
+
+TBD
+
+
+
+<a name="ArchiveSeason"></a>
+### Move an Old Season into Historical
+An "old season" is officially over after the first Monday in March of the following year.  (For example, the 2019 season is officially over after March 2nd, 2020.). Once a season is over we archive it this way:
+
+TBD
+
+
+<a name="FullGeneration"></a>
+## Generate a Complete AGSOTY Result
+The full generation of AGSOTY includes various HTML file, Excel file, log files, etc.  This is covered above.  Since the the AGSOTY files are generated automatically (at the time of this writing, up to twice a day, 7 days a week) AGSOTY generation doesn't usually require human intervention.  But there are exceptions:  
+
+1. Testing.  
+2. cron is off.  
+3. Results have been posted and an immediate AGSOTY update is requested.  
+4. The automatic download of results fails to see any changes.  
+4. An end-of-season generation is required.  
+
+Manually generation of AGSOTY can force generation of new files, even if there doesn't appear to be any changes to the results.  For this reason, the final AGSOTY results for a season are always generated manually.  Here are the steps to perform a manual generation of AGSOTY:  
+
+First, you'll need to get sh access on the PMS dev server:  
+>`ssh ssh -l pacdev pacdev.pairserver.com`  
+`(supply the correct password)`  
+
+We are logged in. Initialize our session to use bash and some custom commands:  
+>`bash`  
+`cd Automation`  
+`. bup/initbash`    # initialize bash for our use
+
+Change directory to the appRootDir and then build a new AGSOTY page  
+>`cd PMSTopTen`  
+`DoTopten <season to process> y`    # this is a bash function declared by initbash above
+
+It is suggested that you first push the results to the dev server, allowing you to look at all the generated files with your web browser.  Here is how you do that:  
+>`Code/Scripts/PMSScripts/PushTT2Dev.bash <season to process>`  
+
+To view what you just pushed use your browser to go here (for example, this is for 2020):  
+><https://pacmdev.org/points/standings-2020/index.html>  
+
+If all looks good then push the result to the production server.  This will include the generated Excel files
+>`Code/Scripts/PMSScripts/PushTT.bash <season to process>`  
+
+Once you confirm that all looks good (don't forget to review the logs!) send an email to interested people (if any) telling them where they can find/download files of interest.
+
+
+
+
+
 
 
 <a name="easter"></a>
@@ -346,3 +422,5 @@ In order to allow the maintenance group to easily analyze the results of PMSTopT
 5. The response will be a simple dialog asking "Show Details?".  Click "OK" to get your prize.
 
 What you will then see is a display of the top overall swimmers (by points) and a list of all events analyzed to award points to PAC swimmers.  In addition, at the bottom of this new display is a button titled "Show Statistics".  Click that and you'll see the TTStats generated as a result of this AGSOTY generation. 
+####Note added 1Mar2020:
+To allow access to the easter egg on a phone/tablet (basically, any device without a keyboard) you can also scroll down to the end of the page, past the Pacific Masters Swimming logo, where you will see the time and date of page generation. Hover your cursor on the space following the closing ')' and your cursor should change into a selection cursor.  Click and reply to the dialog.  

@@ -26,7 +26,7 @@ EMAIL_NOTICE=bobup@acm.org
 SIMPLE_SCRIPT_NAME=`basename $0`
 DESTINATION_DIR=/usr/home/pacdev/public_html/pacmdev.org/sites/default/files/comp/points/standings-$1
 NOEMAIL=$3
-USERHOST=$USER@`hostname`
+USERHOST=$USER" at "`hostname`
 
 # FINAL_EXIT_STATUS is 0 if we successfully push to dev, or 1 if not
 FINAL_EXIT_STATUS=0

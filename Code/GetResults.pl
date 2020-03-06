@@ -1818,8 +1818,8 @@ sub GetPMSRecords2( $$$$$ ) {
 		# NOTE; we're considering a status of 0 to be an error.  The web service doesn't think it's an
 		# error, but since it means we got 0 records, which is obviously wrong, we'll caount it
 		# as an error, even though this will "never happen".
-		PMSLogging::DumpError( "", "", "FAILED!!  (status=" . $data->{'status'} . ", error='" .
-			$data->{'error'} . "'", 1 );
+		PMSLogging::DumpError( "", "", "FAILED!!  (status=" . $data->{'status'} . ", error=>>> " .
+			$data->{'error'} . " <<<", 1 );
 	} else {
 		# we got all records (current, historical, invalid, etc) for this course
 		my $arrOfRecords = decode_json( $data->{'content'} );
