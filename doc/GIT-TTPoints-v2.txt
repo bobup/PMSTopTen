@@ -13,13 +13,13 @@ THE FORMAL DOCUMENT IS PMSTopTen.md WHICH CAN BE FOUND IN THE DIRECTORY HOLDING 
 	- yearToProcess: the season to process, e.g. 2017
 	- new season (aka <new season>) - a season we haven't started processing yet, or we
 		just started computed.  We usually don't start thinking about the new season until 
-		November of the current season.
+		June of the current season.
 	- old season (aka <old season>) - a season we have been processing for a while, or 
 		we processed in the past or have or are ready to stop processing.
 	- current season (aka <current season>) - the primary season we're working on.  It's usually the 
 		same as the current year.
 		Example:  If it's July, 2018, then the current season is 2018, the old season is 2017,
-			and it's too early to talk about the new season.  In November, 2018 the current 
+			and new season is 2019 (the SCY season begins on June 1).  In November, 2018 the current 
 			season is 2018, the old season is 2018, and the new season is 2019.  In January,
 			2019, the current season is 2019, the old season is 2018, and the new season is
 			2019.
@@ -47,6 +47,8 @@ Calendar of Actions:
 *** Begin a new season:  (leave old season in place so we can compute points for 
 	both seasons.  See "Remove an old season" below when we no longer need to compute
 	points for the old season.)
+	Do this on the master development machine. We'll sync all other dev machines when finished.
+	We can begin a new season anytime after June 1, since the SCY season begins on June 1.
 	- Create our new season-specific Source directory:
 		% cd <appRootDir>/SeasonData
 		- Copy the latest Season-<old season> directory
@@ -82,14 +84,15 @@ Calendar of Actions:
 				necessary)
 			
 	- Initialize our database:
-	  (NOTE:  this is platform-dependent, so you may have to adjust depending on your
-	   installation.  These instructions assume a simple MySQL platform on a MAC.)
-		- mysql -u root -p<MySql root password>   
-			- CREATE DATABASE TopTen_<new season>;  # (DB name may be platform-dependent)
-			- GRANT ALL ON TopTen_<new season>.* TO DBTopTen IDENTIFIED BY 'TopTen';
-				(grant all privileges on db (all tables) to Username identified by password.
-				Note that Username and password may be platform-dependent)
-			- quit
+		  - On a MAC: this is platform-dependent, so you may have to adjust depending on your
+		   installation.  These instructions assume a simple MySQL platform on a MAC.)
+			- mysql -u root -p<MySql root password>   
+				- CREATE DATABASE TopTen_<new season>;  # (DB name may be platform-dependent)
+				- GRANT ALL ON TopTen_<new season>.* TO DBTopTen IDENTIFIED BY 'TopTen';
+					(grant all privileges on db (all tables) to Username identified by password.
+					Note that Username and password may be platform-dependent)
+				- quit
+		  - On the dev linux machine: the act of creating the db using pair.com ACC login
 	
 	- use GetResults.pl to make sure we get the expected results in 
 		the directories:
@@ -97,11 +100,15 @@ Calendar of Actions:
 			<appRootDir>/GeneratedFiles/Generated-<new season>
 		- from Eclipse:  Run GetResults.pl with the parameter <new season>, or
 		- from Terminal: <appRootDir>/Code/Scripts/FetchTopten <new season>
-		
+
+
+*** don't create link in dev directory on dev machine. need a different link on dev server - see
+*** "Begin a new season on PMS Dev" below.
 	- Add a link to the Support directory to the Generated-<new season> directory (but ONLY
 		if you want to request any of the generated HTML files via a browser):
 		- copy the Support directory alias from Generated-<old season> 
 			to Generated-<new season>, e.g.:
+*** use ln -s instead...?
 				% cd Generated-<old season>
 				% cp -a Support ../Generated-<new season>
 				
@@ -136,11 +143,14 @@ Calendar of Actions:
 		% cd /usr/home/pacdev/public_html/pacmdev.org/sites/default/files/comp/points/
 		% mkdir standings-<new season>
 	- Add a link to the Support directory to the standings-<new season> directory:
+*** use ln -s instead...?
 		- copy the Support directory alias from standings-<old season> 
 			to standings-<new season>, e.g.:
 				% cd /usr/home/pacdev/public_html/pacmdev.org/sites/default/
 					files/comp/points/standings-<old season>
 				% cp -a Support ../standings-<new season>
+				
+				
 	- Since you've pushed the <new season> files to github you can pull them to our dev machine:
 		- cd /usr/home/pacdev/Automation/PMSTopTen
 		- git pull
@@ -158,7 +168,7 @@ Calendar of Actions:
 		% DoTopten <new season>
 		
 	- Update the "Swimmer of the Year Awards" page:
-		(https://pacific-masters.org/content/laura-val-swimmer-year-awards)
+		(https://pacificmasters.org/content/laura-val-swimmer-year-awards)
 		This page will show a link to the AGSOTY page for the "Current Year" and the
 		"Previous Year".  It switches years when the date changes years (Dec 31 at midnight.)
 		So there is nothing to do UNLESS you want to show other years, in which case do this:
