@@ -1,0 +1,49 @@
+## properties-2021.txt
+### This is the property file used by the Topten program.
+
+# Copyright (c) 2016-2021 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
+# UNLESS OTHERWISE STATED:
+# All file names are relative to the SourceData directory, which is a subdirectory
+# of the directory containing this property file.
+
+# This file contains information about every swim meet discovered when downloading
+# the results to be processed:
+RacesDataFile	races.txt
+
+# scoring rules: number of points for 1st, 2nd, 3rd, etc...
+# 2019 and older
+#PMSTopTenScoringRules		0, 11, 9, 8, 7, 6, 5, 4, 3, 2, 1
+# 2020 and beyond
+PMSTopTenScoringRules		0, 21, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+
+USMSTopTenScoringRules		0, 22, 18, 16, 14, 12, 10, 8, 6, 4, 2
+
+
+
+PMSResultFiles \
+						PACTOP10SCY-{YearBeingProcessed}.csv:PAC-SCY;	\
+						PACTop10SCM-{YearBeingProcessed}.csv:PAC-SCM;	\
+						PACTop10LCM-{YearBeingProcessed}.csv:PAC-LCM;
+						
+USMSResultFiles	\
+						USMSTop10SCY-{YearBeingProcessed}.csv:USMS-SCY;	\
+						USMSTop10SCM-{YearBeingProcessed}.csv:USMS-SCM;	\
+						USMSTop10LCM-{YearBeingProcessed}.csv:USMS-LCM;
+						
+PMSRecordsFiles	\
+						PACRecordsSCY-{YearBeingProcessed}.csv:PAC-SCY;	\
+						PACRecordsSCM-{YearBeingProcessed}.csv:PAC-SCM;	\
+						PACRecordsLCM-{YearBeingProcessed}.csv:PAC-LCM;
+						
+USMSRecordsFiles \
+						USMSRecords-M-SCY-{YearBeingProcessed}.csv:USMS-SCY@M;	\
+						USMSRecords-M-SCM-{YearBeingProcessed}.csv:USMS-SCM@M;	\
+						USMSRecords-M-LCM-{YearBeingProcessed}.csv:USMS-LCM@M;	\
+						USMSRecords-W-SCY-{YearBeingProcessed}.csv:USMS-SCY@W;	\
+						USMSRecords-W-SCM-{YearBeingProcessed}.csv:USMS-SCM@W;	\
+						USMSRecords-W-LCM-{YearBeingProcessed}.csv:USMS-LCM@W;
+
+PMSOpenWaterResultFile \
+						{YearBeingProcessed}PacMastersOWPlacesForEachSwimmer.csv
+

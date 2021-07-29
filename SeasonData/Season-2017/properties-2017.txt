@@ -1,0 +1,52 @@
+### properties-2017.txt
+### This is the property file used by the Topten program.
+
+# Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
+# PMS Club info file name  (This is actually not the list of clubs during any past year,
+# but it shouldn't matter.)  Relative to PMSSwimmerData subdirectory of the directory
+# containing this file.
+ClubFileName		2017clubs.csv
+
+# UNLESS OTHERWISE STATED:
+# All file names are relative to the SourceData directory, which is the directory
+# containing this property file.
+
+# This file contains information about every swim meet discovered when downloading
+# the results to be processed:
+RacesDataFile	races.txt
+
+# The Registered Swimmer IDentification Number file (RSIDN file) contains a list
+# of currently registered PMS swimmers with their reg numbers and other useful data
+# used to recognize and identify valid PMS swimmers.  If the macro 'RSIDNFileName'
+# it is the name of the RSIDN file to use.  Otherwise the code will use the most
+# recent version it can find in PMSSwimmerData/ subdirectory of the directory
+# holding this property file.
+#RSIDNFileName	USMS-RSIND_04-23-2018xxx.csv
+
+
+PMSResultFiles \
+						PACTOP10SCY-{YearBeingProcessed}.csv:PAC-SCY;	\
+						PACTop10SCM-{YearBeingProcessed}.csv:PAC-SCM;	\
+						PACTop10LCM-{YearBeingProcessed}.csv:PAC-LCM;
+						
+USMSResultFiles	\
+						USMSTop10SCY-{YearBeingProcessed}.csv:USMS-SCY;	\
+						USMSTop10SCM-{YearBeingProcessed}.csv:USMS-SCM;	\
+						USMSTop10LCM-{YearBeingProcessed}.csv:USMS-LCM;
+						
+PMSRecordsFiles	\
+						PACRecordsSCY-{YearBeingProcessed}.csv:PAC-SCY;	\
+						PACRecordsSCM-{YearBeingProcessed}.csv:PAC-SCM;	\
+						PACRecordsLCM-{YearBeingProcessed}.csv:PAC-LCM;
+						
+USMSRecordsFiles \
+						USMSRecords-M-SCY-{YearBeingProcessed}.csv:USMS-SCY@M;	\
+						USMSRecords-M-SCM-{YearBeingProcessed}.csv:USMS-SCM@M;	\
+						USMSRecords-M-LCM-{YearBeingProcessed}.csv:USMS-LCM@M;	\
+						USMSRecords-W-SCY-{YearBeingProcessed}.csv:USMS-SCY@W;	\
+						USMSRecords-W-SCM-{YearBeingProcessed}.csv:USMS-SCM@W;	\
+						USMSRecords-W-LCM-{YearBeingProcessed}.csv:USMS-LCM@W;
+
+PMSOpenWaterResultFile \
+						{YearBeingProcessed}PacMastersOWPlacesForEachSwimmer.csv
