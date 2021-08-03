@@ -66,7 +66,33 @@ use Cwd 'abs_path';
 use HTTP::Tiny;
 use Data::Dumper;
 
+my $appProgName;	# name of this program
+my $appDirName;     # directory containing the application we're running
+my $appRootDir;		# directory containing the appDirName directory
 
+BEGIN {
+	# Get the name of the program we're running:
+	$appProgName = basename( $0 );
+	die( "Can't determine the name of the program being run - did you use/require 'File::Basename' and its prerequisites?")
+		if( (!defined $appProgName) || ($appProgName eq "") );
+	
+	# The program we're running is in a directory we call the "appDirName".  The files we
+	# use for input and the files we generate are all located in directories relative to the
+	# appDirName directory.
+	#
+	$appDirName = dirname( $0 );     # directory containing the application we're running, e.g.
+									# e.g. /Users/bobup/Documents/workspace/TopTen-2016
+										# or ./Code/
+	die( "${appProgName}:: Can't determine our running directory - did you use 'File::Basename' and its prerequisites?")
+		if( (!defined $appDirName) || ($appDirName eq "") );
+	# convert our application directory into a full path:
+	$appDirName = abs_path( $appDirName );		# now we're sure it's a full path name that begins with a '/'
+
+	# The 'appRootDir' is the parent directory of the appDirName:
+	$appRootDir = dirname($appDirName);		# e.g. /Users/bobup/Development/PacificMasters/PMSOWPoints/
+	die( "${appProgName}:: The parent directory of '$appDirName' is not a directory! (A permission problem?)" )
+		if( !-d $appRootDir );
+}
 
 # do we write the HTML output files?  0 means "No", anything else means "Yes"
 my $WRITE_HTML_FILES = 1;
@@ -103,31 +129,20 @@ my @TEAM_AGSOTY_LIST = ("ALB", "DAM", "MEMO", "PCCM", "SRM", "WCM", "TOC");
 # This is the number of SOTY swimmers for each gender we'll show in the generated HTML and Excel files.
 $TT_Struct::NumHighPoints=5;
 
+use lib "$appDirName/TTPerlModules";
+
+require TT_MySqlSupport;
+require TT_Util;
+require TT_SheetSupport;
+require TT_Struct;
+require TT_Logging;
+require TT_USMSDirectory;
+
 
 # $RESULT_FILES_TO_READ is used to dictate what result files to read.  If 0 we will read no result
-# files and only use what we find in the database.  If non-zero we'll clear the database and then
-# read whatever result files $RESULT_FILES_TO_READ tells us to read, which is specified by a single
-# bit in $RESULT_FILES_TO_READ.  The only reason to specify a value other than the default (0b11111) is to
-# help with debugging.
-#   - if ($RESULT_FILES_TO_READ & 0b1)		!= 0 then process PMS Top Ten result files
-#   - if ($RESULT_FILES_TO_READ & 0b10)		!= 0 then process USMS Top Ten result files
-#   - if ($RESULT_FILES_TO_READ & 0b100)	!= 0 then process PMS records
-#   - if ($RESULT_FILES_TO_READ & 0b1000)	!= 0 then process USMS records
-#   - if ($RESULT_FILES_TO_READ & 0b10000)	!= 0 then process PMS Open Water
-#   - if ($RESULT_FILES_TO_READ & 0b100000)	!= 0 then process "fake splashes"
-my $RESULT_FILES_TO_READ = 	0b111111;			# process all result files (default)
-#$RESULT_FILES_TO_READ = 0b011110;			# process all but Top Ten result files
-#$RESULT_FILES_TO_READ = 	0b001111; 			# process all but OW
-#$RESULT_FILES_TO_READ = 	0;					# process none of the result files (use DB only)
-#$RESULT_FILES_TO_READ = 	0b010000;			# ow only
-#$RESULT_FILES_TO_READ = 	0b000001;			# PMS Top Ten result files only
-#$RESULT_FILES_TO_READ = 	0b000100;			# PMS records only
-#$RESULT_FILES_TO_READ = 	0b001000;			# USMS records only
-#$RESULT_FILES_TO_READ = 	0b000010;			# USMS Top Ten result files only
-#$RESULT_FILES_TO_READ = 	0b001110;			# USMS Top Ten result files, USMS records, and PMS records only
-#$RESULT_FILES_TO_READ = 	0b110000;			# fake splashes + OW only
-
-
+# files.  See TT_Struct.pm for specifics
+my $RESULT_FILES_TO_READ = $TT_Struct::G_RESULT_FILES_TO_READ;
+$RESULT_FILES_TO_READ = $TT_Struct::G_RESULT_FILES_TO_READ;				# avoid warning message
 
 
 # Do we compute the points for each swimmer using the data in the database, or do we just use
@@ -200,33 +215,7 @@ my $minMeetsForConsideration = 3;
 my $dateToStartTrackingPMSMeets = "";		# defined below
 
 
-my $appProgName;	# name of this program
-my $appDirName;     # directory containing the application we're running
-my $appRootDir;		# directory containing the appDirName directory
 
-BEGIN {
-	# Get the name of the program we're running:
-	$appProgName = basename( $0 );
-	die( "Can't determine the name of the program being run - did you use/require 'File::Basename' and its prerequisites?")
-		if( (!defined $appProgName) || ($appProgName eq "") );
-	
-	# The program we're running is in a directory we call the "appDirName".  The files we
-	# use for input and the files we generate are all located in directories relative to the
-	# appDirName directory.
-	#
-	$appDirName = dirname( $0 );     # directory containing the application we're running, e.g.
-									# e.g. /Users/bobup/Documents/workspace/TopTen-2016
-										# or ./Code/
-	die( "${appProgName}:: Can't determine our running directory - did you use 'File::Basename' and its prerequisites?")
-		if( (!defined $appDirName) || ($appDirName eq "") );
-	# convert our application directory into a full path:
-	$appDirName = abs_path( $appDirName );		# now we're sure it's a full path name that begins with a '/'
-
-	# The 'appRootDir' is the parent directory of the appDirName:
-	$appRootDir = dirname($appDirName);		# e.g. /Users/bobup/Development/PacificMasters/PMSOWPoints/
-	die( "${appProgName}:: The parent directory of '$appDirName' is not a directory! (A permission problem?)" )
-		if( !-d $appRootDir );
-}
 
 my $UsageString = <<bup
 Usage:  
@@ -247,14 +236,6 @@ where:
 bup
 ;
 
-use lib "$appDirName/TTPerlModules";
-
-require TT_MySqlSupport;
-require TT_Util;
-require TT_SheetSupport;
-require TT_Struct;
-require TT_Logging;
-require TT_USMSDirectory;
 
 use FindBin;
 use File::Spec;
@@ -298,6 +279,7 @@ sub GetPlaceOrderedSwimmersQuery;
 sub RemoveFullVSupportDirs( $ );
 sub RemoveSingleDir( $ );
 sub RemoveAllTeamAGSOTYFiles( $ );
+sub PMSProcessEPostal( $$ );
 
 ###
 
@@ -327,6 +309,7 @@ my %hashOfLongNames = (
 	'SCY Records' => "Short Course Yards Records",
 	'SCM Records' => "Short Course Meters Records",
 	'LCM Records' => "Long Course Meters Records",
+	'ePostal'	=> "ePostals"
 	);
 #
 # If we don't find all the results we expect we want to make that obvious in the
@@ -475,6 +458,13 @@ if( defined PMSStruct::GetMacrosRef()->{"USMSTopTenScoringRules"} ) {
 	PMSStruct::GetMacrosRef()->{"USMSTopTenScoringRules"} = join( ",", @USMSTopTenScoringRules );
 }
 
+# get the scoring rules for ePostals:
+my @ePostalScoringRules = split( /,\s*/, PMSStruct::GetMacrosRef()->{"ePostalScoringRules"} );
+
+# the slowest place for an ePostal that earns POINTS
+my $slowestEPostalPlace = $#ePostalScoringRules;
+
+
 
 # log, and print to stdout, some details about this run:
 if( $GENERATE_FULL_AGSOTY ) {
@@ -617,6 +607,8 @@ my %PMSRecordsFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"PMSRecordsFiles
 my %USMSRecordsFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"USMSRecordsFiles"};
 my $PMSOpenWaterResultFile = PMSStruct::GetMacrosRef()->{"PMSOpenWaterResultFile"};
 my $FakeSplashDataFile = PMSStruct::GetMacrosRef()->{"FakeSplashDataFile"};
+my %USMSEpostalsFiles = split /[;]/, PMSStruct::GetMacrosRef()->{"USMSEpostals"};
+
 ######
 
 
@@ -762,6 +754,13 @@ if( ($RESULT_FILES_TO_READ & 0b100000) != 0 ) {
 	} else {
 		PMSLogging::PrintLog( "", "", "FakeSplashDataFile is either not defined or is empty, so no fake splashes", 1 );
 	}
+}
+
+if( ($RESULT_FILES_TO_READ & 0b1000000) != 0 ) {
+	###
+	### Process ePostal points
+	###
+	PMSProcessEPostal( \%USMSEpostalsFiles, \@ePostalScoringRules );
 }
 
 
@@ -2291,6 +2290,232 @@ sub ProcessFakeSplashes($) {
 } # end of ProcessFakeSplashes()
 
 
+# 	PMSProcessEPostal( \%USMSEpostalsFiles, \@ePostalScoringRules );
+# PMSProcessEPostal - process ePostal points for PMS swimmers
+#
+# PASSED:
+#	$USMSEpostalsFilesRef - reference to a hash, the keys of which are simple file names
+#		of ePostal results. See the property file for a full description.
+#	$placeToPointsRef - reference to an array holding the mapping of place to points.
+#		For example, if the array looks like this:
+#			(0, 11, 9, 8, 7, 6, 5, 4, 3, 2, 1)
+#		then this means 1st place gets 11 points, 2nd gets 9, etc.  Note that there is no "0th" place!
+#
+# RETURNED:
+#	n/a
+#
+sub PMSProcessEPostal( $$ ) {
+	my ($USMSEpostalsFilesRef, $placeToPointsRef) = @_;
+	my $simpleFileName;
+	my $debug = 0;
+
+	foreach $simpleFileName ( sort keys %{$USMSEpostalsFilesRef} ) {
+		my $fileName = "$sourceDataDir/" . $simpleFileName;
+		# does this file exist?
+		if( ! ( -e -f -r $fileName ) ) {
+			# can't find/open this file - just skip it with a warning:
+			PMSLogging::DumpWarning( "", "", "!! Topten::PMSProcessEPostal(): UNABLE TO PROCESS ePostal file (file " .
+				"does not exist or is not readable) - INGORE THIS FILE:\n   '$fileName'", 1 );
+			next;
+		}
+		# get the particulars of this ePostal from the config Data
+		my $emptyDateSeen = 0;
+		my $specsString = $USMSEpostalsFilesRef->{$simpleFileName};
+		my @specs = split( /@@@/, $specsString );
+		my $org = $specs[0];
+		my $course = "ePostal";
+		$missingResults{"$org-$course"} = 0;		# note that we've seen at least one ePostal from this $org
+		my $USMSMeetId = $specs[1];
+		my $meetTitle = $specs[2];
+		$meetTitle = "(unknown meet name)" if( !defined( $meetTitle ) );
+		my $meetLink = $specs[3];
+		my $beginDate = $specs[4];
+		my $endDate = $specs[5];
+		my $isPMS = $specs[6];
+		
+		# get to work
+		PMSLogging::DumpNote( "", "", "** Topten::PMSProcessEPostal(): Begin processing $simpleFileName ('$meetTitle') ePostal:\n" .
+			"   '$fileName'", 1 );
+		my %sheetHandle = TT_SheetSupport::OpenSheetFile($fileName);
+		if( $sheetHandle{"fileRef"} == 0 ) {
+			# couldn't open the file even though it exists - empty?
+			PMSLogging::DumpWarning( "", "", "!! Topten::PMSProcessEPostal(): UNABLE TO PROCESS ePostal file (file " .
+				"exists but unable to get handle - empty?) - INGORE THIS FILE:\n   '$fileName'", 1 );
+		} else {
+			# it looks like we have a non-empty file to read!
+			my $lineNum = 0;
+			my $numPMSResultLines =  0;
+			my $numPMSScoringResults = 0;
+			my $numResultLines = 0;
+			while( 1 ) {
+				my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
+				my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
+				my $length = scalar(@row);
+				if( $length ) {
+					# we've got a new row of of something (may be all spaces or a heading or something else)
+					$lineNum++;
+					
+					if( ($lineNum % 1000) == 0 ) {
+						print "...line $lineNum...\n";
+					}
+					
+					if( $debug ) {
+						print "line $lineNum: ";
+						for( my $i=0; $i < scalar(@row); $i++ ) {
+							print "col $i: '$row[$i]', ";
+						}
+						print "\n";
+					} # end debug
+					
+					# do we have a result line? if so, the first column must be in the form 
+					#	Xdddd
+					# where X is the gender (M or F) and dddd is the age group (e.g. 6064)
+					if( $row[0] =~ m/^[M|m|f|F]\d\d\d\d$/ ) {
+						# we have a result line
+						$numResultLines++;
+						#
+						# we have a row with the following columns (2016):
+						# 0: Gender + age group (see above)
+						# 1: Place
+						# 2: Last name
+						# 3: First name
+						# 4: Middle initial
+						# 5: Team abbreviation
+						# 6: Age
+						# 7: Reg Number (e.g. '386W-0AETB')
+						# 8: Date of Birth
+						# 9: Distance (e.g. '4180')
+						#10: National Record (empty or some string)
+						#
+						# get the LMSC code from the USMS reg number:
+						my $LMSC = my $USMSRegNum = $row[7];
+						$LMSC =~ s/(^.{2}).*$/$1/;
+						if( $LMSC eq "38" ) {
+							# this is a result for a PMS swimmer
+							$numPMSResultLines++;
+							my $place = $row[1];
+							if( $place <= $slowestEPostalPlace ) {
+								# we have a row representing a PMS swimmer who placed for points
+								$numPMSScoringResults++;
+								# NOTE: we don't consider an ePostal an "event" - it's a meet only.
+								my $firstName = $row[3];
+								my $middleInitial = $row[4];
+								my $lastName = $row[2];
+								my $fullName = "$firstName $middleInitial $lastName";	# used below for error message
+								my $age = $row[6];
+								my $team = $row[5];
+								my $gender = my $currentAgeGroup = $row[0];
+								my $dob = $row[8];   # m/d/y
+								my $distance = $row[9];
+								$gender =~ s/^(.).*$/$1/;
+								$currentAgeGroup =~ s/^.(..)(..)$/$1-$2/;		# e.g. 45-49
+								# these values come from the RSIDN file:
+								my ($RSIDNFirstName, $RSIDNMiddleInitial, $RSIDNLastName, $RSIDNTeam);
+								# convert the dob to the conanical form 'yyyy-mm-dd'
+								my $convertedDateIsValid = 1;		# assume the passed $dob is OK
+								my $convertedDOB = PMSUtil::ConvertDateToISO( $dob );
+								
+								# handle empty or invalid dates
+								if( $convertedDOB eq $PMSConstants::INVALID_DOB ) {
+									$convertedDateIsValid = 0;		# oops - something wrong with the passed $dob
+									if( $dob eq "" ) {
+										# minor problem - don't show this error more than once per file:
+										if( ! $emptyDateSeen ) {
+											# this is bad data if we have an empty date - we should get this fixed!
+											PMSLogging::DumpWarning( "", "", "Topten::PMSProcessEPostal(): Line $lineNum of $simpleFileName:  " .
+												"Missing date (this message will not be repeated for this file):" .
+												"\n     $rowAsString" .
+												"\n   WE WILL USE A FAKE BUT VALID DATE AND ATTEMPT TO PROCESS THIS ROW.", 0);
+											$emptyDateSeen = 1;
+										}
+										# use a fake, but valid date:
+										$convertedDOB = "$yearBeingProcessed-01-01";	# legal date part of the season for every course
+									} else {
+										# we had a badly formatted date - ignore this entry
+										PMSLogging::DumpError( "", "", "Topten::PMSProcessEPostal(): Line $lineNum of $simpleFileName: Invalid date " .
+											"('$dob') - (line ignored):\n   $rowAsString", 1 );
+										next;
+									}
+								} else {
+									# $convertedDOB is a valid date in the correct format
+								}
+					
+								# start analysis of data.
+								# get name and team from our PMS db (if we can):
+								($RSIDNFirstName, $RSIDNMiddleInitial, $RSIDNLastName,$RSIDNTeam) = 
+									GetSwimmerDetailsFromPMS_DB(  $fileName, $lineNum, $USMSRegNum, "non-fatal" );
+								# if we found them in the RSIDN file then we're using the data we found.  Otherwise,
+								# we use what we got from the result file.
+								# NOTE:  if this swimmer's first name is an empty string this means we couldn't find their reg number in our
+								# own db (the RSIDN file).  
+								if( $RSIDNFirstName ne "" ) {
+									# we found this swimmer in the RSIDN file.  Get their name and team from the RSIDN
+									$firstName = $RSIDNFirstName;
+									$middleInitial = $RSIDNMiddleInitial;
+									$lastName = $RSIDNLastName;
+									$team = $RSIDNTeam;
+								} else {
+									# didn't find this regnum - produce error message if we haven't done so before
+									# for this regNum.
+									my $count = $TT_Struct::hashOfInvalidRegNums{"$USMSRegNum:$fullName"};
+									if( !defined $count ) {
+										$count = 0;
+										PMSLogging::DumpWarning( "", "", "Topten::PMSProcessEPostal(): Line $lineNum of $simpleFileName: " .
+											"\n   Couldn't find USMSRegNum " .
+											"($USMSRegNum) in RSIDN_$yearBeingProcessed.  NOTE: this error for this USMSRegNum will " .
+											"not be repeated.\n" .
+											"  This is FATAL - This ePostal result will be " .
+											"IGNORED since we can't confirm that this swimmer is a PAC swimmer.  Result line:" .
+											"\n     $rowAsString" );
+									}
+									$TT_Struct::hashOfInvalidRegNums{"$USMSRegNum:$fullName"} = $count+1;
+									# remember the org and course we're seeing this problem in.  
+									if( !defined $TT_Struct::hashOfInvalidRegNums{"$USMSRegNum:$fullName:OrgCourse"} ) {
+										$TT_Struct::hashOfInvalidRegNums{"$USMSRegNum:$fullName:OrgCourse"} = "$currentAgeGroup;$org:$course";
+									} elsif( $TT_Struct::hashOfInvalidRegNums{"$USMSRegNum:$fullName:OrgCourse"} !~ m/$org:$course/ ) {
+										$TT_Struct::hashOfInvalidRegNums{"$USMSRegNum:$fullName:OrgCourse"} .= ",$org:$course";
+									}
+									next;	# don't give points to this swimmer
+								}
+								
+								$gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $gender );	# single letter
+								# perform some sanity checks:
+								if( ! ValidateAge( $age, $currentAgeGroup ) ) {
+									PMSLogging::DumpError( "", "", "Topten::PMSProcessEPostal(): Line $lineNum of $simpleFileName: Age error: " .
+										"('$fileName') Age is $age but line is for agegroup '$currentAgeGroup'", 1 );
+								}
+					
+								#compute the points they get for this swim:
+								my $points = $placeToPointsRef->[$place];
+					
+								# add this swimmer to our DB if necessary
+								my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
+									$firstName, $middleInitial, $lastName,
+									$gender, $USMSRegNum, $age, $currentAgeGroup, $team );
+
+								# add this meet to our DB if necessary
+								my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, $meetTitle,
+									$meetLink, $org, $course, $beginDate, $endDate, $isPMS );
+					
+								TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $currentAgeGroup, $gender, 
+									$place, $points, $swimmerId, -1, $org, $course, $meetId, $distance, $beginDate );
+							} # end of '...we have a row representing a PMS swimmer...'
+						} # end of '...this is a result for a PMS swimmer...'
+					} # end of '...we have a result line...'
+				} else # end of if( $length...
+				{ # end of file
+					# TT_SheetSupport::ReadSheetRow() returned a 0 length row - end of file
+					TT_SheetSupport::CloseSheet( \%sheetHandle );
+					my $msg = "* Topten::PMSProcessEPostal(): Done with '$simpleFileName' - $lineNum lines read, $numPMSScoringResults lines " .
+						"stored.";
+					PMSLogging::PrintLog( "", "", $msg, 1 );
+					last;
+				}
+			} # end of while(1)...
+		} # end of '...it looks like we have a non-empty file to read!...''
+	} # end of foreach my $fileName...	
+	
+} # end of PMSProcessEPostal()
 
 ###################################################################################
 #### Compute points for all swimmers ##############################################
@@ -2766,6 +2991,7 @@ sub PrintResultsHTML($$$$) {
 	my $templateSingleEvent_USMSTop10 = "$templateDir/AGSOTY-SingleEvent_USMSTop10.html";
 	my $templateSingleEvent_Records = "$templateDir/AGSOTY-SingleEvent_Records.html";
 	my $templateSingleEvent_OW = "$templateDir/AGSOTY-SingleEvent_OW.html";
+	my $templateSingleEvent_ePostal = "$templateDir/AGSOTY-SingleEvent_ePostal.html";
 	my $templateEndCourseDetails = "$templateDir/AGSOTY-EndCourseDetails.html";
 	my $templateEndDetails = "$templateDir/AGSOTY-EndDetails.html";
 	my $templateEndPersonRow = "$templateDir/AGSOTY-EndPersonRow.html";
@@ -2776,7 +3002,7 @@ sub PrintResultsHTML($$$$) {
 	my $query;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	
-	my $debugLastName = lc("xxx");
+	my $debugLastName = lc("xxxxxx");
 
 	my $category = 1;		# we only consider Cat 1 swims
 	my $personBackgroundColor = "WHITE";		# background color for each row (computed below)
@@ -3085,6 +3311,8 @@ sub PrintResultsHTML($$$$) {
 					my $templateSingleEvent;
 					if( $course eq "OW" ) {
 						$templateSingleEvent = $templateSingleEvent_OW;
+					} elsif( $course eq "ePostal" ) {
+						$templateSingleEvent = $templateSingleEvent_ePostal;
 					} elsif( $course =~ m/^.*Records$/ ) {
 						$templateSingleEvent = $templateSingleEvent_Records;
 					} elsif( $org eq "PAC" ) {
@@ -3100,8 +3328,13 @@ sub PrintResultsHTML($$$$) {
 						# org and course:
 						$uniqueSplashId++;
 						PMSStruct::GetMacrosRef()->{"EventName"} = $detailsRef->[$i]{'EventName'};
-						PMSStruct::GetMacrosRef()->{"Duration"} = 
-							PMSUtil::GenerateDurationStringFromHundredths( $detailsRef->[$i]{'Duration'} );
+						if( $course eq "ePostal" ) {
+							# ugh... ePostal is special case: "duration" is actually the distance swum
+							PMSStruct::GetMacrosRef()->{"Duration"} = $detailsRef->[$i]{'Duration'};
+						} else {
+							PMSStruct::GetMacrosRef()->{"Duration"} = 
+								PMSUtil::GenerateDurationStringFromHundredths( $detailsRef->[$i]{'Duration'} );
+						}
 						
 						my $eventPlace = $detailsRef->[$i]{'Place'};
 						if( $eventPlace == 1 ) {
@@ -3607,7 +3840,8 @@ sub PrintFullExcelResults($$$$) {
 	while( $numTopPoints <= $TT_Struct::NumHighPoints ) {
 		my $resultHash = $sth->fetchrow_hashref;
 		if( !defined $resultHash ) {
-			PMSLogging::DumpError( "", "", "PrintFullExcelResults(): Ran out of top female point getters!", 1 );
+			PMSLogging::DumpError( "", "", "PrintFullExcelResults(): Ran out of top female " .
+				"point getters (who meet minimum requirements)!", 1 );
 			last;
 		}
 		my $swimmerId = $resultHash->{"SwimmerId"};
@@ -3661,7 +3895,8 @@ sub PrintFullExcelResults($$$$) {
 	while( $numTopPoints <= $TT_Struct::NumHighPoints ) {
 		my $resultHash = $sth->fetchrow_hashref;
 		if( !defined $resultHash ) {
-			PMSLogging::DumpError( "", "", "PrintFullExcelResults(): Ran out of top male point getters!", 1 );
+			PMSLogging::DumpError( "", "", "PrintFullExcelResults(): Ran out of top male " .
+				"point getters (who meet minimum requirements)!", 1 );
 			last;
 		}
 		my $swimmerId = $resultHash->{"SwimmerId"};

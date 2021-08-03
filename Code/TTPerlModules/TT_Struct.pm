@@ -14,11 +14,43 @@ use warnings;
 ### General Structures used by our modules
 ###
 
+
+
+# $G_RESULT_FILES_TO_READ is used to dictate what result files to read.  If 0 we will read no result
+# files and only use what we find in the database.  If non-zero we'll clear the database and then
+# read whatever result files $G_RESULT_FILES_TO_READ tells us to read, which is specified by a single
+# bit in $G_RESULT_FILES_TO_READ.  The only reason to specify a value other than the default (0b11111) is to
+# help with debugging.
+#   - if ($G_RESULT_FILES_TO_READ & 0b1)		!= 0 then process PMS Top Ten result files
+#   - if ($G_RESULT_FILES_TO_READ & 0b10)		!= 0 then process USMS Top Ten result files
+#   - if ($G_RESULT_FILES_TO_READ & 0b100)	!= 0 then process PMS records
+#   - if ($G_RESULT_FILES_TO_READ & 0b1000)	!= 0 then process USMS records
+#   - if ($G_RESULT_FILES_TO_READ & 0b10000)	!= 0 then process PMS Open Water
+#   - if ($G_RESULT_FILES_TO_READ & 0b100000)	!= 0 then process "fake splashes"
+#   - if ($G_RESULT_FILES_TO_READ & 0b1000000)	!= 0 then process ePostals
+our $G_RESULT_FILES_TO_READ = 	0b111111;			# process all result files except ePostal (default)
+#$G_RESULT_FILES_TO_READ = 0b011110;			# process all but Top Ten result files
+#$G_RESULT_FILES_TO_READ = 	0b001111; 			# process all but OW
+#$G_RESULT_FILES_TO_READ = 	0;					# process none of the result files (use DB only)
+#$G_RESULT_FILES_TO_READ = 	0b010000;			# ow only
+#$G_RESULT_FILES_TO_READ = 	0b000001;			# PMS Top Ten result files only
+#$G_RESULT_FILES_TO_READ = 	0b000100;			# PMS records only
+#$G_RESULT_FILES_TO_READ = 	0b001000;			# USMS records only
+#$G_RESULT_FILES_TO_READ = 	0b000010;			# USMS Top Ten result files only
+#$G_RESULT_FILES_TO_READ = 	0b001110;			# USMS Top Ten result files, USMS records, and PMS records only
+#$G_RESULT_FILES_TO_READ = 	0b110000;			# fake splashes + OW only
+#$G_RESULT_FILES_TO_READ = 	0b1000000;			# process  ePostal only
+$G_RESULT_FILES_TO_READ = 	0b1111111;			# process all result files including ePostal
+
+
+
+
 # we use %hashOfInvalidRegNums just so we don't report the same invalid reg num more than once.
-# Currently populated when processing PMS top 10 only (other results either don't include reg numbers or
+# Currently populated when processing PMS top 10 and epostals only (other results either don't include reg numbers or
 # are trusted to always have correct reg nums.)
-our %hashOfInvalidRegNums = ();		# {regnum} = ""; if we don't find the regnum
-									# in the RSIDN file.
+our %hashOfInvalidRegNums = ();		# {$regnum:$fullName} = count of number of times we saw this
+	# invalid regnum.
+	# {$regNum:$fullName:OrgCourse} = "$currentAgeGroup,$org:$course"
 
 our %numInGroup;			# $numInGroup{gender:ageGroup} = number of swimmers in this gender/age group
 
@@ -48,6 +80,8 @@ our %fetchStats = (
 		FS_HistoricalSCMRecords_Desc	=> "number of Historical SCM Records",
 	FS_HistoricalLCMRecords				=> 0,
 		FS_HistoricalLCMRecords_Desc	=> "number of Historical LCM Records",
+	FS_ePostalPointEarners				=>	0,
+		FS_ePostalPointEarners_Desc		=> "number of PMS swimmers who earned ePostal points",
 );
 # $fetchStats{'NumLinesRead'} = total number of lines read from the web pages that we process
 #		to get the result files that we'll process to compute points.  PLUS, the number of lines in the
@@ -66,6 +100,7 @@ our %fetchStats = (
 # $fetchStats{'HistoricalSCYRecords'} = the number of "historical "records for this course that earned points
 # $fetchStats{'HistoricalSCMRecords'} = (ditto)
 # $fetchStats{'HistoricalLCMRecords'} = (ditto)
+# $fetchStats{'ePostalPointEarners'} = the number of PMS ePostal results that earned points
 
 my @fetchStatsOrder = (
 	"FS_NumLinesRead",
@@ -79,6 +114,7 @@ my @fetchStatsOrder = (
 	"FS_HistoricalSCYRecords",
 	"FS_HistoricalSCMRecords",
 	"FS_HistoricalLCMRecords",
+	"FS_ePostalPointEarners",
 	);
 
 sub SetFetchStat( $$ ) {

@@ -19,7 +19,8 @@ PMSTopTenScoringRules		0, 21, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6
 
 USMSTopTenScoringRules		0, 22, 18, 16, 14, 12, 10, 8, 6, 4, 2
 
-
+# scoring rules for epostal
+ePostalScoringRules			0, 22, 18, 16, 14, 12, 10, 8, 6, 4, 2
 
 PMSResultFiles \
 						PACTOP10SCY-{YearBeingProcessed}.csv:PAC-SCY;	\
@@ -46,4 +47,23 @@ USMSRecordsFiles \
 
 PMSOpenWaterResultFile \
 						{YearBeingProcessed}PacMastersOWPlacesForEachSwimmer.csv
+						
+# ePostals (added 2021 as a test)
+#	result file name relative to SourceData directory;			<-- NOTE semi-colon; colon won't work here.
+#		ORG (usually USMS)@@@ 									<-- NOTE @@@ used as separator 
+#		USMS Meet ID (seems to be 0...?)@@@
+#		Meet title@@@ 
+#		Meet Link (link to description-should be link to usms.org)@@@ 
+#		Meet Begin Date (yyyy-mm-dd)@@@
+#		Meet End Date (yyyy-mm-dd)@@@ 
+#		Meet is sanctioned by PMS (yes=1, no=0)
+USMSEpostals \
+						epostal-1hr-2021.csv; \
+							USMS@@@ \
+							0@@@ \
+							2021 U.S. Masters Swimming 1-Hour ePostal National Championship@@@ \
+							https://www.usms.org/events/national-championships/epostal-national-championships/2021-epostal-national-championships@@@ \
+							2021-01-01@@@ \
+							2021-03-31@@@ \
+							0;
 

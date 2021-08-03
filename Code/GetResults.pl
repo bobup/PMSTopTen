@@ -61,11 +61,20 @@ use Cwd 'abs_path';
 use HTTP::Tiny;
 use Data::Dumper;
 
+
 my $debug;
 my $appProgName;	# the name of this program
 my $appDirName;     # directory containing the application we're running
 my $appRootDir;		# directory containing the appDirName directory
 my $sourceData;		# full path of directory containing the "source data" which we process to create the generated files
+
+
+my $generatePMSTopTen;	# set to non-zero if we are supposed to generate PMS Top Ten points, 0 if not.
+my $generateUSMSTopTen;	# set to non-zero if we are supposed to generate USMS Top Ten points, 0 if not.
+my $generatePMSRecords;	# set to non-zero if we are supposed to generate PMS Records points, 0 if not.
+my $generateUSMSRecords;	# set to non-zero if we are supposed to generate USMS Records points, 0 if not.
+my $generatePMSOW;		# set to non-zero if we are supposed to generate PMS OW points, 0 if not.
+my $generateEPostal;	# set to non-zero if we are supposed to generate ePostal points, 0 if not.
 
 BEGIN {
 	# set this to adjust debug printing:
@@ -98,6 +107,18 @@ BEGIN {
 	$sourceData = "$appRootDir/SeasonData";	
 }
 
+use lib "$appDirName/TTPerlModules";
+require TT_Struct;
+require TT_MySqlSupport;
+require TT_Logging;
+require TT_SheetSupport;
+
+# $RESULT_FILES_TO_READ is used to dictate what result files to read.  If 0 we will read no result
+# files.  See TT_Struct.pm for specifics
+my $RESULT_FILES_TO_READ = $TT_Struct::G_RESULT_FILES_TO_READ;
+$RESULT_FILES_TO_READ = $TT_Struct::G_RESULT_FILES_TO_READ;		# avoid warning message
+
+
 ####################
 # Usage string
 ####################
@@ -124,10 +145,7 @@ require PMSUtil;
 use lib File::Spec->catdir( $FindBin::Bin, '..', '..', 'PACWebService/Client/Perl' );
 require WebServiceClient;
 
-use lib "$appDirName/TTPerlModules";
-require TT_Struct;
-require TT_MySqlSupport;
-require TT_Logging;
+
 use JSON::MaybeXS;
 
 
@@ -137,6 +155,8 @@ sub GetSwimMeetDetails();
 sub GetPMSRecords2( $$$$$ );
 sub GetUSMSRecords( $$$ );
 sub GetPMSOWResults( $$ );
+sub GetEpostalResults( $ );
+
 
 
 # initialize our HTTP class:
@@ -253,6 +273,13 @@ PMSLogging::PrintLog( "", "", "  ...and with the propertiesDir='$propertiesDir',
 # $propertiesDir and $propertiesFileName are initialized above.
 PMSMacros::GetProperties( $propertiesDir, $propertiesFileName, $yearBeingProcessed );			
 
+# get the scoring rules for ePostals:
+my @ePostalScoringRules = split( /,\s*/, PMSStruct::GetMacrosRef()->{"ePostalScoringRules"} );
+
+# the slowest place for an ePostal that earns POINTS
+my $slowestEPostalPlace = $#ePostalScoringRules;
+
+
 ###
 ### file names
 ###
@@ -305,11 +332,12 @@ my %USMSResultFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"USMSResultFiles
 my %PMSRecordsFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"PMSRecordsFiles"};
 my %USMSRecordsFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"USMSRecordsFiles"};
 my $PMSOpenWaterResultFile = PMSStruct::GetMacrosRef()->{"PMSOpenWaterResultFile"};
+my %USMSEpostalsFiles = split /[;]/, PMSStruct::GetMacrosRef()->{"USMSEpostals"};
 
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET PMS Top Ten POINTS
 ####
-if(1) {
+if( ($RESULT_FILES_TO_READ & 0b1) != 0 ) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	foreach my $simpleFileName ( sort keys %PMSResultFiles ) {
 		my $org_course = $PMSResultFiles{$simpleFileName};
@@ -329,7 +357,7 @@ if(1) {
 			PMSLogging::DumpError( "", "", "GetResults::Illegal org_course ($org_course) when getting PMS Top Ten POINTS" );		
 		}
 	} # end of foreach( ...
-} # end of if(1)...
+} # end of generate PMS top ten
 
 
 
@@ -337,7 +365,7 @@ if(1) {
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET USMS Top Ten POINTS
 ####
-if(1) {
+if( ($RESULT_FILES_TO_READ & 0b10) != 0 ) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	foreach my $simpleFileName ( sort keys %USMSResultFiles ) {
 		my $org_course = $USMSResultFiles{$simpleFileName};
@@ -357,13 +385,12 @@ if(1) {
 			PMSLogging::DumpError( "", "", "GetResults::Illegal org_course ($org_course) when getting USMS Top Ten POINTS" );		
 		}
 	} # end of foreach( ...
-} # end of if(1)...
-
+} # end of generate usms top ten
 
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET PMS Records
 ####
-if(1) {
+if( ($RESULT_FILES_TO_READ & 0b100) != 0 ) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	my $previousYear = $yearBeingProcessed-1;
 	foreach my $simpleFileName ( sort keys %PMSRecordsFiles ) {
@@ -384,23 +411,23 @@ if(1) {
 			PMSLogging::DumpError( "", "", "GetResults::Illegal org_course ($org_course) when getting PMS Records" );		
 		}
 	} # end of foreach( ...
-} # end of if(1)...
+} # end of generate PMS records
 
 
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET USMS Records
 ####
-if(1) {
+if( ($RESULT_FILES_TO_READ & 0b1000) != 0 ) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	GetUSMSRecords( "http://www.usms.org/comp/recordexport.php", \%USMSRecordsFiles, $yearBeingProcessed );
-} # end of if(1)...
+} # end of generate USMS records
 
 
 
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET PMS OW results
 ####
-if(1) {
+if( ($RESULT_FILES_TO_READ & 0b10000) != 0 ) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	my ($numResultLines, $numEvents) = 
 		GetPMSOWResults( "http://pacificmasters.org/points/OWPoints/$PMSOpenWaterResultFile",
@@ -419,8 +446,20 @@ if(1) {
 				"awarded for OW swims.", 1 );
 		}
 	}
-} # end of if(1)...GET PMS OW results...
+} # end of generate PMS OW results
 
+####
+#### GET ALL RESULT FILES THAT WE PROCESS TO ePostal results
+####
+if( ($RESULT_FILES_TO_READ & 0b1000000) != 0 ) {
+	my $numPMSScoringResults = 0;
+	PMSLogging::PrintLog( "", "", "\n*********", 1 );
+	foreach my $simpleFileName ( sort keys %USMSEpostalsFiles ) {
+		## Get ePostal results:
+		$numPMSScoringResults += GetEpostalResults( "$sourceDataDir/$simpleFileName" );
+	} # end of foreach( ...
+	TT_Struct::SetFetchStat( "FS_ePostalPointEarners", $numPMSScoringResults );
+} # end of generate ePostal results
 
 
 
@@ -450,7 +489,16 @@ foreach my $key (sort { $SwimMeets{$a} cmp $SwimMeets{$b} } keys %SwimMeets ) {
 TT_Struct::SetFetchStat( "FS_NumRaceLines", $raceLines );
 PMSLogging::PrintLog( "", "", "GetResults:: Final Totals:", 1);
 TT_Struct::PrintStats( "Total", TT_Struct::GetFetchStatRef(), $racesFileName, 1 );
-TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, $raceLines, $PMSSwimmerData );
+
+# at this point we USUALLY need to decide if we've seen results different (newer, hopefully) than
+# what we saw the last time GetResults.pl was run. However, we don't want to do this if any of the
+# results were configured to not be generated, because in that case we must be testing only...
+# NOTE: at this point we ignore the status of ePostals...
+if( $generatePMSTopTen && $generateUSMSTopTen && $generatePMSRecords && $generateUSMSRecords && $generatePMSOW ) {
+	TT_MySqlSupport::DidWeGetDifferentData( $yearBeingProcessed, $raceLines, $PMSSwimmerData );
+} else {
+	PMSLogging::PrintLog( "", "", "$appProgName: WARNING: Not all results were analyzed due to configuration.", 1);
+}
 
 PMSLogging::PrintLog( "", "", "Done with $appProgName!", 1);
 
@@ -2004,6 +2052,110 @@ sub ComputePointsForPreviousRecordSet($$) {
 	return ($numCurrentRecords, $numHistoricalRecords, $numSavedRecords);
 } # end of ComputePointsForPreviousRecordSet()
 
+
+
+# 		GetEpostalResults( "$sourceDataDir/$simpleFileName" );
+# GetEpostalResults - do an initial analysis of a single ePostal result file
+#
+# PASSED:
+#	$resultFileName - the path from which we read the ePostal results.
+#
+# RETURNED:
+#	$numPMSScoringResults - the number of PMS swimmers who got a result with a place <= $slowestEPostalPlace
+#
+sub GetEpostalResults( $ ) {
+	my $resultFileName = $_[0];
+	my $numPMSResultLines =  0;
+	my $numPMSScoringResults = 0;
+	my $numResultLines = 0;
+	
+	print "Processing ePostal file $resultFileName...\n";
+
+	# does this file exist?
+	if( ! ( -e -f -r $resultFileName ) ) {
+		# can't find/open this file - just skip it with a warning:
+		PMSLogging::DumpWarning( "", "", "!! $appProgName:GetEpostalResults(): UNABLE TO PROCESS this file:\n" .
+			"    $resultFileName\n    (file " .
+			"does not exist or is not readable) - INGORE THIS FILE", 1 );
+	} else {
+		# we have a readable file...
+		my %sheetHandle = TT_SheetSupport::OpenSheetFile( $resultFileName );
+		if( $sheetHandle{"fileRef"} == 0 ) {
+			# couldn't open the file even though it exists - empty?
+			PMSLogging::DumpWarning( "", "", "!! $appProgName:GetEpostalResults(): UNABLE TO PROCESS this file:\n" .
+				"    $resultFileName\n    (file " .
+				"does not exist or is not readable) - INGORE THIS FILE", 1 );
+		} else {
+			# it looks like we have a non-empty file to read!
+			my $lineNum = 0;
+			while( 1 ) {
+				my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
+				my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
+				my $length = scalar(@row);
+				if( $length ) {
+					# we've got a new row of of something (may be all spaces or a heading or something else)
+					$lineNum++;
+					
+					if( ($lineNum % 1000) == 0 ) {
+						print "...line $lineNum...\n";
+					}
+					
+					if( $debug ) {
+						print "line $lineNum: ";
+						for( my $i=0; $i < scalar(@row); $i++ ) {
+							print "col $i: '$row[$i]', ";
+						}
+						print "\n";
+					} # end debug
+					
+					# do we have a result line? if so, the first column must be in the form 
+					#	Xdddd
+					# where X is the gender (M or F) and dddd is the age group (e.g. 6064)
+					if( $row[0] =~ m/^[M|m|f|F]\d\d\d\d$/ ) {
+						# we have a result line
+						$numResultLines++;
+						#
+						# we have a row with the following columns (2016):
+						# 0: Gender + age group (see above)
+						# 1: Place
+						# 2: Last name
+						# 3: First name
+						# 4: Middle initial
+						# 5: Team abbreviation
+						# 6: Age
+						# 7: Reg Number (e.g. '386W-0AETB')
+						# 8: Date of Birth
+						# 9: Distance (e.g. '4180')
+						#10: National Record (empty or some string)
+						#
+						# get the LMSC code from the USMS reg number:
+						my $LMSC = $row[7];
+						$LMSC =~ s/(^.{2}).*$/$1/;
+						if( $LMSC eq "38" ) {
+							$numPMSResultLines++;
+							if( $row[1] <= $slowestEPostalPlace ) {
+								$numPMSScoringResults++;
+							}
+						}
+
+					}
+				} else # end of if( $length...
+				{
+					# TT_SheetSupport::ReadSheetRow() returned a 0 length row - end of file
+					TT_SheetSupport::CloseSheet( \%sheetHandle );
+					last;
+				}
+			} # end of while( 1 )...
+		} # end of "...it looks like we have a non-empty file..."
+
+	} # end of "...we have a readable file..."
+	
+	print "Done Processing ePostal file $resultFileName...\n" .
+		"Number of result lines found: $numResultLines; Number of PMS results: $numPMSResultLines;\n" .
+			"   Number of PMS top $slowestEPostalPlace: $numPMSScoringResults\n ";
+
+	return $numPMSScoringResults, 
+} # end of GetEpostalResults()
 
 
 

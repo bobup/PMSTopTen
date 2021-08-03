@@ -394,6 +394,7 @@ sub GenerateHTMLStats( $ ) {
 	$rowNum = 0;
 	while( defined($resultHash = $sth->fetchrow_hashref) ) {
 		my $totalPoints = $resultHash->{'TotalPoints'};
+		if( !defined $totalPoints ) { next; }		# no points computed for anyone....?
 		$rowNum++;
 		$macroValue .= "[E$rowNum]:";
 		$macroValue .= AddSpaces( 5 - length( $rowNum ) );

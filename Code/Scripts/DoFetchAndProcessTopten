@@ -7,7 +7,9 @@
 # PASSED:
 #	$1 - the season, e.g. 2017
 #	$2 - (optional) If present and equal to 'y' we'll force generation of the standings page after fetching
-#		the results. If present and equal to anything else (or not present) we will generate the standings page only
+#		the results. If present and equal to 'n' we'll force NO generation of Top Ten standings regardless
+#		of what GetResults.pl finds. If present and equal to anything else (or not present) 
+#		we will generate the standings page only
 #		if the results look different than the last time we fetched the results.  This is the default.
 #	$3 - an argument passed to topten.  Optional.
 #
@@ -258,34 +260,47 @@ if grep -q "ERROR" < $GETRESULTSLOG ; then
 else
 	if grep -q "Results have changed" < $GETRESULTSLOG ; then
 ##############################  GOT NEW RESULT FILES  ####################################
-		# looks like we've got some changes!
-		TailTheLog "$GETRESULTSLOG" "$TMPFILE2"
-		ADDITIONAL=
-		if grep -q "need to process a new RSIND file" < $GETRESULTSLOG ; then
-			ADDITIONAL=" (a new RSIND file)"
+		if [ ."$FORCEGEN" == .n ] ; then
+		##################  IGNORE NEW RESULT FILES and DON'T GENERATE TOP TEN  ##########
+		#	echo "$SIMPLE_SCRIPT_NAME:  GetResults.pl found NEW results, but as requested via command line arg..."
+		#	echo "    ...we will ignore them and NOT generate Top Ten."
+			LogMessage "$SEASON: Ignoring new results"  "$(cat <<- BUp12
+				$SIMPLE_SCRIPT_NAME:  GetResults.pl found NEW results, but as requested via command line arg...
+				    ...we will ignore them and NOT generate Top Ten."
+				BUp12
+				)" "x" "x"
+			# avoid error when trying to rm $TMPFILE2 below...
+			touch $TMPFILE2
+		else
+			# looks like we've got some changes!
+			TailTheLog "$GETRESULTSLOG" "$TMPFILE2"
+			ADDITIONAL=
+			if grep -q "need to process a new RSIND file" < $GETRESULTSLOG ; then
+				ADDITIONAL=" (a new RSIND file)"
+			fi
+			echo "$SIMPLE_SCRIPT_NAME:  GetResults.pl found new results$ADDITIONAL..."
+			echo "...Starting $TOPTEN to process the NEW latest results for $1 (`date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
+			ExecuteTopten $1
+			LogMessage "$SEASON: A new Standings page has been generated on $USERHOST" "$(cat <<- BUp2
+				A new Standings page has been generated for the year $1 by the $0 script on $USERHOST.
+				Generation was completed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`.
+				Details from GetResults.pl:
+				------
+				`cat $TMPFILE2`
+				------
+				Script logs can be viewed on $ARCHIVED_TMPFILE and $ARCHIVED_TMPFILE2
+				GetResults.pl logs are at:  $GETRESULTSLOG
+				$TOPTEN logs are at: $TOPTENLOG
+				(STARTed on $STARTDATE, Terminated on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
+				BUp2
+				)" "x"
 		fi
-		echo "$SIMPLE_SCRIPT_NAME:  GetResults.pl found new results$ADDITIONAL..."
-		echo "...Starting $TOPTEN to process the NEW latest results for $1 (`date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
-		ExecuteTopten $1
-		LogMessage "$SEASON: A new Standings page has been generated on $USERHOST" "$(cat <<- BUp2
-			A new Standings page has been generated for the year $1 by the $0 script on $USERHOST.
-			Generation was completed on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`.
-			Details from GetResults.pl:
-			------
-			`cat $TMPFILE2`
-			------
-			Script logs can be viewed on $ARCHIVED_TMPFILE and $ARCHIVED_TMPFILE2
-			GetResults.pl logs are at:  $GETRESULTSLOG
-			$TOPTEN logs are at: $TOPTENLOG
-			(STARTed on $STARTDATE, Terminated on `date +'%a, %b %d %G at %l:%M:%S %p %Z'`)
-			BUp2
-			)" "x"
 	elif [ ."$FORCEGEN" == .y ] ; then
 ########################  NO NEW RESULT FILES BUT GENERATE TOP 10 ANYWAY  ################
 		# even though there are no changes we're going to generate the standings anyway
 		TailTheLog "$GETRESULTSLOG" "$TMPFILE2"
 		echo "$SIMPLE_SCRIPT_NAME:  GetResults.pl found NO NEW results, but as requested..."
-		echo "$SIMPLE_SCRIPT_NAME:  ...Starting $TOPTEN to process the PREVIOUS latest results for $1 (`date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
+		echo "    ...Starting $TOPTEN to process the PREVIOUS latest results for $1 (`date +'%a, %b %d %G at %l:%M:%S %p %Z'`)"
 		ExecuteTopten $1
 		LogMessage \
 			"$SEASON: Found NO changes in the USMS or PAC results, but we'll generate standings anyway on $USERHOST" \

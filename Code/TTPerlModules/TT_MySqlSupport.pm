@@ -161,23 +161,26 @@ sub InitializeTopTenDB() {
     				#		This is the case where the swim is a PAC record in that course.
     				#	- where the Course is one of SCY Records, SCM Records, or LCM Records and the Org is USMS.
     				#		This is the case where the swim is a USMS record in that course.
+    				#	- where the Course is ePostal and the Org is USMS.
+    				#		This is the case where the swim is a USMS ePostal swim.
     				# In most cases (there has been one exception that I know about) if a single swim sets a USMS
     				# record that swim will be a top PAC swim, a top USMS swim, and a PAC record.  Thus that swim
     				# will be represented by 4 rows in this table.
 					# We'll then analyze all of these splashes to populate the Points table.
     				# --- SplashId : primary key
-    				# --- Course : one of SCY, SCM, LCM, SCY Records, SCM Records, LCM Records, or OW
+    				# --- Course : one of SCY, SCM, LCM, SCY Records, SCM Records, LCM Records, OW, or ePostal
     				#		- SCY, SCM, LCM:  this represents the swim in that length of pool
     				#		- SCY Records, SCM Records, LCM Records: this represents the swim that set a record.
     				#			Obviously, such a swim has another record in this table with the Course of
     				#			SCY, SCM, or LCM as appropriate.  See the Note above.
     				#		- OW: this represents an OW swim.
+    				#		- ePostal: this represents an ePostal swim
     				# --- Org : orginazation, one of PAC or USMS
     				#		- PAC: this represents a top 'N' Pacific Masters swim.  Also includes open water swims.
     				#		- USMS: this represents a top 'N' USMS swim.  Obviously if a swim is represented as a
     				#			USMS swim in this table there is another row for that same swim representating 
-    				#			a PAC swim.
-    				# --- EventId : reference to the exact event (e.g. '50 y freestyle') [0 for OW]
+    				#			a PAC swim. Also included ePostal swims.
+    				# --- EventId : reference to the exact event (e.g. '50 y freestyle') [0 for OW][-1 for ePostal]
     				# --- Gender - one of M or F
 				  	# --- AgeGroup - their age group on the day of the swim, of the form 18-24, 25-29, etc.
     				# --- Category : always 1
@@ -185,7 +188,8 @@ sub InitializeTopTenDB() {
     				# --- Date : the date of this swim (not always supplied)
     				# --- MeetId : references the meet in which this swim was swum (if not known it will be 0)
     				# --- SwimmerId - the swimmer who swam this swim
-    				# --- Duration - the time of the swim in hundredths of a second
+    				# --- Duration - the time of the swim in hundredths of a second, or the distance for an
+    				#		ePostal set time swim.
     				# --- Place : 1 - N
     				# --- Points: 1 - N Depends on Place
 		    		($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
@@ -216,7 +220,7 @@ sub InitializeTopTenDB() {
     				# --- MeetOrg : the organization recording this meet in its top 10.  The same meet
     				#		can have races recorded by both PAC and USMS, so the one here is the
     				#		first occurance we see.
-    				# --- MeetCourse : the course, e.g. SCY, SCM, or LCM or OW
+    				# --- MeetCourse : the course, e.g. SCY, SCM, or LCM, OW, or ePo (ePostal truncated to 3 chars)
     				# --- MeetBeginDate : the date of the first day of the meet.
     				# --- MeetEndDate : the date of the last day of the meet.  Can be the same as MeetBeginDate
     				# --- MeetIsPMS : 1 if this meet is sanctioned by PMS, 0 otherwise.
@@ -286,6 +290,8 @@ sub InitializeTopTenDB() {
 		    			", EventName Varchar(200) )");
 		    		($sth,$rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
 		    			"INSERT INTO Event VALUES (0, 0, 'Yard', 'Freestyle', '<fake event>')");
+		    		($sth,$rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
+		    			"INSERT INTO Event VALUES (-1, 0, 'Yard', 'Freestyle', 'ePostal')");
 
 ### RSIDN_year
     			} elsif( $tableName eq "RSIDN_$yearBeingProcessed" ) {
@@ -457,6 +463,10 @@ sub InitializeTopTenDB() {
     			} elsif( $tableName eq "FetchStats" ) {
     				# NOTE: IF YOU ADD A COLUMN TO THIS TABLE YOU PROBABLY NEED TO ADD THE SAME
     				#	FIELD TO THE %fetchStats HASH (see TT_Struct.pm)
+    				# ALSO: Since this table isn't automatically dropped and re-created if you
+    				#	modify this table (add/delete a row, etc) you'll need to do that by hand.
+    				#	e.g. mysql -u USER -h HOST -p DBName
+    				#			alter table FetchStats add FS_ePostalPointEarners INT DEFAULT 0;
 				  	# --- Season - The season for which the data were fetched, e.g. 2016
 				  	# --- FS_NumLinesRead - number of lines read when fetching the data
 				  	# --- FS_NumDifferentMeetsSeen - number of different meets seen
@@ -475,6 +485,7 @@ sub InitializeTopTenDB() {
 				  	#		still deserves points for the record since she/he set it during the season.
 				  	# --- FS_HistoricalSCMRecords - (ditto)
 				  	# --- FS_HistoricalLCMRecords - (ditto)
+				  	# --- FS_ePostalPointEarners - number of ePostal splashes which earned PMS points
 				  	# --- Date - the date and time this row was written/updated
 				  	# 
 		    		($sth,$rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
@@ -492,6 +503,7 @@ sub InitializeTopTenDB() {
 		    			"FS_HistoricalSCYRecords INT DEFAULT 0, " .
 		    			"FS_HistoricalSCMRecords INT DEFAULT 0, " .
 		    			"FS_HistoricalLCMRecords INT DEFAULT 0 " .
+		    			"FS_ePostalPointEarners INT DEFAULT 0 " .
 		    			" )" );
     			}
 			}
@@ -768,9 +780,9 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 #	$place - the place the swimmer took with this splash.
 #	$points - the number of points the swimmer got from this splash
 #	$swimmerId - the swimmer
-#	$eventId - the event the swimmer was swimming in (e.g. 50 M free)
+#	$eventId - the event the swimmer was swimming in (e.g. 50 M free), or -1 if ePostal
 #	$org - PAC or USMS
-#	$course - SCY, LCM, SCM
+#	$course - SCY, LCM, SCM, OW, ePostal
 #	$meetId - the meet the swimmer was swimming in.  Could be $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID
 #	$time - the duration of the swim
 #	$date - the date of the swim.  Of the form yyyy-mm-dd.  Could be $PMSConstants::DEFAULT_MISSING_DATE.
@@ -785,7 +797,7 @@ sub AddNewSplash ($$$$$$$$$$$$$) {
 		PMSLogging::DumpWarning( "", "", "AddNewSplash(): $fileName, line $lineNum: the passed 'org' " .
 			"is invalid (not fatal): '$org'", 1 );
 	}
-	if( ($course ne "SCY") && ($course ne "SCM") && ($course ne "LCM") && ($course ne 'OW') ) {
+	if( ($course ne "SCY") && ($course ne "SCM") && ($course ne "LCM") && ($course ne 'OW') && ($course ne 'ePostal') ) {
 		PMSLogging::DumpWarning( "", "", "AddNewSplash(): $fileName, line $lineNum: the passed 'course' ".
 			"is invalid (not fatal): '$course'", 1 );
 	}
@@ -825,6 +837,8 @@ sub AddNewMeetIfNecessary($$$$$$$$$) {
 		$meetEndDate, $meetIsPMS) = @_;
 	my $meetId;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
+
+	$meetTitle =  MySqlEscape($meetTitle);
 
 	# is this meet already in our db?
 	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
@@ -934,7 +948,7 @@ sub LookUpRecord( $$$$$ ) {
 sub GetSwimmersSwimDetails($$$$) {
 	my ($swimmerId, $org, $course, $ageGroup) = @_;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
-	
+
 	my $query = "SELECT Splash.EventId, Splash.MeetId, Place, Points, EventName, MeetTitle, Date, Duration " .
 		"FROM (Splash join Event) join Meet " .
 		"WHERE SwimmerId = $swimmerId " .
@@ -2220,6 +2234,8 @@ sub ReadSwimMeetData( $ ) {
 		next if( $line eq "" );		# ignore empty lines
 		next if( $line =~ m/#/ );	# ignore comment lines
 		my @lineArr = split( "\t", $line );
+		my $meetTitle = $lineArr[0];
+		$meetTitle =  MySqlEscape($meetTitle);
 		my $date = $lineArr[4];
 		my @dateArr = split / - /, $date;		# 1 or 2 fields
 		$dateArr[1] = $dateArr[0] if( !defined $dateArr[1] );
@@ -2227,7 +2243,7 @@ sub ReadSwimMeetData( $ ) {
 		$isPMS = 1 if( $lineArr[1] =~ m/IS a PAC sanctioned meet/ );
 		my $query = "INSERT INTO Meet " .
 				"(USMSMeetId, MeetTitle, MeetLink, MeetOrg, MeetCourse, MeetBeginDate, MeetEndDate, MeetIsPMS) " .
-				"VALUES (\"$lineArr[5]\",\"$lineArr[0]\",\"$lineArr[6]\",\"$lineArr[2]\",\"$lineArr[3]\",\"$dateArr[0]\"," .
+				"VALUES (\"$lineArr[5]\",\"$meetTitle\",\"$lineArr[6]\",\"$lineArr[2]\",\"$lineArr[3]\",\"$dateArr[0]\"," .
 				"\"$dateArr[1]\",\"$isPMS\")";
 		my($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
 		
