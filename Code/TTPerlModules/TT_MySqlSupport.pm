@@ -869,7 +869,7 @@ sub AddNewMeetIfNecessary($$$$$$$$$) {
 
 
 # TT_MySqlSupport::AddNewRecordSplash( $fileName, $lineNum, $course, $org, $eventId, $gender,
-# 	$ageGroup, $category, $swimmerId, $place, $points, $meetId );
+# 	$ageGroup, $category, $swimmerId, $place, $points, $meetId, date, duration );
 
 # AddNewRecordSplash - Add an entry in the Splash table representing the passed record finish
 #
@@ -1050,10 +1050,12 @@ sub GetSwimmersSwimDetails2($$$$) {
 			# we have not seen points for this event and course.  Do we give the swimmer points
 			# for this splash?
 			
-			# currently limit to 8 for EVERY possible course (except records and OW)
+			# currently limit to 8 for EVERY possible course (except records and OW and ePostal)
 			if( ($course eq 'SCY Records') || 
 				($course eq 'SCM Records') ||
 				($course eq 'LCM Records') ||
+				($course eq 'ePostal Records') ||
+				($course eq 'ePostal') ||
 				($course eq 'OW' ) ||
 				($resultsCounted < 8) ) {
 				# yep - they get points for this splash

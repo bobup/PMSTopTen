@@ -127,6 +127,7 @@ PMSStruct::GetMacrosRef()->{"AppDirName"} = $appDirName;	# directory containing 
 
 # get the arguments:
 my $yearBeingProcessed ="";
+my $genSubDir = "";
 
 my $arg;
 my $numErrors = 0;
@@ -142,6 +143,11 @@ while( defined( $arg = shift ) ) {
 				$propertiesDir = dirname($value);
 				$propertiesFileName = basename($value);
 				last SWITCH;
+	        }
+	        if( $flag =~ m/^-g$/ ) {
+	        	# use a special sub-dir for the generated files (log file)
+	        	$genSubDir = $value . "/";
+	        	last SWITCH;
 	        }
 			print "${appProgName}:: ERROR:  Invalid flag: '$arg'\n";
 			$numErrors++;
@@ -194,7 +200,7 @@ my $templateDir = "$appDirName/Templates/Stats";
 my $PMSSwimmerData = "$seasonData/PMSSwimmerData/";
 
 # Output file/directories:
-my $generatedDirName = "$appRootDir/GeneratedFiles/Generated-$yearBeingProcessed/";
+my $generatedDirName = "$appRootDir/GeneratedFiles/Generated-$yearBeingProcessed/$genSubDir";
 # does this directory exist?
 if( ! -e $generatedDirName ) {
 	# neither file nor directory with this name exists - create it

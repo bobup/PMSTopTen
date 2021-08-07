@@ -28,7 +28,7 @@ use warnings;
 #   - if ($G_RESULT_FILES_TO_READ & 0b10000)	!= 0 then process PMS Open Water
 #   - if ($G_RESULT_FILES_TO_READ & 0b100000)	!= 0 then process "fake splashes"
 #   - if ($G_RESULT_FILES_TO_READ & 0b1000000)	!= 0 then process ePostals
-our $G_RESULT_FILES_TO_READ = 	0b111111;			# process all result files except ePostal (default)
+our $G_RESULT_FILES_TO_READ = 	0b1111111;		# process all result files including ePostal (not default yet)
 #$G_RESULT_FILES_TO_READ = 0b011110;			# process all but Top Ten result files
 #$G_RESULT_FILES_TO_READ = 	0b001111; 			# process all but OW
 #$G_RESULT_FILES_TO_READ = 	0;					# process none of the result files (use DB only)
@@ -40,7 +40,7 @@ our $G_RESULT_FILES_TO_READ = 	0b111111;			# process all result files except ePo
 #$G_RESULT_FILES_TO_READ = 	0b001110;			# USMS Top Ten result files, USMS records, and PMS records only
 #$G_RESULT_FILES_TO_READ = 	0b110000;			# fake splashes + OW only
 #$G_RESULT_FILES_TO_READ = 	0b1000000;			# process  ePostal only
-$G_RESULT_FILES_TO_READ = 	0b1111111;			# process all result files including ePostal
+$G_RESULT_FILES_TO_READ = 	0b0111111;			# process all result files except ePostal (default)
 
 
 

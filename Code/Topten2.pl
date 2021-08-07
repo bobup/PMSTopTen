@@ -231,6 +231,7 @@ where:
 	-gGenSubDir - if supplied the string 'GenSubDir' will be used as the name of a subdirectory of the 
 		generatedDirName directory (into which all generated files are placed.)  The use of this
 		argument allows one to create a full AGSOTY generation without overwriting a previous one.
+	-lLogFile -  if supplied this is the full path name of the log file
 	-e[+] - generate team-AGSOTY results.  If the -e is followed + we first generate full AGSOTY results and then
 		the team-AGSOTY results.
 bup
@@ -309,7 +310,8 @@ my %hashOfLongNames = (
 	'SCY Records' => "Short Course Yards Records",
 	'SCM Records' => "Short Course Meters Records",
 	'LCM Records' => "Long Course Meters Records",
-	'ePostal'	=> "ePostals"
+	'ePostal'	=> "ePostals",
+	'ePostal Records'	=> "ePostal Records",
 	);
 #
 # If we don't find all the results we expect we want to make that obvious in the
@@ -342,6 +344,7 @@ my $genSubDir = "";
 
 # get the arguments:
 my $yearBeingProcessed ="";
+my $topTenLog = "";
 
 my $arg;
 my $numErrors = 0;
@@ -367,6 +370,9 @@ while( defined( $arg = shift ) ) {
 				print "${appProgName}:: ERROR:  Invalid value following the '-e' flag: '$arg'\n";
 				$numErrors++;
 			}
+		} elsif( $flag =~ m/^-l$/ ) {
+			# set the full path name of the log File
+			$topTenLog = $value;
         } else {
 			print "${appProgName}:: ERROR:  Invalid flag: '$arg'\n";
 			$numErrors++;
@@ -415,9 +421,11 @@ if( ! -e $generatedDirName ) {
 ###
 ### Initialalize log file
 ###
-my $logFileName = $generatedDirName . "TopTenLog-$yearBeingProcessed.txt";
+if( $topTenLog eq "" ) {
+	$topTenLog = $generatedDirName . "TopTenLog-$yearBeingProcessed.txt";
+}
 # open the log file so we can log errors and debugging info:
-if( my $tmp = PMSLogging::InitLogging( $logFileName )) { die $tmp; }
+if( my $tmp = PMSLogging::InitLogging( $topTenLog )) { die $tmp; }
 
 PMSLogging::DumpNote( "", "", "Starting $appProgName...", 1 );
 PMSLogging::DumpNote( "", "", "Log file created on $generationTimeDate". 1 );
@@ -801,7 +809,7 @@ if( $GENERATE_FULL_AGSOTY ) {
 
 	if($WRITE_HTML_FILES) {
 		# full path name of the master HTML file we're generating:
-		if( $GENERATE_SPLIT_AGE_GROUPS ) {
+		if( $GENERATE_SPLIT_AGE_GROUPS ) {	# after 2017 this is probably 0
 			PrintResultsHTML( "FinalPlaceSAG", $masterGeneratedSAGHTMLFileName, $generatedHTMLFileSubDir, "FullSAG" );
 		}
 	
@@ -2324,6 +2332,7 @@ sub PMSProcessEPostal( $$ ) {
 		my @specs = split( /@@@/, $specsString );
 		my $org = $specs[0];
 		my $course = "ePostal";
+		my $courseRecord = "$course Records";
 		$missingResults{"$org-$course"} = 0;		# note that we've seen at least one ePostal from this $org
 		my $USMSMeetId = $specs[1];
 		my $meetTitle = $specs[2];
@@ -2407,6 +2416,11 @@ sub PMSProcessEPostal( $$ ) {
 								my $gender = my $currentAgeGroup = $row[0];
 								my $dob = $row[8];   # m/d/y
 								my $distance = $row[9];
+								my $natRecord = $row[10];
+								if( $natRecord ) {
+									# note that we've seen at least one ePostal National record from this $org
+									$missingResults{"$org-$courseRecord"} = 0;
+								}
 								$gender =~ s/^(.).*$/$1/;
 								$currentAgeGroup =~ s/^.(..)(..)$/$1-$2/;		# e.g. 45-49
 								# these values come from the RSIDN file:
@@ -2499,6 +2513,14 @@ sub PMSProcessEPostal( $$ ) {
 					
 								TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $currentAgeGroup, $gender, 
 									$place, $points, $swimmerId, -1, $org, $course, $meetId, $distance, $beginDate );
+
+								if( $natRecord ) {
+									# this swimmer earned a national record doing this ePostal. Add this as a separate
+									# splash: (25 points)
+									TT_MySqlSupport::AddNewRecordSplash( $fileName, $lineNum, $courseRecord, $org, -1, $gender,
+										$currentAgeGroup, 1, $swimmerId, 0, 25, $meetId, $beginDate, $distance );
+								}
+									
 							} # end of '...we have a row representing a PMS swimmer...'
 						} # end of '...this is a result for a PMS swimmer...'
 					} # end of '...we have a result line...'
@@ -2992,6 +3014,7 @@ sub PrintResultsHTML($$$$) {
 	my $templateSingleEvent_Records = "$templateDir/AGSOTY-SingleEvent_Records.html";
 	my $templateSingleEvent_OW = "$templateDir/AGSOTY-SingleEvent_OW.html";
 	my $templateSingleEvent_ePostal = "$templateDir/AGSOTY-SingleEvent_ePostal.html";
+	my $templateSingleEvent_ePostalRecord = "$templateDir/AGSOTY-SingleEvent_ePostal_Records.html";
 	my $templateEndCourseDetails = "$templateDir/AGSOTY-EndCourseDetails.html";
 	my $templateEndDetails = "$templateDir/AGSOTY-EndDetails.html";
 	my $templateEndPersonRow = "$templateDir/AGSOTY-EndPersonRow.html";
@@ -3002,7 +3025,7 @@ sub PrintResultsHTML($$$$) {
 	my $query;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	
-	my $debugLastName = lc("xxxxxx");
+	my $debugLastName = lc("xxxxxxxx");
 
 	my $category = 1;		# we only consider Cat 1 swims
 	my $personBackgroundColor = "WHITE";		# background color for each row (computed below)
@@ -3287,8 +3310,6 @@ sub PrintResultsHTML($$$$) {
 						print "$debugLastName: $swimmerId, $detailsNum, $totalPoints, $resultsCounted, org=$org, course=$course\n";
 					}
 
-
-
 					# if we don't have any points
 					# for this org-course for this swimmer we set the value to 0.
 					# (e.g. the swimmer has results for short course PMS, but
@@ -3309,10 +3330,15 @@ sub PrintResultsHTML($$$$) {
 					# in decending order.
 					# First, get the correct template file:
 					my $templateSingleEvent;
+					if( lc($lastName) eq $debugLastName) {
+						print "\nPrintResultsHTML(): working on $debugLastName: select template for '$course', detailsNum=$detailsNum\n";
+					}
 					if( $course eq "OW" ) {
 						$templateSingleEvent = $templateSingleEvent_OW;
 					} elsif( $course eq "ePostal" ) {
 						$templateSingleEvent = $templateSingleEvent_ePostal;
+					} elsif( $course eq "ePostal Records" ) {
+						$templateSingleEvent = $templateSingleEvent_ePostalRecord;
 					} elsif( $course =~ m/^.*Records$/ ) {
 						$templateSingleEvent = $templateSingleEvent_Records;
 					} elsif( $org eq "PAC" ) {
@@ -3328,7 +3354,7 @@ sub PrintResultsHTML($$$$) {
 						# org and course:
 						$uniqueSplashId++;
 						PMSStruct::GetMacrosRef()->{"EventName"} = $detailsRef->[$i]{'EventName'};
-						if( $course eq "ePostal" ) {
+						if( ($course eq "ePostal") || ($course eq "ePostal Records") ) {
 							# ugh... ePostal is special case: "duration" is actually the distance swum
 							PMSStruct::GetMacrosRef()->{"Duration"} = $detailsRef->[$i]{'Duration'};
 						} else {
@@ -3405,14 +3431,14 @@ sub PrintResultsHTML($$$$) {
 							PMSStruct::GetMacrosRef()->{"PointsStart"} = "";
 							PMSStruct::GetMacrosRef()->{"PointsEnd"} = "";
 						}
-
+						if( lc($lastName) eq $debugLastName) {
+							print "\nPrintResultsHTML(): working on $debugLastName: generate html for '$course'\n";
+						}
 						PMSTemplate::ProcessHTMLTemplate( $templateSingleEvent, $virtualGeneratedHTMLFileHandle );
 					} # end of for( my $i = 1; $i <= $detailsNum; ...
 					PMSTemplate::ProcessHTMLTemplate( $templateEndCourseDetails, $virtualGeneratedHTMLFileHandle );
 				}
 			}
-
-####
 			PMSTemplate::ProcessHTMLTemplate( $templateEndDetails, $virtualGeneratedHTMLFileHandle );
 
 			# all done with this person...

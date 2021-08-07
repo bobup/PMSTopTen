@@ -127,12 +127,20 @@ my $UsageString = <<bup
 Usage:  
 	$appProgName  year
 			[-tPROPERTYFILE]
+			[-gGenSubDir]
+			[-lLog File]
 where:
 	year - the year to process, e.g. 2016.  
 	-tPROPERTYFILE - the FULL PATH NAME of the property.txt file.  The default is 
 		appDirName/Code/properties.txt, where
 		'appDirName' is the directory holding this script, and
 		'properties.txt' is the name of the properties files for this script.
+	-gGenSubDir - if supplied the string 'GenSubDir' will be used as the name of a subdirectory of the 
+		generatedDirName directory (into which the log files are placed.)  The use of this
+		argument allows one to create a full AGSOTY generation without overwriting a previous one.
+		No trailing slash necessary.
+	-lLogFile -  if supplied this is the full path name of the log file
+
 bup
 ;
 
@@ -194,6 +202,8 @@ PMSStruct::GetMacrosRef()->{"MySqlDateTime"} = $mysqlDateTime;
 
 # get the arguments:
 my $yearBeingProcessed ="";
+my $getResultsLog = "";
+my $genSubDir = "";
 
 my $arg;
 my $numErrors = 0;
@@ -209,6 +219,16 @@ while( defined( $arg = shift ) ) {
 				$propertiesDir = dirname($value);
 				$propertiesFileName = basename($value);
 				last SWITCH;
+	        }
+	        if( $flag =~ m/^-l$/ ) {
+	        	# set the full path name of the log File
+	        	$getResultsLog = $value;
+	        	last SWITCH;
+	        }
+	        if( $flag =~ m/^-g$/ ) {
+	        	# use a special sub-dir for the generated files (log file)
+	        	$genSubDir = $value . "/";
+	        	last SWITCH;
 	        }
 			print "${appProgName}:: ERROR:  Invalid flag: '$arg'\n";
 			$numErrors++;
@@ -232,7 +252,7 @@ if( $yearBeingProcessed eq "" ) {
 }
 
 # Output file/directories:
-my $generatedDirName = "$appRootDir/GeneratedFiles/Generated-$yearBeingProcessed/";
+my $generatedDirName = "$appRootDir/GeneratedFiles/Generated-$yearBeingProcessed/$genSubDir";
 # does this directory exist?
 if( ! -e $generatedDirName ) {
 	# neither file nor directory with this name exists - create it
@@ -252,9 +272,12 @@ if( ! -d $generatedDirName ) {
 ###
 ### Initialalize log file
 ###
-my $logFileName = $generatedDirName . "GetResultsLog-$yearBeingProcessed.txt";
+if( $getResultsLog eq "" ) {
+	# -l flag not supplied - use a default value
+	$getResultsLog = $generatedDirName . "GetResultsLog-$yearBeingProcessed.txt";
+}
 # open the log file so we can log errors and debugging info:
-if( my $tmp = PMSLogging::InitLogging( $logFileName )) { die $tmp; }
+if( my $tmp = PMSLogging::InitLogging( $getResultsLog )) { die $tmp; }
 
 
 PMSLogging::PrintLog( "", "", "Starting $appProgName on $generationTimeDate...", 1 );
