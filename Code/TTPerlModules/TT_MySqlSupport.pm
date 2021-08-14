@@ -502,7 +502,7 @@ sub InitializeTopTenDB() {
 		    			"FS_CurrentLCMRecords INT DEFAULT 0, " .
 		    			"FS_HistoricalSCYRecords INT DEFAULT 0, " .
 		    			"FS_HistoricalSCMRecords INT DEFAULT 0, " .
-		    			"FS_HistoricalLCMRecords INT DEFAULT 0 " .
+		    			"FS_HistoricalLCMRecords INT DEFAULT 0, " .
 		    			"FS_ePostalPointEarners INT DEFAULT 0 " .
 		    			" )" );
     			}

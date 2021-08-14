@@ -9,3 +9,4 @@ Pacific Swimming LCM "TRI" meet TERA PLS SRVA	(NOT a PAC sanctioned meet)	PAC	LC
 2021 US Olympic Trials, Wave 1 (USA-S meet)	(NOT a PAC sanctioned meet)	PAC	LCM	2021-6-4 - 2021-6-7	20210607OTWAV1L	https://www.usms.org/comp/meets/meet.php?MeetID=20210607OTWAV1L
 Mission Viejo Nadadores Patrick Moore Memorial Swim Meet	(NOT a PAC sanctioned meet)	PAC	LCM	2021-7-11	20210711MVNPML	https://www.usms.org/comp/meets/meet.php?MeetID=20210711MVNPML
 2021 Southwest Zone and SPMS Summer Championships	(NOT a PAC sanctioned meet)	PAC	LCM	2021-7-30 - 2021-8-1	20210730SWZCHAL	https://www.usms.org/comp/meets/meet.php?MeetID=20210730SWZCHAL
+Southern SCM Championships	(NOT a PAC sanctioned meet)	PAC	SCM	2021-7-31 - 2021-8-1	20210731SCMCHS	https://www.usms.org/comp/meets/meet.php?MeetID=20210731SCMCHS

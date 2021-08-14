@@ -68,14 +68,6 @@ my $appDirName;     # directory containing the application we're running
 my $appRootDir;		# directory containing the appDirName directory
 my $sourceData;		# full path of directory containing the "source data" which we process to create the generated files
 
-
-my $generatePMSTopTen;	# set to non-zero if we are supposed to generate PMS Top Ten points, 0 if not.
-my $generateUSMSTopTen;	# set to non-zero if we are supposed to generate USMS Top Ten points, 0 if not.
-my $generatePMSRecords;	# set to non-zero if we are supposed to generate PMS Records points, 0 if not.
-my $generateUSMSRecords;	# set to non-zero if we are supposed to generate USMS Records points, 0 if not.
-my $generatePMSOW;		# set to non-zero if we are supposed to generate PMS OW points, 0 if not.
-my $generateEPostal;	# set to non-zero if we are supposed to generate ePostal points, 0 if not.
-
 BEGIN {
 	# set this to adjust debug printing:
 	$debug = 0;
@@ -113,10 +105,18 @@ require TT_MySqlSupport;
 require TT_Logging;
 require TT_SheetSupport;
 
-# $RESULT_FILES_TO_READ is used to dictate what result files to read.  If 0 we will read no result
+# $G_RESULT_FILES_TO_READ is used to dictate what result files to read.  If 0 we will read no result
 # files.  See TT_Struct.pm for specifics
 my $RESULT_FILES_TO_READ = $TT_Struct::G_RESULT_FILES_TO_READ;
 $RESULT_FILES_TO_READ = $TT_Struct::G_RESULT_FILES_TO_READ;		# avoid warning message
+# simplify access and testing of $G_RESULT_FILES_TO_READ
+my $generatePMSTopTen		= ($RESULT_FILES_TO_READ & 0b1);			# set to non-zero if we are supposed to generate PMS Top Ten points, 0 if not.
+my $generateUSMSTopTen		= ($RESULT_FILES_TO_READ & 0b10);			# set to non-zero if we are supposed to generate USMS Top Ten points, 0 if not.
+my $generatePMSRecords		= ($RESULT_FILES_TO_READ & 0b100);		# set to non-zero if we are supposed to generate PMS Records points, 0 if not.
+my $generateUSMSRecords		= ($RESULT_FILES_TO_READ & 0b1000);		# set to non-zero if we are supposed to generate USMS Records points, 0 if not.
+my $generatePMSOW			= ($RESULT_FILES_TO_READ & 0b10000);		# set to non-zero if we are supposed to generate PMS OW points, 0 if not.
+my $generateEPostal			= ($RESULT_FILES_TO_READ & 0b1000000);	# set to non-zero if we are supposed to generate ePostal points, 0 if not.
+
 
 
 ####################
