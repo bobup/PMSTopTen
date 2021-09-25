@@ -8,5 +8,7 @@ Pacific Swimming LCM "TRI" meet TERA PLS SRVA	(NOT a PAC sanctioned meet)	PAC	LC
 2021 Dolfin Fran Crippen Memorial Swim Meet of Champions	(NOT a PAC sanctioned meet)	PAC	LCM	2021-6-24 - 2021-6-27	20210624SMOCFCL	https://www.usms.org/comp/meets/meet.php?MeetID=20210624SMOCFCL
 2021 US Olympic Trials, Wave 1 (USA-S meet)	(NOT a PAC sanctioned meet)	PAC	LCM	2021-6-4 - 2021-6-7	20210607OTWAV1L	https://www.usms.org/comp/meets/meet.php?MeetID=20210607OTWAV1L
 Mission Viejo Nadadores Patrick Moore Memorial Swim Meet	(NOT a PAC sanctioned meet)	PAC	LCM	2021-7-11	20210711MVNPML	https://www.usms.org/comp/meets/meet.php?MeetID=20210711MVNPML
+Summer Ending LCM	(NOT a PAC sanctioned meet)	PAC	LCM	2021-7-28 - 2021-8-1	20210801TER801L	https://www.usms.org/comp/meets/meet.php?MeetID=20210801TER801L
 2021 Southwest Zone and SPMS Summer Championships	(NOT a PAC sanctioned meet)	PAC	LCM	2021-7-30 - 2021-8-1	20210730SWZCHAL	https://www.usms.org/comp/meets/meet.php?MeetID=20210730SWZCHAL
 Southern SCM Championships	(NOT a PAC sanctioned meet)	PAC	SCM	2021-7-31 - 2021-8-1	20210731SCMCHS	https://www.usms.org/comp/meets/meet.php?MeetID=20210731SCMCHS
+2021 Minnesota Masters LCM Championship	(NOT a PAC sanctioned meet)	PAC	LCM	2021-8-7 - 2021-8-8	20210807MNstatL	https://www.usms.org/comp/meets/meet.php?MeetID=20210807MNstatL
