@@ -118,7 +118,7 @@ if [ -e "index.html" ] ; then
 	done
 	shopt -u nocasematch
 	# now, do the push:	
-	cp -r *  $DESTINATION_DIR
+	cp -p -r *  $DESTINATION_DIR
 	NOEMAIL=			# always send an email
 	LogMessage "$1 Top Ten standings pushed to dev by $SIMPLE_SCRIPT_NAME on $USERHOST" \
 		"$(cat <<- BUp9 
@@ -140,7 +140,6 @@ else
     FINAL_EXIT_STATUS=1;
 fi
 
-popd >/dev/null
 echo ""; echo '******************** End of ' "$0"
 
 exit $FINAL_EXIT_STATUS;

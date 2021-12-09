@@ -50,22 +50,77 @@ PMSOpenWaterResultFile \
 						
 # ePostals (added 2021 as a test)
 #	result file name relative to SourceData directory;			<-- NOTE semi-colon; colon won't work here.
-#		ORG (usually USMS)@@@ 									<-- NOTE @@@ used as separator 
-#		USMS Meet ID (seems to be 0...?)@@@
-#		Meet title@@@ 
-#		Meet Link (link to description-should be link to usms.org)@@@ 
-#		Meet Begin Date (yyyy-mm-dd)@@@
-#		Meet End Date (yyyy-mm-dd)@@@ 
-#		Meet is sanctioned by PMS (yes=1, no=0)
+#		ORG - usually USMS  @@@ 								<-- NOTE @@@ used as terminator for every value 
+#		distance - a indication of the distance of the ePostal or 0 if the ePostal
+#			is not a specific distance. For example, "3000" is the distance in the 
+#			specified Units (below), "0" means there is no specific distance, in, for
+#			example, the 1 hour swim. In ALL cases this value is an integer.
+#		time - the time allotted to the ePostal, or 0 if there is no specific time allotted.
+#			For example, "1:00:00.00" or "1 hour" is the time allotted to the 1 hour swim, but "0" would
+#			be specified for the 5k ePostal since the time is whatever each competitor requires.
+#			In ALL cases, if non-zero this value must contain at least one non digit (e.g. ":" or "h").
+#		Units - the distance units for this ePostal. Yards or Meters is common.
+#		
+#	!!! NOTE: the combination of ("distance" or "time", whichever is non-zero), and "Units" 
+#		must be unique across ePostals for a single gender.
+#	!!! The combination is used to define a unique "Event"
+#
+#		Meet title  - Used as EventName for an Event in the database
+#		Meet Link - (link to description-should be link to usms.org)@@@ 
+#		Meet Begin Date - (yyyy-mm-dd)@@@
+#		Meet End Date - (yyyy-mm-dd)@@@ 
+#		Meet is sanctioned by PMS - (yes=1, no=0)
 USMSEpostals \
 						epostal-1hr-2021.csv; \
 							USMS@@@ \
 							0@@@ \
+							1 hour@@@ \
+							Yards@@@ \
 							2021 U.S. Masters Swimming 1-Hour ePostal National Championship@@@ \
 							https://www.usms.org/events/national-championships/epostal-national-championships/2021-epostal-national-championships@@@ \
 							2021-01-01@@@ \
 							2021-03-31@@@ \
+							0; \
+						epostal-5k-2021-men.csv; \
+							USMS@@@ \
+							5K@@@ \
+							0@@@ \
+							Meters@@@ \
+							2021 U.S. Masters Swimming 5K/10K ePostal National Championships@@@ \
+							https://www.usms.org/events/national-championships/epostal-national-championships/2021-epostal-national-championships@@@ \
+							2021-05-15@@@ \
+							2021-09-15@@@ \
+							0; \
+						epostal-5k-2021-women.csv; \
+							USMS@@@ \
+							5K@@@ \
+							0@@@ \
+							Meters@@@ \
+							2021 U.S. Masters Swimming 5K/10K ePostal National Championships@@@ \
+							https://www.usms.org/events/national-championships/epostal-national-championships/2021-epostal-national-championships@@@ \
+							2021-05-15@@@ \
+							2021-09-15@@@ \
+							0; \
+						epostal-10k-2021-men.csv; \
+							USMS@@@ \
+							10K@@@ \
+							0@@@ \
+							Meters@@@ \
+							2021 U.S. Masters Swimming 5K/10K ePostal National Championships@@@ \
+							https://www.usms.org/events/national-championships/epostal-national-championships/2021-epostal-national-championships@@@ \
+							2021-05-15@@@ \
+							2021-09-15@@@ \
+							0; \
+						epostal-10k-2021-women.csv; \
+							USMS@@@ \
+							10K@@@ \
+							0@@@ \
+							Meters@@@ \
+							2021 U.S. Masters Swimming 5K/10K ePostal National Championships@@@ \
+							https://www.usms.org/events/national-championships/epostal-national-championships/2021-epostal-national-championships@@@ \
+							2021-05-15@@@ \
+							2021-09-15@@@ \
 							0;
 
+
 #						epostal-1hr-2021.csv; \
-#						epostal-1hr-2021-bup.csv; \

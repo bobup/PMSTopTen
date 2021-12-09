@@ -1,4 +1,9 @@
 PACIFIC SWIMMING SCY SENIOR INTRASQUAD PRELIMINARIES & FINALS MEET	(NOT a PAC sanctioned meet)	PAC	SCY	2020-11-13 - 2020-11-15	20201115CC1120Y	https://www.usms.org/comp/meets/meet.php?MeetID=20201115CC1120Y
+Rowdy Gaines Masters Classic 13 (Version 2.0)	(NOT a PAC sanctioned meet)	PAC	SCM	2021-10-15 - 2021-10-17	20211015ROWDYGS	https://www.usms.org/comp/meets/meet.php?MeetID=20211015ROWDYGS
+2021 Pacific Masters Swimming Kerry O'Brien Short Course Meters Championships	(IS a PAC sanctioned meet)	PAC	SCM	2021-10-15 - 2021-10-17	20211015WCM-1S	https://www.usms.org/comp/meets/meet.php?MeetID=20211015WCM-1S
+Mission Viejo Nadadores Masters SCM Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2021-10-3	20211003MVNSCMS	https://www.usms.org/comp/meets/meet.php?MeetID=20211003MVNSCMS
+Huntsman World Senior Games	(NOT a PAC sanctioned meet)	PAC	SCM	2021-10-6 - 2021-10-8	20211006HWSG21S	https://www.usms.org/comp/meets/meet.php?MeetID=20211006HWSG21S
+2021 Chris Jackson Memorial SCM Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2021-12-4 - 2021-12-5	20211204CJ2021S	https://www.usms.org/comp/meets/meet.php?MeetID=20211204CJ2021S
 Terrapins Long Course Intrasquad meet	(NOT a PAC sanctioned meet)	PAC	LCM	2021-4-23 - 2021-4-25	20210425TERALCL	https://www.usms.org/comp/meets/meet.php?MeetID=20210425TERALCL
 PACIFIC SWIMMING SCY “TRI” SENIOR MEET: TERA|PLS|LAC	(NOT a PAC sanctioned meet)	PAC	SCY	2021-5-21 - 2021-5-22	20210522TERSCYY	https://www.usms.org/comp/meets/meet.php?MeetID=20210522TERSCYY
 2021 MAC Masters LCM Invite	(NOT a PAC sanctioned meet)	PAC	LCM	2021-5-23	20210523MesaL	https://www.usms.org/comp/meets/meet.php?MeetID=20210523MesaL
@@ -12,3 +17,4 @@ Summer Ending LCM	(NOT a PAC sanctioned meet)	PAC	LCM	2021-7-28 - 2021-8-1	20210
 2021 Southwest Zone and SPMS Summer Championships	(NOT a PAC sanctioned meet)	PAC	LCM	2021-7-30 - 2021-8-1	20210730SWZCHAL	https://www.usms.org/comp/meets/meet.php?MeetID=20210730SWZCHAL
 Southern SCM Championships	(NOT a PAC sanctioned meet)	PAC	SCM	2021-7-31 - 2021-8-1	20210731SCMCHS	https://www.usms.org/comp/meets/meet.php?MeetID=20210731SCMCHS
 2021 Minnesota Masters LCM Championship	(NOT a PAC sanctioned meet)	PAC	LCM	2021-8-7 - 2021-8-8	20210807MNstatL	https://www.usms.org/comp/meets/meet.php?MeetID=20210807MNstatL
+2021 U.S. Masters Swimming Long Course Meters National Championship Oct.7-10	(NOT a PAC sanctioned meet)	PAC	LCM	2021-9-30	20211007LCMnatL	https://www.usms.org/comp/meets/meet.php?MeetID=20211007LCMnatL

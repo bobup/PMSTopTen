@@ -180,7 +180,7 @@ sub InitializeTopTenDB() {
     				#		- USMS: this represents a top 'N' USMS swim.  Obviously if a swim is represented as a
     				#			USMS swim in this table there is another row for that same swim representating 
     				#			a PAC swim. Also included ePostal swims.
-    				# --- EventId : reference to the exact event (e.g. '50 y freestyle') [0 for OW][-1 for ePostal]
+    				# --- EventId : reference to the exact event (e.g. '50 y freestyle') 
     				# --- Gender - one of M or F
 				  	# --- AgeGroup - their age group on the day of the swim, of the form 18-24, 25-29, etc.
     				# --- Category : always 1
@@ -189,7 +189,9 @@ sub InitializeTopTenDB() {
     				# --- MeetId : references the meet in which this swim was swum (if not known it will be 0)
     				# --- SwimmerId - the swimmer who swam this swim
     				# --- Duration - the time of the swim in hundredths of a second, or the distance for an
-    				#		ePostal set time swim.
+    				#		ePostal set time swim, depending on DurationType
+    				# --- DurationType - 1 if the above Duration is time (hundredths of a second), or 2 if Duration
+    				#		is really a distance. Note that the default is 1.
     				# --- Place : 1 - N
     				# --- Points: 1 - N Depends on Place
 		    		($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
@@ -205,6 +207,7 @@ sub InitializeTopTenDB() {
 		    			"MeetId INT References Meet(MeetId), " .
 		    			"SwimmerId INT References Swimmer(SwimmerId), " .
 		    			"Duration INT DEFAULT 0, " .
+		    			"DurationType INT DEFAULT 1, " .
 		    			"Place Int, " .
 		    			"Points Int)" );
 
@@ -232,7 +235,7 @@ sub InitializeTopTenDB() {
     		    		", MeetTitle Varchar(255)" .
     		    		", MeetLink Varchar(255) DEFAULT NULL" .
     		    		", MeetOrg Varchar(15) DEFAULT NULL" .
-    		    		", MeetCourse Char(3) DEFAULT NULL" .
+    		    		", MeetCourse Varchar(15) DEFAULT NULL" .
     		    		", MeetBeginDate DATE DEFAULT NULL" .
     		    		", MeetEndDate DATE DEFAULT NULL" .
     		    		", MeetIsPMS TINYINT(1) DEFAULT NULL" .
@@ -263,7 +266,11 @@ sub InitializeTopTenDB() {
 
 ### Event
     			} elsif( $tableName eq "Event" ) {
-    				# --- Distance : of the form "50" for the 50 yard freestyle
+    				# --- Distance : of the form "50" for the 50 yard freestyle. For ePostals it's a
+    				#		bit different: "distance" will EITHER be:
+    				#			- a distance, which is a non-zero integer, or
+    				#			- a time of the swim, in which case it's a non-zero value containing at
+    				#				least one non-digit
 					# --- Units : one of "Yard", "Meter", "Mile", or "K" (kilometer).
 					#		"Yard" and "Meter" are usually only used for pool meets and records.
 					#		"Mile" and "K" are usually only used for open water events.
@@ -271,8 +278,10 @@ sub InitializeTopTenDB() {
     				#		"Individual Medley", or "Medley" for
     				#		pool meets ("Medley" is used for relays, "Individual Medley" is used for 
     				#		individual events).  
-    				#		The name of the host for open water, e.g. "Spring Lake".
-    				# --- EventName : The name of the event found in the results.  This name will
+    				#		Open Water: The name of the host for open water, e.g. "Spring Lake".
+    				#		ePostal: always "Free"
+    				# --- EventName : The name of the event found in the results.  
+    				#		For non-ePostals: This name will
     				#		exactly match the event name when Distance, Course, and Stroke are combined
     				#		into the full event name.  An event name in the results is parsed to create
     				#		the valid values for Distance, Course, and Stroke.  For example, the event
@@ -284,14 +293,14 @@ sub InitializeTopTenDB() {
     				#		where the Course is derived from the course of the results.
 		    		($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
     		    		"CREATE TABLE Event (EventId INT AUTO_INCREMENT PRIMARY KEY" .
-    		    		", Distance Varchar(5)" .
+    		    		", Distance Varchar(64)" .
     		    		", Units Varchar(20)" .
     		    		", Stroke Varchar(100)" .
 		    			", EventName Varchar(200) )");
 		    		($sth,$rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
 		    			"INSERT INTO Event VALUES (0, 0, 'Yard', 'Freestyle', '<fake event>')");
-		    		($sth,$rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
-		    			"INSERT INTO Event VALUES (-1, 0, 'Yard', 'Freestyle', 'ePostal')");
+#		    		($sth,$rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
+#		    			"INSERT INTO Event VALUES (-1, 0, 'Yard', 'Freestyle', 'ePostal')");
 
 ### RSIDN_year
     			} elsif( $tableName eq "RSIDN_$yearBeingProcessed" ) {
@@ -555,14 +564,14 @@ sub DropTable( $ ) {
 } # end of DropTable()
 
 
-# my $eventId = TT_MySqlSupport::AddNewEventIfNecessary( $distance, $eventCourse,
-#	$stroke );
+# my $eventId = TT_MySqlSupport::AddNewEventIfNecessary( $distance, $units,
+#	$stroke, $eventName );
 # AddNewEventIfNecessary - look up the passed event in the Event table.  If not found
 #	then add the event.  In all cases return the EventId.
 #
 # PASSED:
 #	$distance
-#	$units -
+#	$units - Yard or Meter
 #	$stroke -
 #	$eventName - (optional)
 #
@@ -786,11 +795,16 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 #	$meetId - the meet the swimmer was swimming in.  Could be $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID
 #	$time - the duration of the swim
 #	$date - the date of the swim.  Of the form yyyy-mm-dd.  Could be $PMSConstants::DEFAULT_MISSING_DATE.
+#	$durationType (optional) - 1 (or missing) if the passed $time is a time, 2 if it's really a distance
 #
 sub AddNewSplash ($$$$$$$$$$$$$) {
 	my ($fileName, $lineNum, $ageGroup, $gender, $place, $points, $swimmerId, $eventId, $org, 
-		$course, $meetId, $time, $date) = @_;
+		$course, $meetId, $time, $date, $durationType) = @_;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
+	
+	if( !defined( $durationType ) ) {
+		$durationType = 1;			# default...
+	}
 	
 	# sanity check
 	if( ($org ne "PAC") && ($org ne "USMS") ) {
@@ -806,10 +820,11 @@ sub AddNewSplash ($$$$$$$$$$$$$) {
 	$gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $gender );
 	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
 		"INSERT INTO Splash " .
-			"(Course, Org, EventId, Gender, AgeGroup, Category, Date, MeetId, SwimmerId, Duration, Place, Points) " .
+			"(Course, Org, EventId, Gender, AgeGroup, Category, Date, MeetId, SwimmerId, Duration, " .
+			"Place, Points, DurationType) " .
 			"VALUES (\"$course\",\"$org\",\"$eventId\",\"$gender\",\"$ageGroup\",\"1\"," .
 			"\"$date\",\"$meetId\",\"$swimmerId\",\"$time\"," .
-			"\"$place\", \"$points\")") ;
+			"\"$place\", \"$points\", \"$durationType\")") ;
 			
 } # end of AddNewSplash()
 
@@ -888,21 +903,28 @@ sub AddNewMeetIfNecessary($$$$$$$$$) {
 #	$meetId - the meet swum when the record was set
 #	$date - the date the record was set
 #	$duration - the record time (duration)
+#	$durationType (optional) - 1 (or missing) if the passed $duration is a time, 2 if it's really a distance
 #
 sub AddNewRecordSplash ($$$$$$$$$$$$$$) {
 	my ($fileName, $lineNum, $course, $org, $eventId, $gender, $ageGroup, $cat, 
-		$swimmerId, $place, $points, $meetId, $date, $duration) = @_;
+		$swimmerId, $place, $points, $meetId, $date, $duration, $durationType) = @_;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
+	
+	# $durationType is optional, so supply default if missing:
+	if( !defined $durationType ) {
+		$durationType = 1;
+	}
 		
 	# make sure the gender is either M or F
 	$gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $gender );
 
 	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
 		"INSERT INTO Splash " .
-			"(Course, Org, EventId, Gender, AgeGroup, Category, Date, MeetId, SwimmerId, Duration, Place, Points) " .
+			"(Course, Org, EventId, Gender, AgeGroup, Category, Date, MeetId, SwimmerId, Duration, " .
+			"Place, Points, DurationType) " .
 			"VALUES (\"$course\",\"$org\",\"$eventId\",\"$gender\",\"$ageGroup\",\"$cat\"," .
 			"\"$date\",\"$meetId\",\"$swimmerId\",\"$duration\"," .
-			"\"$place\", \"$points\")" ) ;
+			"\"$place\", \"$points\", \"$durationType\")" ) ;
 			
 } # end of AddNewRecordSplash()
 
@@ -1005,7 +1027,8 @@ sub GetSwimmersSwimDetails2($$$$) {
 	}
 
 	my $query = "SELECT Splash.EventId, Splash.MeetId, Splash.Place, Splash.Points, " .
-		"Event.EventName, Meet.MeetTitle, Splash.Date, Splash.Duration, Splash.AgeGroup " .
+		"Event.EventName, Event.Distance, Event.Units, Meet.MeetTitle, Splash.Date, Splash.Duration, " .
+		"Splash.DurationType, Splash.AgeGroup " .
 		"FROM (Splash join Event) join Meet  " .
 		"WHERE Splash.SwimmerId = $swimmerId " .
 		"AND Splash.Course = '$course'  " .
@@ -1072,11 +1095,14 @@ sub GetSwimmersSwimDetails2($$$$) {
 		}
 		if( defined $resultRef ) {
 			$resultRef->[$resultsAnalyzed]{'EventName'} = $resultHash->{'EventName'};
-			$resultRef->[$resultsAnalyzed]{'Duration'} = $resultHash->{'Duration'};
-			$resultRef->[$resultsAnalyzed]{'Place'} = $resultHash->{'Place'};
-			$resultRef->[$resultsAnalyzed]{'Points'} = $points;
+			$resultRef->[$resultsAnalyzed]{'EventDistance'} = $resultHash->{'Distance'};
+			$resultRef->[$resultsAnalyzed]{'EventUnits'} = $resultHash->{'Units'};
+			$resultRef->[$resultsAnalyzed]{'SplashDuration'} = $resultHash->{'Duration'};
+			$resultRef->[$resultsAnalyzed]{'SplashDurationType'} = $resultHash->{'DurationType'};
+			$resultRef->[$resultsAnalyzed]{'SplashPlace'} = $resultHash->{'Place'};
+			$resultRef->[$resultsAnalyzed]{'SplashPoints'} = $points;
 			$resultRef->[$resultsAnalyzed]{'MeetTitle'} = $resultHash->{'MeetTitle'};
-			$resultRef->[$resultsAnalyzed]{'Date'} = $resultHash->{'Date'};
+			$resultRef->[$resultsAnalyzed]{'SplashDate'} = $resultHash->{'Date'};
 			$resultRef->[$resultsAnalyzed]{'AgeGroup'} = $resultHash->{'AgeGroup'};
 		}
 		

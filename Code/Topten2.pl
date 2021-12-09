@@ -274,7 +274,7 @@ sub InitializeMissingResults($);
 sub PMSProcessRecords($);
 sub ComputePointsForAllSwimmers();
 sub ComputePlaceForAllSwimmers;
-sub PrintResultsHTML($$$$);
+sub PrintResultsHTML($$$$$);
 sub ComputeTopPoints($$);
 sub GetPlaceOrderedSwimmersQuery;
 sub RemoveFullVSupportDirs( $ );
@@ -810,11 +810,11 @@ if( $GENERATE_FULL_AGSOTY ) {
 	if($WRITE_HTML_FILES) {
 		# full path name of the master HTML file we're generating:
 		if( $GENERATE_SPLIT_AGE_GROUPS ) {	# after 2017 this is probably 0
-			PrintResultsHTML( "FinalPlaceSAG", $masterGeneratedSAGHTMLFileName, $generatedHTMLFileSubDir, "FullSAG" );
+			PrintResultsHTML( "FinalPlaceSAG", $masterGeneratedSAGHTMLFileName, $generatedHTMLFileSubDir, "FullSAG", $yearBeingProcessed );
 		}
 	
 		if( $GENERATE_COMBINED_AGE_GROUPS ) {
-			PrintResultsHTML( "FinalPlaceCAG", $masterGeneratedCAGHTMLFileName, $generatedHTMLFileSubDir, "FullCAG" );
+			PrintResultsHTML( "FinalPlaceCAG", $masterGeneratedCAGHTMLFileName, $generatedHTMLFileSubDir, "FullCAG", $yearBeingProcessed );
 		}
 	} # end of if($WRITE_HTML_FILES...
 	
@@ -891,7 +891,7 @@ if( $GENERATE_TEAM_AGSOTY ) {
 			my $teamFileName = $masterGeneratedAGSOTYHtmlFileName;
 			$teamFileName =~ s/index/$teamInitials-AGSOTY/;
 			PrintResultsHTML( "FinalPlaceCAG", $teamFileName, $generatedHTMLFileSubDir, 
-				$teamInitials );
+				$teamInitials, $yearBeingProcessed );
 		} # end of if($WRITE_HTML_FILES...
 	} # end of foreach my $teamInitials...
 } # end of if( $GENERATE_TEAM_AGSOTY...
@@ -2330,18 +2330,40 @@ sub PMSProcessEPostal( $$ ) {
 		my $emptyDateSeen = 0;
 		my $specsString = $USMSEpostalsFilesRef->{$simpleFileName};
 		my @specs = split( /@@@/, $specsString );
+		# @specs contains:
+		#  [0] - the organization running the ePostal. Usually "USMS"
+		#  [1] - The distance, or 0
+		#  [2] - The time, or 0
+		#  [3] - the Units of the meet, e.g. Yards or Meters
+		#  [4] - the meet title. Uniquely identifies the meet. Sometimes called $meetTitle or $eventName.
+		#  [5] - the meet link - links to a web page describing this ePostal
+		#  [6] - begin date of the ePostal
+		#  [7] - end date of the ePostal
+		#  [8] - PMS sanctioned? 1 if yes, 0 if no
 		my $org = $specs[0];
 		my $course = "ePostal";
 		my $courseRecord = "$course Records";
 		$missingResults{"$org-$course"} = 0;		# note that we've seen at least one ePostal from this $org
-		my $USMSMeetId = $specs[1];
-		my $meetTitle = $specs[2];
+		my $distance = $specs[1];
+		my $time = $specs[2];
+		my $units = $specs[3];
+		my $meetTitle = $specs[4];
 		$meetTitle = "(unknown meet name)" if( !defined( $meetTitle ) );
-		my $meetLink = $specs[3];
-		my $beginDate = $specs[4];
-		my $endDate = $specs[5];
-		my $isPMS = $specs[6];
-		
+		my $meetLink = $specs[5];
+		my $beginDate = $specs[6];
+		my $endDate = $specs[7];
+		my $isPMS = $specs[8];
+
+		# Is this an ePostal we haven't seen yet? If so add it to our database:
+		# TT_MySqlSupport::AddNewEventIfNecessary( $distance, $units, $stroke, $eventName );
+		# NOTE: the passed "$distance" will be either the $distance or the $time, whichever is non-zero.
+		my $d = $distance;
+		if( $d eq 0 ) {
+			$d = $time;
+		}
+		my $eventId = TT_MySqlSupport::AddNewEventIfNecessary( $d, $units,
+			"Free", $meetTitle );
+
 		# get to work
 		PMSLogging::DumpNote( "", "", "** Topten::PMSProcessEPostal(): Begin processing $simpleFileName ('$meetTitle') ePostal:\n" .
 			"   '$fileName'", 1 );
@@ -2392,8 +2414,8 @@ sub PMSProcessEPostal( $$ ) {
 						# 5: Team abbreviation
 						# 6: Age
 						# 7: Reg Number (e.g. '386W-0AETB')
-						# 8: Date of Birth
-						# 9: Distance (e.g. '4180')
+						# 8: Date of Birth (optional)
+						# 9: Distance (e.g. '4180') or time (e.g. 1:00:18.54)
 						#10: National Record (empty or some string)
 						#
 						# get the LMSC code from the USMS reg number:
@@ -2414,8 +2436,8 @@ sub PMSProcessEPostal( $$ ) {
 								my $age = $row[6];
 								my $team = $row[5];
 								my $gender = my $currentAgeGroup = $row[0];
-								my $dob = $row[8];   # m/d/y
-								my $distance = $row[9];
+								my $dob = $row[8];   # m/d/y or empty string - not used here!!
+								my $distanceOrTime = $row[9];
 								my $natRecord = $row[10];
 								if( $natRecord ) {
 									# note that we've seen at least one ePostal National record from this $org
@@ -2425,34 +2447,6 @@ sub PMSProcessEPostal( $$ ) {
 								$currentAgeGroup =~ s/^.(..)(..)$/$1-$2/;		# e.g. 45-49
 								# these values come from the RSIDN file:
 								my ($RSIDNFirstName, $RSIDNMiddleInitial, $RSIDNLastName, $RSIDNTeam);
-								# convert the dob to the conanical form 'yyyy-mm-dd'
-								my $convertedDateIsValid = 1;		# assume the passed $dob is OK
-								my $convertedDOB = PMSUtil::ConvertDateToISO( $dob );
-								
-								# handle empty or invalid dates
-								if( $convertedDOB eq $PMSConstants::INVALID_DOB ) {
-									$convertedDateIsValid = 0;		# oops - something wrong with the passed $dob
-									if( $dob eq "" ) {
-										# minor problem - don't show this error more than once per file:
-										if( ! $emptyDateSeen ) {
-											# this is bad data if we have an empty date - we should get this fixed!
-											PMSLogging::DumpWarning( "", "", "Topten::PMSProcessEPostal(): Line $lineNum of $simpleFileName:  " .
-												"Missing date (this message will not be repeated for this file):" .
-												"\n     $rowAsString" .
-												"\n   WE WILL USE A FAKE BUT VALID DATE AND ATTEMPT TO PROCESS THIS ROW.", 0);
-											$emptyDateSeen = 1;
-										}
-										# use a fake, but valid date:
-										$convertedDOB = "$yearBeingProcessed-01-01";	# legal date part of the season for every course
-									} else {
-										# we had a badly formatted date - ignore this entry
-										PMSLogging::DumpError( "", "", "Topten::PMSProcessEPostal(): Line $lineNum of $simpleFileName: Invalid date " .
-											"('$dob') - (line ignored):\n   $rowAsString", 1 );
-										next;
-									}
-								} else {
-									# $convertedDOB is a valid date in the correct format
-								}
 					
 								# start analysis of data.
 								# get name and team from our PMS db (if we can):
@@ -2510,15 +2504,27 @@ sub PMSProcessEPostal( $$ ) {
 								# add this meet to our DB if necessary
 								my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, $meetTitle,
 									$meetLink, $org, $course, $beginDate, $endDate, $isPMS );
+								
+								# Convert the $distanceOrTime to an integer for storage into the DB.
+								my $durationType;
+								if( $distanceOrTime =~ /[:.]/ ) {
+									# This is a time since it contains a : or . --- convert to hundredths of a second:
+									$distanceOrTime = PMSUtil::GenerateCanonicalDurationForDB_v2( $distanceOrTime, 0, "", "", 
+										"File: '$simpleFileName', line $lineNum" );
+									$durationType = 1;  # "distance" is really a time
+								} else {
+									$durationType = 2;  # "distance" is really a distance
+								}
 					
 								TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $currentAgeGroup, $gender, 
-									$place, $points, $swimmerId, -1, $org, $course, $meetId, $distance, $beginDate );
+									$place, $points, $swimmerId, $eventId, $org, $course, $meetId, $distanceOrTime, $beginDate,
+									$durationType );
 
 								if( $natRecord ) {
 									# this swimmer earned a national record doing this ePostal. Add this as a separate
 									# splash: (25 points)
-									TT_MySqlSupport::AddNewRecordSplash( $fileName, $lineNum, $courseRecord, $org, -1, $gender,
-										$currentAgeGroup, 1, $swimmerId, 0, 25, $meetId, $beginDate, $distance );
+									TT_MySqlSupport::AddNewRecordSplash( $fileName, $lineNum, $courseRecord, $org, $eventId, $gender,
+										$currentAgeGroup, 1, $swimmerId, 0, 25, $meetId, $beginDate, $distanceOrTime, $durationType );
 								}
 									
 							} # end of '...we have a row representing a PMS swimmer...'
@@ -2989,6 +2995,7 @@ sub ComputePlaceForAllSwimmers() {
 #		we generate for each gender/age group, one snippit file per gender/age group. 
 #	$generatedHTMLFileSubDirExt - an extension added to the $generatedHTMLFileSubDirBase to construct
 #		the full path of the directory.
+#	$yearBeingProcessed - the year being processed, e.g. "2021"
 #
 #	AND we use data from the database
 #
@@ -3000,9 +3007,9 @@ sub ComputePlaceForAllSwimmers() {
 #		$generatedHTMLFileDir - the master file directory
 #		$generatedHTMLFileSubDir - the "virtual" HTML files directory
 #
-sub PrintResultsHTML($$$$) {
+sub PrintResultsHTML($$$$$) {
 	my ( $finalPlaceTableName, $masterGeneratedHTMLFileName, $generatedHTMLFileSubDirBase,
-		$generatedHTMLFileSubDirExt ) = @_;
+		$generatedHTMLFileSubDirExt, $yearBeingProcessed ) = @_;
 	my $generatedHTMLFileSubDir = $generatedHTMLFileSubDirBase . "-" . $generatedHTMLFileSubDirExt;
 	my $templateStartHead = "$templateDir/AGSOTY-StartHead.html";
 	my $templateStartGenAgeGrp = "$templateDir/AGSOTY-StartGenAgeGrp.html";
@@ -3062,6 +3069,12 @@ sub PrintResultsHTML($$$$) {
 	my $virtualGeneratedHTMLFileName;
 
 	# first, the initial part of the master HTML file
+	# (Oct, 2021: See PMSConstants::season for a USMS change for 2021. Handle a detail here before
+	#  processing this template:)
+	PMSConstants::FixLCMSeasonRangeFor2021( $yearBeingProcessed );
+	# the following macro is used to make the comments at the top of the file correctly identify 
+	# the season for LCM:
+	PMSStruct::GetMacrosRef()->{"LCMEndOfSeasonDay"} = $PMSConstants::LCMEndOfSeasonDay;
 	PMSTemplate::ProcessHTMLTemplate( $templateStartHead, $masterGeneratedHTMLFileHandle );
 
 	# Since we have already computed the points and places for every swimmer we are going to 
@@ -3232,7 +3245,7 @@ sub PrintResultsHTML($$$$) {
 				
 			# get the list of meets that this swimmer swam in that earned points:
 			my $query = "SELECT DISTINCT(Splash.MeetId),Meet.MeetTitle,Meet.MeetLink," .
-				"Meet.MeetIsPMS,Meet.MeetBeginDate " .
+				"Meet.MeetIsPMS,Meet.MeetBeginDate, Splash.EventId " .
 				"FROM Splash JOIN Meet WHERE " .
 				"Splash.MeetId = Meet.MeetId AND " .
 				"Splash.MeetId != 1 AND " .
@@ -3243,6 +3256,7 @@ sub PrintResultsHTML($$$$) {
 				my $meetId = $resultHash->{'MeetId'};
 				my $meetTitle = $resultHash->{'MeetTitle'};
 				my $meetLink = $resultHash->{'MeetLink'};
+				my $eventId = $resultHash->{'EventId'};
 				if( $meetLink eq "(none)" ) {
 					# special case:  we don't have a link for this meet, so don't generate an href
 					$meetLink = "";
@@ -3349,20 +3363,32 @@ sub PrintResultsHTML($$$$) {
 					# next, the details...
 					my $uniqueSplashId = 0;
 					for( my $i = 1; $i <= $detailsNum; $i++ ) {
-						my $resultHashRef = \($detailsRef->[$i]);
 						# We've got details on one splash that earned points for this swimmer in this
 						# org and course:
 						$uniqueSplashId++;
 						PMSStruct::GetMacrosRef()->{"EventName"} = $detailsRef->[$i]{'EventName'};
+
 						if( ($course eq "ePostal") || ($course eq "ePostal Records") ) {
-							# ugh... ePostal is special case: "duration" is actually the distance swum
-							PMSStruct::GetMacrosRef()->{"Duration"} = $detailsRef->[$i]{'Duration'};
+							# ugh... ePostal is special case: "duration" is either the distance swum or the time required for the swim
+							my $durationType = $detailsRef->[$i]{'SplashDurationType'};
+							if( $durationType == 1 ) {
+								# "SplashDuration" is actually a time in hundredths of a second
+								PMSStruct::GetMacrosRef()->{"Distance"} = $detailsRef->[$i]{'EventDistance'} . 
+									" " . $detailsRef->[$i]{'EventUnits'};
+								PMSStruct::GetMacrosRef()->{"Time"} = 
+									PMSUtil::GenerateDurationStringFromHundredths( $detailsRef->[$i]{'SplashDuration'} );
+							} else {
+								# "SplashDuration" is actually a Distance
+								PMSStruct::GetMacrosRef()->{"Distance"} = $detailsRef->[$i]{'SplashDuration'} . 
+									" " . $detailsRef->[$i]{'EventUnits'};
+								PMSStruct::GetMacrosRef()->{"Time"} = $detailsRef->[$i]{'EventDistance'};
+							}
 						} else {
 							PMSStruct::GetMacrosRef()->{"Duration"} = 
-								PMSUtil::GenerateDurationStringFromHundredths( $detailsRef->[$i]{'Duration'} );
+								PMSUtil::GenerateDurationStringFromHundredths( $detailsRef->[$i]{'SplashDuration'} );
 						}
 						
-						my $eventPlace = $detailsRef->[$i]{'Place'};
+						my $eventPlace = $detailsRef->[$i]{'SplashPlace'};
 						if( $eventPlace == 1 ) {
 							$eventPlace = $eventPlace . "st";
 						} elsif( $eventPlace == 2 ) {
@@ -3374,13 +3400,13 @@ sub PrintResultsHTML($$$$) {
 						}
 						PMSStruct::GetMacrosRef()->{"Rank"} = $eventPlace;
 						PMSStruct::GetMacrosRef()->{"place_word"} = " place ";
-						PMSStruct::GetMacrosRef()->{"EventPoints"} = $detailsRef->[$i]{'Points'};
+						PMSStruct::GetMacrosRef()->{"EventPoints"} = $detailsRef->[$i]{'SplashPoints'};
 						PMSStruct::GetMacrosRef()->{"PointsWord"} = "points";
-						PMSStruct::GetMacrosRef()->{"PointsWord"} = "point" if( $detailsRef->[$i]{'Points'} == 1 );
+						PMSStruct::GetMacrosRef()->{"PointsWord"} = "point" if( $detailsRef->[$i]{'SplashPoints'} == 1 );
 						PMSStruct::GetMacrosRef()->{"UniqueSplashId"} = $uniqueSplashId;
 						PMSStruct::GetMacrosRef()->{"MeetName"} = $detailsRef->[$i]{'MeetTitle'};
 						# show the date IF we have one:
-						my $date = $detailsRef->[$i]{'Date'};
+						my $date = $detailsRef->[$i]{'SplashDate'};
 						if( (!defined $date) || ($date eq $PMSConstants::DEFAULT_MISSING_DATE) ) {
 							$date = "";
 						} else {
