@@ -28,3 +28,8 @@ properties_DB-*.txt
 # BUT... DON'T ignore code having RSIND in its name
 !*[rR][sS][iI][nN][dD]*.pl
 !*[rR][sS][iI][dD][nN]*.pl
+# ignore any file named PrivateData* just in case we have that tar file lying around...
+Private*
+# ignore any "MergedMember" file because it contains private data
+MergedMembers*
+

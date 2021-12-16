@@ -3,7 +3,9 @@ Rowdy Gaines Masters Classic 13 (Version 2.0)	(NOT a PAC sanctioned meet)	PAC	SC
 2021 Pacific Masters Swimming Kerry O'Brien Short Course Meters Championships	(IS a PAC sanctioned meet)	PAC	SCM	2021-10-15 - 2021-10-17	20211015WCM-1S	https://www.usms.org/comp/meets/meet.php?MeetID=20211015WCM-1S
 Mission Viejo Nadadores Masters SCM Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2021-10-3	20211003MVNSCMS	https://www.usms.org/comp/meets/meet.php?MeetID=20211003MVNSCMS
 Huntsman World Senior Games	(NOT a PAC sanctioned meet)	PAC	SCM	2021-10-6 - 2021-10-8	20211006HWSG21S	https://www.usms.org/comp/meets/meet.php?MeetID=20211006HWSG21S
+2021 Ron Johnson Invitational Arizona State Championship SCM Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2021-11-20 - 2021-11-21	20211120RonJonS	https://www.usms.org/comp/meets/meet.php?MeetID=20211120RonJonS
 2021 Chris Jackson Memorial SCM Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2021-12-4 - 2021-12-5	20211204CJ2021S	https://www.usms.org/comp/meets/meet.php?MeetID=20211204CJ2021S
+8th Annual Solstice SCM Swim Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2021-12-4	20211204SOLSTCS	https://www.usms.org/comp/meets/meet.php?MeetID=20211204SOLSTCS
 Terrapins Long Course Intrasquad meet	(NOT a PAC sanctioned meet)	PAC	LCM	2021-4-23 - 2021-4-25	20210425TERALCL	https://www.usms.org/comp/meets/meet.php?MeetID=20210425TERALCL
 PACIFIC SWIMMING SCY “TRI” SENIOR MEET: TERA|PLS|LAC	(NOT a PAC sanctioned meet)	PAC	SCY	2021-5-21 - 2021-5-22	20210522TERSCYY	https://www.usms.org/comp/meets/meet.php?MeetID=20210522TERSCYY
 2021 MAC Masters LCM Invite	(NOT a PAC sanctioned meet)	PAC	LCM	2021-5-23	20210523MesaL	https://www.usms.org/comp/meets/meet.php?MeetID=20210523MesaL

@@ -1336,7 +1336,7 @@ sub GetDetailsFromFullName( $$$$$$$$ ) {
 			#		based on date of result if available. 
 			for( my $i = 0; $i < scalar @regNum; $i++ ) {
 				my $registeredAgeGroup = ComputeAgeGroupFromDOB( $DOB[$i] );
-				if( (($team && ($teamInitials[$i] eq $team)) || (!$team)) &&
+				if( (($team && ($teamInitials[$i] eq $team)) || (!$team)) && # team in results == team in RSIND, OR no team in results
 					(AgeGroupsClose( $ageGroup, $registeredAgeGroup )) ) {
 					# we're going to assume that this swimmer is the swimmer we're looking for, because
 					# not only does the name match, but also the team (if one was supplied in the results)
@@ -1344,9 +1344,23 @@ sub GetDetailsFromFullName( $$$$$$$$ ) {
 					if( $returnedRegNum ne "" ) {
 						# oops!!! we've actually got 2 or more instances of the same name and team and
 						# age group!  We STILL don't know who gets the points!
-						($returnedFirstName, $returnedMiddleInitial, $returnedLastName) = ("","","");
-						($returnedRegNum, $returnedTeamInitials) = ("", "");
-						last;
+						#### UPDATED 10DEC2021: If these 2 (or more instances) have the same SwimmerId, then
+						# we can assume they are the same person. This happens near the end of the year, 
+						# when we have 2 registrations for the same person (e.g. registered 5jan2021 for 2021, 
+						# and also 25Nov2021 for 2022. We have to merge the RSIND file for 2021 with that containing
+						# registrations for 2022 since the latter has members who are now 2021 and 2022 members), 
+						# so multiple people with the same SwimmerId are the same person.
+						my $swimmerId_I = $regNum[$i];
+						$swimmerId_I =~ s/^.*-//;
+						my $swimmerIdReg = $returnedRegNum;
+						$swimmerIdReg =~ s/^.*-//;
+						if( $swimmerId_I eq $swimmerIdReg ) {
+							# So far these "two" swimmers appear to be the same ... keep going
+						} else {
+							($returnedFirstName, $returnedMiddleInitial, $returnedLastName) = ("","","");
+							($returnedRegNum, $returnedTeamInitials) = ("", "");
+							last;
+						}
 					}
 					$returnedRegNum = $regNum[$i];
 					$returnedTeamInitials = $teamInitials[$i];

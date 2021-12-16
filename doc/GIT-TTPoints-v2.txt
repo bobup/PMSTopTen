@@ -25,6 +25,45 @@ THE FORMAL DOCUMENT IS PMSTopTen.md WHICH CAN BE FOUND IN THE DIRECTORY HOLDING 
 			2019.
 
 =========================================================================================
+
+Added 9dec2021: needs to be added to md doc:
+
+If you have a new version of the PMSTopTen tree and want to check it into github, 
+and you've changed or added any "private" files, e.g.
+	- DB property files, or
+	- RSIND files, or
+	- any other "private data" files, 
+but you can't check those into github for obvious reasons then do the following:
+	# update the following to include any new private files, then
+	%  cd PMSTopTen
+	%  tar cvf PrivateTTData-`date +%d%b%Y`.tar \
+		SeasonData/Season-*/PMSSwimmerData/*RSIND* \
+		SeasonData/Season-*/properties_DB* 
+		
+then save the PrivateTTData file to someplace secure. Note that the full name of the file
+is something like "PrivateTTData-08Dec2021.tar", where the date part of the name is the date the
+file was created. We'll call that part of the file name {correct date here} below.
+
+Later, when it's time to clone the master repository on a working computer to this:
+	% git clone https://github.com/bobup/PMSTopTen
+	# the above creates the populated PMSTopTen directory tree without the private files.
+	# next, put the above PrivateTTData file into the newly created PMSTopTen directory:
+	% cp PrivateTTData-{correct date here}.tar PMSTopTen
+	# then, put the private files where they belong in the PMSTopTen tree:
+	% cd PMSTopTen
+	% tar xf PrivateTTData-{correct date here}.tar
+	% rm -f PrivateTTData-{correct date here}.tar
+	
+
+
+
+
+
+
+=========================================================================================
+=========================================================================================
+
+=========================================================================================
 NOTE:  THIS SECTION HAS BEEN REPLACED WITH THE .md FILE
 Calendar of Actions:
 	- Twice a day:  the cron job runs that will fetch new results (if any), and if there are any new results, this job will compute a new AGSOTY page and push it to the production server.
