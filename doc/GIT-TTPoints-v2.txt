@@ -82,7 +82,8 @@ Calendar of Actions:
 
 =========================================================================================
 
-	
+(following on .md file)
+
 *** Begin a new season:  (leave old season in place so we can compute points for 
 	both seasons.  See "Remove an old season" below when we no longer need to compute
 	points for the old season.)
@@ -132,7 +133,11 @@ Calendar of Actions:
 					Note that Username and password may be platform-dependent)
 				- quit
 		  - On the dev linux machine: the act of creating the db using pair.com ACC login
-	
+
+(above in .md file)
+=========================================================================================
+(following not in .md file yet)
+
 	- use GetResults.pl to make sure we get the expected results in 
 		the directories:
 			<appRootDir>/SeasonData/Season-<new season>

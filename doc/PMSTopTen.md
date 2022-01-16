@@ -356,10 +356,78 @@ Here is a list of tasks performed by or on behalf of the PMSTopTen project.  Som
 
 <a name="BeginSeason"></a>
 ### Begin a New Season
-A new season begins with the start of the SCY season, which is on June 1 of each year.  Note that just because a new season begins on June 1, the previous season is NOT over.  Seasons last 16 calendar months (see ["What is a Season"](#seasons) above.) In order to begin a new season follow these steps:
+A new season begins with the start of the SCY season, which is on June 1 of each year.  Note that just because a new season begins on June 1, the previous season is NOT over.  The AGSOTY season includes the seasons for each course and  span 16 calendar months (see ["What is a Season"](#seasons) above.) In order to begin a new season follow these steps on the "Master" development machine, and then sync all other development machines (if any) to the master repository. This task is performed anytime after June 1 of the new season.
 
-TBD
+*	On the development machine we need to create a new season-specific Web destination directory:  
 
+	If necessary, create the standings-<new season> in the web tree:  
+	
+		cd /usr/home/pacdev/public_html/pacmdev.org/sites/default/files/comp/points/
+		mkdir standings-<new season>
+	Add a link in the  the standings-<new season> directory to the Support directory:
+	
+		cd standings-<new season>
+		ln -s ../Support
+		
+	At  this point the dev web server  is ready to serve the <new season> AGSOTY points once the AGSOTY files are generated.
+
+*	On the development machine we need to create our new season-specific Source directory:  
+
+		cd <appRootDir>/SeasonData
+		Copy the latest Season-<old season> directory
+		Paste to "Season-<new season>"
+			(at this point we have at least two Season directories:  Season-<old season> and 
+			Season-<new season>.  For example, Season-2016/ and Season-2017/)
+		cd to "Season-<new season>"
+		remove SourceData-<old season>  (remember, this is still in the 
+			Season-<old season> directory)
+		create the SourceData-<new season> directory
+		cd PMSSwimmerData
+		remove all old RSIDN files and get a new one (or use an old one for now)
+			Same idea for the Club data file and the Merged Members file.  Note that those
+			files are optional but you should probably get them if you don't have them.
+		cd ..   (cwd=Season-<new season>)
+		rename the "properties-<old season>.txt" to "properties-<new season>.txt"
+		rename the "properties_DB-<old season>.txt" to "properties_DB-<new season>.txt"
+		edit "properties-<new season>.txt" and make necessary changes, e.g.:
+			- comment line with name of file
+			- Copyright year
+			- almost everything else is parameterized with the year by using "{YearBeingProcessed}"
+				so you don't have to change those.
+		edit "properties_DB-<new season>.txt" and make necessary changes, e.g.:
+			(Some installations will require a different
+			MySQL user name and/or password for each new database.  In addition, some 
+			installations will not allow a simple database name like "TopTen_2017" so the
+			below "Initialize our database" instructions will have to be modified, requiring 
+			a modification of the 'properties_DB-{new season}.txt' property file.)
+			- change the name of the new season's database (dbName - 
+				see "Initialize our Database" below.)
+			- change the Username and password of the MySQL user for this new database (if 
+				necessary)
+
+
+#### Initialize our Database
+On a MAC: this is platform-dependent, so you may have to adjust depending on your
+installation.  These instructions assume a simple MySQL platform on a MAC.)
+
+	mysql -u root -p<MySql root password>   
+	- CREATE DATABASE TopTen_<new season>;  # (DB name may be platform-dependent)
+	- GRANT ALL ON TopTen_<new season>.* TO DBTopTen IDENTIFIED BY 'TopTen';
+		(grant all privileges on db (all tables) to Username identified by password.
+		Note that Username and password may be platform-dependent)
+	- quit
+
+On the dev linux machine use pair.com:
+
+	- Using your browser go to pair.com and ACC log in.
+	- Using the left nav menu select 'Databases > Create a New Database'
+	- On the 'Add a MySQL Database' page complete the name for  the new database.
+		Usually the name is something like 'pacdev_TT2021' where 'pacdev_' is the 
+		default prefix, and 'TT2021' uses the <new season> in place of the '2021'.
+		- Set 'Access Level' to 'Local/Remote'
+		- Leave 'Optimization Period' as 'Monthly'
+	- Click "Add Database" and keep the results handy.
+	
 
 
 <a name="ArchiveSeason"></a>
