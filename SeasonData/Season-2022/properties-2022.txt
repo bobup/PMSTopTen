@@ -1,0 +1,133 @@
+## properties-2022.txt
+### This is the property file used by the Topten program.
+
+# Copyright (c) 2016-2022 Bob Upshaw.  This software is covered under the Open Source MIT License 
+
+# UNLESS OTHERWISE STATED:
+# All file names are relative to the SourceData directory, which is a subdirectory
+# of the directory containing this property file.
+
+# This file contains information about every swim meet discovered when downloading
+# the results to be processed:
+RacesDataFile	races.txt
+
+# scoring rules: number of points for 1st, 2nd, 3rd, etc...
+# 2019 and older
+#PMSTopTenScoringRules		0, 11, 9, 8, 7, 6, 5, 4, 3, 2, 1
+# 2020 and beyond
+PMSTopTenScoringRules		0, 21, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+
+USMSTopTenScoringRules		0, 22, 18, 16, 14, 12, 10, 8, 6, 4, 2
+
+# scoring rules for epostal
+ePostalScoringRules			0, 22, 18, 16, 14, 12, 10, 8, 6, 4, 2
+
+PMSResultFiles \
+						PACTOP10SCY-{YearBeingProcessed}.csv:PAC-SCY;	\
+						PACTop10SCM-{YearBeingProcessed}.csv:PAC-SCM;	\
+						PACTop10LCM-{YearBeingProcessed}.csv:PAC-LCM;
+						
+USMSResultFiles	\
+						USMSTop10SCY-{YearBeingProcessed}.csv:USMS-SCY;	\
+						USMSTop10SCM-{YearBeingProcessed}.csv:USMS-SCM;	\
+						USMSTop10LCM-{YearBeingProcessed}.csv:USMS-LCM;
+						
+PMSRecordsFiles	\
+						PACRecordsSCY-{YearBeingProcessed}.csv:PAC-SCY;	\
+						PACRecordsSCM-{YearBeingProcessed}.csv:PAC-SCM;	\
+						PACRecordsLCM-{YearBeingProcessed}.csv:PAC-LCM;
+						
+USMSRecordsFiles \
+						USMSRecords-M-SCY-{YearBeingProcessed}.csv:USMS-SCY@M;	\
+						USMSRecords-M-SCM-{YearBeingProcessed}.csv:USMS-SCM@M;	\
+						USMSRecords-M-LCM-{YearBeingProcessed}.csv:USMS-LCM@M;	\
+						USMSRecords-W-SCY-{YearBeingProcessed}.csv:USMS-SCY@W;	\
+						USMSRecords-W-SCM-{YearBeingProcessed}.csv:USMS-SCM@W;	\
+						USMSRecords-W-LCM-{YearBeingProcessed}.csv:USMS-LCM@W;
+
+PMSOpenWaterResultFile \
+						{YearBeingProcessed}PacMastersOWPlacesForEachSwimmer.csv
+
+
+
+
+
+# ePostals (added 2021 as a test)
+#	result file name relative to SourceData directory;			<-- NOTE semi-colon; colon won't work here.
+#		ORG - usually USMS  @@@ 								<-- NOTE @@@ used as terminator for every value 
+#		distance - a indication of the distance of the ePostal or 0 if the ePostal
+#			is not a specific distance. For example, "3000" is the distance in the 
+#			specified Units (below), "0" means there is no specific distance, in, for
+#			example, the 1 hour swim. In ALL cases this value is an integer.
+#		time - the time allotted to the ePostal, or 0 if there is no specific time allotted.
+#			For example, "1:00:00.00" or "1 hour" is the time allotted to the 1 hour swim, but "0" would
+#			be specified for the 5k ePostal since the time is whatever each competitor requires.
+#			In ALL cases, if non-zero this value must contain at least one non digit (e.g. ":" or "h").
+#		Units - the distance units for this ePostal. Yards or Meters is common.
+#		
+#	!!! NOTE: the combination of ("distance" or "time", whichever is non-zero), and "Units" 
+#		must be unique across ePostals for a single gender.
+#	!!! The combination is used to define a unique "Event"
+#
+#		Meet title  - Used as EventName for an Event in the database
+#		Meet Link - (link to description-should be link to usms.org)@@@ 
+#		Meet Begin Date - (yyyy-mm-dd)@@@
+#		Meet End Date - (yyyy-mm-dd)@@@ 
+#		Meet is sanctioned by PMS - (yes=1, no=0)
+USMSEpostals \
+						epostal-1hr-2021.csv; \
+							USMS@@@ \
+							0@@@ \
+							1 hour@@@ \
+							Yards@@@ \
+							2021 U.S. Masters Swimming 1-Hour ePostal National Championship@@@ \
+							https://www.usms.org/events/national-championships/epostal-national-championships/2021-epostal-national-championships@@@ \
+							2021-01-01@@@ \
+							2021-03-31@@@ \
+							0; \
+						epostal-5k-2021-men.csv; \
+							USMS@@@ \
+							5K@@@ \
+							0@@@ \
+							Meters@@@ \
+							2021 U.S. Masters Swimming 5K/10K ePostal National Championships@@@ \
+							https://www.usms.org/events/national-championships/epostal-national-championships/2021-epostal-national-championships@@@ \
+							2021-05-15@@@ \
+							2021-09-15@@@ \
+							0; \
+						epostal-5k-2021-women.csv; \
+							USMS@@@ \
+							5K@@@ \
+							0@@@ \
+							Meters@@@ \
+							2021 U.S. Masters Swimming 5K/10K ePostal National Championships@@@ \
+							https://www.usms.org/events/national-championships/epostal-national-championships/2021-epostal-national-championships@@@ \
+							2021-05-15@@@ \
+							2021-09-15@@@ \
+							0; \
+						epostal-10k-2021-men.csv; \
+							USMS@@@ \
+							10K@@@ \
+							0@@@ \
+							Meters@@@ \
+							2021 U.S. Masters Swimming 5K/10K ePostal National Championships@@@ \
+							https://www.usms.org/events/national-championships/epostal-national-championships/2021-epostal-national-championships@@@ \
+							2021-05-15@@@ \
+							2021-09-15@@@ \
+							0; \
+						epostal-10k-2021-women.csv; \
+							USMS@@@ \
+							10K@@@ \
+							0@@@ \
+							Meters@@@ \
+							2021 U.S. Masters Swimming 5K/10K ePostal National Championships@@@ \
+							https://www.usms.org/events/national-championships/epostal-national-championships/2021-epostal-national-championships@@@ \
+							2021-05-15@@@ \
+							2021-09-15@@@ \
+							0;
+
+
+#						epostal-1hr-2021.csv; \
+
+
+>endoffile

@@ -1058,32 +1058,34 @@ sub PMSProcessResults($$) {
 					$date = $row[10];
 					$meetTitle = $row[11];
 					$meetTitle = "(unknown meet name)" if( !defined( $meetTitle ) );
-					# convert the date to the conanical form 'yyyy-mm-dd'
+					# we allow  $date  to be empty
+					$date =~ s/\s//g;		# remove  all whitespace
+					my $convertedDate = "";
 					my $convertedDateIsValid = 1;		# assume the passed $date is OK
-					my $convertedDate = PMSUtil::ConvertDateToISO( $date );
-					# handle empty or invalid dates
-					if( $convertedDate eq $PMSConstants::INVALID_DOB ) {
-						$convertedDateIsValid = 0;		# oops - something wrong with the passed $date
-						if( $date eq "" ) {
-							# minor problem - don't show this error more than once per file:
-							if( ! $emptyDateSeen ) {
-								# this is bad data if we have an empty date - we should get this fixed!
-								PMSLogging::DumpWarning( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName:  " .
-									"Missing date (this message will not be repeated for this file):" .
-									"\n     $rowAsString" .
-									"\n   WE WILL USE A FAKE BUT VALID DATE AND ATTEMPT TO PROCESS THIS ROW.", 0);
-								$emptyDateSeen = 1;
-							}
-							# use a fake, but valid date:
-							$convertedDate = "$yearBeingProcessed-01-01";	# legal date part of the season for every course
-						} else {
+					if( $date eq "" ) {
+						if( ! $emptyDateSeen ) {
+							PMSLogging::DumpWarning( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName:  " .
+								"Missing date (this message will not be repeated for this file):" .
+								"\n     $rowAsString" .
+								"\n   WE WILL USE A FAKE BUT VALID DATE AND ATTEMPT TO PROCESS THIS ROW.", 0);
+							$emptyDateSeen = 1;
+						}
+						# use a fake, but valid date:
+						$convertedDate = "$yearBeingProcessed-01-01";	# legal date part of the season for every course
+						$convertedDateIsValid = 0;		# assume the passed $date is OK
+					}  else {
+						# convert the date to the conanical form 'yyyy-mm-dd'
+						$convertedDate = PMSUtil::ConvertDateToISO( $date );
+						# handle empty or invalid dates
+						if( $convertedDate eq $PMSConstants::INVALID_DOB ) {
+							$convertedDateIsValid = 0;		# oops - something wrong with the passed $date
 							# we had a badly formatted date - ignore this entry
 							PMSLogging::DumpError( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: Invalid date " .
 								"('$date') - (line ignored):\n   $rowAsString", 1 );
 							next;
+						} else {
+							# $convertedDate is a valid date in the correct format
 						}
-					} else {
-						# $convertedDate is a valid date in the correct format
 					}
 					
 					# start analysis of data.  First, make sure this result falls within the season of

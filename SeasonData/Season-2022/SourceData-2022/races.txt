@@ -1,0 +1,10 @@
+Nevada Senior Games	(NOT a PAC sanctioned meet)	PAC	SCY	2021-10-2 - 2021-10-3	20211002NSGY	https://www.usms.org/comp/meets/meet.php?MeetID=20211002NSGY
+2021 Nash Splash	(NOT a PAC sanctioned meet)	PAC	SCY	2021-11-13	20211113NASHY	https://www.usms.org/comp/meets/meet.php?MeetID=20211113NASHY
+SLO Gobbler Classic	(NOT a PAC sanctioned meet)	PAC	SCY	2021-11-19 - 2021-11-21	20211119SLOY	https://www.usms.org/comp/meets/meet.php?MeetID=20211119SLOY
+ENCORE GAMES - A SECOND CHANCE TO QUALIFY FOR THE 2022 SUMMER NATIONAL SENIOR GAMES	(NOT a PAC sanctioned meet)	PAC	SCY	2021-11-21	20211121BASG-1Y	https://www.usms.org/comp/meets/meet.php?MeetID=20211121BASG-1Y
+PACIFIC SWIMMING SHORT COURSE SENIOR II PRELIMINARIES & FINALS MEET	(NOT a PAC sanctioned meet)	PAC	SCY	2021-11-5 - 2021-11-7	202111071121TEY	https://www.usms.org/comp/meets/meet.php?MeetID=202111071121TEY
+2021 Toyota US Open	(NOT a PAC sanctioned meet)	PAC	LCM	2021-12-1 - 2021-12-4	2021120421opLCL	https://www.usms.org/comp/meets/meet.php?MeetID=2021120421opLCL
+The King Marlin Swim Club Pro-Am Classic	(NOT a PAC sanctioned meet)	PAC	SCY	2021-12-16 - 2021-12-19	20211219KMPAY	https://www.usms.org/comp/meets/meet.php?MeetID=20211219KMPAY
+2021 U.S. Masters Swimming Short Course Yards National Championship	(NOT a PAC sanctioned meet)	PAC	SCY	2021-7-21 - 2021-7-25	20210721S002NCY	https://www.usms.org/comp/meets/meet.php?MeetID=20210721S002NCY
+2021 End-of-Summer Splash SCY	(IS a PAC sanctioned meet)	PAC	SCY	2021-8-22	20210822DAM-1Y	https://www.usms.org/comp/meets/meet.php?MeetID=20210822DAM-1Y
+Oregon Senior Games	(NOT a PAC sanctioned meet)	PAC	SCY	2021-8-22	20210822SRGAMEY	https://www.usms.org/comp/meets/meet.php?MeetID=20210822SRGAMEY
