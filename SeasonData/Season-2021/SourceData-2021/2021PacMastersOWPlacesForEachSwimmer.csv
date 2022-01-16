@@ -1,5 +1,5 @@
 "2021PacMasters:  Points for every swimmer who earned OW points."
-Generated on Tue Dec 14 2021 EST 03:13:18 PM
+Generated on Tue Dec 21 2021 EST 04:14:34 PM
 "(We only consider Category 1 swims.)"
 
 Gender,Age Group,Place,Points,Last Name,First Name,Middle,Regnum,Meet Name,Event Name,Event Date,Duration
@@ -92,7 +92,7 @@ W,40-44,7,8,Bushman,Sari,A,3815-03EYD,Donner Lake Swim,Donner Lake Swim 2.7 Mile
 W,40-44,8,6,Wunderlich,Kelli,,3818-0BA2H,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2021-08-14,1:29:59.00
 W,40-44,9,4,Lemen,Olivia,A,381P-03F1C,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2021-08-14,1:32:59.00
 W,40-44,10,2,Heape,Kelly,A,381R-0UX1N,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2021-08-14,1:35:03.00
-W,45-49,1,22,Allen,Julie,,381F-0AXBZ,Keller Cove,Keller Cove 1 Mile,2021-09-18,38:42.00
+W,45-49,2,18,Allen,Julie,,381F-0AXBZ,Keller Cove,Keller Cove 1 Mile,2021-09-18,38:42.00
 W,45-49,3,16,Allen,Julie,,381F-0AXBZ,Lake Del Valle,Lake Del Valle 5K,2021-09-11,2:00:17.00
 W,45-49,2,18,Rothschild,Beccah,D,381Z-03ZWE,Keller Cove,Keller Cove 2 Mile,2021-09-18,1:00:19.00
 W,45-49,5,12,Rothschild,Beccah,D,381Z-03ZWE,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2021-08-14,1:18:08.00
@@ -103,6 +103,7 @@ W,45-49,6,10,Croteau,Dominique,,381K-09XTG,Lake Del Valle,Lake Del Valle 2.5K,20
 W,45-49,1,22,George,Heidi,S,381U-03KD2,Lake Del Valle,Lake Del Valle 2.5K,2021-09-11,31:46.00
 W,45-49,1,22,Fischer,Amy,E,381N-03WDD,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2021-08-14,1:11:07.00
 W,45-49,1,22,Wendell,Jennifer,B,381B-09AJ2,Lake Del Valle,Lake Del Valle 5K,2021-09-11,1:42:04.00
+W,45-49,1,22,Folks,Victoria,G,382G-KF1WE,Keller Cove,Keller Cove 1 Mile,2021-09-18,35:32.00
 W,45-49,1,22,Lindstrom,Chris,,381E-0057R,Keller Cove,Keller Cove 2 Mile,2021-09-18,59:58.00
 W,45-49,5,12,Darling,Colleen,M,3815-03WVE,Lake Del Valle,Lake Del Valle 2.5K,2021-09-11,46:45.00
 W,45-49,7,8,Darling,Colleen,M,3815-03WVE,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2021-08-14,1:27:52.00
@@ -156,20 +157,21 @@ W,50-54,9,4,Mattish,Suzi,,381J-09WF9,Donner Lake Swim,Donner Lake Swim 2.7 Mile,
 W,50-54,10,2,Geffner,Mira,,381R-09E9C,Lake Del Valle,Lake Del Valle 2.5K,2021-09-11,1:14:44.00
 W,55-59,1,22,Elsbach,Kimberly,D,381Y-D0NUT,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2021-08-14,1:07:33.00
 W,55-59,1,22,Elsbach,Kimberly,D,381Y-D0NUT,Lake Del Valle,Lake Del Valle 2.5K,2021-09-11,36:43.00
-W,55-59,1,22,Matsuda,Yuko Stephanie,,381S-092XA,Keller Cove,Keller Cove 1 Mile,2021-09-18,39:36.00
-W,55-59,2,18,Matsuda,Yuko Stephanie,,381S-092XA,Lake Del Valle,Lake Del Valle 5K,2021-09-11,1:59:54.00
-W,55-59,1,22,Absher,Leslie,M,381V-09PZP,Keller Cove,Keller Cove 1/2 Mile,2021-09-18,22:25.00
-W,55-59,3,16,Absher,Leslie,M,381V-09PZP,Keller Cove,Keller Cove 1 Mile,2021-09-18,45:10.00
 W,55-59,2,18,Friedlander,Rebecca,L,381J-02D8U,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2021-08-14,1:07:58.00
 W,55-59,2,18,Friedlander,Rebecca,L,381J-02D8U,Lake Del Valle,Lake Del Valle 2.5K,2021-09-11,39:38.00
+W,55-59,2,18,Matsuda,Yuko Stephanie,,381S-092XA,Lake Del Valle,Lake Del Valle 5K,2021-09-11,1:59:54.00
+W,55-59,2,18,Matsuda,Yuko Stephanie,,381S-092XA,Keller Cove,Keller Cove 1 Mile,2021-09-18,39:36.00
+W,55-59,1,22,Absher,Leslie,M,381V-09PZP,Keller Cove,Keller Cove 1/2 Mile,2021-09-18,22:25.00
+W,55-59,4,14,Absher,Leslie,M,381V-09PZP,Keller Cove,Keller Cove 1 Mile,2021-09-18,45:10.00
 W,55-59,1,22,Perry,Rebecca,R,381X-03U8J,Keller Cove,Keller Cove 2 Mile,2021-09-18,58:56.00
 W,55-59,6,10,Perry,Rebecca,R,381X-03U8J,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2021-08-14,1:18:53.00
 W,55-59,3,16,Russell,Jane,E,3815-074TS,Lake Del Valle,Lake Del Valle 2.5K,2021-09-11,41:05.00
 W,55-59,4,14,Russell,Jane,E,3815-074TS,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2021-08-14,1:14:20.00
 W,55-59,1,22,Couch,Stephanie,D,381Z-03UKW,Lake Del Valle,Lake Del Valle 5K,2021-09-11,1:21:41.00
-W,55-59,2,18,Halpern,Kira,A,3817-0A2CG,Keller Cove,Keller Cove 1 Mile,2021-09-18,43:55.00
+W,55-59,1,22,Hensler Heath,Tia,,381P-1H9UA,Keller Cove,Keller Cove 1 Mile,2021-09-18,37:34.00
 W,55-59,2,18,Miller,Scotia,A,381X-03FEK,Keller Cove,Keller Cove 2 Mile,2021-09-18,1:00:56.00
 W,55-59,3,16,Riley,Jayne,E,3819-07ZZP,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2021-08-14,1:10:59.00
+W,55-59,3,16,Halpern,Kira,A,3817-0A2CG,Keller Cove,Keller Cove 1 Mile,2021-09-18,43:55.00
 W,55-59,3,16,Kossa,Christina,I,381X-0ABJ2,Keller Cove,Keller Cove 2 Mile,2021-09-18,1:10:57.00
 W,55-59,4,14,Welting,Laureen,K,381V-03J3S,Lake Del Valle,Lake Del Valle 2.5K,2021-09-11,42:10.00
 W,55-59,4,14,Radcliff,Sharon,,381S-0AJED,Keller Cove,Keller Cove 2 Mile,2021-09-18,1:20:05.00
@@ -447,6 +449,8 @@ M,70-74,2,18,Jochim,Christian,,3811-03HWN,Lake Del Valle,Lake Del Valle 2.5K,202
 M,70-74,3,16,Benjamin,David,L,3812-03FHD,Lake Del Valle,Lake Del Valle 2.5K,2021-09-11,53:41.00
 M,70-74,3,16,Jacobus,Greg,C,3815-09JSA,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2021-08-14,1:37:54.00
 M,70-74,4,14,Hantzsche,Norman,N,3816-03VZ3,Lake Del Valle,Lake Del Valle 2.5K,2021-09-11,1:05:59.00
+M,75-79,1,22,McCarty,Thomas,E,3812-03PSC,Keller Cove,Keller Cove 1 Mile,2021-09-18,42:17.00
+M,75-79,1,22,McCarty,Thomas,E,3812-03PSC,Keller Cove,Keller Cove 1/2 Mile,2021-09-18,23:33.00
 M,75-79,1,22,Merchant,Jim,,3819-03H0J,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2021-08-14,1:22:08.00
 M,75-79,2,18,Merchant,Jim,,3819-03H0J,Lake Del Valle,Lake Del Valle 2.5K,2021-09-11,47:10.00
 M,75-79,1,22,Burns,Richard,,381K-BURNS,Lake Del Valle,Lake Del Valle 2.5K,2021-09-11,45:36.00
