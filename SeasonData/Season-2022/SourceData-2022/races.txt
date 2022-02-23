@@ -4,7 +4,12 @@ SLO Gobbler Classic	(NOT a PAC sanctioned meet)	PAC	SCY	2021-11-19 - 2021-11-21	
 ENCORE GAMES - A SECOND CHANCE TO QUALIFY FOR THE 2022 SUMMER NATIONAL SENIOR GAMES	(NOT a PAC sanctioned meet)	PAC	SCY	2021-11-21	20211121BASG-1Y	https://www.usms.org/comp/meets/meet.php?MeetID=20211121BASG-1Y
 PACIFIC SWIMMING SHORT COURSE SENIOR II PRELIMINARIES & FINALS MEET	(NOT a PAC sanctioned meet)	PAC	SCY	2021-11-5 - 2021-11-7	202111071121TEY	https://www.usms.org/comp/meets/meet.php?MeetID=202111071121TEY
 2021 Toyota US Open	(NOT a PAC sanctioned meet)	PAC	LCM	2021-12-1 - 2021-12-4	2021120421opLCL	https://www.usms.org/comp/meets/meet.php?MeetID=2021120421opLCL
+2021 CA Speedo CA NV December Sectionals	(NOT a PAC sanctioned meet)	PAC	SCY	2021-12-16 - 2021-12-19	20211219CASECTY	https://www.usms.org/comp/meets/meet.php?MeetID=20211219CASECTY
 The King Marlin Swim Club Pro-Am Classic	(NOT a PAC sanctioned meet)	PAC	SCY	2021-12-16 - 2021-12-19	20211219KMPAY	https://www.usms.org/comp/meets/meet.php?MeetID=20211219KMPAY
 2021 U.S. Masters Swimming Short Course Yards National Championship	(NOT a PAC sanctioned meet)	PAC	SCY	2021-7-21 - 2021-7-25	20210721S002NCY	https://www.usms.org/comp/meets/meet.php?MeetID=20210721S002NCY
 2021 End-of-Summer Splash SCY	(IS a PAC sanctioned meet)	PAC	SCY	2021-8-22	20210822DAM-1Y	https://www.usms.org/comp/meets/meet.php?MeetID=20210822DAM-1Y
 Oregon Senior Games	(NOT a PAC sanctioned meet)	PAC	SCY	2021-8-22	20210822SRGAMEY	https://www.usms.org/comp/meets/meet.php?MeetID=20210822SRGAMEY
+The Olympic Club 1500 Meter Swim Meet	(IS a PAC sanctioned meet)	PAC	SCM	2022-1-29	20220129OC1500S	https://www.usms.org/comp/meets/meet.php?MeetID=20220129OC1500S
+Golden Road Aquatics Pentahlon SCY Meet	(NOT a PAC sanctioned meet)	PAC	SCY	2022-1-30	20220130GRAPenY	https://www.usms.org/comp/meets/meet.php?MeetID=20220130GRAPenY
+29th Annual Masters SCY Valentine's Meet	(NOT a PAC sanctioned meet)	PAC	SCY	2022-2-13	20220213VALENTY	https://www.usms.org/comp/meets/meet.php?MeetID=20220213VALENTY
+Quicksilver Masters Mid-Distance Meet	(IS a PAC sanctioned meet)	PAC	SCY	2022-2-5	20220205QUICKY	https://www.usms.org/comp/meets/meet.php?MeetID=20220205QUICKY

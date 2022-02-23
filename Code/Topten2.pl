@@ -3077,6 +3077,7 @@ sub PrintResultsHTML($$$$$) {
 	# the following macro is used to make the comments at the top of the file correctly identify 
 	# the season for LCM:
 	PMSStruct::GetMacrosRef()->{"LCMEndOfSeasonDay"} = $PMSConstants::LCMEndOfSeasonDay;
+	PMSStruct::GetMacrosRef()->{"LCMStartOfSeasonDay"} = $PMSConstants::LCMStartOfSeasonDay;
 	PMSTemplate::ProcessHTMLTemplate( $templateStartHead, $masterGeneratedHTMLFileHandle );
 
 	# Since we have already computed the points and places for every swimmer we are going to 
