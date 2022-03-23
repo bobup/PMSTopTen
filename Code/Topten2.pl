@@ -144,6 +144,9 @@ require TT_USMSDirectory;
 my $RESULT_FILES_TO_READ = $TT_Struct::G_RESULT_FILES_TO_READ;
 $RESULT_FILES_TO_READ = $TT_Struct::G_RESULT_FILES_TO_READ;				# avoid warning message
 
+my $generateOW 				= ($RESULT_FILES_TO_READ & 0b10000);
+my $generateEPostal			= ($RESULT_FILES_TO_READ & 0b1000000);	# set to non-zero if we are supposed to generate ePostal points, 0 if not.
+
 
 # Do we compute the points for each swimmer using the data in the database, or do we just use
 # what already exists?  If $RESULT_FILES_TO_READ is non-zero then we have to
@@ -467,11 +470,17 @@ if( defined PMSStruct::GetMacrosRef()->{"USMSTopTenScoringRules"} ) {
 }
 
 # get the scoring rules for ePostals:
-my @ePostalScoringRules = split( /,\s*/, PMSStruct::GetMacrosRef()->{"ePostalScoringRules"} );
-
+my @ePostalScoringRules;
 # the slowest place for an ePostal that earns POINTS
-my $slowestEPostalPlace = $#ePostalScoringRules;
+my $slowestEPostalPlace;
 
+if( $generateEPostal ) {
+	# get the scoring rules for ePostals:
+	@ePostalScoringRules = split( /,\s*/, PMSStruct::GetMacrosRef()->{"ePostalScoringRules"} );
+
+	# the slowest place for an ePostal that earns POINTS
+	$slowestEPostalPlace = $#ePostalScoringRules;
+}
 
 
 # log, and print to stdout, some details about this run:
@@ -568,7 +577,7 @@ if( $RESULT_FILES_TO_READ != 0 ) {
 	# get the full path name to the merged members data file (contains a list of all PMS members who have
 	# two or more swimmer ids.)
 	$fileNamePattern = PMSStruct::GetMacrosRef()->{"MergedMemberFileNamePattern"};
-	my $mergedMemberDataFile = PMSUtil::GetFullFileNameFromPattern( $fileNamePattern, $PMSSwimmerData, "Merged Member" );
+	my $mergedMemberDataFile = PMSUtil::GetFullFileNameFromPattern( $fileNamePattern, $PMSSwimmerData, "Merged Member", 1 );
 	if( defined $mergedMemberDataFile ) {
 		# we have a merged member file - is it newer than the last one?  should we use it?  We'll decide here:
 		PMS_ImportPMSData::GetMergedMembers( $mergedMemberDataFile, $yearBeingProcessed );
@@ -615,7 +624,10 @@ my %PMSRecordsFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"PMSRecordsFiles
 my %USMSRecordsFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"USMSRecordsFiles"};
 my $PMSOpenWaterResultFile = PMSStruct::GetMacrosRef()->{"PMSOpenWaterResultFile"};
 my $FakeSplashDataFile = PMSStruct::GetMacrosRef()->{"FakeSplashDataFile"};
-my %USMSEpostalsFiles = split /[;]/, PMSStruct::GetMacrosRef()->{"USMSEpostals"};
+my %USMSEpostalsFiles;
+if( $generateEPostal ) {
+	%USMSEpostalsFiles = split /[;]/, PMSStruct::GetMacrosRef()->{"USMSEpostals"};
+}
 
 ######
 
@@ -711,7 +723,6 @@ if( $GENERATE_FULL_AGSOTY ) {
 my $virtualGeneratedHTMLFileHandle;		# defined when needed
 
 
-
 #####################################################
 ################ PROCESSING #########################
 #####################################################
@@ -744,7 +755,7 @@ if( ($RESULT_FILES_TO_READ & 0b1000) != 0 ) {
 	USMSProcessRecords( \%USMSRecordsFiles );
 }
 	
-if( ($RESULT_FILES_TO_READ & 0b10000) != 0 ) {
+if( $generateOW ) {
 	###
 	### Process PMS Open Water points
 	###
@@ -924,6 +935,22 @@ PMSLogging::PrintLog( "", "", "\nDone with $appProgName at $completionTimeDate.\
 exit(0);
 
 
+
+####!!!! Note: the following was copied from GetResults.pl. We need to put this in one place!
+#				$meetTitle = CleanMeetTitle( $meetTitle );
+# CleanMeetTitle - badly named!  clean the passed string, removing HTML escaped strings with their equivalence.
+#
+sub CleanMeetTitle( $ ) {
+	my $meetTitle = $_[0];
+	$meetTitle =~ s/&amp;/&/g;
+	$meetTitle =~ s/“/"/g;
+	$meetTitle =~ s/”/"/g;
+	return $meetTitle;
+} # end of CleanMeetTitle()
+
+
+
+
 ###################################################################################
 #### PMS ##########################################################################
 ###################################################################################
@@ -958,7 +985,7 @@ sub PMSProcessResults($$) {
 	my ($resultFilesRef, $placeToPointsRef) = @_;
 	my $simpleFileName;
 	my $debug = 0;
-	my $debugMeetTitle = "xxxxx";
+	my $debugMeetTitle = "xxxxxxxxx";
 
 	foreach $simpleFileName ( sort keys %{$resultFilesRef} ) {
 		# open the top N file
@@ -1143,15 +1170,7 @@ sub PMSProcessResults($$) {
 						} elsif( $TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName:OrgCourse"} !~ m/$org:$course/ ) {
 							$TT_Struct::hashOfInvalidRegNums{"$regNum:$fullName:OrgCourse"} .= ",$org:course";
 						}
-		next;	# don't give points to this swimmer
-						# use the first, middle, last name from the results.
-						# break the $fullName into first, middle, and last names
-						my @arrOfBrokenNames = TT_MySqlSupport::BreakFullNameIntoBrokenNames( $fileName, $lineNum, $fullName );
-						# we're going to take the first name combination it found.
-						my $hashRef = $arrOfBrokenNames[0];
-						$firstName = $hashRef->{'first'};
-						$middleInitial = $hashRef->{'middle'};
-						$lastName = $hashRef->{'last'};
+						next;	# don't give points to this swimmer
 						}
 					$gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $currentGender );	# single letter
 					$age = $row[7];
@@ -1178,9 +1197,18 @@ sub PMSProcessResults($$) {
 					
 					# add this meet to our DB if necessary
 					
-					if( lc($debugMeetTitle) eq lc($meetTitle) ) {
+					###$$$$ debuging
+					my $substrMeetTitle = substr( lc($meetTitle), 0, length( $debugMeetTitle ) );
+					if( lc($substrMeetTitle) eq lc($debugMeetTitle) ) {
 						print "PMSProcessResults(): MeetTitle='$meetTitle', filename='$fileName', linenum='$lineNum'\n";
 					}
+					####$$$$ end of debugging
+					
+					# at this point the meetTitle might have some funky characters in it (reason: in this case the data we are processing
+					# came from a Excel export from the USMS site, exported as a CSV, but the Unicode characters, for example smart quotes,
+					# don't come across correctly. We're going to try to convert such characters into simple equivalents.)
+					$meetTitle = CleanMeetTitle( $meetTitle );
+					
 					my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, $meetTitle,
 						"(none)", $org, $course, $date, $date, 1 );
 					
@@ -1929,29 +1957,48 @@ sub PMSProcessRecords($) {
 # PMSProcessOpenWater - 
 #
 # Example "result line":
-# Gender,Age Group,Place,Points,Last Name,First Name,Middle,Regnum,Event Name,Event Date,Duration
+# Gender,Age Group,Place,Points,Last Name,First Name,Middle,Regnum,Event Name,Event Date,Duration,Category
 # W	18-24	1	22	Arnold	Allison	A	386G-09827	1.000 Mile Open Water	Spring Lake 1 Mile	5/21/16#
 # PASSED:
 #	$PMSOpenWaterResultFile - the simple file name of the file holding open water points 
 #
-# NOTES:  Every place is considered a unique swim (thus unique swim meet) for the standings, 
-#	so the PMSOpenWaterResultFile will list "all" of the open water events swum by PMS swimmers
-#	(limited to the number of events which count for open water points, which can change every year.)
+# NOTES: 
+#	A "result line" is a row of comma-separated data representing one swim by one swimmer. Preceding the first
+#		result line in the file are "header lines", the last of which is the first row of comma-separated column
+#		descriptions ("Gender, Age Group, ..."). These header lines contain some useful data described below.
+#
+#	Beginning in 2022 (March 12, 2022 to be exact) the structure of this file changed from its original
+#	structure.  The changes include:
+#		- in the header lines of the file contains a line beginning with "VERSION: " followed by a number.
+#			In 2022 we introduced VERSION 2 so we can distinguish this new structure from the previous one.
+#			ALL header lines preceding the VERSION line will be ignored.
+#		- In VERSION 2 we will include a Category column (1 or 2).
+#		- In VERSION 2 we will include ALL swims, even those for swimmers who earn 0 points during the season,
+#			and even those beyond the "numSwimsToConsider" swims.
+#		- In VERSION 2, following the VERSION line, will be a header line that begins with
+#			"numSwimsToConsider=" followed by a number. We will only consider no more than this many swims 
+#			for each swimmer.
+#
+#	Only Category 1 swims are processed for AGSOTY. However, we'll store all swims (cat1 and cat2) in the
+#	database to be used by other consumers of our database, or just in case we start using cat2 in AGSOTY.
+#
+#	Every place is considered a unique swim (thus unique swim meet) for the standings, 
+#	so the PMSOpenWaterResultFile will list "all" of the open water events swum by PMS swimmers.
 #	This means two things:
 #		- a row in this file may contain '0' for the points earned by an open water swim.  This
 #			represents a swim which finished 11th or slower in their gender/age group.
-#		- a swimmer will have no more than "numSwimsToConsider" rows, where "numSwimsToConsider"
+#		- a swimmer may have more than "numSwimsToConsider" rows, where "numSwimsToConsider"
 #			is the number of swims we consider for open water points.  If a swimmer earned points
-#			in more than "numSwimsToConsider" events the PMSOpenWaterResultsFile will only 
-#			report the top "numSwimsToConsider" point-earning swims.
+#			in more than "numSwimsToConsider" events we will only 
+#			process the top "numSwimsToConsider" point-earning swims.
 #
 sub PMSProcessOpenWater($) {
 	my $simpleFileName = $_[0];
-	my $debugRegNum = "xxxxx";
+	my $debugRegNum = "xxxx-xxxxx";
 	my $debug = 0;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	PMSLogging::PrintLog( "", "", "" );
-	
+
 	my $course = "OW";
 	my $org = "PAC";
 	$missingResults{"$org-$course"} = 0;
@@ -1966,6 +2013,7 @@ sub PMSProcessOpenWater($) {
 		# get to work
 		PMSLogging::DumpNote( "", "", "** Topten::PMSProcessOpenWater(): Begin processing $org $course:\n   '$fileName'", 1 );
 		my %sheetHandle = TT_SheetSupport::OpenSheetFile($fileName);
+
 		if( $sheetHandle{"fileRef"} == 0 ) {
 			# couldn't open the file even though it exists - empty?
 			PMSLogging::DumpWarning( "", "", "!! Topten::PMSProcessOpenWater(): UNABLE TO PROCESS $org-$course (file " .
@@ -1974,33 +2022,58 @@ sub PMSProcessOpenWater($) {
 			# it looks like we have a non-empty file to read!
 			my $lineNum = 0;
 			my $numResultLines = 0;
+			# define the state machine:
+			my $state = "LookingForVersion";
+			my $version = 1;
+			my $numSwimsToConsider = PMSStruct::GetMacrosRef()->{"numSwimsToConsider"};  # default
+
 			while( 1 ) {
 				my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
 				my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
 				my $length = scalar(@row);
 				if( $length > 0 ) {
 					$lineNum++;
+					if( ($debug>1) && defined($row[0]) ) {
+						PMSLogging::PrintLog( "", "", "  Topten::PMSProcessOpenWater(): state='$state', Line $lineNum: " .
+							"$simpleFileName: ");
+						for( my $i=0; $i < scalar(@row); $i++ ) {
+							PMSLogging::PrintLogNoNL( "", "", "    col $i: '$row[$i]', ");
+						}
+						PMSLogging::PrintLog( "", "", "" );
+					}
 					# we've got a new row of of something (may be all spaces or a heading or something else) BUT
 					# we know it's not an end-of-file
-					if( (defined($row[0])) && (defined($row[1])) && (defined($row[2])) ) {
-						# we've got a new row of of something (may be heading or data - anything else won't define
-						# row[2])
-						if( $debug ) {
-							PMSLogging::PrintLog( "", "", "  Topten::PMSProcessOpenWater(): Line $lineNum: " .
-								"$simpleFileName: ");
-							for( my $i=0; $i < scalar(@row); $i++ ) {
-								PMSLogging::PrintLogNoNL( "", "", "    col $i: '$row[$i]', ");
-							}
-							PMSLogging::PrintLog( "", "", "" );
-						}
-						# look for a header line:
-						if( $row[0] eq "Gender" ) {
-							# header line - skip it
+					if( $state eq "LookingForVersion" ) {
+						if( defined($row[0]) && ($row[0] =~ m/VERSION: / ) ) {
+							$version = substr( $row[0], length( "VERSION: " ) );
 							if( $debug ) {
-								PMSLogging::PrintLog( "", "", "    (Skipping line $lineNum)");
+								PMSLogging::PrintLog( "", "", "  Topten::PMSProcessOpenWater(): Found VERSION: " .
+									"$version" );
 							}
-							next;
+							$state = "LookingForNumSwimsToConsider";
 						}
+					} elsif( $state eq "LookingForNumSwimsToConsider" ) {
+						if( defined($row[0]) && ($row[0] =~ m/numSwimsToConsider=/ ) ) {
+							$numSwimsToConsider = substr( $row[0], length( "numSwimsToConsider=" ) );
+							PMSStruct::GetMacrosRef()->{"numSwimsToConsider"} = $numSwimsToConsider;
+							if( $debug ) {
+								PMSLogging::PrintLog( "", "", "  Topten::PMSProcessOpenWater(): Found numSwimsToConsider=" .
+									"$numSwimsToConsider" );
+							}
+							$state = "LookingForGender";
+						}
+					}
+					if( ($state eq "LookingForGender") || ($state eq "LookingForVersion") ) {
+						if( defined($row[0]) && ($row[0] eq "Gender") ) {
+							# finally, we're about to get data rows...
+							$state = "LookingForData";
+							if( $debug ) {
+								PMSLogging::PrintLog( "", "", "  Topten::PMSProcessOpenWater(): Found Gender..." .
+									"Skipping line $lineNum - data to follow");
+							}
+						}
+					} elsif( $state eq "LookingForData" ) {
+						# we have another data line...
 						my $gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $row[0] );	# M or F
 						if( $row[0] !~ m/^\w$/ ) {
 							PMSLogging::PrintLog( "", "", "Topten::PMSProcessOpenWater(): Line $lineNum of $simpleFileName: " .
@@ -2008,7 +2081,6 @@ sub PMSProcessOpenWater($) {
 								"\n    $rowAsString", 1 );
 							next;		# not a result line
 						}
-						
 						# We've decided that this is a row containing a result that we need to use
 						$numResultLines++;
 						
@@ -2026,10 +2098,16 @@ sub PMSProcessOpenWater($) {
 						# 9: Event Name	e.g. Spring Lake 1 Mile
 						# 10: Event Date
 						# 11: Duration
+						# 12: Category (if VERSION >= 2)
 				
 						my ($x, $ageGroup, $place, $points, $lastName, $firstName, $middleInitial, $regNum, 
-							$meetName, $eventName, $eventDate, $duration) = @row;
+							$meetName, $eventName, $eventDate, $duration, $category) = @row;
 			
+						if( !defined( $category ) || ($category eq "") ) {
+							# this is a pre-version 2 file so there is no category supplied. Default to 1.
+							$category = 1;
+						}
+						
 						# this date is assumed to be in the form 'yyyy-mm-dd'
 						my $convertedDate = $eventDate;
 						# handle empty or invalid dates (we don't expect any of these since we have control over
@@ -2044,7 +2122,6 @@ sub PMSProcessOpenWater($) {
 						}
 						
 						# convert the duration into an int (hundredths of a second)
-#						$duration = TT_Util::GenerateCanonicalDurationForDB( $duration, $fileName, $lineNum );
 						$duration = PMSUtil::GenerateCanonicalDurationForDB_v2( $duration, 0, "", "", 
 							"File: '$fileName', line $lineNum" );
 			
@@ -2104,21 +2181,17 @@ sub PMSProcessOpenWater($) {
 							
 						# compute the number of Top10 points they get from all of their OW places:
 						# the points they get for SOTY is the same as the OW points they were awarded.
-	#					TT_MySqlSupport::AddNewOWSplash( $fileName, $lineNum, $ageGroup, $gender, $place,
-	#						$points, $swimmerId, $eventId, $org, $course, $meetId, $eventDate, $duration );
-	
-	
 						TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $ageGroup, $gender, $place, 
-							$points, $swimmerId, $eventId, $org, $course, $meetId, $duration, $eventDate );
+							$points, $swimmerId, $eventId, $org, $course, $meetId, $duration, $eventDate, 1, $category );
 	
 	
-					} # end of if( (defined($row[0])...
+					} # end of if( (defined($row[0])))...
 				} else # end of if( $length...
 					{
 						# ReadSheetRow() returned a 0 length row - end of file
 						TT_SheetSupport::CloseSheet( \%sheetHandle );
 						PMSLogging::DumpNote( "", "", "*  Topten::PMSProcessOpenWater(): Done with '$simpleFileName' " .
-							"- $lineNum lines read, $numResultLines lines stored." );
+							"(Version $version) - $lineNum lines read, $numResultLines lines stored.", 1 );
 						last;
 					}
 			} # end of while
@@ -2588,24 +2661,30 @@ sub ComputePointsForAllSwimmers() {
 			print "  ...$countSwimmers...\n";
 		}
 		
-		# compute points for each age group separately:
-		( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed ) = 
-			TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, $ageGroup1, $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
-		$TT_Struct::numInGroup{"$gender:$ageGroup1%split"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
-		if( $ageGroup2 ne "" ) {
+		
+		if( $GENERATE_COMBINED_AGE_GROUPS ) {
+			# swimmers in two age groups have their age groups "merged":
+			if( $ageGroup2 ne "" ) {
+				( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed ) = 
+					TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, "$ageGroup1:$ageGroup2", $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+				$TT_Struct::numInGroup{"$gender:$ageGroup2%combined"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+			} else {
+				( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed ) = 
+					TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, $ageGroup1, $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+				$TT_Struct::numInGroup{"$gender:$ageGroup1%combined"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+			}
+		} else {
+			# compute points for each age group separately:
 			( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed ) = 
-				TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, $ageGroup2, $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
-			$TT_Struct::numInGroup{"$gender:$ageGroup2%split"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+				TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, $ageGroup1, $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+			$TT_Struct::numInGroup{"$gender:$ageGroup1%split"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+			if( $ageGroup2 ne "" ) {
+				( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed ) = 
+					TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, $ageGroup2, $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+				$TT_Struct::numInGroup{"$gender:$ageGroup2%split"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+			}
 		}
 		
-		# swimmers in two age groups have their age groups "merged":
-		if( $ageGroup2 ne "" ) {
-			( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed ) = 
-				TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, "$ageGroup1:$ageGroup2", $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
-			$TT_Struct::numInGroup{"$gender:$ageGroup2%combined"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
-		} else {
-			$TT_Struct::numInGroup{"$gender:$ageGroup1%combined"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
-		}
 	} # end of while...
 	
 	# load the 'numInGroup' data into our database
@@ -2915,7 +2994,74 @@ sub ComputePlaceForAllSwimmers() {
 } # end of ComputePlaceForAllSwimmers()
 	
 	
+
+
+
+
+#				my ($points, $reason) = GetPointsForMeet( $swimmerId, $meetId, $course );
+# GetPointsForMeet - return all the points earned by a specific swimmer at a specific meet.
+#
+# PASSED:
+#	$swimmerId - the swimmer
+#	$meetId - the meet
+#	$course - the course of the meet (e.g. SCY or OW, etc.)
+#
+# RETURNED:
+#	$points - points earned at the meet
+#	$reason - if the meet is an OW meet and UsePoints was 0 (thus the returned $points will
+#		be 0), this is the reason.
+#
+# NOTES:
+#
+sub GetPointsForMeet( $$$ ) {
+	my ($swimmerId, $meetId, $course) = @_;
+	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
+	my ($sth, $rv);
+	my $resultHash;
+	my $points;
+	my $usePoints;
+	my $reason = "";
+	my $query;
+
+	# we handle OW and other meets differently.  Reason: an OW "meet" is also an event, 
+	# and it's the only "meet" that can have earned the swimmer points but for which the
+	# swimmer gets none of them for AGSOTY. In other types of meets the swimmer may not
+	# get credit for all their points, but they get credit for at least some of them.
+	# See the rules.
 	
+	if( $course eq "OW" ) {
+		$query = "SELECT Points, UsePoints, Reason from Splash WHERE " .
+			"Splash.MeetId = $meetId " .
+			"AND Splash.SwimmerId = $swimmerId";
+		($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+		$resultHash = $sth->fetchrow_hashref;
+		$points = $resultHash->{'Points'};
+		$usePoints = $resultHash->{'UsePoints'};
+		if( $usePoints == 0 ) {
+			# oops... sorry - no credit for these points!
+			$points = 0;
+			$reason = $resultHash->{"Reason"};
+		}
+	} else {
+		# Get the total number of points this user got from this meet:
+		$query = "SELECT SUM(Points) AS Points from Splash WHERE " .
+			"Splash.MeetId = $meetId " .
+			"AND Splash.UsePoints = 1 " .
+			"AND Splash.SwimmerId = $swimmerId";
+		($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+		$resultHash = $sth->fetchrow_hashref;
+		$points = $resultHash->{'Points'};
+		if( defined $points ) {
+			$points = $resultHash->{'Points'};
+		} else {
+			$points = 0;
+		}
+	}
+
+	return ($points, $reason);
+
+} # end of GetPointsForMeet()
+
 
 
 
@@ -3034,7 +3180,7 @@ sub PrintResultsHTML($$$$$) {
 	my $query;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	
-	my $debugLastName = lc("xxxxxxxx");
+	my $debugLastName = lc("xxxxxx");
 
 	my $category = 1;		# we only consider Cat 1 swims
 	my $personBackgroundColor = "WHITE";		# background color for each row (computed below)
@@ -3088,6 +3234,7 @@ sub PrintResultsHTML($$$$$) {
 	# or are we combining the two age groups, thus the swimmer is placed in the older age group?
 	# We use the name of the FinalPlace table to tell us what to do:
 	$query = GetPlaceOrderedSwimmersQuery( $splitAgeGroups );
+#	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query, "GetPlaceOrderedSwimmersQuery: " );
 	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
 	# we've got the list of swimmers ...
 	my $previousGenderAgegroup = "";
@@ -3238,6 +3385,7 @@ sub PrintResultsHTML($$$$$) {
 			}
 			PMSTemplate::ProcessHTMLTemplate( $templateStartPersonRow, $virtualGeneratedHTMLFileHandle );
 
+#**** GENERATE Total Meets / # PAC Meets
 			# now generate the details of this swimmer's swims
 			PMSStruct::GetMacrosRef()->{"NumSwimmersMeets"} = $countPoints+$countHidden;
 			PMSStruct::GetMacrosRef()->{"NumSwimmersMeetsDetails"} = "$countPoints scoring meets, " .
@@ -3246,41 +3394,55 @@ sub PrintResultsHTML($$$$$) {
 			PMSStruct::GetMacrosRef()->{"NumSwimmersPACMeetsDetails"} = "$countPMSPoints PAC scoring " .
 				"meets, $countPMSHidden PAC hidden meets";
 				
-			# get the list of meets that this swimmer swam in that earned points:
+			# get the list of meets that this swimmer swam in (maybe earned points, maybe not):
 			my $query = "SELECT DISTINCT(Splash.MeetId),Meet.MeetTitle,Meet.MeetLink," .
-				"Meet.MeetIsPMS,Meet.MeetBeginDate, Splash.EventId " .
+				"Meet.MeetIsPMS,Meet.MeetBeginDate,Splash.Course,Splash.Category " .
 				"FROM Splash JOIN Meet WHERE " .
 				"Splash.MeetId = Meet.MeetId AND " .
 				"Splash.MeetId != 1 AND " .
 				"Splash.SwimmerId = $swimmerId ORDER by Meet.MeetBeginDate";
 			my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
 			my $swimmersMeetDetails = "";
+			# added March, 2022: Since OW results now send AGSOTY the results of ALL OW swims, including
+			# cat 2 swims and cat 1 swims over the max that count, and all 0 point swims, we have to be
+			# more careful here.
 			while( defined(my $resultHash = $sth->fetchrow_hashref) ) {
 				my $meetId = $resultHash->{'MeetId'};
 				my $meetTitle = $resultHash->{'MeetTitle'};
 				my $meetLink = $resultHash->{'MeetLink'};
-				my $eventId = $resultHash->{'EventId'};
+				my $course = $resultHash->{'Course'};
+				my $org = $resultHash->{'Org'};
+				my $category = $resultHash->{'Category'};
 				if( $meetLink eq "(none)" ) {
 					# special case:  we don't have a link for this meet, so don't generate an href
 					$meetLink = "";
 				}
 				my $meetIsPMS = $resultHash->{'MeetIsPMS'};
 				my $sanction = $meetIsPMS ? "PAC" : "Non PAC";
+				
 				# get the sum of all points earned at this meet
-				my $query2 = "SELECT SUM(Points) AS Points from Splash WHERE " .
-					"Splash.MeetId = $meetId AND Splash.SwimmerId = $swimmerId";
-				my ($sth2, $rv2) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query2 );
-				my $resultHash2 = $sth2->fetchrow_hashref;
-				my $points = $resultHash2->{'Points'};
+				# NOTE: If this meet is actually:
+				#	- an OW event then we'll either get the points earned in that event or we'll get
+				#		0 in the case where UsePoints = 0.
+				#	- a pool meet, in which case we'll get a sum of points earned at that meet counting
+				#		only those events for which UsePoints = 1.
+				my ($points, $reason) = GetPointsForMeet( $swimmerId, $meetId, $course );
+
+
 				my $swimmersMeetDetailsLink = $meetTitle;		# assume no link to meet details
 				if( $meetLink ne "" ) {
 					# we have meet details - create a link to them
 					$swimmersMeetDetailsLink = "<a href='$meetLink'>$meetTitle</a>";
 				}
+				
+				# let's be clear about cat2 OW:
+				if( ($course eq "OW") && ($category == 2) ) {
+					$swimmersMeetDetailsLink .= "&nbsp;&nbsp;(Cat 2)";
+				}
 				$swimmersMeetDetails .= "<tr>\n" .
 					"  <td>$swimmersMeetDetailsLink</td>\n" .
 					"  <td>$sanction</td>\n" .
-					"  <td>$points</td>\n" .
+					"  <td>$points $reason</td>\n" .
 					"</tr>\n";
 			}
 			# next, get get the list of hidden meets
@@ -3306,6 +3468,7 @@ sub PrintResultsHTML($$$$$) {
 
 			PMSTemplate::ProcessHTMLTemplate( $templateStartDetails, $virtualGeneratedHTMLFileHandle );
 			my $courseNum = 0;
+#**** Generate list of meets and events for each:
 			foreach my $org( @PMSConstants::arrOfOrg ) {
 				foreach my $course( @PMSConstants::arrOfCourse ) {
 					# there is no such thing as "USMS-OW"
@@ -3324,7 +3487,7 @@ sub PrintResultsHTML($$$$$) {
 					my ($detailsNum, $totalPoints, $resultsCounted) = 
 						TT_MySqlSupport::GetSwimmersSwimDetails2( $swimmerId, $org, $course, $ageGroup, $detailsRef );
 					if( lc($lastName) eq $debugLastName) {
-						print "$debugLastName: $swimmerId, $detailsNum, $totalPoints, $resultsCounted, org=$org, course=$course\n";
+						print "PrintResultsHTML(): $debugLastName: $swimmerId, $detailsNum, $totalPoints, $resultsCounted, org=$org, course=$course\n";
 					}
 
 					# if we don't have any points
@@ -3365,9 +3528,13 @@ sub PrintResultsHTML($$$$$) {
 					}
 					# next, the details...
 					my $uniqueSplashId = 0;
+					# added March, 2022: Since OW results now send AGSOTY the results of ALL OW swims, including
+					# cat 2 swims and cat 1 swims over the max that count, and all 0 point swims, we have to be
+					# more careful here.
 					for( my $i = 1; $i <= $detailsNum; $i++ ) {
 						# We've got details on one splash that earned points for this swimmer in this
-						# org and course:
+						# org and course. Make sure this is a splash we need to consider:
+						PMSStruct::GetMacrosRef()->{"Reason"} = $detailsRef->[$i]{'Reason'};	# only used for OW <--NOT TRUE!!!
 						$uniqueSplashId++;
 						PMSStruct::GetMacrosRef()->{"EventName"} = $detailsRef->[$i]{'EventName'};
 

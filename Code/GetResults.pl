@@ -109,6 +109,7 @@ require TT_SheetSupport;
 # files.  See TT_Struct.pm for specifics
 my $RESULT_FILES_TO_READ = $TT_Struct::G_RESULT_FILES_TO_READ;
 $RESULT_FILES_TO_READ = $TT_Struct::G_RESULT_FILES_TO_READ;		# avoid warning message
+	
 # simplify access and testing of $G_RESULT_FILES_TO_READ
 my $generatePMSTopTen		= ($RESULT_FILES_TO_READ & 0b1);			# set to non-zero if we are supposed to generate PMS Top Ten points, 0 if not.
 my $generateUSMSTopTen		= ($RESULT_FILES_TO_READ & 0b10);			# set to non-zero if we are supposed to generate USMS Top Ten points, 0 if not.
@@ -175,7 +176,13 @@ sub GetEpostalResults( $ );
 #my $tinyHttp = HTTP::Tiny->new( );
 my $httpResponse;
 
+# INITIALLY, during processing:
 # $SwimMeets{title of meet} = "ORG|COURSE|link to details for meet";
+# THEN, after processing we modify the %SwimMeets hash to look like this:
+#		$SwimMeets{title of meet} = "date|USMSMeetId|ORG|COURSE|link to details for meet|(NOT a PAC sanctioned meet)"
+#	or
+#		$SwimMeets{title of meet} = "date|USMSMeetId|ORG|COURSE|USMSMeetId|link to details for meet|(IS a PAC sanctioned meet)"
+# See GetSwimMeetDetails() below for details.
 my %SwimMeets = ();
 
 # initialize property file details:
@@ -296,11 +303,16 @@ PMSLogging::PrintLog( "", "", "  ...and with the propertiesDir='$propertiesDir',
 # $propertiesDir and $propertiesFileName are initialized above.
 PMSMacros::GetProperties( $propertiesDir, $propertiesFileName, $yearBeingProcessed );			
 
-# get the scoring rules for ePostals:
-my @ePostalScoringRules = split( /,\s*/, PMSStruct::GetMacrosRef()->{"ePostalScoringRules"} );
+# prepare for ePostals:
+my @ePostalScoringRules;
+my $slowestEPostalPlace;
 
-# the slowest place for an ePostal that earns POINTS
-my $slowestEPostalPlace = $#ePostalScoringRules;
+if( $generateEPostal ) {
+	# get the scoring rules for ePostals:
+	@ePostalScoringRules = split( /,\s*/, PMSStruct::GetMacrosRef()->{"ePostalScoringRules"} );
+	# the slowest place for an ePostal that earns POINTS
+	$slowestEPostalPlace = $#ePostalScoringRules;
+}
 
 
 ###
@@ -355,7 +367,11 @@ my %USMSResultFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"USMSResultFiles
 my %PMSRecordsFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"PMSRecordsFiles"};
 my %USMSRecordsFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"USMSRecordsFiles"};
 my $PMSOpenWaterResultFile = PMSStruct::GetMacrosRef()->{"PMSOpenWaterResultFile"};
-my %USMSEpostalsFiles = split /[;]/, PMSStruct::GetMacrosRef()->{"USMSEpostals"};
+my %USMSEpostalsFiles;
+
+if( $generateEPostal ) {
+	%USMSEpostalsFiles = split /[;]/, PMSStruct::GetMacrosRef()->{"USMSEpostals"};
+}
 
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET PMS Top Ten POINTS
@@ -381,7 +397,6 @@ if( ($RESULT_FILES_TO_READ & 0b1) != 0 ) {
 		}
 	} # end of foreach( ...
 } # end of generate PMS top ten
-
 
 
 
@@ -474,7 +489,7 @@ if( ($RESULT_FILES_TO_READ & 0b10000) != 0 ) {
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO ePostal results
 ####
-if( ($RESULT_FILES_TO_READ & 0b1000000) != 0 ) {
+if( $generateEPostal ) {
 	my $numPMSScoringResults = 0;
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	foreach my $simpleFileName ( sort keys %USMSEpostalsFiles ) {
@@ -967,12 +982,15 @@ sub ParsePMSTopTenHttpResponse( $$$$$$$ ) {
 					$link =~ s/".*$//;
 					$meetTitle =~ s/^.*">//;
 					$meetTitle =~ s,</a.*$,,;
-					#$meetTitle = CleanMeetTitle( $meetTitle );
+					$meetTitle = CleanMeetTitle( $meetTitle );
 					if( ($meetTitle ne "") && ($link ne "") && (! defined( $SwimMeets{$meetTitle} ) ) ) {
 						# we haven't seen this meet before - record it
 						$link = $baseURL . $link;
 						$SwimMeets{$meetTitle} = "$org|$course|$link";
 						$callbackStateRef->{"numDifferentMeets"}++;
+						if( $debug > 2 ) {
+							print $diffResultsFD "Newly seen meet: '$meetTitle', org=$org, course=$course, link='$link'\n";
+						}
 					}
 				}
 			} else {
@@ -1230,7 +1248,7 @@ sub ParseUSMSTopTenHttpResponse( $$$$$$$ ) {
 					my $swimLink = "$baseURL$line";
 					# now get the meet details:
 					my($meetTitle,$link) = ProcessUSMSSwimDetails( $swimLink );
-					#$meetTitle = CleanMeetTitle( $meetTitle );
+					$meetTitle = CleanMeetTitle( $meetTitle );
 					if( ($meetTitle ne "") && ($link ne "") && (! defined( $SwimMeets{$meetTitle} ) ) ) {
 						# we haven't seen this meet before - record it
 						$link = $baseURL . "/comp/meets/" . $link;
@@ -1724,7 +1742,7 @@ sub GetUSMSRecords( $$$ ) {
 #
 sub GetPMSOWResults( $$ ) {
 	my( $linkToResults, $resultFileName ) = @_;
-	my( $numResultLines, $numEvents ) = (0, 0);
+	my( $numResultLines, $numEvents, $numOWLines ) = (0, 0, 0);
 	my $listOfEvents = ",";
 	my $gotOWResults = 1;		# assume we'll find some OW events
 	my $org = "PMS";
@@ -1776,6 +1794,7 @@ sub GetPMSOWResults( $$ ) {
 		my $fd;
 		if( open( $fd, "<", $resultFileName ) ) {
 			while( my $row = <$fd> ) {
+				$numOWLines++;
 				if( ($row =~ m/,/) && ($row !~ m/^Gender/) ) {
 					# row contains a comma - it's a OW swim
 					$numResultLines++;
@@ -1803,7 +1822,7 @@ sub GetPMSOWResults( $$ ) {
 		"$numEvents different events ($listOfEvents)\n", 1 );
 		
 	# record some statistics gathered while processing these results:
-	TT_Struct::IncreaseFetchStat( "FS_NumLinesRead", $numResultLines );
+	TT_Struct::IncreaseFetchStat( "FS_NumLinesRead", $numOWLines );
 	TT_Struct::IncreaseFetchStat( "FS_NumDifferentMeetsSeen", $numEvents );
 	TT_Struct::IncreaseFetchStat( "FS_NumDifferentResultsSeen", $numResultLines );
 	TT_Struct::IncreaseFetchStat( "FS_NumDifferentFiles", 1 );
@@ -1818,6 +1837,8 @@ sub GetPMSOWResults( $$ ) {
 sub CleanMeetTitle( $ ) {
 	my $meetTitle = $_[0];
 	$meetTitle =~ s/&amp;/&/g;
+	$meetTitle =~ s/“/"/g;
+	$meetTitle =~ s/”/"/g;
 	return $meetTitle;
 } # end of CleanMeetTitle()
 

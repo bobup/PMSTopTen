@@ -183,7 +183,7 @@ sub InitializeTopTenDB() {
     				# --- EventId : reference to the exact event (e.g. '50 y freestyle') 
     				# --- Gender - one of M or F
 				  	# --- AgeGroup - their age group on the day of the swim, of the form 18-24, 25-29, etc.
-    				# --- Category : always 1
+    				# --- Category : 1 or 2 (but only splashes of cat 1 earn AGSOTY points)
     				# --- View : link to results containing this event (not supplied)
     				# --- Date : the date of this swim (not always supplied)
     				# --- MeetId : references the meet in which this swim was swum (if not known it will be 0)
@@ -194,6 +194,10 @@ sub InitializeTopTenDB() {
     				#		is really a distance. Note that the default is 1.
     				# --- Place : 1 - N
     				# --- Points: 1 - N Depends on Place
+    				# --- UsePoints: 1 or 0. 1 if the points for this splash are to be used to compute the
+    				#		swimmer's AGSOTY points, 0 if not. (example: a cat2 OW swim, or more than max swims
+    				#		for a particular org/course.)
+    				# --- Reason: NULL if UsePoints is 1, a string if 0. The reason we don't use these points.
 		    		($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
     		    		"CREATE TABLE Splash (SplashId INT AUTO_INCREMENT PRIMARY KEY, " .
     		    		"Course Varchar(15), " .
@@ -209,7 +213,11 @@ sub InitializeTopTenDB() {
 		    			"Duration INT DEFAULT 0, " .
 		    			"DurationType INT DEFAULT 1, " .
 		    			"Place Int, " .
-		    			"Points Int)" );
+		    			"Points Int, " .
+		    			"UsePoints INT DEFAULT 1, " .
+		    			"Reason Varchar(64)" .
+		    			")" );
+
 
 ### Meet
     			} elsif( $tableName eq "Meet" ) {
@@ -777,7 +785,7 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 
 
 # TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $currentAgeGroup, $currentGender, 
-#	$place, $points, $swimmerId, $currentEventId, $org, $course, $meetId, $time, $date );
+#	$place, $points, $swimmerId, $currentEventId, $org, $course, $meetId, $time, $date, $category );
 
 # AddNewSplash - Add an entry in the Splash table representing the passed top N finish
 #
@@ -795,11 +803,17 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 #	$meetId - the meet the swimmer was swimming in.  Could be $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID
 #	$time - the duration of the swim
 #	$date - the date of the swim.  Of the form yyyy-mm-dd.  Could be $PMSConstants::DEFAULT_MISSING_DATE.
-#	$durationType (optional) - 1 (or missing) if the passed $time is a time, 2 if it's really a distance
+#	$durationType (optional, but must be supplied if $category is supplied) - 1 (or missing) if the passed 
+#		$time is a time, 2 if it's really a distance
+#	$category (optional) - if supplied must be 1 or 2. If not supplied then default to 1.
 #
-sub AddNewSplash ($$$$$$$$$$$$$) {
+sub AddNewSplash {
 	my ($fileName, $lineNum, $ageGroup, $gender, $place, $points, $swimmerId, $eventId, $org, 
-		$course, $meetId, $time, $date, $durationType) = @_;
+		$course, $meetId, $time, $date, $durationType, $category) = @_;
+	if( !defined $category ) {
+		$category = 1;
+	}
+
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	
 	if( !defined( $durationType ) ) {
@@ -822,7 +836,7 @@ sub AddNewSplash ($$$$$$$$$$$$$) {
 		"INSERT INTO Splash " .
 			"(Course, Org, EventId, Gender, AgeGroup, Category, Date, MeetId, SwimmerId, Duration, " .
 			"Place, Points, DurationType) " .
-			"VALUES (\"$course\",\"$org\",\"$eventId\",\"$gender\",\"$ageGroup\",\"1\"," .
+			"VALUES (\"$course\",\"$org\",\"$eventId\",\"$gender\",\"$ageGroup\",\"$category\"," .
 			"\"$date\",\"$meetId\",\"$swimmerId\",\"$time\"," .
 			"\"$place\", \"$points\", \"$durationType\")") ;
 			
@@ -863,6 +877,12 @@ sub AddNewMeetIfNecessary($$$$$$$$$) {
 		# this meet is already in our DB - get the meet id
 		$meetId = $resultHash->{'MeetId'};
 	} else {
+		if( $meetLink eq "(none)" ) {
+			PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::AddNewMeetIfNecessary(): " .
+				"Found null meetlink: meetTitle='$meetTitle', stack:", 1 );
+			PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::AddNewMeetIfNecessary(): " .
+				PMSUtil::GetStackTrace(), 1 );
+		}
 		# this meet isn't in our db - add it
 		($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
 			"INSERT INTO Meet " .
@@ -966,32 +986,10 @@ sub LookUpRecord( $$$$$ ) {
 
 
 
-# my $statementHandle = TT_MySqlSupport::GetSwimmersSwimDetails( $swimmerId, $org, $course, $ageGroup );
-sub GetSwimmersSwimDetails($$$$) {
-	my ($swimmerId, $org, $course, $ageGroup) = @_;
-	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
-
-	my $query = "SELECT Splash.EventId, Splash.MeetId, Place, Points, EventName, MeetTitle, Date, Duration " .
-		"FROM (Splash join Event) join Meet " .
-		"WHERE SwimmerId = $swimmerId " .
-		"AND Course = '$course' " .
-		"AND Org = '$org' " .
-		"AND Points > 0 " .
-		"AND Splash.EventId = Event.EventId " .
-		"AND Splash.MeetId = Meet.MeetId " .
-		"AND Splash.AgeGroup = '$ageGroup'" .
-		"ORDER BY Place";
-	
-	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query, "" );
-	return $sth;
-} # end of GetSwimmersSwimDetails()
-
-
-
 # my ( $resultsAnalyzed, $totalPoints, $resultsCounted ) = 
 #		TT_MySqlSupport::GetSwimmersSwimDetails2( $swimmerId, $org, $course, $ageGroup, $resultRef );
 #
-# GetSwimmersSwimDetails2 - Get the details on all point-earning swims performed by this swimmer
+# GetSwimmersSwimDetails2 - Get the details on all swims (point earning or not) performed by this swimmer
 #		in this org and course.
 #
 # PASSED:
@@ -1003,16 +1001,19 @@ sub GetSwimmersSwimDetails($$$$) {
 #		details.  If undefined then the details are not returned.
 #
 # RETURNED:
-#	$resultsAnalyzed - The number of splashes that resulted in a top 10 place for the passed
+#	$resultsAnalyzed - The number of splashes for the passed
 #		org and course.  For example, a swimmer may compete by swimming 20 different SCY events,
 #		where 15 of them resulted in a PAC top 10 time.  However, if the limit of top 10 PAC times
 #		we consider for AGSOTY is 8 then we'll only consider the best 8 times.  The value of
-#		$resultsAnalyzed will be 15.  If the passed $resultRef is defined, it will reference 
+#		$resultsAnalyzed will be 20.  If the passed $resultRef is defined, it will reference 
 #		an array containing $resultsAnalyzed elements (each element is a hash.)
 #	$totalPoints - The total number of points we'll consider towards their AGSOTY total.  Using the
 #		example above, it's the total number of points earned by the best 8 times.
 #	$resultsCounted - The number of splashes we'll actually use to compute $totalPoints.  Using the
 #		example above, this value will be 8.
+#
+# NOTE: as of March, 2022 we are storing OW results for both cat1 and cat2. For that reason this
+#	routine will CONSIDER all cat2 splashes but those are not used to compute AGSOTY points.
 #
 sub GetSwimmersSwimDetails2($$$$) {
 	my ($swimmerId, $org, $course, $ageGroup, $resultRef) = @_;
@@ -1026,18 +1027,18 @@ sub GetSwimmersSwimDetails2($$$$) {
 		$ageGroupQuery = " AND Splash.AgeGroup = '$ageGroup' ";
 	}
 
-	my $query = "SELECT Splash.EventId, Splash.MeetId, Splash.Place, Splash.Points, " .
+	my $query = "SELECT Splash.EventId, Splash.MeetId, Splash.Place, Splash.Points, Splash.Category, " .
 		"Event.EventName, Event.Distance, Event.Units, Meet.MeetTitle, Splash.Date, Splash.Duration, " .
+		"Splash.UsePoints, Splash.Reason, " .
 		"Splash.DurationType, Splash.AgeGroup " .
 		"FROM (Splash join Event) join Meet  " .
 		"WHERE Splash.SwimmerId = $swimmerId " .
 		"AND Splash.Course = '$course'  " .
 		"AND Splash.Org = '$org'  " .
-		"AND Splash.Points > 0  " .
 		"AND Splash.EventId = Event.EventId  " .
 		"AND Splash.MeetId = Meet.MeetId  " .
 		$ageGroupQuery .
-		"ORDER BY Points DESC,Date DESC";
+		"ORDER BY UsePoints DESC, Points DESC,Date DESC";
 	
 	my $debugQuery = "";
 	$debugQuery = "GetSwimmersSwimDetails2: Val" if( $swimmerId == -1 );
@@ -1052,47 +1053,20 @@ sub GetSwimmersSwimDetails2($$$$) {
 		$resultsAnalyzed++;
 		my $points = $resultHash->{'Points'};
 		my $eventId = $resultHash->{'EventId'};
-		# we have a splash that may or may not have earned points - is it for an event for which they have already 
-		# earned points?  If so they get the higher points
-		my $previousPoints = $hashOfEvents{"$eventId-$course"};
-		if( defined $previousPoints ) {
-			# they earned points in this event before - if in a single age group we have a bug!
-			if( $ageGroup !~ m/:/ ) {
-				# single age group
-				PMSLogging::DumpError( "", "", "TT_MySqlSupport::GetSwimmersSwimDetails2(): " .
-					"Found points for the same event twice: event $eventId, course $course, " .
-					"age group $ageGroup, swimmerId $swimmerId", 1 );
-				# we'll ignore this error and keep going
-			}
-			# they earned points in this event before, and since our query returned the
-			# higher points first we know that these points shouldn't be counted because
-			# they are less than (or equal) to what we've already counted for this event
-			# and course.  Thus we'll ignore this splash.
-			$points = -1;
-		} else {
-			# we have not seen points for this event and course.  Do we give the swimmer points
-			# for this splash?
-			
-			# currently limit to 8 for EVERY possible course (except records and OW and ePostal)
-			if( ($course eq 'SCY Records') || 
-				($course eq 'SCM Records') ||
-				($course eq 'LCM Records') ||
-				($course eq 'ePostal Records') ||
-				($course eq 'ePostal') ||
-				($course eq 'OW' ) ||
-				($resultsCounted < 8) ) {
-				# yep - they get points for this splash
-				$resultsCounted++;
-				$totalPoints += $points;
-			} else {
-				# they had more than 8 point-awarding places so we'll show what they got
-				# but not show their points since they didn't earn any.
-				$points = 0;
-			}
-			
-			# remember these previous points:
-			$hashOfEvents{"$eventId-$course"} = $points;
+		my $usePoints = $resultHash->{'UsePoints'};
+		my $reason = $resultHash->{'Reason'};
+		
+		if( !defined $reason ) {
+			$reason = "";
 		}
+		
+		if( $usePoints ) {
+			$resultsCounted++;
+			$totalPoints += $points;
+		} else {
+			$points = 0;
+		}
+		
 		if( defined $resultRef ) {
 			$resultRef->[$resultsAnalyzed]{'EventName'} = $resultHash->{'EventName'};
 			$resultRef->[$resultsAnalyzed]{'EventDistance'} = $resultHash->{'Distance'};
@@ -1101,6 +1075,8 @@ sub GetSwimmersSwimDetails2($$$$) {
 			$resultRef->[$resultsAnalyzed]{'SplashDurationType'} = $resultHash->{'DurationType'};
 			$resultRef->[$resultsAnalyzed]{'SplashPlace'} = $resultHash->{'Place'};
 			$resultRef->[$resultsAnalyzed]{'SplashPoints'} = $points;
+			$resultRef->[$resultsAnalyzed]{'UsePoints'} = $usePoints;
+			$resultRef->[$resultsAnalyzed]{'Reason'} = $reason;
 			$resultRef->[$resultsAnalyzed]{'MeetTitle'} = $resultHash->{'MeetTitle'};
 			$resultRef->[$resultsAnalyzed]{'SplashDate'} = $resultHash->{'Date'};
 			$resultRef->[$resultsAnalyzed]{'AgeGroup'} = $resultHash->{'AgeGroup'};
@@ -2074,6 +2050,7 @@ sub ComputePointsForSwimmer( $$$ ) {
 		# single age group
 		$ageGroupQuery = " AND Splash.AgeGroup = '$ageGroup' ";
 	}
+	my $debugSwimmerId = -1;
 	
 	# eliminage bogus messages:
 	my $tempxxx1 = $PMSConstants::arrOfOrg[0];
@@ -2093,10 +2070,11 @@ sub ComputePointsForSwimmer( $$$ ) {
 			# $hashOfEvents{eventId-$course} = points : the swimmer swam in event # 'eventId' 
 			# and course $course and earned 'points' points.  E.g. event "100 M free" LCM, 
 			# earning 8 points.  Note they can also earn points in event "100 M free" SCM.
-			$query = "SELECT EventId, Points FROM Splash " .
+			$query = "SELECT EventId, Points, Category FROM Splash " .
 				"WHERE Splash.SwimmerId = $swimmerId " .
 				"AND Splash.Org = '$org' " .
 				"AND Splash.Course = '$course' " .
+				"AND Splash.Points > 0  " .
 				$ageGroupQuery .
 				"ORDER BY Points DESC";
 			my($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
@@ -2104,8 +2082,13 @@ sub ComputePointsForSwimmer( $$$ ) {
 				$subTotalResultsAnalyzed++;
 				my $points = $resultHash->{'Points'};
 				my $eventId = $resultHash->{'EventId'};
-				$countOfResults++;
-				next if( $points == 0 );		# the place for this swim didn't earn any points so move on...
+				my $category = $resultHash->{'Category'};
+				if( $points == 0 ) {
+					# the place for this swim didn't earn any points so move on...
+					DontUseThesePoints( $swimmerId, $org, $course, $eventId, "(zero points)" );
+					$countOfResults++;
+					next;
+					}
 				# we have a splash that earned points - is it for an event for which they have already 
 				# earned points?  If so they get the higher points
 				my $previousPoints = $hashOfEvents{"$eventId-$course"};
@@ -2116,30 +2099,53 @@ sub ComputePointsForSwimmer( $$$ ) {
 						PMSLogging::DumpError( "", "", "TT_MySqlSupport::ComputePointsForSwimmer(): " .
 							"Found points for the same event twice: event $eventId, course $course, " .
 							"age group $ageGroup, swimmerId $swimmerId", 1 );
-						# we'll ignore this error and keep going
+						# we'll ignore these POINTS
+						DontUseThesePoints( $swimmerId, $org, $course, $eventId, "(Dup event-course in single age group)" );
+						next;
 					}
 					# they earned points in this event before, and since our query returned the
 					# higher points first we know that these points shouldn't be counted because
 					# they are less than (or equal) to what we've already counted for this event
 					# and course.
-					# HOWEVER, since we're not counting these points we need to adjust our count
-					# of results:
-					$countOfResults--;
+					DontUseThesePoints( $swimmerId, $org, $course, $eventId, "(Dup event-course)" );
+				} elsif( ($course eq "OW") && ($category == 2) ) {
+					# we don't count cat 2 OW swims
+					DontUseThesePoints( $swimmerId, $org, $course, $eventId, "(Cat 2)" );
 				} else {
 					# we have not seen points for this event and course
 					# remember these previous points:
+					$countOfResults++;
 					$hashOfEvents{"$eventId-$course"} = $points;
-					
 					# Now, give this swimmer these points IF we don't exceed the maximum:
-					# currently limit to 8 for EVERY possible course (except records and OW):
-					if( ($course eq 'SCY Records') || 
+					# currently limit to 8 for EVERY possible course (except records and OW and ePostal):
+					if( $course eq 'OW' ) {
+						if( $countOfResults <= PMSStruct::GetMacrosRef()->{"numSwimsToConsider"} ) {
+							# yep - they get points for this OW splash
+							$subTotalPoints += $points;
+							$subTotalResultsCounted++;
+						} else {
+							# else they don't get points for this OW swim because they've hit the max
+							# set this splash as non-point earning:
+							DontUseThesePoints( $swimmerId, $org, $course, $eventId, "(Max OW scored swims)" );							
+						}
+					} elsif( ($course eq 'SCY Records') || 
 						($course eq 'SCM Records') ||
 						($course eq 'LCM Records') ||
-						($course eq 'OW' ) ||
-						($countOfResults <= 8) ) {
-						# increment number of points for this swimmer (in this gender/age group if one supplied)
+						($course eq 'ePostal Records') ||
+						($course eq 'ePostal') ) {
+						# there is no limit on points for these courses:
+						# increment number of points for this swimmer 
 						$subTotalPoints += $points;
 						$subTotalResultsCounted++;
+					} else {
+						# this course has a limit...
+						if( $countOfResults <= 8 ) {
+							# increment number of points for this swimmer 
+							$subTotalPoints += $points;
+							$subTotalResultsCounted++;
+						} else {
+							DontUseThesePoints( $swimmerId, $org, $course, $eventId, "(Max scored swims)" );							
+						}
 					}
 				}
 			} # end of while()...
@@ -2153,10 +2159,63 @@ sub ComputePointsForSwimmer( $$$ ) {
 		} # end of foreach my $course
 		
 	} # end of foreach my $org
-				
+
 	return( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed );	
 
 } # end of ComputePointsForSwimmer()
+
+
+
+#		DontUseThesePoints( $swimmerId, $org, $course, $eventId, "(Max scored swims)" );
+# DontUseThesePoints - mark the splash for the passed $org and $course and $eventId as a non-scoring
+#		swim. We'll still remember the points that would have been earned.
+#
+# PASSED:
+#	$swimmerId -
+#	$org -
+#	$course -
+#	$eventId -
+#	$reason - the reason this splash is not a scoring swim.
+#
+# RETURNED:
+#	n/a
+#
+# NOTES:
+#	The entry for this swim in the Splash table will be updated with the passed reason, setting
+#		the UsePoints column to 0.
+#
+sub DontUseThesePoints( $$$$$ ) {
+	my( $swimmerId, $org, $course, $eventId, $reason ) = @_;
+	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
+	my $query = "SELECT SplashId, UsePoints FROM Splash WHERE " .
+		"SwimmerId=$swimmerId AND Org='$org' AND Course='$course' AND EventId='$eventId'";
+		
+	my ($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+	if( $status ne "" ) {
+		PMSLogging::DumpError( "", "", "TT_MySqlSupport::DontUseThesePoints(): Failed to get splash " .
+			"to update: : status='$status', org=$org, course=$course, eventId=$eventId, passed reason='$reason'.", 1);
+	} elsif( defined(my $resultHash = $sth->fetchrow_hashref) ) {
+		my $splashId = $resultHash->{"SplashId"};
+		my $usePoints = $resultHash->{"UsePoints"};
+		if( $usePoints == 0 ) {
+			# this is odd....report it but ignore it.
+			PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::DontUseThesePoints(): UsePoints already set " .
+				"to 0: swimmerId=$swimmerId, org=$org, course=$course, eventId=$eventId, passed reason='$reason'.", 1);
+		}
+		$query = "UPDATE Splash SET UsePoints = 0, Reason = '$reason' WHERE SplashId=$splashId";
+		($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+		if( $status ne "" ) {
+			PMSLogging::DumpError( "", "", "TT_MySqlSupport::DontUseThesePoints(): Failed to UPDATE " .
+				"Splash: status='$status', swimmerId=$swimmerId, org=$org, course=$course, eventId=$eventId, passed reason='$reason'.", 1);
+		}
+	} else {
+		PMSLogging::DumpError( "", "", "TT_MySqlSupport::DontUseThesePoints(): Failed to get splash " .
+			"to update: empty result: org=$org, course=$course, eventId=$eventId, passed reason='$reason'.", 1);
+	}
+
+} # end of DontUseThesePoints()
+
+
 
 
 
@@ -2274,7 +2333,7 @@ sub ReadSwimMeetData( $ ) {
 	while( my $line = <$meetFD> ) {
 		$line = PMSUtil::trim($line);
 		next if( $line eq "" );		# ignore empty lines
-		next if( $line =~ m/#/ );	# ignore comment lines
+		next if( $line =~ m/^\s*#/ );	# ignore comment lines
 		my @lineArr = split( "\t", $line );
 		my $meetTitle = $lineArr[0];
 		$meetTitle =  MySqlEscape($meetTitle);
@@ -2293,6 +2352,9 @@ sub ReadSwimMeetData( $ ) {
     	my $meetId = $dbh->last_insert_id(undef, undef, "Meet", "MeetId");
     	die "TT_MySqlSupport::ReadSwimMeetData(): Insert of meet into DB failed.  Meet is:\n" .
     		"    $line" if( !defined( $meetId ) );
+
+#print "ReadSwimMeetData(): MeetTitle='$meetTitle', meetid=$meetId\n";
+
 	}
 
 } # end of ReadSwimMeetData()
@@ -2467,7 +2529,8 @@ sub DidWeGetDifferentData( $$$ ) {
 				# that contains PMS supplied swimmer data (e.g. name, regnum, team, etc.).  
 				# First, we need to get the pattern that we'll use to find the file:
 				my $fileNamePattern = PMSStruct::GetMacrosRef()->{"RSIDNFileNamePattern"};
-				my $swimmerDataFile = PMSUtil::GetFullFileNameFromPattern( $fileNamePattern, $PMSSwimmerData, "RSIND" );
+				my $swimmerDataFile = PMSUtil::GetFullFileNameFromPattern( $fileNamePattern, $PMSSwimmerData, 
+					"RSIND", 1 );
 				if( defined $swimmerDataFile ) {
 					# we have a RSIND file - is it newer than the last one?  should Topten use it?  We'll decide here:
 					my( $simpleName, $dirs, $suffix ) = fileparse( $swimmerDataFile );		# get last simple name in filename

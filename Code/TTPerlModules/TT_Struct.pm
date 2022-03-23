@@ -174,7 +174,6 @@ sub HashesAreDifferent( $$ ) {
 	return $result;
 } # end of HashesAreDifferent()
 
-#PMSLogging::PrintLog( "", "", "    Total number of lines read: " . TT_Struct::GetFetchStat("NumLinesRead"), 1);
 
 # TT_Struct::PrintStats( "Total", TT_Struct::GetStruct(), $console );
 sub PrintStats( $$$ ) {
@@ -182,7 +181,11 @@ sub PrintStats( $$$ ) {
 	foreach my $key (@fetchStatsOrder) {
 		my $desc = $fetchStats{$key . "_Desc"};
 		my $value = $hashRef->{$key};
-		PMSLogging::PrintLog( "", "", "    $heading $desc: $value", $console);
+		if( defined $value ) {
+			PMSLogging::PrintLog( "", "", "    $heading $desc: $value", $console);
+		} else {
+			PMSLogging::PrintLog( "", "", "    $heading $desc: (undefined)", $console);
+		}
 	}
 } # end of PrintStats()
 
@@ -193,7 +196,11 @@ sub PrintStatsString( $$ ) {
 	foreach my $key (@fetchStatsOrder) {
 		my $desc = $fetchStats{$key . "_Desc"};
 		my $value = $hashRef->{$key};
-		$str .= "    $heading $desc: $value\n";
+		if( defined $value ) {
+			$str .= "    $heading $desc: $value\n";
+		} else {
+			$str .= "    $heading $desc: (undefined)\n";
+		}
 	}
 	return $str;
 } # end of PrintStatsString()

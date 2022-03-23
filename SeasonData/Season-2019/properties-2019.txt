@@ -11,6 +11,10 @@
 # the results to be processed:
 RacesDataFile	races.txt
 
+# numSwimsToConsider is the maximum number of OW swims to consider for AGSOTY points.
+# This can change every year.
+numSwimsToConsider			6
+
 # scoring rules: number of points for 1st, 2nd, 3rd, etc...
 # 2019 and older
 PMSTopTenScoringRules		0, 11, 9, 8, 7, 6, 5, 4, 3, 2, 1
