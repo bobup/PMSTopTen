@@ -48,12 +48,9 @@ Later, when it's time to clone the master repository on a working computer to th
 	% cd <rootDir>
 	% git clone https://github.com/bobup/PMSTopTen
 	# the above creates the populated PMSTopTen directory tree without the private files.
-	# next, put the above PrivateTTData file into the newly created PMSTopTen directory:
-	% cp PrivateTTData-{correct date here}.tar PMSTopTen
-	# then, put the private files where they belong in the PMSTopTen tree:
+	# next, put the private files where they belong in the PMSTopTen tree:
 	% cd PMSTopTen
-	% tar xf PrivateTTData-{correct date here}.tar
-	% rm -f PrivateTTData-{correct date here}.tar
+	% tar xf ../Private/TTPrivateArchives/PrivateTTData-{correct date here}.tar 
 	
 
 
