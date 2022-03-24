@@ -45,6 +45,7 @@ is something like "PrivateTTData-08Dec2021.tar", where the date part of the name
 file was created. We'll call that part of the file name {correct date here} below.
 
 Later, when it's time to clone the master repository on a working computer to this:
+	% cd <rootDir>
 	% git clone https://github.com/bobup/PMSTopTen
 	# the above creates the populated PMSTopTen directory tree without the private files.
 	# next, put the above PrivateTTData file into the newly created PMSTopTen directory:
