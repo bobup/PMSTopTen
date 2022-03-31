@@ -75,59 +75,26 @@ PMSOpenWaterResultFile \
 #		Meet End Date - (yyyy-mm-dd)@@@ 
 #		Meet is sanctioned by PMS - (yes=1, no=0)
 USMSEpostals \
-						epostal-1hr-2021.csv; \
+						epostal-1hr-2022-men.csv; \
 							USMS@@@ \
 							0@@@ \
 							1 hour@@@ \
 							Yards@@@ \
-							2021 U.S. Masters Swimming 1-Hour ePostal National Championship@@@ \
-							https://www.usms.org/events/national-championships/epostal-national-championships/2021-epostal-national-championships@@@ \
-							2021-01-01@@@ \
-							2021-03-31@@@ \
+							2022 USMS 1-Hour Virtual Championship@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2022-virtual-championships/2022-1-hour-virtual-championship@@@ \
+							2022-01-01@@@ \
+							2022-01-31@@@ \
 							0; \
-						epostal-5k-2021-men.csv; \
+						epostal-1hr-2022-women.csv; \
 							USMS@@@ \
-							5K@@@ \
 							0@@@ \
-							Meters@@@ \
-							2021 U.S. Masters Swimming 5K/10K ePostal National Championships@@@ \
-							https://www.usms.org/events/national-championships/epostal-national-championships/2021-epostal-national-championships@@@ \
-							2021-05-15@@@ \
-							2021-09-15@@@ \
-							0; \
-						epostal-5k-2021-women.csv; \
-							USMS@@@ \
-							5K@@@ \
-							0@@@ \
-							Meters@@@ \
-							2021 U.S. Masters Swimming 5K/10K ePostal National Championships@@@ \
-							https://www.usms.org/events/national-championships/epostal-national-championships/2021-epostal-national-championships@@@ \
-							2021-05-15@@@ \
-							2021-09-15@@@ \
-							0; \
-						epostal-10k-2021-men.csv; \
-							USMS@@@ \
-							10K@@@ \
-							0@@@ \
-							Meters@@@ \
-							2021 U.S. Masters Swimming 5K/10K ePostal National Championships@@@ \
-							https://www.usms.org/events/national-championships/epostal-national-championships/2021-epostal-national-championships@@@ \
-							2021-05-15@@@ \
-							2021-09-15@@@ \
-							0; \
-						epostal-10k-2021-women.csv; \
-							USMS@@@ \
-							10K@@@ \
-							0@@@ \
-							Meters@@@ \
-							2021 U.S. Masters Swimming 5K/10K ePostal National Championships@@@ \
-							https://www.usms.org/events/national-championships/epostal-national-championships/2021-epostal-national-championships@@@ \
-							2021-05-15@@@ \
-							2021-09-15@@@ \
+							1 hour@@@ \
+							Yards@@@ \
+							2022 USMS 1-Hour Virtual Championship@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2022-virtual-championships/2022-1-hour-virtual-championship@@@ \
+							2022-01-01@@@ \
+							2022-01-31@@@ \
 							0;
-
-
-#						epostal-1hr-2021.csv; \
 
 
 >endoffile
