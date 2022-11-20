@@ -21,7 +21,9 @@ STARTDATE=`date +'%a, %b %d %G at %l:%M:%S %p %Z'`
 EMAIL_NOTICE=bobup@acm.org
 SIMPLE_SCRIPT_NAME=`basename $0`
 DESTINATION_DIR=/usr/home/pacmasters/public_html/pacificmasters.org/sites/default/files/comp/points/$STANDINGSDIR
-DESTINATION_URL=https://pacificmasters.org/points/standings-$SEASON/TTStats.html
+DESTINATION_BASE_URL=https://data.pacificmasters.org/points/standings-$SEASON
+DESTINATION_URL=https://data.pacificmasters.org/points/standings-$SEASON/TTStats.html
+DESTINATION_URL=$DESTINATION_BASE_URL/TTStats.html
 SERVER_TTSTATS=/tmp/TTStats.$$      # a copy of TTStats from the server prior to the push
 # compute the full path name of the directory holding this script.  We'll find the
 # other scripts using this path:
@@ -87,6 +89,7 @@ DoThePush() {
         "$(cat <<- BUp9
 Source Directory (dev points dir): $SOURCE_DIR
 Destination Directory: $DESTINATION_DIR
+Destination URL: $DESTINATION_BASE_URL
 (STARTed on $STARTDATE, FINISHed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
 diff $SERVER_TTSTATS $SOURCE_TTSTATS :
 $(cat $TTSTATS_DIFF2)

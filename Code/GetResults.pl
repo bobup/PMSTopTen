@@ -11,7 +11,7 @@
 #		- PAC Open water swims for the season.
 #
 # These data are retrieved from the USMS.org site (PAC Top 10, USMS Top 10, and USMS records) and from the
-#	pacificmasters.org site (PAC records and open water results).
+#	data.pacificmasters.org site (PAC records and open water results).
 #
 # This program will fetch the above data files so they can be analyzed by Topten.pl.  A property file
 #	lists the names given to the files when fetched so they can be read by Topten.pl.  The actual URL to
@@ -32,8 +32,8 @@
 #		http://www.usms.org/comp/tt/toptenlmsc.php?Year=$yearBeingProcessed&CourseID=1&ZoneID=&LMSCID=38&ClubAbbr=
 #
 #	PAC records:
-#	We'll fetch a page from the pacificmasters.org web site using an url something like this:
-#		http://pacificmasters.org/pacm/records?course=ind_scy&sort=desc&order=Date
+#	We'll fetch a page from the data.pacificmasters.org web site using an url something like this:
+#		http://data.pacificmasters.org/pacm/records?course=ind_scy&sort=desc&order=Date
 #	In this case we'll scrape the page and collect the actual records data for the season, writing it to the
 #	appropriate file which will be analyzed by Topten.pl.
 #
@@ -468,13 +468,13 @@ if( ($RESULT_FILES_TO_READ & 0b1000) != 0 ) {
 if( ($RESULT_FILES_TO_READ & 0b10000) != 0 ) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	my ($numResultLines, $numEvents) = 
-		GetPMSOWResults( "http://pacificmasters.org/points/OWPoints/$PMSOpenWaterResultFile",
+		GetPMSOWResults( "http://data.pacificmasters.org/points/OWPoints/$PMSOpenWaterResultFile",
 			"$sourceDataDir/$PMSOpenWaterResultFile" );
 	if( $numResultLines == 0 ) {
 		# try historical data...
 		PMSLogging::PrintLog( "", "", "The first attempt to get OW results failed - we are going " .
 			"to try getting them from our Historical area.", 1 );
-		($numResultLines, $numEvents) = GetPMSOWResults( "http://pacificmasters.org/points/OWPoints/" .
+		($numResultLines, $numEvents) = GetPMSOWResults( "http://data.pacificmasters.org/points/OWPoints/" .
 			"Historical/$yearBeingProcessed/GeneratedFiles/" .
 			"$PMSOpenWaterResultFile",
 			"$sourceDataDir/$PMSOpenWaterResultFile" );
@@ -484,6 +484,7 @@ if( ($RESULT_FILES_TO_READ & 0b10000) != 0 ) {
 				"awarded for OW swims.", 1 );
 		}
 	}
+	TT_Struct::SetFetchStat( "FS_OWLines", $numResultLines );
 } # end of generate PMS OW results
 
 ####
@@ -1726,7 +1727,7 @@ sub GetUSMSRecords( $$$ ) {
 
 
 
-#	GetPMSOWResults( "http://pacificmasters.org/points/OWPoints/$PMSOpenWaterResultFile" );
+#	GetPMSOWResults( "http://data.pacificmasters.org/points/OWPoints/$PMSOpenWaterResultFile" );
 # GetPMSOWResults - get the open water result file 
 #
 # PASSED:

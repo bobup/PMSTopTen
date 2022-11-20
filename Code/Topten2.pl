@@ -2176,7 +2176,7 @@ sub PMSProcessOpenWater($) {
 						# NOTE:  we are supplying the event name for the meet name since each OW event is counted as
 						# a separate "meet" - swimming 3 OW events is the same as swimming in 3 PAC events.
 						my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, $eventName, 
-							"http://pacificmasters.org/content/open-water-swims", $org, $course, 
+							"http://data.pacificmasters.org/content/open-water-swims", $org, $course, 
 							$eventDate, $eventDate, 1 );
 							
 						# compute the number of Top10 points they get from all of their OW places:
@@ -3180,7 +3180,7 @@ sub PrintResultsHTML($$$$$) {
 	my $query;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	
-	my $debugLastName = lc("xxxxxx");
+	my $debugLastName = lc("xxxxxxxx");
 
 	my $category = 1;		# we only consider Cat 1 swims
 	my $personBackgroundColor = "WHITE";		# background color for each row (computed below)
@@ -3479,7 +3479,7 @@ sub PrintResultsHTML($$$$$) {
 					next if( $missingResults{"$org-$course"} );
 
 					if( lc($lastName) eq $debugLastName) {
-						print "\nPrintResultsHTML(): found $debugLastName again\n";
+						print "\nPrintResultsHTML(): found $debugLastName again for $org-$course\n";
 					}
 
 					my @details = ();
@@ -3608,11 +3608,19 @@ sub PrintResultsHTML($$$$$) {
 									"who placed top 10 in the same event twice.  SwimmerId=" .
 									"$swimmerId, $org, $course, event='" . $detailsRef->[$i]{'EventName'} .
 									"'", 1 );
+								if( lc($lastName) eq $debugLastName) {
+									print "\nPrintResultsHTML(): working on $debugLastName: generate html for '$course': no points" .
+										" (dup event non-split age group)\n";
+								}
 							} else {
 								if( $detailsAgeGroup eq $lowerAgeGroup ) {
 									$pointsStartString = "- using points earned in $upperAgeGroup ";
 								} else {
 									$pointsStartString = "- using points earned in $lowerAgeGroup ";
+								}
+								if( lc($lastName) eq $debugLastName) {
+									print "\nPrintResultsHTML(): working on $debugLastName: generate html for '$course': no points" .
+										" (dup event split age group)\n";
 								}
 							}
 							PMSStruct::GetMacrosRef()->{"PointsStart"} = "$pointsStartString<!-- ";
@@ -3622,13 +3630,17 @@ sub PrintResultsHTML($$$$$) {
 							# but not show their points since they didn't earn any.
 							PMSStruct::GetMacrosRef()->{"PointsStart"} = "<!-- ";
 							PMSStruct::GetMacrosRef()->{"PointsEnd"} = " -->";
+							if( lc($lastName) eq $debugLastName) {
+								print "\nPrintResultsHTML(): working on $debugLastName: generate html for '$course': no points\n";
+							}
 						} else {
 							# this is one of the top 8 results
 							PMSStruct::GetMacrosRef()->{"PointsStart"} = "";
 							PMSStruct::GetMacrosRef()->{"PointsEnd"} = "";
-						}
-						if( lc($lastName) eq $debugLastName) {
-							print "\nPrintResultsHTML(): working on $debugLastName: generate html for '$course'\n";
+							if( lc($lastName) eq $debugLastName) {
+								print "\nPrintResultsHTML(): working on $debugLastName: generate html for '$course': " .
+									PMSStruct::GetMacrosRef()->{"EventPoints"} . " points\n";
+							}
 						}
 						PMSTemplate::ProcessHTMLTemplate( $templateSingleEvent, $virtualGeneratedHTMLFileHandle );
 					} # end of for( my $i = 1; $i <= $detailsNum; ...

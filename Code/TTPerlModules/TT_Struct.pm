@@ -82,6 +82,8 @@ our %fetchStats = (
 		FS_HistoricalLCMRecords_Desc	=> "number of Historical LCM Records",
 	FS_ePostalPointEarners				=>	0,
 		FS_ePostalPointEarners_Desc		=> "number of PMS swimmers who earned ePostal points",
+	FS_OWLines							=>	0,
+		FS_OWLines_Desc					=> "number of OW results generated for AGSOTY",
 );
 # $fetchStats{'NumLinesRead'} = total number of lines read from the web pages that we process
 #		to get the result files that we'll process to compute points.  PLUS, the number of lines in the
@@ -115,6 +117,7 @@ my @fetchStatsOrder = (
 	"FS_HistoricalSCMRecords",
 	"FS_HistoricalLCMRecords",
 	"FS_ePostalPointEarners",
+	"FS_OWLines",
 	);
 
 sub SetFetchStat( $$ ) {
