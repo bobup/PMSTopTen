@@ -28,7 +28,7 @@ use warnings;
 #   - if ($G_RESULT_FILES_TO_READ & 0b10000)	!= 0 then process PMS Open Water
 #   - if ($G_RESULT_FILES_TO_READ & 0b100000)	!= 0 then process "fake splashes"
 #   - if ($G_RESULT_FILES_TO_READ & 0b1000000)	!= 0 then process ePostals
-our $G_RESULT_FILES_TO_READ = 	0b1111111;		# process all result files including ePostal (not default yet)
+our $G_RESULT_FILES_TO_READ = 	0b1111111;		# process all result files including ePostal (default, as of 30Mar2022)
 #$G_RESULT_FILES_TO_READ = 0b011110;			# process all but Top Ten result files
 #$G_RESULT_FILES_TO_READ = 	0b001111; 			# process all but OW
 #$G_RESULT_FILES_TO_READ = 	0;					# process none of the result files (use DB only)
@@ -40,7 +40,7 @@ our $G_RESULT_FILES_TO_READ = 	0b1111111;		# process all result files including 
 #$G_RESULT_FILES_TO_READ = 	0b001110;			# USMS Top Ten result files, USMS records, and PMS records only
 #$G_RESULT_FILES_TO_READ = 	0b110000;			# fake splashes + OW only
 #$G_RESULT_FILES_TO_READ = 	0b1000000;			# process  ePostal only
-$G_RESULT_FILES_TO_READ = 	0b0111111;			# process all result files except ePostal (default)
+#$G_RESULT_FILES_TO_READ = 	0b0111111;			# process all result files except ePostal (not default, as of 30Mar2022)
 
 
 
@@ -82,6 +82,8 @@ our %fetchStats = (
 		FS_HistoricalLCMRecords_Desc	=> "number of Historical LCM Records",
 	FS_ePostalPointEarners				=>	0,
 		FS_ePostalPointEarners_Desc		=> "number of PMS swimmers who earned ePostal points",
+	FS_OWLines							=>	0,
+		FS_OWLines_Desc					=> "number of OW results generated for AGSOTY",
 );
 # $fetchStats{'NumLinesRead'} = total number of lines read from the web pages that we process
 #		to get the result files that we'll process to compute points.  PLUS, the number of lines in the
@@ -115,6 +117,7 @@ my @fetchStatsOrder = (
 	"FS_HistoricalSCMRecords",
 	"FS_HistoricalLCMRecords",
 	"FS_ePostalPointEarners",
+	"FS_OWLines",
 	);
 
 sub SetFetchStat( $$ ) {

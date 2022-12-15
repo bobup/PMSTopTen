@@ -32,8 +32,9 @@ echo $SCRIPT_NAME:  Get the latest results for $1
 ./GetResults.pl $1 > $TMPFILE
 if grep -q "Results have changed" < $TMPFILE ; then
 	# looks like we've got some changes!
-	echo "Found some changes in the USMS or PAC results:"
-	tail -n -13 $TMPFILE >$TMPFILE2
+	echo "Found some changes:"
+#	tail -n -13 $TMPFILE >$TMPFILE2
+	sed < $TMPFILE -e "1,/GetResults:: Final Totals:/ d"   >$TMPFILE2
 	cat $TMPFILE2
 	/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<BUp
 Subject: There are new results to process for $1 Top ten
