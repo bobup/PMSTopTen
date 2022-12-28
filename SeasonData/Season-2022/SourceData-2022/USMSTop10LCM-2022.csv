@@ -1,6 +1,4 @@
 2022 USMS Top 10 LCM for Pacific LMSC
-This is a preliminary Top 10 listing  for proofreading purposes only.
-
 Place,Age Group,Event,Name,Age,Club,LMSC,Time
 7,W18-24,50 Free,Jay Jay Eaton,21,MAQ,Pacific,29.18M
 5,W18-24,100 Free,Jay Jay Eaton,21,MAQ,Pacific,1:03.16M
@@ -44,10 +42,11 @@ Place,Age Group,Event,Name,Age,Club,LMSC,Time
 7,W30-34,400 IM,Alexandra Thomas,34,WCM,Pacific,6:39.44M
 2,W35-39,50 Free,Danielle M Herrmann,35,CLOV,Pacific,27.64M
 5,W35-39,200 Free,Wendy Tempels,37,STAN,Pacific,2:25.85M
-10,W35-39,800 Free,Mary E Holman,36,ECAM,Pacific,12:03.56M
+9,W35-39,800 Free,Mary E Holman,36,ECAM,Pacific,12:03.56M
+10,W35-39,1500 Free,Mary E Holman,36,ECAM,Pacific,22:54.05M
 9,W35-39,50 Back,Robyn Allen,37,STAN,Pacific,38.06M
 9,W35-39,200 Back,Robyn Allen,37,STAN,Pacific,2:58.42M
-1,W35-39,50 Breast,Danielle M Herrmann,35,CLOV,Pacific,31.35M
+1,W35-39,50 Breast,Danielle M Herrmann,35,CLOV,Pacific,31.06M
 6,W35-39,50 Breast,Wendy Tempels,37,STAN,Pacific,37.97M
 1,W35-39,100 Breast,Danielle M Herrmann,35,CLOV,Pacific,1:09.77M
 5,W35-39,100 Breast,Wendy Tempels,37,STAN,Pacific,1:23.13M
@@ -96,7 +95,7 @@ Place,Age Group,Event,Name,Age,Club,LMSC,Time
 1,W45-49,1500 Free,Heidi S George,46,UC38,Pacific,17:37.52M
 7,W45-49,100 Fly,Melanie C Belluomini,45,DAM,Pacific,1:27.65M
 5,W45-49,200 Fly,Ann Michelle Ongerth,48,WCM,Pacific,3:57.07M
-7,W45-49,400 IM,Melanie C Belluomini,45,DAM,Pacific,6:51.09M
+6,W45-49,400 IM,Melanie C Belluomini,45,DAM,Pacific,6:51.09M
 1,W50-54,400 Free,Alison Zamanian,52,WCM,Pacific,4:41.31M
 1,W50-54,800 Free,Alison Zamanian,52,WCM,Pacific,9:42.10M
 9,W50-54,800 Free,Stephanie Kinder,52,DAM,Pacific,11:45.67M
@@ -157,7 +156,7 @@ Place,Age Group,Event,Name,Age,Club,LMSC,Time
 4,W60-64,50 Fly,April A Oliver,61,NBA,Pacific,34.60M
 10,W60-64,50 Fly,Mary P Mammoser,60,RHMS,Pacific,37.04M
 10,W60-64,100 Fly,Helen Collins,60,UC38,Pacific,1:28.30M
-9,W65-69,1500 Free,Phyllis E Quinn,67,TOC,Pacific,25:53.48M
+8,W65-69,1500 Free,Phyllis E Quinn,67,TOC,Pacific,25:53.48M
 10,W65-69,50 Breast,Cynthia F Hayes-Rupp,65,RHMS,Pacific,47.62M
 10,W65-69,100 Breast,Cynthia F Hayes-Rupp,65,RHMS,Pacific,1:52.08M
 9,W65-69,200 Breast,Carol M Ogilvie,67,USF,Pacific,4:01.22M
@@ -261,10 +260,10 @@ Place,Age Group,Event,Name,Age,Club,LMSC,Time
 7,M25-29,50 Fly,Nikita Semenov,27,BAC,Pacific,26.27M
 9,M25-29,100 Fly,Aleksei Averchenko,29,MELO,Pacific,59.48M
 4,M30-34,50 Free,Brandon J Fischer,33,UC38,Pacific,24.79M
-2,M30-34,100 Free,Marcos Lavado,31,MAM,Pacific,52.24M
-1,M30-34,200 Free,Marcos Lavado,31,MAM,Pacific,1:56.57M
+2,M30-34,100 Free,Marcos Lavado,31,UC38,Pacific,52.24M
+1,M30-34,200 Free,Marcos Lavado,31,UC38,Pacific,1:56.57M
 7,M30-34,200 Free,Costas N Hadjipateras,32,USF,Pacific,2:10.63M
-2,M30-34,400 Free,Marcos Lavado,31,MAM,Pacific,4:19.64M
+2,M30-34,400 Free,Marcos Lavado,31,UC38,Pacific,4:19.64M
 8,M30-34,800 Free,Nathan Leber,30,USF,Pacific,11:11.53M
 4,M30-34,1500 Free,Ryan A Littlefield,32,ITM,Pacific,19:35.36M
 7,M30-34,1500 Free,Nathan Leber,30,USF,Pacific,21:14.45M
@@ -273,11 +272,11 @@ Place,Age Group,Event,Name,Age,Club,LMSC,Time
 1,M30-34,50 Breast,Brandon J Fischer,33,UC38,Pacific,27.36M
 1,M30-34,100 Breast,Brandon J Fischer,33,UC38,Pacific,1:01.66M
 1,M30-34,200 Breast,Brandon J Fischer,32,UC38,Pacific,2:13.21M
-3,M30-34,50 Fly,Marcos Lavado,31,MAM,Pacific,26.00M
+3,M30-34,50 Fly,Marcos Lavado,31,UC38,Pacific,26.00M
 5,M30-34,50 Fly,Brandon J Fischer,33,UC38,Pacific,26.57M
-1,M30-34,100 Fly,Marcos Lavado,31,MAM,Pacific,55.79M
+1,M30-34,100 Fly,Marcos Lavado,31,UC38,Pacific,55.79M
 6,M30-34,100 Fly,Costas N Hadjipateras,32,USF,Pacific,1:02.30M
-1,M30-34,200 Fly,Marcos Lavado,31,MAM,Pacific,2:09.78M
+1,M30-34,200 Fly,Marcos Lavado,31,UC38,Pacific,2:09.78M
 9,M30-34,200 Fly,Nathan Leber,30,USF,Pacific,3:06.87M
 10,M30-34,400 IM,Nathan Leber,30,USF,Pacific,6:09.89M
 10,M35-39,200 Free,Nathan J Chenco,36,STAN,Pacific,2:14.60M
@@ -324,13 +323,13 @@ Place,Age Group,Event,Name,Age,Club,LMSC,Time
 2,M55-59,800 Free,Barton S Wells,55,UC38,Pacific,9:36.73M
 1,M55-59,1500 Free,Barton S Wells,55,UC38,Pacific,18:05.27M
 2,M55-59,50 Back,Rick Hamilton,55,MAM,Pacific,31.80M
-2,M55-59,100 Back,Rick Hamilton,55,MAM,Pacific,1:08.10M
+1,M55-59,100 Back,Rick Hamilton,55,MAM,Pacific,1:08.10M
 2,M55-59,200 Back,Rick Hamilton,55,MAM,Pacific,2:29.68M
 1,M55-59,50 Breast,Paul G Kraaijvanger,55,NBA,Pacific,32.30M
 1,M55-59,100 Breast,Paul G Kraaijvanger,55,NBA,Pacific,1:13.13M
 3,M55-59,200 IM,Rick Hamilton,55,MAM,Pacific,2:33.81M
 4,M55-59,400 IM,Rick Hamilton,55,MAM,Pacific,5:29.88M
-9,M60-64,50 Free,Josef E Gorek,61,UC38,Pacific,28.35M
+8,M60-64,50 Free,Josef E Gorek,61,UC38,Pacific,28.35M
 6,M60-64,100 Free,Mark E Evans,64,SRM,Pacific,1:03.66M
 4,M60-64,200 Free,Mark E Evans,64,SRM,Pacific,2:23.03M
 9,M60-64,400 Free,Mark E Evans,64,SRM,Pacific,5:11.72M
@@ -352,7 +351,8 @@ Place,Age Group,Event,Name,Age,Club,LMSC,Time
 9,M65-69,200 Free,Steve Cutting,65,MAM,Pacific,2:29.09M
 10,M65-69,400 Free,Steve Cutting,65,MAM,Pacific,5:17.12M
 8,M65-69,800 Free,Fred Ferroggiaro,69,TOC,Pacific,11:06.60M
-8,M65-69,1500 Free,Fred Ferroggiaro,69,TOC,Pacific,21:22.63M
+7,M65-69,1500 Free,Fred Ferroggiaro,69,TOC,Pacific,21:22.63M
+10,M65-69,1500 Free,Steve Cutting,65,MAM,Pacific,21:53.90M
 8,M65-69,50 Back,Steve Cutting,65,MAM,Pacific,35.54M
 7,M65-69,100 Back,Steve Cutting,65,MAM,Pacific,1:16.44M
 9,M65-69,100 Back,Fred Ferroggiaro,69,TOC,Pacific,1:17.66M
@@ -415,6 +415,7 @@ Place,Age Group,Event,Name,Age,Club,LMSC,Time
 7,M75-79,200 IM,Gary T Fitschen,77,MAM,Pacific,3:41.77M
 9,M75-79,200 IM,Rick Meyerhoff,75,TAM,Pacific,3:54.53M
 5,M75-79,400 IM,Rick Meyerhoff,75,TAM,Pacific,8:39.50M
+10,M80-84,200 Free,Robert Norris,84,DAM,Pacific,4:39.34M
 7,M80-84,400 Free,Robert Norris,84,DAM,Pacific,9:21.81M
 7,M80-84,800 Free,Robert Norris,84,DAM,Pacific,19:47.36M
 8,M80-84,50 Back,Robert Norris,84,DAM,Pacific,56.49M

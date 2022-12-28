@@ -1,5 +1,5 @@
 "2022PacMasters:  Points for every swimmer who earned OW points."
-Generated on Wed Oct 05 2022 EDT 11:34:11 AM
+Generated on Tue Dec 27 2022 EST 12:51:18 PM
 "(We only consider Category 1 swims.)"
 #
 "NOTE: all data follows the line below beginning with Gender"
@@ -71,8 +71,8 @@ W,30-34,1,22,Arnold,Allison,A,382J-09827,Donner Lake Swim,Donner Lake Swim 2.7 M
 W,30-34,1,22,Arnold,Allison,A,382J-09827,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:03:18.00,1
 W,30-34,1,22,Arnold,Allison,A,382J-09827,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,31:06.00,1
 W,30-34,1,22,Arnold,Allison,A,382J-09827,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,21:05.00,1
-W,30-34,1,22,Arnold,Allison,A,382J-09827,Keller Cove,Keller Cove 1/2 Mile,2022-09-17,10:03.00,1
 W,30-34,1,22,Arnold,Allison,A,382J-09827,Keller Cove,Keller Cove 1 Mile,2022-09-17,21:11.00,1
+W,30-34,1,22,Arnold,Allison,A,382J-09827,Keller Cove,Keller Cove 1/2 Mile,2022-09-17,10:03.00,1
 W,30-34,2,18,Macabales,Dana,,3820-07EHT,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,42:03.00,1
 W,30-34,2,18,Macabales,Dana,,3820-07EHT,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,27:34.00,1
 W,30-34,3,16,Macabales,Dana,,3820-07EHT,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:25:13.00,1
@@ -106,8 +106,8 @@ W,30-34,11,0,Kendall,Marisa,L,3820-09KW0,Lake Berryessa,Lake Berryessa 2 Mile,20
 W,30-34,4,14,Devoto,Cecily,,3827-7J53Z,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,26:18.00,1
 W,30-34,4,14,Raviv,Rotem,,382X-NF0HN,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,35:35.00,1
 W,30-34,4,14,Taylor,Bianca,A,3821-3XTFF,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:40:13.00,1
-W,30-34,6,10,Fisher,Katherine,E,382Y-0AJVB,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,30:03.00,1
-W,30-34,10,2,Fisher,Katherine,E,382Y-0AJVB,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:01:06.00,1
+W,30-34,6,10,Fisher,Katherine,,382Y-0AJVB,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,30:03.00,1
+W,30-34,10,2,Fisher,Katherine,,382Y-0AJVB,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:01:06.00,1
 W,30-34,5,12,LEVINSON,ROBYN,M,382G-0745Y,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,28:13.00,1
 W,30-34,7,8,Versfeld,Rizmari,,382K-NVAM3,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:20:54.00,1
 W,30-34,9,4,Versfeld,Rizmari,,382K-NVAM3,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,55:34.00,1
@@ -118,11 +118,17 @@ W,30-34,9,4,Moradian,Sophia,G,382R-0B7EJ,Donner Lake Swim,Donner Lake Swim 2.7 M
 W,30-34,9,4,Archibald,Hannah,,382J-M2VJT,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,36:46.00,1
 W,30-34,10,2,Stoykovych,Lydia,,3829-071X8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:22:50.00,1
 W,30-34,10,2,Katsin,Hillary,,382P-NYAWV,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,41:26.00,1
+W,30-34,12,0,Darby,Kate,,382N-KTHRC,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:13:11.00,1
+W,30-34,11,0,Linn,Elisabeth,A,382G-09A0P,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:28:27.00,1
+W,30-34,12,0,Davis,Elizabeth,A,3825-A4SGP,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:28:58.00,1
+W,30-34,13,0,D'Auria,Amy,,3822-PWB51,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:31:18.00,1
+W,30-34,14,0,Ives,Sarah,,3824-B245W,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:33:25.00,1
+W,30-34,15,0,Freiwald,Margaret,,382A-071RM,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,2:06:06.00,1
 W,35-39,1,22,Yang,Katherine,,382N-09SXY,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,44:41.00,1
 W,35-39,1,22,Yang,Katherine,,382N-09SXY,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,21:56.00,1
 W,35-39,1,22,Yang,Katherine,,382N-09SXY,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:06:25.00,1
-W,35-39,1,22,Yang,Katherine,,382N-09SXY,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,34:01.00,1
 W,35-39,1,22,Yang,Katherine,,382N-09SXY,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,23:12.00,1
+W,35-39,1,22,Yang,Katherine,,382N-09SXY,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,34:01.00,1
 W,35-39,1,22,WEST,MEREDITH,A,382Y-03PVE,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,26:48.00,1
 W,35-39,1,22,WEST,MEREDITH,A,382Y-03PVE,Keller Cove,Keller Cove 1/2 Mile,2022-09-17,14:30.00,1
 W,35-39,2,18,WEST,MEREDITH,A,382Y-03PVE,Santa Cruz Cruise,Santa Cruz Cruise 2.5 Mile,2022-07-31,1:16:20.00,1
@@ -195,6 +201,7 @@ W,40-44,2,18,Tracey,Shannon,E,382M-03MTB,Keller Cove,Keller Cove 2 Mile,2022-09-
 W,40-44,9,4,Tracey,Shannon,E,382M-03MTB,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,29:10.00,1
 W,40-44,11,0,Tracey,Shannon,E,382M-03MTB,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,58:15.00,1
 W,40-44,2,18,MERLO,BETH,,382D-C85D0,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,26:51.00,1
+W,40-44,2,18,Ming,Kristin,,382V-HCYJT,Keller Cove,Keller Cove 1 Mile,2022-09-17,39:09.00,1
 W,40-44,2,18,Lawrence,Laura,A,3820-040G1,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:18:42.00,1
 W,40-44,3,16,Ross,Jessica,L,3828-03WFD,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,43:03.00,1
 W,40-44,3,16,SWEDLOW,KARA,,382E-TRJMZ,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,30:27.00,1
@@ -217,6 +224,25 @@ W,40-44,13,0,Brinkman,Tessa,,382X-Y6EF3,Lake Berryessa,Lake Berryessa 1 Mile,202
 W,40-44,10,2,Leppo,Maura,,382P-0AZZT,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,57:52.00,1
 W,40-44,10,2,Rau,Colleen,M,382U-06N86,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:32:02.00,1
 W,40-44,12,0,Rau,Colleen,M,382U-06N86,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,30:25.00,1
+W,40-44,11,0,Heape,Kelly,A,3829-0UX1N,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:32:15.00,1
+W,40-44,12,0,Gernert,Stefanie,L,3822-4JJCT,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:32:27.00,1
+W,40-44,13,0,Fields,Rachael,C,3820-03JCW,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:32:56.00,1
+W,40-44,14,0,Lau,Lisa,,382D-NCBCN,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:33:12.00,1
+W,40-44,15,0,Sattely,Elizabeth,,382E-R6E66,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:33:57.00,1
+W,40-44,11,0,Brezing,Stacey,D,382S-063VV,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,29:56.00,1
+W,40-44,12,0,Brezing,Stacey,D,382S-063VV,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,58:32.00,1
+W,40-44,16,0,Bryant,Cameron,L,3822-08D7K,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:34:06.00,1
+W,40-44,17,0,Lester,Rebecca,,3827-1R7P9,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:34:21.00,1
+W,40-44,18,0,Muraki,Miya,,3826-05U76,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:36:15.00,1
+W,40-44,14,0,Wisniewski,Emilia,,382V-0AGCH,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,31:33.00,1
+W,40-44,19,0,Thomas,Mary,,3827-03Y4G,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:36:15.00,1
+W,40-44,15,0,Topping,Catherine,,3821-Y2NSS,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,32:39.00,1
+W,40-44,20,0,Martin,Jill,J,3827-HN7DE,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:36:18.00,1
+W,40-44,16,0,Hopkins,Maggie,,3821-FCKA2,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,34:59.00,1
+W,40-44,21,0,Lemen,Olivia,A,382A-03F1C,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:36:18.00,1
+W,40-44,22,0,McCarthy,Briana,K,3827-07BS7,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:37:36.00,1
+W,40-44,23,0,Segaran,Brooke,E,382Z-CG3WK,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:40:01.00,1
+W,40-44,24,0,Sheridan,Kathleen,,382G-09VG4,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:50:21.00,1
 W,45-49,1,22,Fischer,Amy,E,382B-03WDD,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:10:22.00,1
 W,45-49,1,22,Fischer,Amy,E,382B-03WDD,Keller Cove,Keller Cove 2 Mile,2022-09-17,53:25.00,1
 W,45-49,1,22,Fischer,Amy,E,382B-03WDD,Keller Cove,Keller Cove 1/2 Mile,2022-09-17,12:24.00,1
@@ -225,8 +251,8 @@ W,45-49,1,22,Profumo,Tesla,E,3829-068K7,Lake Del Valle,Lake Del Valle 2.5K,2022-
 W,45-49,1,22,Profumo,Tesla,E,3829-068K7,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,23:10.00,1
 W,45-49,2,18,Profumo,Tesla,E,3829-068K7,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,45:11.00,1
 W,45-49,2,18,Profumo,Tesla,E,3829-068K7,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:07:51.00,1
-W,45-49,3,16,Darling,Colleen,M,382U-03WVE,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,44:10.00,1
 W,45-49,3,16,Darling,Colleen,M,382U-03WVE,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,29:18.00,1
+W,45-49,3,16,Darling,Colleen,M,382U-03WVE,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,44:10.00,1
 W,45-49,4,14,Darling,Colleen,M,382U-03WVE,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,28:13.00,1
 W,45-49,5,12,Darling,Colleen,M,382U-03WVE,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:33:19.00,1
 W,45-49,6,10,Darling,Colleen,M,382U-03WVE,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,58:12.00,1
@@ -286,6 +312,12 @@ W,45-49,10,2,Dhillon,Patty,,382R-G8STS,Donner Lake Swim,Donner Lake Swim 2.7 Mil
 W,45-49,10,2,Klucsor,Michelle,C,382H-03GJV,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,34:41.00,1
 W,45-49,13,0,Klucsor,Michelle,C,382H-03GJV,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:08:08.00,1
 W,45-49,10,2,Parrish,Ariel,,382N-0B8G4,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:58:19.00,1
+W,45-49,18,0,Spott,Rachel Farrah,,382M-03R0E,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:22:07.00,1
+W,45-49,11,0,Brown,Jennifer,D,382S-0AMN9,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:47:51.00,1
+W,45-49,12,0,Strubing,Shaena,,382U-0AEEP,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:49:45.00,1
+W,45-49,13,0,Conroy,Shannon,M,3828-03PZ0,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:52:30.00,1
+W,45-49,11,0,ODell,Anne Marie,,3825-U98GV,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,37:59.00,1
+W,45-49,12,0,Menique,Celine,V,382V-FZC65,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,41:09.00,1
 W,50-54,1,22,Hertzer,Cynthia,J,382V-CHSWM,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,49:52.00,1
 W,50-54,1,22,Hertzer,Cynthia,J,382V-CHSWM,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,25:28.00,1
 W,50-54,1,22,Hertzer,Cynthia,J,382V-CHSWM,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,21:07.00,1
@@ -344,6 +376,12 @@ W,50-54,9,4,Bronander,Lisa,M,382E-08ANF,Donner Lake Swim,Donner Lake Swim 2.7 Mi
 W,50-54,9,4,Shafa,Atossa,,3822-03KNP,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,44:18.00,1
 W,50-54,10,2,Lo,Yvonne,F,382V-03FRN,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:30:03.00,1
 W,50-54,10,2,Walters,Anne,C,3826-AW2E2,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,45:54.00,1
+W,50-54,11,0,Philpott,Patti,H,382J-0780M,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:30:50.00,1
+W,50-54,12,0,Cavalli,Christina,,382B-008G0,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:31:31.00,1
+W,50-54,14,0,Jorgensen,Kimberly,A,382M-03K4P,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:36:55.00,1
+W,50-54,16,0,Chung,Heejay,A,382P-0680Y,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:40:10.00,1
+W,50-54,17,0,Jolif,Florence,,3827-08DKM,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:44:00.00,1
+W,50-54,18,0,Gilfillan,K Kiely,,3822-03R8M,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:49:41.00,1
 W,55-59,1,22,Elsbach,Kimberly,D,3822-D0NUT,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,46:30.00,1
 W,55-59,1,22,Elsbach,Kimberly,D,3822-D0NUT,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,20:36.00,1
 W,55-59,1,22,Elsbach,Kimberly,D,3822-D0NUT,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:09:20.00,1
@@ -448,9 +486,36 @@ W,55-59,9,4,Melrose,Naya,R,382Z-03TXY,Lake Del Valle,Lake Del Valle 2.5K,2022-08
 W,55-59,9,4,HINCKLE,PIA,J,382P-09856,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,36:02.00,1
 W,55-59,10,2,WILLIAMS,CRISSA,M,382Y-0B60C,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,38:40.00,1
 W,55-59,10,2,Nix,Kelly,A,382B-0A5CT,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:33:01.00,1
+W,55-59,13,0,Salowe,Naomi,,382A-03HKD,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:05:46.00,1
+W,55-59,11,0,Clifford,Katie,J,382A-03NSE,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,42:28.00,1
+W,55-59,11,0,Clifford,Katie,J,382A-03NSE,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,28:38.00,1
+W,55-59,13,0,Driscoll,Heather,J,3827-03HJT,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,30:01.00,1
+W,55-59,14,0,Driscoll,Heather,J,3827-03HJT,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,46:20.00,1
+W,55-59,15,0,Rastatter,Colleen,M,382G-03G7F,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,36:27.00,1
+W,55-59,13,0,McCleary,Jackie,L,382G-05V2J,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,45:31.00,1
+W,55-59,12,0,Trusso,Amy,F,3829-07CF0,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:26:11.00,1
+W,55-59,18,0,Wei,Yang,,382G-PK970,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,1:04:35.00,1
+W,55-59,13,0,Peters,Ann,L,382U-03N0A,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:26:56.00,1
+W,55-59,14,0,Beegle,Janet,,382T-03H9S,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,34:43.00,1
+W,55-59,16,0,Beegle,Janet,,382T-03H9S,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:34:53.00,1
+W,55-59,16,0,Beegle,Janet,,382T-03H9S,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,53:23.00,1
+W,55-59,17,0,Jacobus,Patricia,,3823-PX3PU,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:40:50.00,1
+W,55-59,13,0,Cherry,Kirsten,K,382D-0862G,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,33:24.00,1
+W,55-59,18,0,Troutner,Heidi,J,382Y-03GJY,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:41:50.00,1
+W,55-59,20,0,Brenner,Mindi,,3827-GTH20,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:43:41.00,1
+W,55-59,14,0,Azat,Sara,,382H-09X66,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,35:02.00,1
+W,55-59,21,0,Merical,Stephanie,L,382X-JS21X,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:44:03.00,1
+W,55-59,15,0,Kelly Smethurst,Andrea,E,3826-06DFV,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,35:38.00,1
+W,55-59,15,0,Kelly Smethurst,Andrea,E,3826-06DFV,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,51:44.00,1
+W,55-59,17,0,Lim,Patricia,H,382R-07ZZ4,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,57:58.00,1
+W,55-59,22,0,Lim,Patricia,H,382R-07ZZ4,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:54:38.00,1
+W,55-59,16,0,Nielsen,Elizabeth,C,3826-6PG04,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,35:42.00,1
+W,55-59,17,0,Verschuur,Joanneke,,382E-03Y5R,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,37:57.00,1
+W,55-59,18,0,Miller,Bernadette,E,382D-07JS9,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,39:51.00,1
+W,55-59,19,0,Eisley,Jennifer,C,382H-07HAN,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,45:02.00,1
 W,60-64,1,22,CLEMENTS,CINDY,V,3826-03H7Y,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,23:34.00,1
-W,60-64,1,22,CLEMENTS,CINDY,V,3826-03H7Y,Keller Cove,Keller Cove 1 Mile,2022-09-17,26:51.00,1
 W,60-64,1,22,CLEMENTS,CINDY,V,3826-03H7Y,Keller Cove,Keller Cove 1/2 Mile,2022-09-17,12:42.00,1
+W,60-64,1,22,CLEMENTS,CINDY,V,3826-03H7Y,Keller Cove,Keller Cove 1 Mile,2022-09-17,26:51.00,1
 W,60-64,2,18,CLEMENTS,CINDY,V,3826-03H7Y,Santa Cruz Cruise,Santa Cruz Cruise 2.5 Mile,2022-07-31,1:03:32.00,1
 W,60-64,2,18,CLEMENTS,CINDY,V,3826-03H7Y,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:18:21.00,1
 W,60-64,1,22,Renner,Janet,K,3821-02000,Santa Cruz Cruise,Santa Cruz Cruise 2.5 Mile,2022-07-31,1:02:12.00,1
@@ -499,8 +564,8 @@ W,60-64,1,22,RADCLIFF,SHARON,,3828-0AJED,Keller Cove,Keller Cove 2 Mile,2022-09-
 W,60-64,9,4,RADCLIFF,SHARON,,3828-0AJED,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,33:01.00,1
 W,60-64,4,14,Lewis,Laurie,J,3820-03YD1,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:29:09.00,1
 W,60-64,7,8,Lewis,Laurie,J,3820-03YD1,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:40:34.00,1
-W,60-64,4,14,ALLAN,JEAN,E,3825-JEANA,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,29:03.00,1
-W,60-64,8,6,ALLAN,JEAN,E,3825-JEANA,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:41:41.00,1
+W,60-64,4,14,ALLAN,JEAN,,3825-JEANA,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,29:03.00,1
+W,60-64,8,6,ALLAN,JEAN,,3825-JEANA,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:41:41.00,1
 W,60-64,3,16,Shepard,Emily,P,382C-03PKU,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,46:28.00,1
 W,60-64,3,16,Seitz,Chris,,382Z-03SAB,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:21:34.00,1
 W,60-64,8,6,Tweten,Patricia,L,382U-03K62,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:12:18.00,1
@@ -529,20 +594,26 @@ W,60-64,9,4,Fischer,Lisa,M,382J-03Y6G,Lake Berryessa,Lake Berryessa 2 Mile,2022-
 W,60-64,9,4,Dellwo,Marcia,L,382M-03Y3B,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,38:54.00,1
 W,60-64,10,2,Carboni,Lisa,,382R-0AMMT,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:45:32.00,1
 W,60-64,10,2,BUCKLEY,KRISTINE,E,382B-03H5H,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,34:02.00,1
+W,60-64,11,0,Dibley,Allison,M,382H-071HA,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,40:17.00,1
+W,60-64,12,0,McNichol,Felicity,A,382Y-W5TDN,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,43:01.00,1
+W,60-64,14,0,Munoz,Leslie,S,382F-5EKN8,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,45:57.00,1
+W,60-64,11,0,SILVERMAN,EMILY,L,3822-03YD3,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,35:30.00,1
+W,60-64,12,0,BUMP,CATHY,,3823-03P2F,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,36:12.00,1
+W,60-64,13,0,DIRIENZO,TINA,M,382J-040V0,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,41:37.00,1
 W,65-69,1,22,Sommers,Lorraine,,382D-03EXD,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,53:15.00,1
 W,65-69,1,22,Sommers,Lorraine,,382D-03EXD,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,26:46.00,1
 W,65-69,1,22,Sommers,Lorraine,,382D-03EXD,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:17:05.00,1
-W,65-69,1,22,Sommers,Lorraine,,382D-03EXD,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,39:25.00,1
 W,65-69,1,22,Sommers,Lorraine,,382D-03EXD,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,27:18.00,1
+W,65-69,1,22,Sommers,Lorraine,,382D-03EXD,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,39:25.00,1
 W,65-69,1,22,Sommers,Lorraine,,382D-03EXD,Keller Cove,Keller Cove 2 Mile,2022-09-17,59:20.00,1
 W,65-69,1,22,Sommers,Lorraine,,382D-03EXD,Keller Cove,Keller Cove 1/2 Mile,2022-09-17,12:32.00,1
 W,65-69,1,22,Quinn,Phyllis,E,382J-03F7Y,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:25:39.00,1
 W,65-69,2,18,Quinn,Phyllis,E,382J-03F7Y,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:00:20.00,1
-W,65-69,2,18,Quinn,Phyllis,E,382J-03F7Y,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,44:11.00,1
 W,65-69,2,18,Quinn,Phyllis,E,382J-03F7Y,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,29:11.00,1
+W,65-69,2,18,Quinn,Phyllis,E,382J-03F7Y,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,44:11.00,1
 W,65-69,3,16,Quinn,Phyllis,E,382J-03F7Y,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,31:13.00,1
-W,65-69,2,18,HART,ROBIN,D,3828-03SKK,Keller Cove,Keller Cove 1 Mile,2022-09-17,45:53.00,1
 W,65-69,2,18,HART,ROBIN,D,3828-03SKK,Keller Cove,Keller Cove 1/2 Mile,2022-09-17,20:54.00,1
+W,65-69,2,18,HART,ROBIN,D,3828-03SKK,Keller Cove,Keller Cove 1 Mile,2022-09-17,45:53.00,1
 W,65-69,4,14,HART,ROBIN,D,3828-03SKK,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,37:14.00,1
 W,65-69,4,14,HART,ROBIN,D,3828-03SKK,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,1:14:32.00,1
 W,65-69,9,4,HART,ROBIN,D,3828-03SKK,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,55:18.00,1
@@ -581,10 +652,10 @@ W,65-69,8,6,Perry,Laurie,S,3829-03VAV,Donner Lake Swim,Donner Lake Swim 2.7 Mile
 W,70-74,1,22,Val,Laura,B,3826-03H9F,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,46:51.00,1
 W,70-74,1,22,Val,Laura,B,3826-03H9F,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,23:50.00,1
 W,70-74,1,22,Val,Laura,B,3826-03H9F,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:10:23.00,1
-W,70-74,1,22,Val,Laura,B,3826-03H9F,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,36:33.00,1
 W,70-74,1,22,Val,Laura,B,3826-03H9F,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,24:09.00,1
-W,70-74,1,22,ARMENTO,VALERIE,J,3820-03FAW,Keller Cove,Keller Cove 2 Mile,2022-09-17,1:32:06.00,1
+W,70-74,1,22,Val,Laura,B,3826-03H9F,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,36:33.00,1
 W,70-74,1,22,ARMENTO,VALERIE,J,3820-03FAW,Keller Cove,Keller Cove 1/2 Mile,2022-09-17,20:58.00,1
+W,70-74,1,22,ARMENTO,VALERIE,J,3820-03FAW,Keller Cove,Keller Cove 2 Mile,2022-09-17,1:32:06.00,1
 W,70-74,3,16,ARMENTO,VALERIE,J,3820-03FAW,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,1:04:21.00,1
 W,70-74,3,16,ARMENTO,VALERIE,J,3820-03FAW,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,43:00.00,1
 W,70-74,5,12,ARMENTO,VALERIE,J,3820-03FAW,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,36:58.00,1
@@ -712,9 +783,19 @@ M,30-34,9,4,Anderson,Martin,J,3823-VRC4P,Donner Lake Swim,Donner Lake Swim 2.7 M
 M,30-34,9,4,Palmer,Scott,,382P-CCF9U,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,31:21.00,1
 M,30-34,10,2,Warren,Brian,P,382S-8R2WN,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,53:59.00,1
 M,30-34,10,2,Anderson,Joseph,,382W-MAGJM,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,36:21.00,1
+M,30-34,11,0,Bautista,Jair,,382U-TWM70,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,56:30.00,1
+M,30-34,14,0,Bautista,Jair,,382U-TWM70,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:18:34.00,1
+M,30-34,12,0,Lee,Raymond,,382N-09NE3,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,58:11.00,1
+M,30-34,13,0,Johnson,Kevin,M,382T-C90X8,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:04:03.00,1
+M,30-34,12,0,Barta,Paul,J,3822-0AHW5,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:14:44.00,1
+M,30-34,13,0,Harding,Keevan,G,382G-06JPG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:17:41.00,1
+M,30-34,15,0,Giesler,Dylan,T,3825-HNZZ8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:19:35.00,1
+M,30-34,16,0,Leber,Nathan,,382U-0A8YB,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:20:13.00,1
+M,30-34,17,0,Bickham,Travis,,382Y-07ZR6,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:22:09.00,1
+M,30-34,18,0,Pine,Justin,,382F-M7EN7,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:23:01.00,1
 M,35-39,1,22,Whaley,Christopher,,3825-09SZK,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,23:04.00,1
-M,35-39,1,22,Whaley,Christopher,,3825-09SZK,Keller Cove,Keller Cove 2 Mile,2022-09-17,48:12.00,1
 M,35-39,1,22,Whaley,Christopher,,3825-09SZK,Keller Cove,Keller Cove 1/2 Mile,2022-09-17,11:02.00,1
+M,35-39,1,22,Whaley,Christopher,,3825-09SZK,Keller Cove,Keller Cove 2 Mile,2022-09-17,48:12.00,1
 M,35-39,2,18,Whaley,Christopher,,3825-09SZK,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:06:21.00,1
 M,35-39,2,18,Whaley,Christopher,,3825-09SZK,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,34:06.00,1
 M,35-39,2,18,Law,David,,3826-09UK6,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:21:04.00,1
@@ -755,8 +836,9 @@ M,35-39,7,8,Turner,Christopher,,382J-WW9MZ,Lake Berryessa,Lake Berryessa 1 Mile,
 M,35-39,8,6,Tynes,Grayson,D,382J-09UPT,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:31:24.00,1
 M,35-39,9,4,Marlow,Daniel,A,382Z-B2R5E,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:31:56.00,1
 M,35-39,10,2,Kapustin,Yevgeniy,M,382Z-4NCDU,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:46:18.00,1
-M,40-44,1,22,Holbrook,Chad,D,382X-ZX84M,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,35:05.00,1
+M,35-39,11,0,Benjamin Jr,William,P,3821-A3ZP0,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:57:21.00,1
 M,40-44,1,22,Holbrook,Chad,D,382X-ZX84M,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,23:23.00,1
+M,40-44,1,22,Holbrook,Chad,D,382X-ZX84M,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,35:05.00,1
 M,40-44,2,18,Holbrook,Chad,D,382X-ZX84M,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,46:21.00,1
 M,40-44,2,18,Holbrook,Chad,D,382X-ZX84M,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,23:19.00,1
 M,40-44,3,16,Holbrook,Chad,D,382X-ZX84M,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:07:39.00,1
@@ -777,8 +859,8 @@ M,40-44,1,22,Ferguson,Andrew,G,382R-046YU,Keller Cove,Keller Cove 2 Mile,2022-09
 M,40-44,1,22,SALOMAA,JARI,,382H-JAR1S,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,20:20.00,1
 M,40-44,1,22,SALOMAA,JARI,,382H-JAR1S,Santa Cruz Cruise,Santa Cruz Cruise 2.5 Mile,2022-07-31,55:32.00,1
 M,40-44,2,18,SALOMAA,JARI,,382H-JAR1S,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:06:45.00,1
-M,40-44,2,18,Hannan,Zachary,,382X-7BDVB,Keller Cove,Keller Cove 1 Mile,2022-09-17,29:15.00,1
 M,40-44,2,18,Hannan,Zachary,,382X-7BDVB,Keller Cove,Keller Cove 1/2 Mile,2022-09-17,13:02.00,1
+M,40-44,2,18,Hannan,Zachary,,382X-7BDVB,Keller Cove,Keller Cove 1 Mile,2022-09-17,29:15.00,1
 M,40-44,3,16,Hannan,Zachary,,382X-7BDVB,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,41:07.00,1
 M,40-44,9,4,Hannan,Zachary,,382X-7BDVB,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,57:57.00,1
 M,40-44,13,0,Hannan,Zachary,,382X-7BDVB,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:26:34.00,1
@@ -812,6 +894,12 @@ M,40-44,8,6,Lancara,Matt,,3829-03EFV,Donner Lake Swim,Donner Lake Swim 2.7 Mile,
 M,40-44,8,6,Waggoner,Andrew,,382K-MBXEB,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,36:11.00,1
 M,40-44,10,2,Pezone,Michael,A,382D-0AESF,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,59:35.00,1
 M,40-44,10,2,Fouts,Christopher,B,382U-03P2U,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:18:27.00,1
+M,40-44,11,0,Waterson,Kevin,,3825-08CRR,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:00:27.00,1
+M,40-44,12,0,Trout,Andrew,,3824-0943V,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:00:50.00,1
+M,40-44,13,0,Sagiv,Doron,,382G-PRPXE,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:04:59.00,1
+M,40-44,11,0,Kenzie,Warren,R,382R-03S8J,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:18:37.00,1
+M,40-44,12,0,Gonzales,Victor,,382A-0AYE3,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:21:05.00,1
+M,40-44,14,0,Carlin,Kevin,B,382F-03M3H,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:33:09.00,1
 M,45-49,1,22,Gillis,Trevor,D,382R-03J54,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,39:54.00,1
 M,45-49,1,22,Gillis,Trevor,D,382R-03J54,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,19:44.00,1
 M,45-49,1,22,Gillis,Trevor,D,382R-03J54,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,17:39.00,1
@@ -822,8 +910,8 @@ M,45-49,1,22,Gillis,Trevor,D,382R-03J54,Lake Del Valle,Lake Del Valle 1 Mile,202
 M,45-49,2,18,Sarrigeorgidis,Kostas,,382P-03N2J,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,44:40.00,1
 M,45-49,2,18,Sarrigeorgidis,Kostas,,382P-03N2J,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,21:59.00,1
 M,45-49,2,18,Sarrigeorgidis,Kostas,,382P-03N2J,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:09:38.00,1
-M,45-49,2,18,Sarrigeorgidis,Kostas,,382P-03N2J,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,34:08.00,1
 M,45-49,2,18,Sarrigeorgidis,Kostas,,382P-03N2J,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,23:08.00,1
+M,45-49,2,18,Sarrigeorgidis,Kostas,,382P-03N2J,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,34:08.00,1
 M,45-49,2,18,Besocke,Daniel,W,3823-06876,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,20:16.00,1
 M,45-49,2,18,Besocke,Daniel,W,3823-06876,Santa Cruz Cruise,Santa Cruz Cruise 2.5 Mile,2022-07-31,57:19.00,1
 M,45-49,3,16,Besocke,Daniel,W,3823-06876,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,48:11.00,1
@@ -864,18 +952,22 @@ M,45-49,9,4,Silverman,Joshua,P,382H-VH6GR,Lake Berryessa,Lake Berryessa 2 Mile,2
 M,45-49,9,4,Segal,Tzach,,382T-D0ENS,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:30:01.00,1
 M,45-49,10,2,Pitesky,Maurice,,382V-091BX,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:15:14.00,1
 M,45-49,10,2,Gawlick,Matthew,C,3820-0A7EZ,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,33:29.00,1
+M,45-49,11,0,Montanari,Andrea,,382T-SZS52,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:34:20.00,1
+M,45-49,12,0,Maher,John,S,382B-03WPP,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:35:12.00,1
+M,45-49,13,0,Lester,Benjamin,,3829-RX183,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:39:44.00,1
+M,45-49,11,0,Kaffka,Alex,,382D-FC7M6,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,34:31.00,1
 M,50-54,1,22,Jeffery,Kevin,L,382E-03NJV,Santa Cruz Cruise,Santa Cruz Cruise 2.5 Mile,2022-07-31,52:55.00,1
 M,50-54,2,18,Jeffery,Kevin,L,382E-03NJV,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,45:56.00,1
 M,50-54,2,18,Jeffery,Kevin,L,382E-03NJV,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:04:51.00,1
-M,50-54,2,18,Jeffery,Kevin,L,382E-03NJV,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,34:02.00,1
 M,50-54,2,18,Jeffery,Kevin,L,382E-03NJV,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,23:09.00,1
+M,50-54,2,18,Jeffery,Kevin,L,382E-03NJV,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,34:02.00,1
 M,50-54,1,22,Winsor,Brad,,382K-03J9D,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,44:47.00,1
 M,50-54,1,22,Winsor,Brad,,382K-03J9D,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,21:49.00,1
 M,50-54,1,22,Winsor,Brad,,382K-03J9D,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,18:46.00,1
 M,50-54,1,22,Crowley,Terrance,B,382C-065HC,Keller Cove,Keller Cove 2 Mile,2022-09-17,53:21.00,1
 M,50-54,5,12,Crowley,Terrance,B,382C-065HC,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,27:19.00,1
-M,50-54,5,12,Crowley,Terrance,B,382C-065HC,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,38:39.00,1
 M,50-54,5,12,Crowley,Terrance,B,382C-065HC,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,26:06.00,1
+M,50-54,5,12,Crowley,Terrance,B,382C-065HC,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,38:39.00,1
 M,50-54,7,8,Crowley,Terrance,B,382C-065HC,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:14:33.00,1
 M,50-54,9,4,Crowley,Terrance,B,382C-065HC,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,54:18.00,1
 M,50-54,1,22,Gould,Rick,,382B-03K93,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:06:45.00,1
@@ -932,6 +1024,23 @@ M,50-54,8,6,Frydman,David,P,382D-07XKA,Lake Del Valle,Lake Del Valle 1 Mile,2022
 M,50-54,17,0,Frydman,David,P,382D-07XKA,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:35:20.00,1
 M,50-54,9,4,Clifford,Dan,,3828-0A3E9,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,59:21.00,1
 M,50-54,10,2,Ridder,David,M,382U-03U9E,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,55:41.00,1
+M,50-54,11,0,Burger,John,,382Y-07R07,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,57:16.00,1
+M,50-54,12,0,Villanueva,Chris,,382K-06YP1,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,58:21.00,1
+M,50-54,13,0,Fenton,Joshua,,382W-09WNX,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:03:13.00,1
+M,50-54,14,0,Carter,Paul,A,382T-08BBN,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:03:52.00,1
+M,50-54,15,0,OReilly,David,J,382N-8FV65,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:17:13.00,1
+M,50-54,23,0,OReilly,David,J,382N-8FV65,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:46:57.00,1
+M,50-54,11,0,Hernandez,Gregory,N,382K-03SS5,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:20:22.00,1
+M,50-54,13,0,Nashner,Michael,,3828-8GDBE,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:26:15.00,1
+M,50-54,14,0,Brown,Jeffrey,,382P-6G4Z3,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:27:28.00,1
+M,50-54,15,0,Noble,Brian,J,382Z-03K5C,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:27:37.00,1
+M,50-54,16,0,Burks,Robert,M,3825-03YD6,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:31:01.00,1
+M,50-54,18,0,Lowry,Jason,D,382W-0AZ8Y,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:36:47.00,1
+M,50-54,19,0,Atkins,Steve,J,3827-0AZ8T,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:38:30.00,1
+M,50-54,20,0,Whalen,Terry,,382M-AZNKM,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:40:19.00,1
+M,50-54,21,0,Wolfe,Michael,R,382P-DN17D,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:42:47.00,1
+M,50-54,22,0,Cohen,David,G,382S-07XC5,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:43:00.00,1
+M,50-54,24,0,Stickler,Jim,D,382J-0A6AJ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:47:26.00,1
 M,55-59,2,18,Arris,Todd,E,3822-03H46,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,46:16.00,1
 M,55-59,2,18,Arris,Todd,E,3822-03H46,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,23:03.00,1
 M,55-59,2,18,Arris,Todd,E,3822-03H46,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:05:57.00,1
@@ -1002,6 +1111,21 @@ M,55-59,9,4,Ardourel,Franck,S,382U-09GXH,Lake Berryessa,Lake Berryessa 1 Mile,20
 M,55-59,10,2,Deng,Edward,E,382N-03K89,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:22:51.00,1
 M,55-59,10,2,VANTALON,LUC,,382R-MFNVG,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,39:24.00,1
 M,55-59,10,2,Cobb,Mike,,382R-03FAD,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,31:50.00,1
+M,55-59,11,0,Bates,Henry,S,382K-03KAX,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:28:49.00,1
+M,55-59,12,0,Remington,Todd,E,382Y-0B134,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:38:46.00,1
+M,55-59,13,0,Cherif,Moez,,382F-0A4XE,Lake Del Valle,Lake Del Valle 5K,2022-08-27,2:06:35.00,1
+M,55-59,11,0,Vink,Erik,,3825-03GDK,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:09:21.00,1
+M,55-59,11,0,Donovan,John,,382T-09SGX,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:20:31.00,1
+M,55-59,12,0,Zuber,David,,382V-0AEEN,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:21:30.00,1
+M,55-59,13,0,Rossiter,John,S,3828-0A5Z8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:25:02.00,1
+M,55-59,14,0,Mockus,Jeff,,382W-JM0KE,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:29:26.00,1
+M,55-59,15,0,Fuszard,Peter,T,382Z-03ZMD,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:41:36.00,1
+M,55-59,16,0,Baker,Daniel,,382A-NUWDG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:41:45.00,1
+M,55-59,18,0,Ewing,Todd,S,382E-HVKJ5,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:56:07.00,1
+M,55-59,11,0,FREW,JAMES,J,382X-03JRJ,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,42:19.00,1
+M,55-59,11,0,Ehrenberger,Dennis,K,382P-08FJC,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,32:45.00,1
+M,55-59,12,0,Keating,Brian,J,382X-0402E,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,33:49.00,1
+M,55-59,13,0,Wu,Long,,382S-03Z6S,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,34:20.00,1
 M,60-64,1,22,Tainty,Chris,J,382C-03JCS,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,46:24.00,1
 M,60-64,1,22,Tainty,Chris,J,382C-03JCS,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,20:19.00,1
 M,60-64,1,22,Tainty,Chris,J,382C-03JCS,Santa Cruz Cruise,Santa Cruz Cruise 2.5 Mile,2022-07-31,56:03.00,1
@@ -1019,8 +1143,8 @@ M,60-64,4,14,Jeha,John,C,382R-03WSE,Lake Del Valle,Lake Del Valle 5K,2022-08-27,
 M,60-64,4,14,Jeha,John,C,382R-03WSE,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,40:30.00,1
 M,60-64,5,12,Jeha,John,C,382R-03WSE,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:18:14.00,1
 M,60-64,6,10,Jeha,John,C,382R-03WSE,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,27:07.00,1
-M,60-64,1,22,Pyrch,Michael,J,3825-03MJ5,Keller Cove,Keller Cove 1/2 Mile,2022-09-17,13:44.00,1
 M,60-64,1,22,Pyrch,Michael,J,3825-03MJ5,Keller Cove,Keller Cove 1 Mile,2022-09-17,30:01.00,1
+M,60-64,1,22,Pyrch,Michael,J,3825-03MJ5,Keller Cove,Keller Cove 1/2 Mile,2022-09-17,13:44.00,1
 M,60-64,5,12,Pyrch,Michael,J,3825-03MJ5,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,29:36.00,1
 M,60-64,6,10,Pyrch,Michael,J,3825-03MJ5,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,25:54.00,1
 M,60-64,7,8,Pyrch,Michael,J,3825-03MJ5,Santa Cruz Cruise,Santa Cruz Cruise 2.5 Mile,2022-07-31,1:16:30.00,1
@@ -1085,6 +1209,16 @@ M,60-64,10,2,Giles,George,S,382B-03UAD,Lake Berryessa,Lake Berryessa 2 Mile,2022
 M,60-64,10,2,Fallant,Ralph,J,382A-03TP7,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:29:12.00,1
 M,60-64,10,2,CRAWFORD,LESTER,C,382P-0A6XG,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,31:41.00,1
 M,60-64,17,0,CRAWFORD,LESTER,C,382P-0A6XG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:57:31.00,1
+M,60-64,11,0,Pheffer,Joe,,3829-D2AE1,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:09:58.00,1
+M,60-64,13,0,Pheffer,Joe,,3829-D2AE1,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:39:43.00,1
+M,60-64,12,0,Inchausti,Robert,,382M-084UG,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,1:13:20.00,1
+M,60-64,11,0,Marsden IV,Henry,H,3829-03GE8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:34:41.00,1
+M,60-64,12,0,Gall,Jeff,M,382Z-075MX,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:36:50.00,1
+M,60-64,14,0,Ryan,Kevin,A,3822-03WX3,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:45:58.00,1
+M,60-64,15,0,Storrs,Bruce,R,382Y-03N7C,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:50:45.00,1
+M,60-64,16,0,Hess,Bart,R,382K-03H5V,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:54:16.00,1
+M,60-64,11,0,LENZ,MARK,,382G-0AY8B,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,35:45.00,1
+M,60-64,13,0,CRAMER,JAMES,P,3823-0AA24,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,38:40.00,1
 M,65-69,1,22,MacDonald,Sandy,,382G-03H4C,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,48:58.00,1
 M,65-69,1,22,MacDonald,Sandy,,382G-03H4C,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,24:07.00,1
 M,65-69,1,22,MacDonald,Sandy,,382G-03H4C,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,21:52.00,1
@@ -1152,6 +1286,11 @@ M,65-69,8,6,KORB,ORRY,P,382X-03FGW,Santa Cruz Rough Water,Santa Cruz Rough Water
 M,65-69,9,4,MAIER,GARY,J,3820-09YT2,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,31:45.00,1
 M,65-69,9,4,Kinnier,Thomas,A,382E-0679N,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,33:35.00,1
 M,65-69,10,2,DAVID,RICHARD,M,382P-03Y4V,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,32:45.00,1
+M,65-69,11,0,BLUM,ROBERT,J,382Y-03N7X,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,34:38.00,1
+M,65-69,12,0,NOWELL,KEITH,E,382Y-03M91,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,37:38.00,1
+M,65-69,13,0,BASKIN,BARRY,,3822-10198,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,37:43.00,1
+M,65-69,14,0,OFLYNN,BRIAN,,382Z-96CTJ,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,40:02.00,1
+M,65-69,12,0,Burke,Thomas,,382X-HYDR0,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,48:10.00,1
 M,70-74,1,22,Wilson,Joel,R,3827-03EYR,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,48:06.00,1
 M,70-74,1,22,Wilson,Joel,R,3827-03EYR,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,24:34.00,1
 M,70-74,1,22,Wilson,Joel,R,3827-03EYR,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,21:24.00,1
@@ -1171,7 +1310,7 @@ M,70-74,4,14,WOLF,PAUL,D,382T-03FU9,Santa Cruz Rough Water,Santa Cruz Rough Wate
 M,70-74,5,12,WOLF,PAUL,D,382T-03FU9,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:54:46.00,1
 M,70-74,2,18,Scrivani,Ron,P,382V-03F76,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,41:57.00,1
 M,70-74,2,18,DRULIAS,WILLIAM,J,382D-03NMX,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,24:34.00,1
-M,70-74,2,18,Benjamin,David,L,382X-03FHD,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,32:34.00,1
+M,70-74,2,18,Benjamin,David,,382X-03FHD,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,32:34.00,1
 M,70-74,3,16,Gils,Robert,E,3821-06VU5,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,42:24.00,1
 M,70-74,3,16,Damico,Ron,J,3825-63H1H,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,34:01.00,1
 M,70-74,4,14,Jacobus,Greg,C,382U-09JSA,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2022-08-13,1:36:34.00,1
@@ -1187,8 +1326,8 @@ M,75-79,1,22,Rudloff,Edward,,382D-03J62,Keller Cove,Keller Cove 1 Mile,2022-09-1
 M,75-79,1,22,Rudloff,Edward,,382D-03J62,Keller Cove,Keller Cove 1/2 Mile,2022-09-17,13:07.00,1
 M,75-79,2,18,Rudloff,Edward,,382D-03J62,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,56:45.00,1
 M,75-79,1,22,Burns,Richard,,382D-BURNS,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,56:34.00,1
-M,75-79,1,22,Burns,Richard,,382D-BURNS,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,57:37.00,1
 M,75-79,1,22,Burns,Richard,,382D-BURNS,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,28:11.00,1
+M,75-79,1,22,Burns,Richard,,382D-BURNS,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,57:37.00,1
 M,75-79,2,18,Burns,Richard,,382D-BURNS,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,28:41.00,1
 M,75-79,2,18,Burns,Richard,,382D-BURNS,Lake Del Valle,Lake Del Valle 5K,2022-08-27,1:30:55.00,1
 M,75-79,1,22,Kight,Chuck,,382S-03EZ0,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,27:25.00,1
@@ -1239,8 +1378,8 @@ W,40-44,4,14,Velasquez,Andrea,M,3820-XM7FX,Donner Lake swim,Donner Lake swim 2.7
 W,45-49,1,22,HURREY,SUZANNE,,382U-0B1H5,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,31:39.00,2
 W,45-49,1,22,HURREY,SUZANNE,,382U-0B1H5,Santa Cruz Cruise,Santa Cruz Cruise 2.5 Mile,2022-07-31,1:31:03.00,2
 W,45-49,1,22,HURREY,SUZANNE,,382U-0B1H5,Donner Lake swim,Donner Lake swim 2.7 Mile,2022-08-13,1:35:44.00,2
-W,45-49,1,22,HURREY,SUZANNE,,382U-0B1H5,Keller Cove,Keller Cove 2 Mile,2022-09-17,1:13:42.00,2
 W,45-49,1,22,HURREY,SUZANNE,,382U-0B1H5,Keller Cove,Keller Cove 1/2 Mile,2022-09-17,15:39.00,2
+W,45-49,1,22,HURREY,SUZANNE,,382U-0B1H5,Keller Cove,Keller Cove 2 Mile,2022-09-17,1:13:42.00,2
 W,45-49,1,22,Masuda,Megumi,,382X-03H9M,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,37:51.00,2
 W,45-49,1,22,Masuda,Megumi,,382X-03H9M,Lake Del Valle,Lake Del Valle 1 Mile,2022-08-28,26:05.00,2
 W,45-49,2,18,Holmes,Elizabeth,J,3824-03X81,Donner Lake swim,Donner Lake swim 2.7 Mile,2022-08-13,1:59:05.00,2
@@ -1269,12 +1408,13 @@ W,55-59,1,22,Riley,Jayne,E,382P-07ZZP,Santa Cruz Rough Water,Santa Cruz Rough Wa
 W,55-59,1,22,Alfaro,Sheila,S,382D-09SY9,Lake Del Valle,Lake Del Valle 2.5K,2022-08-28,1:08:52.00,2
 W,55-59,1,22,Alfaro,Sheila,S,382D-09SY9,Keller Cove,Keller Cove 2 Mile,2022-09-17,1:36:11.00,2
 W,55-59,1,22,Lim,Patricia,H,382R-07ZZ4,Keller Cove,Keller Cove 1/2 Mile,2022-09-17,20:12.00,2
-W,55-59,2,18,Lim,Patricia,H,382R-07ZZ4,Keller Cove,Keller Cove 1 Mile,2022-09-17,42:56.00,2
+W,55-59,3,16,Lim,Patricia,H,382R-07ZZ4,Keller Cove,Keller Cove 1 Mile,2022-09-17,42:56.00,2
 W,55-59,1,22,Forbes,Tiffany,A,382S-0309T,Donner Lake swim,Donner Lake swim 2.7 Mile,2022-08-13,1:26:08.00,2
 W,55-59,3,16,Forbes,Tiffany,A,382S-0309T,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,59:05.00,2
 W,55-59,1,22,Silver,Holly,L,382K-07EWR,Keller Cove,Keller Cove 1 Mile,2022-09-17,41:39.00,2
 W,55-59,1,22,Nix,Kelly,A,382B-0A5CT,Santa Cruz Cruise,Santa Cruz Cruise 2.5 Mile,2022-07-31,1:15:43.00,2
 W,55-59,2,18,Larson,Kim,L,3829-03FFV,Donner Lake swim,Donner Lake swim 2.7 Mile,2022-08-13,1:31:33.00,2
+W,55-59,2,18,Schafir,Paulette,,382N-06BYU,Keller Cove,Keller Cove 1 Mile,2022-09-17,42:15.00,2
 W,55-59,2,18,Troutner,Heidi,J,382Y-03GJY,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2022-07-30,28:07.00,2
 W,55-59,2,18,Meinhardt,Kathryn,L,382F-9RD31,Lake Berryessa,Lake Berryessa 1 Mile,2022-06-04,29:09.00,2
 W,55-59,2,18,Alvarez,Becky,,382T-07ZBG,Lake Berryessa,Lake Berryessa 2 Mile,2022-06-04,56:10.00,2

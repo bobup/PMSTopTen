@@ -531,7 +531,7 @@ sub InitializeTopTenDB() {
 		    			"FS_HistoricalSCYRecords INT DEFAULT 0, " .
 		    			"FS_HistoricalSCMRecords INT DEFAULT 0, " .
 		    			"FS_HistoricalLCMRecords INT DEFAULT 0, " .
-		    			"FS_ePostalPointEarners INT DEFAULT 0 " .
+		    			"FS_ePostalPointEarners INT DEFAULT 0, " .
 		    			"FS_OWLines INT DEFAULT 0 " .
 		    			" )" );
     			}
@@ -1615,7 +1615,7 @@ sub GetRegInfoForSwimmer( $$$$$$$$$$$$$ ) {
 #	with the "Y" middle initial removed to see if we find "xxx zzzz" in our RSIND file.
 
 sub RemoveMiddleInitial( $ ) {
-	my $arrOfBrokenNamesRef = @_[0];
+	my $arrOfBrokenNamesRef = $_[0];
 	my @result = ();
 	
 	my @arrOfBrokenNames = @$arrOfBrokenNamesRef;

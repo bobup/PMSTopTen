@@ -14,7 +14,9 @@ Golden Road Aquatics Pentahlon SCY Meet	(NOT a PAC sanctioned meet)	PAC	SCY	2022
 Mission Viejo Nadadores Masters Short Course Meters Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2022-10-2	20221002MVNOCTS	https://www.usms.org/comp/meets/meet.php?MeetID=20221002MVNOCTS
 Huntsman World Senior Games	(NOT a PAC sanctioned meet)	PAC	SCM	2022-10-5 - 2022-10-7	20221005HSG22S	https://www.usms.org/comp/meets/meet.php?MeetID=20221005HSG22S
 2022 Pacific Masters Swimming Kerry O'Brien Short Course Meters Championships	(IS a PAC sanctioned meet)	PAC	SCM	2022-10-7 - 2022-10-9	20221007SCMCHMS	https://www.usms.org/comp/meets/meet.php?MeetID=20221007SCMCHMS
+2022 Hood River Short Course Meters Meet 	(NOT a PAC sanctioned meet)	PAC	SCM	2022-11-12	20221112HRVRS	https://www.usms.org/comp/meets/meet.php?MeetID=20221112HRVRS
 San Diego Swim Masters 2022 North County San Diego  SCM Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2022-11-6	20221106SDSM-S	https://www.usms.org/comp/meets/meet.php?MeetID=20221106SDSM-S
+2022 SPMS SCM Championships	(NOT a PAC sanctioned meet)	PAC	SCM	2022-12-2 - 2022-12-4	20221202LBGLBCS	https://www.usms.org/comp/meets/meet.php?MeetID=20221202LBGLBCS
 29th Annual Masters SCY Valentine's Meet	(NOT a PAC sanctioned meet)	PAC	SCY	2022-2-12 - 2022-2-13	20220213VALENTY	https://www.usms.org/comp/meets/meet.php?MeetID=20220213VALENTY
 SPP's 2022 Inaugural SCY STROKE SPECIALIST Meet	(NOT a PAC sanctioned meet)	PAC	SCY	2022-2-19 - 2022-2-20	20220219SPPSTRY	https://www.usms.org/comp/meets/meet.php?MeetID=20220219SPPSTRY
 USMS National Pool Distance Invitational	(NOT a PAC sanctioned meet)	PAC	LCM	2022-2-20	20220220LDC2L	https://www.usms.org/comp/meets/meet.php?MeetID=20220220LDC2L
