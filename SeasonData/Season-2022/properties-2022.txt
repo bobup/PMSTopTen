@@ -94,7 +94,88 @@ USMSEpostals \
 							https://www.usms.org/events/national-championships/virtual-championships/2022-virtual-championships/2022-1-hour-virtual-championship@@@ \
 							2022-01-01@@@ \
 							2022-01-31@@@ \
+							0; \
+						epostal-3k-2022-men.csv; \
+							USMS@@@ \
+							3000@@@ \
+							0@@@ \
+							Yards@@@ \
+							USMS 3000-Yard Virtual Championships@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2022-virtual-championships/2022-3000-6000-virtual-championship@@@ \
+							2022-09-15@@@ \
+							2022-11-15@@@ \
+							0; \
+						epostal-3k-2022-women.csv; \
+							USMS@@@ \
+							3000@@@ \
+							0@@@ \
+							Yards@@@ \
+							USMS 3000-Yard Virtual Championships@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2022-virtual-championships/2022-3000-6000-virtual-championship@@@ \
+							2022-09-15@@@ \
+							2022-11-15@@@ \
+							0; \
+						epostal-6k-2022-men.csv; \
+							USMS@@@ \
+							6000@@@ \
+							0@@@ \
+							Yards@@@ \
+							USMS 6000-Yard Virtual Championships@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2022-virtual-championships/2022-3000-6000-virtual-championship@@@ \
+							2022-09-15@@@ \
+							2022-11-15@@@ \
+							0; \
+						epostal-6k-2022-women.csv; \
+							USMS@@@ \
+							6000@@@ \
+							0@@@ \
+							Yards@@@ \
+							USMS 6000-Yard Virtual Championships@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2022-virtual-championships/2022-3000-6000-virtual-championship@@@ \
+							2022-09-15@@@ \
+							2022-11-15@@@ \
+							0; \
+						epostal-5k-2022-men.csv; \
+							USMS@@@ \
+							5000@@@ \
+							0@@@ \
+							Meters@@@ \
+							USMS 5K Virtual Championships@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2022-virtual-championships/2022-5k-10k-virtual-championship@@@ \
+							2022-05-15@@@ \
+							2022-09-15@@@ \
+							0; \
+						epostal-5k-2022-women.csv; \
+							USMS@@@ \
+							5000@@@ \
+							0@@@ \
+							Meters@@@ \
+							USMS 5K Virtual Championships@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2022-virtual-championships/2022-5k-10k-virtual-championship@@@ \
+							2022-05-15@@@ \
+							2022-09-15@@@ \
+							0; \
+						epostal-10k-2022-men.csv; \
+							USMS@@@ \
+							10000@@@ \
+							0@@@ \
+							Meters@@@ \
+							USMS 10K Virtual Championships@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2022-virtual-championships/2022-5k-10k-virtual-championship@@@ \
+							2022-05-15@@@ \
+							2022-09-15@@@ \
+							0; \
+						epostal-10k-2022-women.csv; \
+							USMS@@@ \
+							10000@@@ \
+							0@@@ \
+							Meters@@@ \
+							USMS 10K Virtual Championships@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2022-virtual-championships/2022-5k-10k-virtual-championship@@@ \
+							2022-05-15@@@ \
+							2022-09-15@@@ \
 							0;
+
 
 
 >endoffile

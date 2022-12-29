@@ -2508,7 +2508,7 @@ sub PMSProcessEPostal( $$ ) {
 								my $middleInitial = $row[4];
 								my $lastName = $row[2];
 								my $fullName = "$firstName $middleInitial $lastName";	# used below for error message
-								my $age = $row[6];
+								my $age = PMSUtil::trim( $row[6] );
 								my $team = $row[5];
 								my $gender = my $currentAgeGroup = $row[0];
 								my $dob = $row[8];   # m/d/y or empty string - not used here!!
@@ -2563,9 +2563,13 @@ sub PMSProcessEPostal( $$ ) {
 								
 								$gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $gender );	# single letter
 								# perform some sanity checks:
-								if( ! ValidateAge( $age, $currentAgeGroup ) ) {
-									PMSLogging::DumpError( "", "", "Topten::PMSProcessEPostal(): Line $lineNum of $simpleFileName: Age error: " .
-										"('$fileName') Age is $age but line is for agegroup '$currentAgeGroup'", 1 );
+								# NOTE: sometimes epostals don't give the swimmer's age. We could use their reg number and get it
+								# but I'm not going to bother.
+								if( $age ne "" ) {
+									if( ! ValidateAge( $age, $currentAgeGroup ) ) {
+										PMSLogging::DumpError( "", "", "Topten::PMSProcessEPostal(): Line $lineNum of $simpleFileName: Age error: " .
+											"('$fileName') Age is $age but line is for agegroup '$currentAgeGroup'", 1 );
+									}
 								}
 					
 								#compute the points they get for this swim:
@@ -2601,6 +2605,9 @@ sub PMSProcessEPostal( $$ ) {
 									TT_MySqlSupport::AddNewRecordSplash( $fileName, $lineNum, $courseRecord, $org, $eventId, $gender,
 										$currentAgeGroup, 1, $swimmerId, 0, 25, $meetId, $beginDate, $distanceOrTime, $durationType );
 								}
+								
+								PMSLogging::DumpNote( "", $lineNum, "PMS swimmer got $points points: $firstName $middleInitial $lastName " .
+									"($gender/$age, dob=$dob, reg#=$USMSRegNum)" );
 									
 							} # end of '...we have a row representing a PMS swimmer...'
 						} # end of '...this is a result for a PMS swimmer...'
