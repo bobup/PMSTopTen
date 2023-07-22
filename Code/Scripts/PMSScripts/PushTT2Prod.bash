@@ -153,7 +153,12 @@ else
     SERVER_ADJUSTED_POINTS=$[SERVER_TOTAL_POINTS-$[SERVER_TOTAL_POINTS/20]]
     DEV_TOTAL_POINTS=`grep <$SOURCE_TTSTATS "E1" | sed -e ' s/^....:[^0-9]*//'`
     
-    if [ -z "$SERVER_TOTAL_POINTS" -o -z "$DEV_TOTAL_POINTS" ] ; then
+#    if [ -z "$SERVER_TOTAL_POINTS" -o -z "$DEV_TOTAL_POINTS" ] ; then
+# NOTE: the above 'if' was replaced with the 'if' below on 3Jan2023 (bup). It was originally intended to catch problems
+# reading the TTStats file from the production server, but when a season starts it's possible it starts with 0 Points
+# as it did for the 2023 season. So we're going to ignore trying to detect problems reading the server since if such
+# a problem exists it's likely we won't be able to do the push, and if we do we can always manually fix a bad push.
+    if [ -z "$DEV_TOTAL_POINTS" ] ; then
         DontDoThePush "$SEASON: Invalid Total Points - one of them is '0'" \
             "SERVER Total Points is '$SERVER_TOTAL_POINTS', DEV Total Points is '$DEV_TOTAL_POINTS'"
     else

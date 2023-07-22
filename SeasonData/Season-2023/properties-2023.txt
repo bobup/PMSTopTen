@@ -75,7 +75,7 @@ PMSOpenWaterResultFile \
 #		Meet End Date - (yyyy-mm-dd)@@@ 
 #		Meet is sanctioned by PMS - (yes=1, no=0)
 USMSEpostals \
-						epostal-1hr-{YearBeingProcessed}-men.csv; \
+						epostal-1hr-{YearBeingProcessed}-men-bup.csv; \
 							USMS@@@ \
 							0@@@ \
 							1 hour@@@ \

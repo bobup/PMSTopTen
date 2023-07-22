@@ -134,6 +134,13 @@ sub ReadSheetRow($) {
 			for( my $i=0; $i < $rowLen; $i++ ) {
 				$row[$i] = PMSUtil::trim( $rowRef->[$i] );
 			}
+		} elsif( $ssHandleRef->{'csv'}->eof() != 1 ) {
+			# this is NOT an EOF, but an error. We're going to report the error but handle
+			# it like an EOF so we can go on...
+			my $fileName = $ssHandleRef->{"fileName"};		
+			PMSLogging::DumpError( "", "", "TT_SheetSupport::ReadSheetRow(): file " .
+				"'$fileName': Row # $currentRowNumber is an invalid CSV row.\n" .
+				"    This terminated reading the rest of the CSV file.", 1 );
 		}
 	} else {
 		# this is an excel file

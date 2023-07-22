@@ -771,6 +771,7 @@ if( ($RESULT_FILES_TO_READ & 0b100000) != 0 ) {
 		PMSLogging::PrintLog( "", "", "We have a FakeSplashDataFile to process ($FakeSplashDataFile)", 1 );
 		ProcessFakeSplashes( $FakeSplashDataFile );
 	} else {
+		PMSLogging::PrintLog( "", "", "" );
 		PMSLogging::PrintLog( "", "", "FakeSplashDataFile is either not defined or is empty, so no fake splashes", 1 );
 	}
 }
@@ -814,8 +815,15 @@ if( $GENERATE_FULL_AGSOTY ) {
 	# Set the "team title" to an empty string and then set it appropately when/if generating
 	# team-AGSOTY pages:
 	PMSStruct::GetMacrosRef()->{"TeamTitle"} = "";
+	
 	PMSStruct::GetMacrosRef()->{"ShowRules"} = "block";
 	PMSStruct::GetMacrosRef()->{"DontShowRules"} = "none";	# must be "none" if ShowRules (above) is not "none"
+	##############################################################
+	# As per email fron Dan Wagner I've been requested to remove the rules from the points page because 
+	# the rules are now part of the parent page in the new web site.
+	PMSStruct::GetMacrosRef()->{"ShowRules"} = "none";
+	PMSStruct::GetMacrosRef()->{"DontShowRules"} = "block";	# must be "none" if ShowRules (above) is not "none"
+
 	PMSStruct::GetMacrosRef()->{"PacificMasters"} = "Pacific Masters";
 
 	if($WRITE_HTML_FILES) {
@@ -1379,7 +1387,7 @@ sub USMSProcessResults($$) {
 					my $teamInitials = "";
 					($regNum, $teamInitials, $firstName, $middleInitial, $lastName) = 
 											TT_MySqlSupport::GetDetailsFromFullName( $fileName, $lineNum, $fullName,
-											$team, $ageGroup, $org, $course, "Error if not found" );
+											$team, $ageGroup, "", $org, $course, "Error if not found" );
 					if( $regNum eq "" ) {
 						# we couldn't figure out who this swimmer is, or didn't find them in the RSIDN table.
 						# go on to the next swimmer;
@@ -1703,7 +1711,7 @@ sub USMSProcessRecordRow( $$$$$$ ) {
 	my $teamInitials = "";
 	($regNum, $teamInitials, $firstName, $middleInitial, $lastName) = 
 							TT_MySqlSupport::GetDetailsFromFullName( $simpleFileName, $lineNum, $fullName,
-							"", $ageGroup, $org, $course, "" );
+							"", $ageGroup, $date, $org, $course, "" );
 
 	# did we eventually find a regnum?  If not we MUST assume they are NOT a PAC swimmer, since
 	# the query used to get the data did not allow us to limit the data to PAC swimmers only.
@@ -1852,7 +1860,7 @@ sub PMSProcessRecords($) {
 					# 2: Distance (e.g. '100')
 					# 3: Stroke (e.g. 'Freestyle')
 					# 4: Swimmer (e.g. 'Elizabeth Pelton')
-					# 5: Date (e.g. '1/30/16')
+					# 5: Date (e.g. '2023-04-30')
 					# 6: Time (e.g. '1:38.41')
 					#
 	
@@ -1863,7 +1871,7 @@ sub PMSProcessRecords($) {
 					$ageGroup = $row[1];
 					$eventName = $row[2] . " " . $row[3];
 					$fullName = $row[4];
-					$date = $row[5];		# of the form '1/30/16'
+					$date = $row[5];		# of the form '2023-04-30'
 #					$time = TT_Util::GenerateCanonicalDurationForDB( $row[6], $simpleFileName, $lineNum );
 					$time = PMSUtil::GenerateCanonicalDurationForDB_v2( $row[6], 0, "", "", 
 						"File: '$simpleFileName', line $lineNum" );
@@ -1905,7 +1913,7 @@ sub PMSProcessRecords($) {
 					my $teamInitials = "";
 					($regNum, $teamInitials, $firstName, $middleInitial, $lastName) = 
 											TT_MySqlSupport::GetDetailsFromFullName( $fileName, $lineNum, $fullName,
-											"", $ageGroup, $org, $course, "Error if not found" );
+											"", $ageGroup, $date, $org, $course, "Error if not found" );
 					if( $regNum eq "" ) {
 						# we couldn't figure out who this swimmer is, or didn't find them in the RSIDN table.
 						# go on to the next swimmer;
@@ -1994,7 +2002,7 @@ sub PMSProcessRecords($) {
 #
 sub PMSProcessOpenWater($) {
 	my $simpleFileName = $_[0];
-	my $debugRegNum = "xxxx-xxxxx";
+	my $debugRegNum = "3838-05SKS";
 	my $debug = 0;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	PMSLogging::PrintLog( "", "", "" );
@@ -2004,6 +2012,7 @@ sub PMSProcessOpenWater($) {
 	$missingResults{"$org-$course"} = 0;
 	
 	my $fileName = "$sourceDataDir/" .  $simpleFileName;
+	PMSLogging::DumpNote( "", "", "****************************************", 1 );
 	# does this file exist?
 	if( ! ( -e -f -r $fileName ) ) {
 		# can't find/open this file - just skip it with a warning:
@@ -2125,12 +2134,6 @@ sub PMSProcessOpenWater($) {
 						$duration = PMSUtil::GenerateCanonicalDurationForDB_v2( $duration, 0, "", "", 
 							"File: '$fileName', line $lineNum" );
 			
-						if( $debugRegNum eq $regNum ) {
-							print "PMSProcessOpenWater(): Line #$lineNum: gender=$gender, ageGroup=$ageGroup, " .
-								"regNum='$regNum', firstName=$firstName, middleInitial='$middleInitial', " .
-								"lastName='$lastName', meetDate='$eventDate'";
-						}
-						
 						# Add this event to our Event table:
 						# $eventName is in the form "Lake Berryessa 1.3 Mile" or "Keller Cove 1/2 Mile"
 						$eventName =~ m,^(\D+)([\d./]+)\s*(\D+)$,;
@@ -2142,6 +2145,13 @@ sub PMSProcessOpenWater($) {
 						my $eventId = TT_MySqlSupport::AddNewEventIfNecessary( $distance, $eventCourse,
 							$stroke, $eventName );
 							
+						if( $debugRegNum eq $regNum ) {
+							print "PMSProcessOpenWater(): Line #$lineNum: gender=$gender, ageGroup=$ageGroup, " .
+								"regNum='$regNum', firstName=$firstName, middleInitial='$middleInitial'\n" .
+								"    lastName='$lastName', meetDate='$eventDate', eventName='$eventName', " .
+								"eventId='$eventId'\n" ;
+						}
+						
 						# Since we're reading a file based on OW Accumulated Points we can assume all the data
 						# are valid.  But we're going to check anyway!  (Anyway, we need their team...)
 						my $team;
@@ -2178,7 +2188,13 @@ sub PMSProcessOpenWater($) {
 						my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, $eventName, 
 							"http://data.pacificmasters.org/content/open-water-swims", $org, $course, 
 							$eventDate, $eventDate, 1 );
-							
+
+						if( $debugRegNum eq $regNum ) {
+							print "eventName='$eventName', meetId='$meetId', eventId='$eventId', swimmerId='$swimmerId'\n";
+						}
+
+
+
 						# compute the number of Top10 points they get from all of their OW places:
 						# the points they get for SOTY is the same as the OW points they were awarded.
 						TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $ageGroup, $gender, $place, 
@@ -2252,6 +2268,8 @@ sub ProcessFakeSplashes($) {
 	my $simpleFileName = $_[0];
 	my $debugRegNum = "xxxxx";
 	my $debug = 0;
+	PMSLogging::PrintLog( "", "", "" );
+
 
 	# the org and course should probably come from the fake splash data file, but I'm not sure
 	# at this point if it matters so I'm going to fake it here.
@@ -2393,6 +2411,7 @@ sub PMSProcessEPostal( $$ ) {
 	my $debug = 0;
 
 	foreach $simpleFileName ( sort keys %{$USMSEpostalsFilesRef} ) {
+		PMSLogging::PrintLog( "", "", "" );
 		my $fileName = "$sourceDataDir/" . $simpleFileName;
 		# does this file exist?
 		if( ! ( -e -f -r $fileName ) ) {
@@ -2449,10 +2468,10 @@ sub PMSProcessEPostal( $$ ) {
 				"exists but unable to get handle - empty?) - INGORE THIS FILE:\n   '$fileName'", 1 );
 		} else {
 			# it looks like we have a non-empty file to read!
-			my $lineNum = 0;
-			my $numPMSResultLines =  0;
-			my $numPMSScoringResults = 0;
-			my $numResultLines = 0;
+			my $lineNum = 0;					# total number of lines read
+			my $numPMSResultLines =  0;			# total number of PMS lines read (may not get top 10)
+			my $numPMSScoringResults = 0;		# total number of PMS lines that scored (got top 10)
+			my $numResultLines = 0;				# total number of result lines (PMS + non-PMS)
 			while( 1 ) {
 				my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
 				my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
@@ -2475,8 +2494,9 @@ sub PMSProcessEPostal( $$ ) {
 					
 					# do we have a result line? if so, the first column must be in the form 
 					#	Xdddd
-					# where X is the gender (M or F) and dddd is the age group (e.g. 6064)
-					if( $row[0] =~ m/^[M|m|f|F]\d\d\d\d$/ ) {
+					# where X is the gender (M or F) and dddd[dd] is the age group (e.g. 6064)
+					# NOTE: the [dd] allows for the age group "100104". Yes, there have been such swimmers. Impressive!
+					if( $row[0] =~ m/^[M|m|f|F]\d\d\d\d(\d\d)?$/ ) {
 						# we have a result line
 						$numResultLines++;
 						#
@@ -2519,7 +2539,15 @@ sub PMSProcessEPostal( $$ ) {
 									$missingResults{"$org-$courseRecord"} = 0;
 								}
 								$gender =~ s/^(.).*$/$1/;
-								$currentAgeGroup =~ s/^.(..)(..)$/$1-$2/;		# e.g. 45-49
+			#$currentAgeGroup =~ s/^.(..)(..)$/$1-$2/;		# e.g. 45-49
+								$currentAgeGroup =~ s/^.(.*)$/$1/;		# e.g. 4549 or 100104
+								if( length( $currentAgeGroup ) > 4 ) {
+									# we have the case of '100104'
+									$currentAgeGroup =~ s/^(...)(...)$/$1-$2/;		# e.g. 100-104
+								} else {
+									# we have the case of 4549
+									$currentAgeGroup =~ s/^(..)(..)$/$1-$2/;		# e.g. 45-49
+								}
 								# these values come from the RSIDN file:
 								my ($RSIDNFirstName, $RSIDNMiddleInitial, $RSIDNLastName, $RSIDNTeam);
 					
@@ -2612,12 +2640,17 @@ sub PMSProcessEPostal( $$ ) {
 							} # end of '...we have a row representing a PMS swimmer...'
 						} # end of '...this is a result for a PMS swimmer...'
 					} # end of '...we have a result line...'
+					else {
+						# not a result line... what is it?
+						PMSLogging::PrintLog( "", "", "Non-result line: '$rowAsString'", 1);
+					}
 				} else # end of if( $length...
 				{ # end of file
 					# TT_SheetSupport::ReadSheetRow() returned a 0 length row - end of file
 					TT_SheetSupport::CloseSheet( \%sheetHandle );
-					my $msg = "* Topten::PMSProcessEPostal(): Done with '$simpleFileName' - $lineNum lines read, $numPMSScoringResults lines " .
-						"stored.";
+					my $msg = "* Topten::PMSProcessEPostal(): Done with '$simpleFileName' - $lineNum lines read, of which " .
+						"$numResultLines were result lines.\n    There were $numPMSResultLines PMS result lines, " .
+						"of which $numPMSScoringResults scored points.";
 					PMSLogging::PrintLog( "", "", $msg, 1 );
 					last;
 				}

@@ -45,6 +45,7 @@ Mission Viejo Nadadores Masters LCM Swim Meet	(NOT a PAC sanctioned meet)	PAC	LC
 Memorial Day Classic	(NOT a PAC sanctioned meet)	PAC	LCM	2022-5-27 - 2022-5-28	20220527STARLCL	https://www.usms.org/comp/meets/meet.php?MeetID=20220527STARLCL
 Cannonball Classic	(NOT a PAC sanctioned meet)	PAC	LCM	2022-6-11 - 2022-6-12	20220611CannonL	https://www.usms.org/comp/meets/meet.php?MeetID=20220611CannonL
 Big Kahuna Masters Classic	(NOT a PAC sanctioned meet)	PAC	LCM	2022-6-18	20220618KAHUNAL	https://www.usms.org/comp/meets/meet.php?MeetID=20220618KAHUNAL
+NVST Last Chance JO Summer plunge	(NOT a PAC sanctioned meet)	PAC	LCM	2022-6-25 - 2022-6-26	20220626NVSTLCL	https://www.usms.org/comp/meets/meet.php?MeetID=20220626NVSTLCL
 Quicksilver Masters Long Course Meet	(IS a PAC sanctioned meet)	PAC	LCM	2022-6-25	20220625QSSLCML	https://www.usms.org/comp/meets/meet.php?MeetID=20220625QSSLCML
 Silver State Masters LCM	(IS a PAC sanctioned meet)	PAC	LCM	2022-7-10	20220710SSMLCL	https://www.usms.org/comp/meets/meet.php?MeetID=20220710SSMLCL
 2022 Los Angeles Invitational	(NOT a PAC sanctioned meet)	PAC	LCM	2022-7-15 - 2022-7-17	20220717LAI22L	https://www.usms.org/comp/meets/meet.php?MeetID=20220717LAI22L

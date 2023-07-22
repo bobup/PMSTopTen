@@ -11,6 +11,9 @@ use warnings;
 
 use DBI;
 #use Data::Dumper;
+# we need the following in order to subtract dates (subtract_datetime):
+use DateTime;
+use DateTime::Duration;
 
 use FindBin;
 use File::Spec;
@@ -618,9 +621,10 @@ if( !defined $units ) {
 	
 	# populate the Event table with this event if it's not already there...
 	# is this event already in our db?  If so don't try to put it in again
+	# (below) add eventname as one of the keys Jul 1, 2023. This might break something???
 	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
 		"SELECT EventId FROM Event WHERE Distance='$distance' AND Units='$units' " .
-		"AND Stroke='$stroke'" );
+		"AND Stroke='$stroke' AND EventName='$eventName'" );
 	if( defined($resultHash = $sth->fetchrow_hashref) ) {
 		# this event is already in our DB - get the db id
 		$eventId = $resultHash->{'EventId'};
@@ -1253,7 +1257,7 @@ sub MySqlEscape( $ ) {
 
 # ($regNum, $teamInitials, $firstName, $middleInitial, $lastName) = 
 #						TT_MySqlSupport::GetDetailsFromFullName( $fileName, $lineNum, $fullName,
-#						$team, $ageGroup, "Error if not found" );
+#						$team, $ageGroup, $date, $org, $course, "Error if not found" );
 # GetDetailsFromFullName - get some swimmer details (regnum, etc) using their full name.
 #
 # PASSED:
@@ -1261,7 +1265,8 @@ sub MySqlEscape( $ ) {
 #	$lineNum - the line number of the line containing their full name
 #	$fullName - their full name
 #	$team - the team initials of the team they swam for (in results), or "" if not known.
-#	$ageGroup - their age group
+#	$ageGroup - their age group at the time they swam with this result.
+#	$date - the date they swam with this result in the form yyyy-mm-dd, or an empty string if not supplied.
 #	$org - PAC or USMS
 #	$course - SCY, SCM, LCM
 #	$errorFlag - TRUE if we flag an error if we can't find the swimmer; FALSE otherwise.
@@ -1274,6 +1279,11 @@ sub MySqlEscape( $ ) {
 #	$lastName -
 #
 # NOTES:
+#	This routine is used when processing USMS results, USMS records, and PMS records, because
+#		those results do not contain the reg number of the swimmer, just their name and a few
+#		other odd pieces of data. It's possible (likely in some cases, like USMS records) that
+#		the passed swimmer isn't a PMS swimmer. We need to figure that out, and if they are
+#		a PMS swimmer, exactly who they are. This isn't trivial - see the following:
 #	There are a few problems we deal with:
 #	1) parsing a full name into their first, middle initial, and last names is a heuristic.  
 #		EXAMPLES (from real data):  
@@ -1284,7 +1294,7 @@ sub MySqlEscape( $ ) {
 #		names in results that DO have middle initials.
 #
 sub GetDetailsFromFullName( $$$$$$$$ ) {
-	my ($fileName, $lineNum, $fullName, $team, $ageGroup, $org, $course, $errorFlag) =  @_;
+	my ($fileName, $lineNum, $fullName, $team, $ageGroup, $date, $org, $course, $errorFlag) =  @_;
 	my @regNum = ();
 	my @teamInitials = ();
 	my @DOB = ();		# in the form yyyy-mm-dd, e.g. 1979-09-08
@@ -1315,9 +1325,9 @@ sub GetDetailsFromFullName( $$$$$$$$ ) {
 	# swimmer, thus we don't know who to award points to.  In that case we're going to try another
 	# heuristic.
 	if( scalar @regNum > 0 ) {
-		# we've found a PMS name!
+		# we've found a PMS name - or more than one...
 		( $returnedRegNum, $returnedTeamInitials, $returnedFirstName, $returnedMiddleInitial, $returnedLastName ) =
-			GetRegInfoForSwimmer( $fileName, $lineNum, $fullName, $team, $ageGroup, $org, $course, 
+			GetRegInfoForSwimmer( $fileName, $lineNum, $fullName, $team, $ageGroup, $date, $org, $course, 
 				\@regNum, \@teamInitials, \@DOB, \@firstName, \@middleInitial, \@lastName );
 	} # scalar @regNum > 0
 	else {
@@ -1354,9 +1364,9 @@ sub GetDetailsFromFullName( $$$$$$$$ ) {
 		# swimmer, thus we don't know who to award points to.  In that case we're going to try another
 		# heuristic.
 		if( scalar @regNum > 0 ) {
-			# we've found a PMS name using the Nov, 2022 Update logic!
+			# we've found a PMS name - or more than one... using the Nov, 2022 Update logic!
 			( $returnedRegNum, $returnedTeamInitials, $returnedFirstName, $returnedMiddleInitial, $returnedLastName ) =
-				GetRegInfoForSwimmer( $fileName, $lineNum, $fullName, $team, $ageGroup, $org, $course, 
+				GetRegInfoForSwimmer( $fileName, $lineNum, $fullName, $team, $ageGroup, $date, $org, $course, 
 					\@regNum, \@teamInitials, \@DOB, \@firstName, \@middleInitial, \@lastName );
 
 			PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::GetDetailsFromFullName(): Couldn't find regnum for swimmer '$fullName'.  " .
@@ -1433,23 +1443,35 @@ sub GetDetailsFromFullName( $$$$$$$$ ) {
 
 
 # 		( $returnedRegNum, $returnedTeamInitials, $returnedFirstName, $returnedMiddleInitial, $returnedLastName ) =
-#			GetRegInfoForSwimmer( $fileName, $lineNum, $fullName, $team, $ageGroup, $org, $course,
+#			GetRegInfoForSwimmer( $fileName, $lineNum, $fullName, $team, $ageGroup, $date, $org, $course,
 #				\@regNum, \@teamInitials, \@DOB, \@firstName, \@middleInitial, \@lastName );
 #
 # GetRegInfoForSwimmer - using the passed array of swimmer names that we know are in our RSIND database return
 #	membership info for the one swimmer we've narrowed it down to, or empty info if we fail to identify exactly
-#	one swimmer.
+#	one swimmer. The goal is to identify that one swimmer who achieved a specific result referenced below.
 #
 # PASSED:
+#	$fileName - the result file from which we got their full name
+#	$lineNum - the line number of the line containing their full name
+#	$fullName - their full name from the result
+#	$team - the team initials of the team they swam for (in results), or "" if not known.
+#	$ageGroup - their age group at the time they swam with this result.
+#	$date - the date they swam with this result in the form yyyy-mm-dd, or an empty string if not supplied.
+#	$org - PAC or USMS from the result
+#	$course - SCY, SCM, LCM from the result
 #	$regNumRef - reference to an array of reg numbers for the possible swimmers we are looking at. Guaranteed to
 #		contain at least 1 element. If more than 1 element that means we need to narrow down the list of swimmers
 #		to exactly one swimmer or else we'll fail and return no swimmer info.
 #
-#	$regNumRef, $teamInitialsRef, $DOBRef, $firstNameRef, $middleInitialRef, $lastNameRef - references to arrays hold
-#		possible swimmer names that seem to match the passed 
+#	$regNumRef, $teamInitialsRef, $DOBRef, $firstNameRef, $middleInitialRef, $lastNameRef defined below:
+#		references to arrays hold attributes of swimmers who are candidates for who we're looking for (i.e. they all 
+#		have what looks like the same name.  See GetDetailsFromFullName() for a discussion on how hard this
+#		can be to identify!)  The goal of this routine is to narrow down these swimmers to exactly one swimmer
+#		whose attributes match the passed desired attributes ($fullName, $team, and $ageGroup). May not always
+#		be successful!
 #
 sub GetRegInfoForSwimmer( $$$$$$$$$$$$$ ) {
-	my ($fileName, $lineNum, $fullName, $team, $ageGroup, $org, $course, 
+	my ($fileName, $lineNum, $fullName, $team, $ageGroup, $date, $org, $course, 
 		$regNumRef, $teamInitialsRef, $DOBRef, $firstNameRef, $middleInitialRef, $lastNameRef ) = @_;
 	my @regNum = @$regNumRef;
 	my @teamInitials = @$teamInitialsRef;
@@ -1460,9 +1482,11 @@ sub GetRegInfoForSwimmer( $$$$$$$$$$$$$ ) {
 	my ($returnedFirstName, $returnedMiddleInitial, $returnedLastName) = ("","","");
 	my ($returnedRegNum, $returnedTeamInitials) = ("", "");
 	my $yearBeingProcessed = PMSStruct::GetMacrosRef()->{"YearBeingProcessed"};
+	my $numSwimmers = scalar @regNum;
 	
-	if( scalar @regNum > 1 ) {
-		# we've got more than one swimmer with this name!  See if we can narrow it down to one
+	if( $numSwimmers > 1 ) {
+		# we've got more than one swimmer with this name!  This situation is what makes this routine
+		# so complicated, and thus so large.  (sigh...)  See if we can narrow it down to one
 		# swimmer.  This may not be correct but it usually is...
 		# What we'll do is try to find this swimmer in the RSIDN file by comparing not only their
 		# name but also their team (team in results == team in RSIDN) and age group (age group in
@@ -1471,10 +1495,11 @@ sub GetRegInfoForSwimmer( $$$$$$$$$$$$$ ) {
 		#	- their age (thus age group) in results may not be their age computed based on the DOB
 		#		in RSIDN because we're computing age group based on TODAY.  We should fix this and compute
 		#		based on date of result if available. 
-		for( my $i = 0; $i < scalar @regNum; $i++ ) {
-			my $registeredAgeGroup = ComputeAgeGroupFromDOB( $DOB[$i] );
+		for( my $i = 0; $i < $numSwimmers; $i++ ) {
+			my $registeredAgeGroup = ComputeAgeGroupFromDOB( $DOB[$i], $date );
 			if( (($team && ($teamInitials[$i] eq $team)) || (!$team)) && # team in results == team in RSIND, OR no team in results
-				(AgeGroupsClose( $ageGroup, $registeredAgeGroup )) ) {
+				($ageGroup eq $registeredAgeGroup ) ) {
+			#	(AgeGroupsClose( $ageGroup, $registeredAgeGroup )) ) {
 				# we're going to assume that this swimmer is the swimmer we're looking for, because
 				# not only does the name match, but also the team (if one was supplied in the results)
 				# and age group matches.
@@ -1509,16 +1534,24 @@ sub GetRegInfoForSwimmer( $$$$$$$$$$$$$ ) {
 				my $count = $DuplicateNamesCorrected{$fullName};
 				if( !defined $count ) {
 					$count = 0;
-					PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::GetDetailsFromFullName(): " .
-						"Found multiple swimmers (" .
-						scalar @regNum . ") with the name '$fullName'" .
-						"\n    BUT resolved using team in results [$team] vs team via RSIDN_$yearBeingProcessed " .
-						"[$teamInitials[$i]] ".
-						"and age group in results [$ageGroup] vs age group via RSIDN_$yearBeingProcessed " .
-						"[$registeredAgeGroup, age=$DOB[$i]].  " .
+					# the following is used to come up with a truefull message for the user:
+					my $resolved;
+					if( $team eq "" ) {
+						$resolved = "\n    but unable to confirm using their registered team ($teamInitials[$i]) " .
+							"since the results didn't give their team.";
+					} else {
+						$resolved = "\n    and resolved using team in results ($team) vs team via RSIDN_$yearBeingProcessed " .
+						"($teamInitials[$i])";
+					}
+					
+					PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::GetRegInfoForSwimmer() on behalf of GetDetailsFromFullName():\n" .
+						"    Found multiple swimmers ($numSwimmers) with the name '$fullName'" .
+						"\n    BUT resolved using age group in results [$ageGroup] vs age group via RSIDN_$yearBeingProcessed " .
+						"[$registeredAgeGroup, DOB=$DOB[$i]]." .
+						$resolved .
 						"\n    Example result:  File: '$fileName', line: '$lineNum'" .
 						"\n    This is a WARNING only, which means that this swimmer will get points " .
-						"for this swim even though it's possible that our assumption is wrong." .
+						"for this swim even though\n    it's possible that our assumption is wrong." .
 						"\n    Returned RegNum=$returnedRegNum, name=$returnedFirstName " .
 						"$returnedMiddleInitial $returnedLastName", 1 );
 				}
@@ -1541,8 +1574,8 @@ sub GetRegInfoForSwimmer( $$$$$$$$$$$$$ ) {
 			my $count = $DuplicateNames{$fullName};
 			if( !defined $count ) {
 				$count = 0;
-				PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::GetDetailsFromFullName(): Found multiple swimmers (" .
-					scalar @regNum . ") with " .
+				PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::GetRegInfoForSwimmer() on behalf of GetDetailsFromFullName():\n" .
+					"    Found multiple swimmers ($numSwimmers) with " .
 					"the name '$fullName'.  " .
 					"\n    Example result:  File: '$fileName', line: '$lineNum'" .
 					"\n    This is FATAL, which means that this swimmer will NOT get any points " .
@@ -1559,9 +1592,9 @@ sub GetRegInfoForSwimmer( $$$$$$$$$$$$$ ) {
 				$DuplicateNames{"$fullName:OrgCourse"} .= ",$org:$course";
 			}
 		}
-	} # scalar @regNum > 1
+	} # $numSwimmers > 1
 	else {
-		# scalar @regNum == 1
+		# $numSwimmers == 1
 		$returnedRegNum = $regNum[0];
 		$returnedTeamInitials = $teamInitials[0];
 		$returnedFirstName = $firstName[0];
@@ -1711,22 +1744,48 @@ sub GetRegnumFromName() {
 } # end of GetRegnumFromName()
 
 
-# 				my $registeredAgeGroup = ComputeAgeGroupFromDOB( $DOB[$i] );
-# ComputeAgeGroupFromDOB - the name says it all
+# 				my $registeredAgeGroup = ComputeAgeGroupFromDOB( $DOB[$i], $date );
+# ComputeAgeGroupFromDOB - compute the age based on the passed date of birth relative
+#		to the passed $date. If $date is "" then use the year for which we're analyzing
+#		results.
 #
 # PASSED:
 #	$dob - in the form yyyy-mm-dd
+#	$date - in the form yyyy-mm-dd or an empty string
 #
 # RETURNED:
 #	$ageGroup - in the form 18-24
 #
-sub ComputeAgeGroupFromDOB( $ ) {
+# NOTES:
+#	The age group computed does NOT automatically account for different rules for different
+#	courses. Supply the appropriate $date if you need to take that into account.
+#	If the passed $date is "" we'll just use the year for our calculation (which isn't always
+#	what you want but what else can I do?).
+sub ComputeAgeGroupFromDOB( $$ ) {
+	my ( $dob, $date ) = @_;
 	my $ageGroup = "";
-	my $dob = $_[0];		# in the form yyyy-mm-dd
-	my $yearOfBirth = $dob;
-	$yearOfBirth =~ s/-.*$//;
-	my $yearBeingProcessed = PMSStruct::GetMacrosRef()->{"YearBeingProcessed"};
-	my $yearDiff = $yearBeingProcessed - $yearOfBirth + 1;
+	my $yearDiff;
+	if( $date eq "" ) {
+		my $yearOfBirth = $dob;
+		$yearOfBirth =~ s/-.*$//;
+		my $yearBeingProcessed = PMSStruct::GetMacrosRef()->{"YearBeingProcessed"};
+		$yearDiff = $yearBeingProcessed - $yearOfBirth + 1;
+	} else {
+		my ($resultYear, $resultMonth, $resultDay) = BreakApartDate( $date );
+		my $resultDate = DateTime->new(
+			year => $resultYear,
+			month => $resultMonth,
+			day => $resultDay
+		);
+		my ($dobYear, $dobMonth, $dobDay) = BreakApartDate( $dob );
+		my $dobDate = DateTime->new( 
+			year => $dobYear,
+			month => $dobMonth,
+			day => $dobDay
+		);
+		my $duration = $resultDate->subtract_datetime( $dobDate );
+		$yearDiff = $duration->years;
+	}
 	if( ($yearDiff >= 18) && ($yearDiff <= 24) ) {
 		$ageGroup = "18-24";
 	} else {
@@ -1737,6 +1796,21 @@ sub ComputeAgeGroupFromDOB( $ ) {
 	}
 	return $ageGroup;	
 } # end of ComputeAgeGroupFromDOB()
+
+
+# 		my ($resultYear, $resultMonth, $resultDay) = BreakApartDate( $date );
+#
+sub BreakApartDate( $ ) {
+	my $date = $_[0];
+	my ($resultYear, $resultMonth, $resultDay);
+	$resultYear = $date;
+	$resultYear =~ s/^(....).*$/$1/;
+	$resultMonth = $date;
+	$resultMonth =~ s/^....-(..)-../$1/;
+	$resultDay = $date;
+	$resultDay =~ s/^....-..-(..)/$1/;
+	return ( $resultYear, $resultMonth, $resultDay );	
+} # end of BreakApartDate()
 
 
 
