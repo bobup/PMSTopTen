@@ -967,9 +967,10 @@ sub CleanMeetTitle( $ ) {
 #    Women 	18-24	800	Freestyle	1	9:36.75	 Mackenzie M Leake	F23	STAN	386C-08D15		The Olympic Club 1500 Meter Swim Meet
 #
 #
-# NOTE: The above is likely WRONG because the format of these files changes during the year.
+# NOTE: The above may be WRONG because the format of these files has been known to change during the year.
 #	Hopefully this will stop and we can standardize, but for now when the format changes we
 #	just change the code to match it.  Ugh!
+#	2Nov2023: there haven't been any changes for at least a few years!!!
 #
 # PASSED:
 #	$resultFilesRef - reference to an hash holding the full path file names of all 
@@ -1163,7 +1164,7 @@ sub PMSProcessResults($$) {
 							$count = 0;
 							PMSLogging::DumpWarning( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: " .
 								"\n   Couldn't find regNum " .
-								"($regNum) in RSIDN_$yearBeingProcessed.  NOTE: this error for this regNum will " .
+								"($regNum) in RSIDN_$yearBeingProcessed.  NOTE: this warning for this regNum will " .
 								"not be repeated.\n" .
 								"  This is FATAL - This Top 10 result will be " .
 								"IGNORED since we can't confirm that this swimmer is a PAC swimmer.  Result line:" .
@@ -1218,7 +1219,7 @@ sub PMSProcessResults($$) {
 					$meetTitle = CleanMeetTitle( $meetTitle );
 					
 					my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, $meetTitle,
-						"(none)", $org, $course, $date, $date, 1 );
+						"(none yet)", $org, $course, $date, $date, 1 );
 					
 					TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $currentAgeGroup, $currentGender, 
 						$place, $points, $swimmerId, $currentEventId, $org, $course, $meetId, $time, $date );
@@ -1253,9 +1254,10 @@ sub PMSProcessResults($$) {
 # Example "result line":
 #	2,W18-24,50 Free,Sara E Delay,23,WCM,Pacific,23.69Y
 #
-# NOTE: The above is likely WRONG because the format of these files changes during the year.
+# NOTE: The above may be WRONG because the format of these files has been known to change during the year.
 #	Hopefully this will stop and we can standardize, but for now when the format changes we
 #	just change the code to match it.  Ugh!
+#	2Nov2023: there haven't been any changes for at least a few years!!!
 #
 # PASSED:
 #	$resultFilesRef - reference to an hash holding the full path file names of all 
@@ -1460,9 +1462,10 @@ sub USMSProcessResults($$) {
 # SCM:
 #    W18-24,50 M Free,Jennifer K Beckberger,11-20-10,25.58S
 #
-# NOTE: The above is likely WRONG because the format of these files changes during the year.
+# NOTE: The above may be WRONG because the format of these files has been known to change during the year.
 #	Hopefully this will stop and we can standardize, but for now when the format changes we
 #	just change the code to match it.  Ugh!
+#	2Nov2023: there haven't been any changes for at least a few years!!!
 # NOTE on Feb 5, 2016:  format changed for 2015, too!  Ugh!!!!
 #
 # PASSED:
@@ -1777,9 +1780,10 @@ sub USMSProcessRecordRow( $$$$$$ ) {
 # Example "result line":
 #	F,60-64,100,I.M.,Laura Val,5/17/15,01:07.1
 #
-# NOTE: The above is likely WRONG because the format of these files changes during the year.
+# NOTE: The above may be WRONG because the format of these files has been known to change during the year.
 #	Hopefully this will stop and we can standardize, but for now when the format changes we
 #	just change the code to match it.  Ugh!
+#	2Nov2023: there haven't been any changes for at least a few years!!!
 # NOTE on Feb 5, 2016:  format changed for 2015, too!  Ugh!!!!
 #
 # PASSED:
@@ -2002,7 +2006,7 @@ sub PMSProcessRecords($) {
 #
 sub PMSProcessOpenWater($) {
 	my $simpleFileName = $_[0];
-	my $debugRegNum = "3838-05SKS";
+	my $debugRegNum = "xxxxxx";
 	my $debug = 0;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	PMSLogging::PrintLog( "", "", "" );
@@ -2520,26 +2524,25 @@ sub PMSProcessEPostal( $$ ) {
 							# this is a result for a PMS swimmer
 							$numPMSResultLines++;
 							my $place = $row[1];
+							my $firstName = $row[3];
+							my $middleInitial = $row[4];
+							my $lastName = $row[2];
+							my $fullName = "$firstName $middleInitial $lastName";	# used below for error message
+							my $age = PMSUtil::trim( $row[6] );
+							my $team = $row[5];
+							my $gender = my $currentAgeGroup = $row[0];
+							my $dob = $row[8];   # m/d/y or empty string - not used here!!
+							my $distanceOrTime = $row[9];
+							my $natRecord = $row[10];
 							if( $place <= $slowestEPostalPlace ) {
 								# we have a row representing a PMS swimmer who placed for points
 								$numPMSScoringResults++;
 								# NOTE: we don't consider an ePostal an "event" - it's a meet only.
-								my $firstName = $row[3];
-								my $middleInitial = $row[4];
-								my $lastName = $row[2];
-								my $fullName = "$firstName $middleInitial $lastName";	# used below for error message
-								my $age = PMSUtil::trim( $row[6] );
-								my $team = $row[5];
-								my $gender = my $currentAgeGroup = $row[0];
-								my $dob = $row[8];   # m/d/y or empty string - not used here!!
-								my $distanceOrTime = $row[9];
-								my $natRecord = $row[10];
 								if( $natRecord ) {
 									# note that we've seen at least one ePostal National record from this $org
 									$missingResults{"$org-$courseRecord"} = 0;
 								}
 								$gender =~ s/^(.).*$/$1/;
-			#$currentAgeGroup =~ s/^.(..)(..)$/$1-$2/;		# e.g. 45-49
 								$currentAgeGroup =~ s/^.(.*)$/$1/;		# e.g. 4549 or 100104
 								if( length( $currentAgeGroup ) > 4 ) {
 									# we have the case of '100104'
@@ -2635,9 +2638,13 @@ sub PMSProcessEPostal( $$ ) {
 								}
 								
 								PMSLogging::DumpNote( "", $lineNum, "PMS swimmer got $points points: $firstName $middleInitial $lastName " .
-									"($gender/$age, dob=$dob, reg#=$USMSRegNum)" );
+									"($gender/$age, dob=$dob, reg#=$USMSRegNum, place=$place)" );
 									
-							} # end of '...we have a row representing a PMS swimmer...'
+							} # end of '...we have a row representing a PMS swimmer who placed for points'
+							else {
+								PMSLogging::DumpNote( "", $lineNum, "PMS swimmer with no points: $firstName $middleInitial $lastName " .
+									"($gender/$age, dob=$dob, reg#=$USMSRegNum, place=$place)" );
+							}
 						} # end of '...this is a result for a PMS swimmer...'
 					} # end of '...we have a result line...'
 					else {
@@ -2680,7 +2687,8 @@ sub ComputePointsForAllSwimmers() {
 	my( $sth, $rv );
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	my $countSwimmers = 0;
-
+	my $debugSwimmerId = "0";
+	
 	PMSLogging::PrintLog( "", "", "\n** Begin ComputePointsForAllSwimmers", 1 );
 	
 	# Get the points for each swimmer, broken down by org and course and age group:
@@ -2701,6 +2709,10 @@ sub ComputePointsForAllSwimmers() {
 			print "  ...$countSwimmers...\n";
 		}
 		
+		if( $swimmerId eq $debugSwimmerId ) {
+			print "--->ComputePointsForAllSwimmers(): Processing $firstName $middleInitial $lastName." .
+				"agegroup1='$ageGroup1', agegroup2='$ageGroup2'\n";
+		}
 		
 		if( $GENERATE_COMBINED_AGE_GROUPS ) {
 			# swimmers in two age groups have their age groups "merged":
@@ -2708,10 +2720,18 @@ sub ComputePointsForAllSwimmers() {
 				( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed ) = 
 					TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, "$ageGroup1:$ageGroup2", $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
 				$TT_Struct::numInGroup{"$gender:$ageGroup2%combined"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+				if( $swimmerId eq $debugSwimmerId ) {
+					print "Combined age groups: ageGroup1:ageGroup2: totalPoints=$totalPoints, totalResultsCounted: " .
+						"$totalResultsCounted, totalResultsAnalyzed=$totalResultsAnalyzed\n";
+				}
 			} else {
 				( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed ) = 
 					TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, $ageGroup1, $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
 				$TT_Struct::numInGroup{"$gender:$ageGroup1%combined"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+				if( $swimmerId eq $debugSwimmerId ) {
+					print "Combined age groups: ageGroup1: totalPoints=$totalPoints, totalResultsCounted: " .
+						"$totalResultsCounted, totalResultsAnalyzed=$totalResultsAnalyzed\n";
+				}
 			}
 		} else {
 			# compute points for each age group separately:
@@ -2725,6 +2745,10 @@ sub ComputePointsForAllSwimmers() {
 			}
 		}
 		
+		if( $swimmerId eq $debugSwimmerId ) {
+			print "--->DONE processing $firstName $middleInitial $lastName." .
+				"agegroup1='$ageGroup1', agegroup2='$ageGroup2'\n";
+		}
 	} # end of while...
 	
 	# load the 'numInGroup' data into our database
@@ -2911,6 +2935,7 @@ sub ComputePlaceForAllSwimmers() {
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	my $countSwimmers = 0;
 	my $query;
+	my $debugSwimmerId = "0";
 
 	my $teamQuery = "";
 	if( defined $teamName ) {
@@ -3010,6 +3035,10 @@ sub ComputePlaceForAllSwimmers() {
 						print "  ...$countSwimmers ($gender $ageGroup)...\n";
 					}
 					$order++;		# we have another swimmer, so they are the next in order
+					if( $swimmerId eq $debugSwimmerId ) {
+						print "ComputePlaceForAllSwimmers(): $firstName $middleInitial $lastName order is $order with " .
+							"$totalPoints points in the $gender/$ageGroupSelected group.\n";
+					}
 					if( $totalPoints == $previousPoints ) {
 						# tie - don't increase their rank
 					} else {
@@ -3221,6 +3250,7 @@ sub PrintResultsHTML($$$$$) {
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	
 	my $debugLastName = lc("xxxxxxxx");
+	my $debugSwimmerId = "0";
 
 	my $category = 1;		# we only consider Cat 1 swims
 	my $personBackgroundColor = "WHITE";		# background color for each row (computed below)
@@ -3304,9 +3334,15 @@ sub PrintResultsHTML($$$$$) {
 					$SectorStr = " ($sector)";
 				}
 			}
+			
 			if( lc($lastName) eq $debugLastName) {
 				print "\nPrintResultsHTML(): found $debugLastName: ageGroup=$ageGroup, ageGroupCAG=$ageGroupCAG, $previousGenderAgegroup, $thisGenderAgegroup\n";
 			}
+			if( $swimmerId eq $debugSwimmerId ) {
+				print "\nPrintResultsHTML(): found swimmerId $swimmerId: ageGroup=$ageGroup, ageGroupCAG=$ageGroupCAG, " .
+					"$previousGenderAgegroup, $thisGenderAgegroup\n";
+			}
+			
 			# are we starting a new gender and/or age group?
 			if( $previousGenderAgegroup ne $thisGenderAgegroup ) {
 				# YES - new gender/age group.  BUT FIRST, close the previous gender/age group
@@ -3521,13 +3557,22 @@ sub PrintResultsHTML($$$$$) {
 					if( lc($lastName) eq $debugLastName) {
 						print "\nPrintResultsHTML(): found $debugLastName again for $org-$course\n";
 					}
+					if( $swimmerId eq $debugSwimmerId ) {
+						print "...ageGroup=$ageGroup, ageGroupCAG=$ageGroupCAG, " .
+							"$previousGenderAgegroup, $thisGenderAgegroup\n";
+					}
 
 					my @details = ();
 					my $detailsRef = \@details;
 					my ($detailsNum, $totalPoints, $resultsCounted) = 
 						TT_MySqlSupport::GetSwimmersSwimDetails2( $swimmerId, $org, $course, $ageGroup, $detailsRef );
+					
 					if( lc($lastName) eq $debugLastName) {
 						print "PrintResultsHTML(): $debugLastName: $swimmerId, $detailsNum, $totalPoints, $resultsCounted, org=$org, course=$course\n";
+					}
+					if( $swimmerId eq $debugSwimmerId ) {
+						print "...swimmerId: $swimmerId, detailsNum: $detailsNum, totalPoints: $totalPoints, " .
+							"$resultsCounted, org=$org, course=$course\n";
 					}
 
 					# if we don't have any points
@@ -3550,9 +3595,14 @@ sub PrintResultsHTML($$$$$) {
 					# in decending order.
 					# First, get the correct template file:
 					my $templateSingleEvent;
+					
 					if( lc($lastName) eq $debugLastName) {
 						print "\nPrintResultsHTML(): working on $debugLastName: select template for '$course', detailsNum=$detailsNum\n";
 					}
+					if( $swimmerId eq $debugSwimmerId ) {
+						print "...select template for '$course', detailsNum (num events found for this swimmer, org, course)=$detailsNum\n";
+					}
+
 					if( $course eq "OW" ) {
 						$templateSingleEvent = $templateSingleEvent_OW;
 					} elsif( $course eq "ePostal" ) {
@@ -3648,20 +3698,32 @@ sub PrintResultsHTML($$$$$) {
 									"who placed top 10 in the same event twice.  SwimmerId=" .
 									"$swimmerId, $org, $course, event='" . $detailsRef->[$i]{'EventName'} .
 									"'", 1 );
+								
 								if( lc($lastName) eq $debugLastName) {
 									print "\nPrintResultsHTML(): working on $debugLastName: generate html for '$course': no points" .
 										" (dup event non-split age group)\n";
 								}
+								if( $swimmerId eq $debugSwimmerId ) {
+									print "...generate html for '$course': no points" .
+										" (dup event non-split age group)\n";
+								}
+
 							} else {
 								if( $detailsAgeGroup eq $lowerAgeGroup ) {
 									$pointsStartString = "- using points earned in $upperAgeGroup ";
 								} else {
 									$pointsStartString = "- using points earned in $lowerAgeGroup ";
 								}
+								
 								if( lc($lastName) eq $debugLastName) {
 									print "\nPrintResultsHTML(): working on $debugLastName: generate html for '$course': no points" .
 										" (dup event split age group)\n";
 								}
+								if( $swimmerId eq $debugSwimmerId ) {
+									print "...generate html for '$course': no points" .
+										" (dup event split age group)\n";
+								}
+
 							}
 							PMSStruct::GetMacrosRef()->{"PointsStart"} = "$pointsStartString<!-- ";
 							PMSStruct::GetMacrosRef()->{"PointsEnd"} = " -->";
@@ -3670,9 +3732,14 @@ sub PrintResultsHTML($$$$$) {
 							# but not show their points since they didn't earn any.
 							PMSStruct::GetMacrosRef()->{"PointsStart"} = "<!-- ";
 							PMSStruct::GetMacrosRef()->{"PointsEnd"} = " -->";
+							
 							if( lc($lastName) eq $debugLastName) {
 								print "\nPrintResultsHTML(): working on $debugLastName: generate html for '$course': no points\n";
 							}
+							if( $swimmerId eq $debugSwimmerId ) {
+								print "...generate html for '$course': no points\n";
+							}
+
 						} else {
 							# this is one of the top 8 results
 							PMSStruct::GetMacrosRef()->{"PointsStart"} = "";
@@ -3681,6 +3748,11 @@ sub PrintResultsHTML($$$$$) {
 								print "\nPrintResultsHTML(): working on $debugLastName: generate html for '$course': " .
 									PMSStruct::GetMacrosRef()->{"EventPoints"} . " points\n";
 							}
+							if( $swimmerId eq $debugSwimmerId ) {
+								print "...generate html for '$course': " .
+									PMSStruct::GetMacrosRef()->{"EventPoints"} . " points\n";
+							}
+
 						}
 						PMSTemplate::ProcessHTMLTemplate( $templateSingleEvent, $virtualGeneratedHTMLFileHandle );
 					} # end of for( my $i = 1; $i <= $detailsNum; ...

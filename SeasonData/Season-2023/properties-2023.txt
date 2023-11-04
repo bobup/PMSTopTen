@@ -11,6 +11,27 @@
 # the results to be processed:
 RacesDataFile	races.txt
 
+# The AGSOTYPointsEmail is the FULL mailto link to use when the user wants to email a question/problem
+# to a human. Note the strange format - it's designed to make it very hard for a bot to gather the
+# email address from the web page. See the necessary javascript that turns this into a working 
+# mailto link.
+AGSOTYPointsEmail	<a href="" data-part1="agsoty" data-part2="pacificmasters" data-part3="org" data-subject="Pacific%20Masters%20AGSOTY%20Points"></a>
+
+# Here is the javascript necessary to make the above work:
+# /* This code is the original work of George Martsoukos (2022). 
+# ** See https://webdesign.tutsplus.com/protect-html-email-links--cms-41203t */
+# 
+# const links = document.querySelectorAll("[data-part1][data-part2][data-part3]");
+# for (const link of links) {
+#   const attrs = link.dataset;
+#   link.setAttribute(
+# 	"href",
+# 	"mailto:${attrs.part1}@${attrs.part2}.${attrs.part3}?subject=${attrs.subject}"
+#   );
+#   link.textContent = "${attrs.part1}@${attrs.part2}.${attrs.part3}";
+# }
+
+
 # scoring rules: number of points for 1st, 2nd, 3rd, etc...
 # 2019 and older
 #PMSTopTenScoringRules		0, 11, 9, 8, 7, 6, 5, 4, 3, 2, 1
@@ -94,7 +115,45 @@ USMSEpostals \
 							https://www.usms.org/events/national-championships/virtual-championships/{YearBeingProcessed}-virtual-championships/{YearBeingProcessed}-1-hour-virtual-championship@@@ \
 							{YearBeingProcessed}-01-01@@@ \
 							{YearBeingProcessed}-01-31@@@ \
+							0; \
+						epostal-5k-{YearBeingProcessed}-men.csv;  \
+							USMS@@@ \
+							5000@@@ \
+							0@@@ \
+							Meters@@@ \
+							{YearBeingProcessed} USMS 5K/10K Virtual Championship@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2023-virtual-championships/2023-5k-10k-virtual-championship@@@ \
+							{YearBeingProcessed}-05-15@@@ \
+							{YearBeingProcessed}-09-15@@@ \
+							0; \
+						epostal-5k-{YearBeingProcessed}-women.csv; \
+							USMS@@@ \
+							5000@@@ \
+							0@@@ \
+							Meters@@@ \
+							{YearBeingProcessed} USMS 5K/10K Virtual Championship@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2023-virtual-championships/2023-5k-10k-virtual-championship@@@ \
+							{YearBeingProcessed}-05-15@@@ \
+							{YearBeingProcessed}-09-15@@@ \
+							0; \
+						epostal-10k-{YearBeingProcessed}-men.csv; \
+							USMS@@@ \
+							10000@@@ \
+							0@@@ \
+							Meters@@@ \
+							{YearBeingProcessed} USMS 5K/10K Virtual Championship@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2023-virtual-championships/2023-5k-10k-virtual-championship@@@ \
+							{YearBeingProcessed}-05-15@@@ \
+							{YearBeingProcessed}-09-15@@@ \
+							0; \
+						epostal-10k-{YearBeingProcessed}-women.csv; \
+							USMS@@@ \
+							10000@@@ \
+							0@@@ \
+							Meters@@@ \
+							{YearBeingProcessed} USMS 5K/10K Virtual Championship@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2023-virtual-championships/2023-5k-10k-virtual-championship@@@ \
+							{YearBeingProcessed}-05-15@@@ \
+							{YearBeingProcessed}-09-15@@@ \
 							0;
-
-
 >endoffile

@@ -1,5 +1,5 @@
-<!-- Start AGSOTY-StartHead.html -->
 <html>
+<!-- Start AGSOTY-StartHead.html -->
 <head>
 	<meta http-equiv="Content-Language" content="en-us">
 	<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
@@ -15,6 +15,29 @@
 
 </head>
 
+<script>
+
+$(document).ready(function() {
+	$.post( "../Access/access.php", { 
+		application : "TopTen",
+		} );	
+});
+
+$(document).ready(function() {
+	/* This code is the original work of George Martsoukos (2022). 
+	** See https://webdesign.tutsplus.com/protect-html-email-links--cms-41203t */
+    const links = document.querySelectorAll("[data-part1][data-part2][data-part3]");
+    for (const link of links) {
+		const attrs = link.dataset;
+		link.setAttribute(
+		"href",
+		"mailto:" + attrs.part1 + "@" + attrs.part2 + "." + attrs.part3 + "?subject=" + attrs.subject
+		);
+		link.textContent = attrs.part1 + "@" + attrs.part2 + "." + attrs.part3;
+	}
+});
+
+</script>
 
 
 <body>
@@ -65,6 +88,12 @@ Based on rules described on the
 <a href="https://www.pacificmasters.org/page.cfm?pagetitle=Swimmer+of+the+Year+Rankings" target="_blank">
 Pacific Masters Swimmers of the Year Rankings</a> page.
 </div>
+
+<div style=" margin-left: 40px;">
+<p><b>Questions, corrections, comments?</b> Please email 
+{AGSOTYPointsEmail}
+</div>
+
 <div style=" margin-left: 40px; display:{ShowRules}">
 	This page displays Age Group Standings for Pacific Masters swimmers.  
 	These standings are determined by awarding swimmers points for:

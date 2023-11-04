@@ -181,13 +181,15 @@ sub InitializeTopTenDB() {
     				# will be represented by 4 rows in this table.
 					# We'll then analyze all of these splashes to populate the Points table.
     				# --- SplashId : primary key
-    				# --- Course : one of SCY, SCM, LCM, SCY Records, SCM Records, LCM Records, OW, or ePostal
+    				# --- Course : one of SCY, SCM, LCM, SCY Records, SCM Records, LCM Records, OW, ePostal, or ePostal Records
     				#		- SCY, SCM, LCM:  this represents the swim in that length of pool
     				#		- SCY Records, SCM Records, LCM Records: this represents the swim that set a record.
     				#			Obviously, such a swim has another record in this table with the Course of
     				#			SCY, SCM, or LCM as appropriate.  See the Note above.
     				#		- OW: this represents an OW swim.
     				#		- ePostal: this represents an ePostal swim
+    				#		- ePostal Records: this represents the swim that set an ePostal record.  Obviously, such
+    				#			a swim has another record in this table with the Course of ePostal.
     				# --- Org : orginazation, one of PAC or USMS
     				#		- PAC: this represents a top 'N' Pacific Masters swim.  Also includes open water swims.
     				#		- USMS: this represents a top 'N' USMS swim.  Obviously if a swim is represented as a
@@ -244,7 +246,7 @@ sub InitializeTopTenDB() {
     				# --- MeetOrg : the organization recording this meet in its top 10.  The same meet
     				#		can have races recorded by both PAC and USMS, so the one here is the
     				#		first occurance we see.
-    				# --- MeetCourse : the course, e.g. SCY, SCM, or LCM, OW, or ePo (ePostal truncated to 3 chars)
+    				# --- MeetCourse : the course, e.g. SCY, SCM, or LCM, OW, or ePostal 
     				# --- MeetBeginDate : the date of the first day of the meet.
     				# --- MeetEndDate : the date of the last day of the meet.  Can be the same as MeetBeginDate
     				# --- MeetIsPMS : 1 if this meet is sanctioned by PMS, 0 otherwise.
@@ -896,7 +898,7 @@ sub AddNewMeetIfNecessary($$$$$$$$$) {
 		if( $meetLink eq "(none)" ) {
 			PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::AddNewMeetIfNecessary(): " .
 				"Found null meetlink: meetTitle='$meetTitle', stack:", 1 );
-			PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::AddNewMeetIfNecessary(): " .
+			PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::AddNewMeetIfNecessary(): \n" .
 				PMSUtil::GetStackTrace(), 1 );
 		}
 		# this meet isn't in our db - add it
@@ -904,7 +906,7 @@ sub AddNewMeetIfNecessary($$$$$$$$$) {
 			"INSERT INTO Meet " .
 				"(MeetTitle, MeetLink, MeetOrg, MeetCourse, MeetBeginDate, MeetEndDate, MeetIsPMS) " .
 				"VALUES ( " .
-				"\"" . MySqlEscape($meetTitle) . "\"," .
+				"\"" . $meetTitle . "\"," .
 				"\"" . MySqlEscape($meetLink) . "\"," .
 				"\"" . $meetOrg . "\"," .
 				"\"" . $meetCourse . "\"," .
@@ -1036,6 +1038,7 @@ sub GetSwimmersSwimDetails2($$$$) {
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	my @arrOfResultHashRef = ();
 	my( $totalPoints, $resultsCounted, $resultsAnalyzed ) = (0,0,0);
+	my $debugSwimmerId = "0";
 
 	my $ageGroupQuery = "";
 	if( $ageGroup !~ m/:/ ) {
@@ -1057,7 +1060,7 @@ sub GetSwimmersSwimDetails2($$$$) {
 		"ORDER BY UsePoints DESC, Points DESC,Date DESC";
 	
 	my $debugQuery = "";
-	$debugQuery = "GetSwimmersSwimDetails2: Val" if( $swimmerId == -1 );
+	$debugQuery = "GetSwimmersSwimDetails2: Val" if( $swimmerId == $debugSwimmerId );
 	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query, "$debugQuery" );
 	
 	my %hashOfEvents = ();		# used to remove duplicates
@@ -1173,7 +1176,8 @@ sub GetSplashesForMeet( $ ) {
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 
 	my $query = "SELECT COUNT(DISTINCT(SwimmerId)) AS Swimmers, " .
-				"COUNT(SwimmerId) AS Splashes FROM Splash WHERE MeetId=$meetId";
+				"COUNT(SwimmerId) AS Splashes FROM Splash WHERE MeetId=$meetId " .
+				"AND Course NOT LIKE '%Records'";
 	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query, "" );
 	if( defined(my $resultHash = $sth->fetchrow_hashref) ) {
 		$numSplash = $resultHash->{'Splashes'};
@@ -2327,8 +2331,12 @@ sub ComputePointsForSwimmer( $$$ ) {
 		# single age group
 		$ageGroupQuery = " AND Splash.AgeGroup = '$ageGroup' ";
 	}
-	my $debugSwimmerId = -1;
+	my $debugSwimmerId = 0;
 	
+	if( $swimmerId eq $debugSwimmerId ) {
+		print "TT_MySqlSupport:ComputePointsForSwimmer(): Processing swimmerId $swimmerId.\n";
+	}
+
 	# eliminage bogus messages:
 	my $tempxxx1 = $PMSConstants::arrOfOrg[0];
 	my $tempxxx2 = $PMSConstants::arrOfCourse[0];
@@ -2347,7 +2355,7 @@ sub ComputePointsForSwimmer( $$$ ) {
 			# $hashOfEvents{eventId-$course} = points : the swimmer swam in event # 'eventId' 
 			# and course $course and earned 'points' points.  E.g. event "100 M free" LCM, 
 			# earning 8 points.  Note they can also earn points in event "100 M free" SCM.
-			$query = "SELECT EventId, Points, Category FROM Splash " .
+			$query = "SELECT EventId, Points, Category, MeetId FROM Splash " .
 				"WHERE Splash.SwimmerId = $swimmerId " .
 				"AND Splash.Org = '$org' " .
 				"AND Splash.Course = '$course' " .
@@ -2355,14 +2363,22 @@ sub ComputePointsForSwimmer( $$$ ) {
 				$ageGroupQuery .
 				"ORDER BY Points DESC";
 			my($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+			if( $swimmerId eq $debugSwimmerId ) {
+				print "...org: $org, course: $course\n";
+			}
 			while( my $resultHash = $sth->fetchrow_hashref ) {
 				$subTotalResultsAnalyzed++;
 				my $points = $resultHash->{'Points'};
 				my $eventId = $resultHash->{'EventId'};
 				my $category = $resultHash->{'Category'};
+				my $meetId = $resultHash->{'MeetId'};
+				if( $swimmerId eq $debugSwimmerId ) {
+					print "...begin processing result #$subTotalResultsAnalyzed for $org and $course\n";
+					print "...eventId=$eventId, course=$course, points=$points, cat=$category, meetId=$meetId\n";
+				}
 				if( $points == 0 ) {
 					# the place for this swim didn't earn any points so move on...
-					DontUseThesePoints( $swimmerId, $org, $course, $eventId, "(zero points)" );
+					DontUseThesePoints( $swimmerId, $org, $course, $eventId, $meetId, "(zero points)", 1 );
 					$countOfResults++;
 					next;
 					}
@@ -2377,17 +2393,18 @@ sub ComputePointsForSwimmer( $$$ ) {
 							"Found points for the same event twice: event $eventId, course $course, " .
 							"age group $ageGroup, swimmerId $swimmerId", 1 );
 						# we'll ignore these POINTS
-						DontUseThesePoints( $swimmerId, $org, $course, $eventId, "(Dup event-course in single age group)" );
+						DontUseThesePoints( $swimmerId, $org, $course, $eventId, $meetId, "(Dup event-course in single age group)", 1 );
 						next;
 					}
 					# they earned points in this event before, and since our query returned the
 					# higher points first we know that these points shouldn't be counted because
 					# they are less than (or equal) to what we've already counted for this event
 					# and course.
-					DontUseThesePoints( $swimmerId, $org, $course, $eventId, "(Dup event-course)" );
+					DontUseThesePoints( $swimmerId, $org, $course, $eventId, $meetId,
+						"(Dup event-course, 2 age groups)", $swimmerId eq $debugSwimmerId );
 				} elsif( ($course eq "OW") && ($category == 2) ) {
 					# we don't count cat 2 OW swims
-					DontUseThesePoints( $swimmerId, $org, $course, $eventId, "(Cat 2)" );
+					DontUseThesePoints( $swimmerId, $org, $course, $eventId, $meetId, "(Cat 2)", $swimmerId eq $debugSwimmerId );
 				} else {
 					# we have not seen points for this event and course
 					# remember these previous points:
@@ -2400,10 +2417,16 @@ sub ComputePointsForSwimmer( $$$ ) {
 							# yep - they get points for this OW splash
 							$subTotalPoints += $points;
 							$subTotalResultsCounted++;
+							if( $swimmerId eq $debugSwimmerId ) {
+								print "......Got points for OW, countOfResults=$countOfResults, " .
+									"subTotalResultsCounted=$subTotalResultsCounted, points=$points, subTotalPoints=" .
+									"$subTotalPoints.\n";
+							}
 						} else {
 							# else they don't get points for this OW swim because they've hit the max
 							# set this splash as non-point earning:
-							DontUseThesePoints( $swimmerId, $org, $course, $eventId, "(Max OW scored swims)" );							
+							DontUseThesePoints( $swimmerId, $org, $course, $eventId, $meetId,
+								"(Max OW scored swims)", $swimmerId eq $debugSwimmerId );							
 						}
 					} elsif( ($course eq 'SCY Records') || 
 						($course eq 'SCM Records') ||
@@ -2414,14 +2437,25 @@ sub ComputePointsForSwimmer( $$$ ) {
 						# increment number of points for this swimmer 
 						$subTotalPoints += $points;
 						$subTotalResultsCounted++;
+						if( $swimmerId eq $debugSwimmerId ) {
+							print "......Got points for $course, countOfResults=$countOfResults, " .
+									"subTotalResultsCounted=$subTotalResultsCounted, points=$points, subTotalPoints=" .
+									"$subTotalPoints.\n";
+						}
 					} else {
 						# this course has a limit...
 						if( $countOfResults <= 8 ) {
 							# increment number of points for this swimmer 
 							$subTotalPoints += $points;
 							$subTotalResultsCounted++;
+							if( $swimmerId eq $debugSwimmerId ) {
+								print "......Got points for $course, countOfResults=$countOfResults, " .
+									"subTotalResultsCounted=$subTotalResultsCounted, points=$points, subTotalPoints=" .
+									"$subTotalPoints.\n";
+							}
 						} else {
-							DontUseThesePoints( $swimmerId, $org, $course, $eventId, "(Max scored swims)" );							
+							DontUseThesePoints( $swimmerId, $org, $course, $eventId, $meetId, "(Max scored swims)",
+								$swimmerId eq $debugSwimmerId );							
 						}
 					}
 				}
@@ -2433,6 +2467,11 @@ sub ComputePointsForSwimmer( $$$ ) {
 			}
 		$totalResultsCounted += $subTotalResultsCounted;
 		$totalResultsAnalyzed += $subTotalResultsAnalyzed;
+		if( $swimmerId eq $debugSwimmerId ) {
+			print "...End of this org: $org, course: $course: subTotalResultsCounted=$subTotalResultsCounted, " .
+				"totalResultsCounted=$totalResultsCounted, subTotalResultsAnalyzed=$subTotalResultsAnalyzed, " .
+				"totalResultsAnalyzed=$totalResultsAnalyzed\n......totalPoints=$totalPoints\n";
+		}
 		} # end of foreach my $course
 		
 	} # end of foreach my $org
@@ -2452,7 +2491,13 @@ sub ComputePointsForSwimmer( $$$ ) {
 #	$org -
 #	$course -
 #	$eventId -
+#	$meetId - the meet in which this splash took place. Needed because there could be multiple splashes
+#		for the same swimmer within the same org (e.g. PMS), with the same course (e.g. 200 free), and
+#		with the same eventId (since they are the same event). So we need to know EXACTLY which splash to
+#		not count!
 #	$reason - the reason this splash is not a scoring swim.
+#	$logToStdout - (optional) set to true if Notes are to be logged to stdout in addition to the
+#		log file, false otherwise.  Default is 0.
 #
 # RETURNED:
 #	n/a
@@ -2462,32 +2507,45 @@ sub ComputePointsForSwimmer( $$$ ) {
 #		the UsePoints column to 0.
 #
 sub DontUseThesePoints( $$$$$ ) {
-	my( $swimmerId, $org, $course, $eventId, $reason ) = @_;
+	my( $swimmerId, $org, $course, $eventId, $meetId, $reason, $logToStdout ) = @_;
+	my $debugSwimmerId = "0";
+	if( ! defined( $logToStdout ) ) {
+		$logToStdout = 0;
+	}
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	my $query = "SELECT SplashId, UsePoints FROM Splash WHERE " .
-		"SwimmerId=$swimmerId AND Org='$org' AND Course='$course' AND EventId='$eventId'";
+		"SwimmerId=$swimmerId AND Org='$org' AND Course='$course' AND EventId='$eventId' AND MeetId='$meetId'";
 		
 	my ($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
 	if( $status ne "" ) {
 		PMSLogging::DumpError( "", "", "TT_MySqlSupport::DontUseThesePoints(): Failed to get splash " .
-			"to update: : status='$status', org=$org, course=$course, eventId=$eventId, passed reason='$reason'.", 1);
+			"to update: : status='$status', org=$org, course=$course, eventId=$eventId, meetId=$meetId, passed reason='$reason'.", 1);
 	} elsif( defined(my $resultHash = $sth->fetchrow_hashref) ) {
 		my $splashId = $resultHash->{"SplashId"};
 		my $usePoints = $resultHash->{"UsePoints"};
 		if( $usePoints == 0 ) {
 			# this is odd....report it but ignore it.
 			PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::DontUseThesePoints(): UsePoints already set " .
-				"to 0: swimmerId=$swimmerId, org=$org, course=$course, eventId=$eventId, passed reason='$reason'.", 1);
+				"to 0: swimmerId=$swimmerId, org=$org, eventId=$eventId, course=$course, meetId=$meetId, passed reason='$reason'.", 1);
+		} else {
+			PMSLogging::DumpNote( "", "", "TT_MySqlSupport::DontUseThesePoints(): SwimmerId=$swimmerId, eventId=$eventId, " .
+				"course=$course, meetId=$meetId, passed reason='$reason'.", $logToStdout );
 		}
 		$query = "UPDATE Splash SET UsePoints = 0, Reason = '$reason' WHERE SplashId=$splashId";
 		($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+		
+		if( $swimmerId eq $debugSwimmerId ) {
+			print "DontUseThesePoints(): query='$query', status='$status'\n";
+		}
+		
 		if( $status ne "" ) {
 			PMSLogging::DumpError( "", "", "TT_MySqlSupport::DontUseThesePoints(): Failed to UPDATE " .
-				"Splash: status='$status', swimmerId=$swimmerId, org=$org, course=$course, eventId=$eventId, passed reason='$reason'.", 1);
+				"Splash: status='$status', swimmerId=$swimmerId, org=$org, course=$course, eventId=$eventId, " .
+				"meetId=$meetId, passed reason='$reason'.", 1);
 		}
 	} else {
 		PMSLogging::DumpError( "", "", "TT_MySqlSupport::DontUseThesePoints(): Failed to get splash " .
-			"to update: empty result: org=$org, course=$course, eventId=$eventId, passed reason='$reason'.", 1);
+			"to update: empty result: org=$org, course=$course, eventId=$eventId, meetId=$meetId, passed reason='$reason'.", 1);
 	}
 
 } # end of DontUseThesePoints()

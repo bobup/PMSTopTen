@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# PushTT2Prod.bash - push top ten generated files from dev to production
+# ProdPushTT.bash - push top ten generated files from dev to production
 #	Push generated files from the dev points page to production.
 #   BUT, only push the files if they appear "sane" - tests below.
 #

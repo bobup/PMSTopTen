@@ -11,7 +11,7 @@
 #	$2 - (optional) if passed, and equal to 'y', then do the push even if results don't appear 'sane'
 #		(Used for production push only)
 #	$3 - (optional) if passed, and equal to 'y', then don't send an email if we don't do the push because
-#		the index.html file can't be found.  This is just passed to PushTT2Dev.bash.
+#		the index.html file can't be found.  This is just passed to DevPushTT.bash.
 #
 # Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
@@ -39,11 +39,11 @@ if [ -f $SEMAPHORE ] ; then
 fi
 
 echo ""; echo '******************** Begin' "$0"
-$SCRIPT_DIR/PushTT2Dev.bash $1 $2 $3
+$SCRIPT_DIR/DevPushTT.bash $1 $2 $3
 PUSH_DEV_STATUS=$?
 if [ "$PUSH_DEV_STATUS" -eq 0 ] ; then
     # push to dev was successful - push to production if appropriate
-    $SCRIPT_DIR/PushTT2Prod.bash $1 $2
+    $SCRIPT_DIR/ProdPushTT.bash $1 $2
 else
     echo "$1 Push to dev failed, so no auto push to production."
 fi

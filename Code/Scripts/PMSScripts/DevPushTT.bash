@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-# PushTT2Dev.bash - this script is intended to be executed on the PMS Dev machine ONLY.  
+# DevPushTT.bash - this script is intended to be executed on the PMS Dev machine ONLY.  
 #	It will push the top ten generated files to the Dev points page, e.g.:
 #			http://www.pacmdev.org/points/standings-$1/
 #	ONLY IF the index.html file exists in the "Generated files" directory.
