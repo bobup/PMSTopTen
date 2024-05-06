@@ -392,17 +392,17 @@ sub InitializeTopTenDB() {
     				# --- AgeGroup - the age group the swimmer was in when earning these points.
     				#		Will be of the form "18-25", even for swimmers with split age groups.
     				# --- ListOrder - the order this swimmer appears in the reslts.  Would normally be the
-    				#		same as Rank (below) but there can be ties, so it doesn't have to be the same.
+    				#		same as sRank (below) but there can be ties, so it doesn't have to be the same.
     				#		This allows us to list the names in a deterministic order even if there 
     				#		are ties.
-    				# --- Rank - the swimmer's ranking in their gender/age group, e.g. 1 = 1st, 3=3rd, etc.
+    				# --- sRank - the swimmer's ranking in their gender/age group, e.g. 1 = 1st, 3=3rd, etc.
     				#		It's possible for two or more swimmers to have the same rank (it's a tie)
 		    		($sth,$rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
 		    			"CREATE TABLE FinalPlaceSAG ( FinalPlaceSAGId INT AUTO_INCREMENT PRIMARY KEY, " .
 		    			"SwimmerId INT, " .
 		    			"AgeGroup Varchar(15), " .
 		    			"ListOrder INT, " .
-		    			"Rank INT " .
+		    			"sRank INT " .
 		    			")" );
 		    			
 ### FinalPlaceCAG  (Combined Age Groups)
@@ -413,17 +413,17 @@ sub InitializeTopTenDB() {
     				#		or "18-25:25-29" if we combine age groups for 
     				#		a swimmer who swims the season in two age groups.
     				# --- ListOrder - the order this swimmer appears in the reslts.  Would normally be the
-    				#		same as Rank (below) but there can be ties, so it doesn't have to be the same.
+    				#		same as sRank (below) but there can be ties, so it doesn't have to be the same.
     				#		This allows us to list the names in a deterministic order even if there 
     				#		are ties.
-    				# --- Rank - the swimmer's ranking in their gender/age group, e.g. 1 = 1st, 3=3rd, etc.
+    				# --- sRank - the swimmer's ranking in their gender/age group, e.g. 1 = 1st, 3=3rd, etc.
     				#		It's possible for two or more swimmers to have the same rank (it's a tie)
 		    		($sth,$rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
 		    			"CREATE TABLE FinalPlaceCAG ( FinalPlaceCAGID INT AUTO_INCREMENT PRIMARY KEY, " .
 		    			"SwimmerId INT, " .
 		    			"AgeGroup Varchar(15), " .
 		    			"ListOrder INT, " .
-		    			"Rank INT " .
+		    			"sRank INT " .
 		    			")" );
 		    			
 ### Swimmer
@@ -861,7 +861,7 @@ sub AddNewSplash {
 } # end of AddNewSplash()
 
 
-# my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( filename, linenum, meetitle, meetlink, 
+# my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( filename, linenum, USMSMeetId, meetitle, meetlink, 
 #		meetorg, meetcourse, meetbegindate, meetenddate, meetispms (1 or 0)  )
 #
 # AddNewMeetIfNecessary - Add an entry in the Meet table representing the passed swim meet
@@ -869,6 +869,7 @@ sub AddNewSplash {
 # PASSED:
 #	$fileName - (not used - available for messages)
 #	$lineNum - (not used - available for messages)
+#	$USMSMeetId - The uniquie USMS meet id (e.g. "20160618SSG-1Y").  Can be empty string.
 #	$meetTitle - 
 #	$meetLink - link to meet info on USMS site (if available - may be "none" or something if unknown)
 #	$meetOrg - PAC or USMS
@@ -879,33 +880,91 @@ sub AddNewSplash {
 #
 # NOTES:  duplicates are never allowed.
 #
-sub AddNewMeetIfNecessary($$$$$$$$$) {
-	my ($fileName, $lineNum, $meetTitle, $meetLink, $meetOrg, $meetCourse, $meetBeginDate,
+sub AddNewMeetIfNecessary($$$$$$$$$$) {
+	my ($fileName, $lineNum, $USMSMeetId, $meetTitle, $meetLink, $meetOrg, $meetCourse, $meetBeginDate,
 		$meetEndDate, $meetIsPMS) = @_;
 	my $meetId;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 
-	$meetTitle =  MySqlEscape($meetTitle);
+	# at this point the meetTitle might have some funky characters in it (reason: in this case the data we are processing
+	# came from a Excel export from the USMS site, exported as a CSV, but the Unicode characters, for example smart quotes,
+	# don't come across correctly. We're going to try to convert such characters into simple equivalents.)
+	$meetTitle = CleanMeetTitle( $meetTitle );
+					
+	###$$$$ debugging
+	my $debugMeetTitle = "xxxxx";
+	my $substrMeetTitle = substr( lc($meetTitle), 0, length( $debugMeetTitle ) );
+	if( lc($substrMeetTitle) eq lc($debugMeetTitle) ) {
+		PMSLogging::DumpNote( "", $lineNum, "DEBUG: Entered TT_MySqlSupport::AddNewMeetIfNecessary(): MeetTitle='$meetTitle',\n" .
+			"    filename='$fileName', meetLink='$meetLink'", 1 );
+	}
+	####$$$$ end of debugging
 
 	# is this meet already in our db?
 	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
-		"SELECT MeetId " .
+		"SELECT MeetId, USMSMeetId, MeetLink, MeetOrg, MeetCourse, MeetBeginDate, MeetEndDate, MeetIsPMS " .
 		"FROM Meet WHERE MeetTitle = \"$meetTitle\"" );
 	if( defined(my $resultHash = $sth->fetchrow_hashref) ) {
 		# this meet is already in our DB - get the meet id
 		$meetId = $resultHash->{'MeetId'};
+		if( lc($substrMeetTitle) eq lc($debugMeetTitle) ) {
+			PMSLogging::DumpNote( "", $lineNum, "DEBUG: TT_MySqlSupport::AddNewMeetIfNecessary(): MeetTitle='$meetTitle',\n" .
+				"    filename='$fileName': This meet is already in our db, meetid=$meetId", 1 );
+		}
+		# sanity check:
+		my $dbUSMSMeetId = $resultHash->{'USMSMeetId'};
+		my $dbMeetLink = $resultHash->{'MeetLink'};
+		my $dbMeetOrg = $resultHash->{'MeetOrg'};
+		my $dbMeetCourse = $resultHash->{'MeetCourse'};
+		my $dbMeetBeginDate = $resultHash->{'MeetBeginDate'};
+		my $dbMeetEndDate = $resultHash->{'MeetEndDate'};
+		my $dbMeetIsPMS = $resultHash->{'MeetIsPMS'};
+		if( $dbMeetLink ne $meetLink ) {
+			### special cases!! if the passed value for the meet link is not "(none.*$)" then we might have
+			### a problem. In this case, if the db value for the link is "(none.*$)" then we should update
+			### the db with the passed link. However, if the db value for the link is not "(none.*$)" (and
+			### the passed link is also not "(none.*$)" and not the same as the db value) then we have
+			### an inconsistency which we should investigate.
+			if( $meetLink !~ m/^\(none.*$/ ) {
+				# the passed value for the meet link is not "(none.*$)"
+				if( $dbMeetLink =~ m/^\(none.*$/ ) {
+					# in this situation we should update the db value for the meet link
+					($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
+						"UPDATE Meet SET MeetLink='" . $meetLink . "' WHERE MeetId = '" . $meetId . "'" );
+					# this is unusual!
+					PMSLogging::DumpNote( "", $lineNum, "TT_MySqlSupport::AddNewMeetIfNecessary(): " .
+						"Attempt to add new meet '$meetTitle' but that meet exists, and in the DB the meet link is \n" .
+						"    $dbMeetLink. So it will be replaced with the passed meet link ($meetLink)" );
+				} else {
+					# this is bad - we found two different meet links for the same meet...???
+					PMSLogging::DumpError( "", "", "TT_MySqlSupport::AddNewMeetIfNecessary(): " .
+						"Attempt to add new meet '$meetTitle' but that meet exists, AND the passed\n" .
+						"    Meet Link ($meetLink) doesn't match the value in the database ($dbMeetLink)" );
+				}
+			}
+		}
+		
+		# end sanity check.
 	} else {
-		if( $meetLink eq "(none)" ) {
-			PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::AddNewMeetIfNecessary(): " .
-				"Found null meetlink: meetTitle='$meetTitle', stack:", 1 );
-			PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::AddNewMeetIfNecessary(): \n" .
-				PMSUtil::GetStackTrace(), 1 );
+		if(0) {
+			if( $meetLink =~ m/^\(none.*$/ ) {
+				PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::AddNewMeetIfNecessary(): " .
+					"Adding null meetlink to DB: meetTitle='$meetTitle', stack:", 1 );
+				PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::AddNewMeetIfNecessary(): \n" .
+					PMSUtil::GetStackTrace(), 1 );
+			}
 		}
 		# this meet isn't in our db - add it
+		if( lc($substrMeetTitle) eq lc($debugMeetTitle) ) {
+			PMSLogging::DumpNote( "", $lineNum, "DEBUG: TT_MySqlSupport::AddNewMeetIfNecessary(): MeetTitle='$meetTitle',\n" .
+				"    filename='$fileName': This meet NOT in our db, add it.", 1 );
+		}
+
 		($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
 			"INSERT INTO Meet " .
-				"(MeetTitle, MeetLink, MeetOrg, MeetCourse, MeetBeginDate, MeetEndDate, MeetIsPMS) " .
+				"(USMSMeetId, MeetTitle, MeetLink, MeetOrg, MeetCourse, MeetBeginDate, MeetEndDate, MeetIsPMS) " .
 				"VALUES ( " .
+				"\"" . $USMSMeetId . "\"," .
 				"\"" . $meetTitle . "\"," .
 				"\"" . MySqlEscape($meetLink) . "\"," .
 				"\"" . $meetOrg . "\"," .
@@ -915,10 +974,37 @@ sub AddNewMeetIfNecessary($$$$$$$$$) {
 				"\"" . $meetIsPMS . "\" )", "");
 		# get the MeetId of the meet we just entered into our db
     	$meetId = $dbh->last_insert_id(undef, undef, "Meet", "MeetId");
+		if( lc($substrMeetTitle) eq lc($debugMeetTitle) ) {
+			PMSLogging::DumpNote( "", $lineNum, "DEBUG: TT_MySqlSupport::AddNewMeetIfNecessary(): MeetTitle='$meetTitle',\n" .
+				"    filename='$fileName': This meet added to our db, meetid=$meetId.", 1 );
+		}
 	}
 	return $meetId;
 
 } # end of AddNewMeetIfNecessary()
+
+
+
+####!!!! Note: the following was copied from GetResults.pl. We need to put this in one place!
+#				$meetTitle = CleanMeetTitle( $meetTitle );
+# CleanMeetTitle - badly named!  clean the passed string, removing HTML escaped strings with their equivalence.
+#
+sub CleanMeetTitle( $ ) {
+	my $meetTitle = $_[0];
+	# strip off leading and trailing whitespace:
+	$meetTitle =~ s/^\s+//;
+	$meetTitle =~ s/\s+$//;
+	# clean up funky characters:
+	$meetTitle =~ s/&amp;/&/g;
+	$meetTitle =~ s/“/"/g;
+	$meetTitle =~ s/”/"/g;
+	$meetTitle =  MySqlEscape($meetTitle);
+
+	return $meetTitle;
+} # end of CleanMeetTitle()
+
+
+
 
 
 # TT_MySqlSupport::AddNewRecordSplash( $fileName, $lineNum, $course, $org, $eventId, $gender,
@@ -1252,7 +1338,10 @@ sub AgeGroupsClose($$) {
 sub MySqlEscape( $ ) {
 	my $string = $_[0];
 	$string =~ s/"/\\"/g;
-	$string =~ s/\\/\\/g;
+
+#	$string =~ s/\\/\\/g;   --- what was this supposed to do?  possibly:  s/\\/\\\\/g    ???  If so, 
+###			it must be above the previous substitution.
+
 	return $string;
 } # end of MySqlEscape()
 
@@ -2289,11 +2378,11 @@ sub GetPlaceForSwimmer( $$ ) {
 	my $place = 9999;
 	my $finalPlaceTable = "FinalPlaceSAG";
 	$finalPlaceTable = "FinalPlaceCAG" if( $ageGroup =~ m/:/ );
-	my $query = "SELECT Rank FROM $finalPlaceTable WHERE SwimmerId=$swimmerId AND AgeGroup='$ageGroup'";
+	my $query = "SELECT sRank FROM $finalPlaceTable WHERE SwimmerId=$swimmerId AND AgeGroup='$ageGroup'";
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	my($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query, "" );
 	if( my $resultHash = $sth->fetchrow_hashref ) {
-		$place = $resultHash->{'Rank'};
+		$place = $resultHash->{'sRank'};
 	}
 	return $place;
 	
@@ -2635,7 +2724,7 @@ sub StorePointsForSwimmer($$$$$$$) {
 
 
 # 	TT_MySqlSupport::ReadSwimMeetData( $racesDataFile );
-# ReadSwimMeetData - read and store the data in our "races data file"
+# ReadSwimMeetData - read and store into our db the data in our "races data file"
 #
 # PASSED:
 #	$fileName - the full path name of the "races data file".
@@ -2662,38 +2751,50 @@ sub StorePointsForSwimmer($$$$$$$) {
 #
 sub ReadSwimMeetData( $ ) {
 	my $fileName = $_[0];
+	my $lineNum = 0;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	
 	open( my $meetFD, "< $fileName" ) || die( "Can't open $fileName: $!" );
 	while( my $line = <$meetFD> ) {
 		$line = PMSUtil::trim($line);
+		$lineNum++;
 		next if( $line eq "" );		# ignore empty lines
 		next if( $line =~ m/^\s*#/ );	# ignore comment lines
 		my @lineArr = split( "\t", $line );
+		my $USMSMeetId = $lineArr[5];
 		my $meetTitle = $lineArr[0];
-		$meetTitle =  MySqlEscape($meetTitle);
+		
+		# at this point the meetTitle might have some funky characters in it (reason: in this case the data we are processing
+		# came from a Excel export from the USMS site, exported as a CSV, but the Unicode characters, for example smart quotes,
+		# don't come across correctly. We're going to try to convert such characters into simple equivalents.)
+###		$meetTitle = CleanMeetTitle( $meetTitle ); --- this is done in AddNewMeetIfNecessary() - can't do it in both places.
+###				I think doing it only in AddNewMeetIfNecessary() is the correct fix...
+
+		my $meetLink = $lineArr[6];
+		my $meetOrg = $lineArr[2];
+		my $meetCourse = $lineArr[3];
+		
 		my $date = $lineArr[4];
 		my @dateArr = split / - /, $date;		# 1 or 2 fields
 		$dateArr[1] = $dateArr[0] if( !defined $dateArr[1] );
-		my $isPMS = 0;				# assume not
-		$isPMS = 1 if( $lineArr[1] =~ m/IS a PAC sanctioned meet/ );
-		my $query = "INSERT INTO Meet " .
-				"(USMSMeetId, MeetTitle, MeetLink, MeetOrg, MeetCourse, MeetBeginDate, MeetEndDate, MeetIsPMS) " .
-				"VALUES (\"$lineArr[5]\",\"$meetTitle\",\"$lineArr[6]\",\"$lineArr[2]\",\"$lineArr[3]\",\"$dateArr[0]\"," .
-				"\"$dateArr[1]\",\"$isPMS\")";
-		my($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+		my $meetBeginDate = $dateArr[0];
+		my $meetEndDate = $dateArr[1];
 		
-		# get the MeetId of the meet we just entered into our db just to make sure it worked
-    	my $meetId = $dbh->last_insert_id(undef, undef, "Meet", "MeetId");
+		my $meetIsPMS = 0;				# assume not
+		$meetIsPMS = 1 if( $lineArr[1] =~ m/IS a PAC sanctioned meet/ );
+		
+		# add this meet to our database if necessary, which it should be...
+		my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, $USMSMeetId, $meetTitle,
+			$meetLink, $meetOrg, $meetCourse, $meetBeginDate, $meetEndDate, $meetIsPMS );
+		
     	die "TT_MySqlSupport::ReadSwimMeetData(): Insert of meet into DB failed.  Meet is:\n" .
     		"    $line" if( !defined( $meetId ) );
 
-#print "ReadSwimMeetData(): MeetTitle='$meetTitle', meetid=$meetId\n";
-
+		#print "ReadSwimMeetData(): MeetTitle='$meetTitle', meetid=$meetId\n";
 	}
 
 } # end of ReadSwimMeetData()
-	
+
 	
 	
 	

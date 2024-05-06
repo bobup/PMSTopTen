@@ -7,10 +7,15 @@ Oregon Senior Games	(NOT a PAC sanctioned meet)	PAC	SCY	2022-8-21	20220821SRGAME
 2023 Santa Rosa Masters Resolution Meet	(IS a PAC sanctioned meet)	PAC	SCY	2023-1-14	20230114SRMRESY	https://www.usms.org/comp/meets/meet.php?MeetID=20230114SRMRESY
 The Olympic Club 1500 Meter Swim Meet	(IS a PAC sanctioned meet)	PAC	SCM	2023-1-28	20230128OC1500S	https://www.usms.org/comp/meets/meet.php?MeetID=20230128OC1500S
 Palm Springs Masters SCY Swim Meet	(NOT a PAC sanctioned meet)	PAC	SCY	2023-1-29	20230129PSMSTRY	https://www.usms.org/comp/meets/meet.php?MeetID=20230129PSMSTRY
-Huntsman World Senior Games	(NOT a PAC sanctioned meet)	PAC	SCM	2023-10-11 - 2023-10-13	2023101123HSGS	https://www.usms.org/comp/meets/meet.php?MeetID=2023101123HSGS
 Rowdy Gaines Masters Classic 15	(NOT a PAC sanctioned meet)	PAC	SCM	2023-10-13 - 2023-10-15	20231013ROWDYS	https://www.usms.org/comp/meets/meet.php?MeetID=20231013ROWDYS
 Mission Viejo Nadadores Masters Short Course Meters Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2023-10-1	20231001MVNOCTS	https://www.usms.org/comp/meets/meet.php?MeetID=20231001MVNOCTS
 2023 Pacific Masters Swimming Kerry O'Brien Short Course Meters Championships	(IS a PAC sanctioned meet)	PAC	SCM	2023-10-6 - 2023-10-8	20231006PMSCMS	https://www.usms.org/comp/meets/meet.php?MeetID=20231006PMSCMS
+2023 PSM/PNA SCM Championship and NW Zone Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2023-11-18 - 2023-11-19	20231118PNASCMS	https://www.usms.org/comp/meets/meet.php?MeetID=20231118PNASCMS
+2023 Ron Johnson Invitational Arizona State Championship SW Zone Championship SCM Meet and Ultra Distance Extravaganza	(NOT a PAC sanctioned meet)	PAC	SCM	2023-11-18 - 2023-11-19	20231118RonjonS	https://www.usms.org/comp/meets/meet.php?MeetID=20231118RonjonS
+San Diego Swim Masters 2023 San Diego SCM Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2023-11-5	20231105SDSM-S	https://www.usms.org/comp/meets/meet.php?MeetID=20231105SDSM-S
+2023 SPMS SCM Championships	(NOT a PAC sanctioned meet)	PAC	SCM	2023-12-1 - 2023-12-3	20231201LBGLBCS	https://www.usms.org/comp/meets/meet.php?MeetID=20231201LBGLBCS
+2023 Colonies Zone and New England LMSC Short Course Meters Championship	(NOT a PAC sanctioned meet)	PAC	SCM	2023-12-15 - 2023-12-17	20231215ChampsS	https://www.usms.org/comp/meets/meet.php?MeetID=20231215ChampsS
+14th Annual Bend All-Around Challenge Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2023-12-9	2023120916559S	https://www.usms.org/comp/meets/meet.php?MeetID=2023120916559S
 VACAVILLE SUPER BOWL MASTERS MEET SPRINT AND MID-DISTANCE PENTATHLON	(IS a PAC sanctioned meet)	PAC	SCY	2023-2-11	20230211VSBMY	https://www.usms.org/comp/meets/meet.php?MeetID=20230211VSBMY
 27th Annual Fort Lauderdale Masters Challenge	(NOT a PAC sanctioned meet)	PAC	SCY	2023-2-18 - 2023-2-19	20230218sFLA23Y	https://www.usms.org/comp/meets/meet.php?MeetID=20230218sFLA23Y
 2023 February Flurry	(NOT a PAC sanctioned meet)	PAC	SCM	2023-2-25 - 2023-2-26	20230225FLURRYS	https://www.usms.org/comp/meets/meet.php?MeetID=20230225FLURRYS

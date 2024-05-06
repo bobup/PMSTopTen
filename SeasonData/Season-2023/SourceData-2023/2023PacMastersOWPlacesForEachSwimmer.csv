@@ -1,6 +1,6 @@
-"2023PacMasters:  Points for every swimmer who earned OW points."
-Generated on Wed Oct 25 2023 EDT 07:22:52 AM
-"(We only consider Category 1 swims.)"
+"2023PacMasters:  Points and place for every swimmer who swam an OW event."
+Generated on Thu Jan 11 2024 EST 04:28:45 AM
+"(AGSOTY only considers Category 1 swims for points but considers ALL finished swims as a PMS swim.)"
 #
 "NOTE: all data follows the line below beginning with Gender"
 ALSO: comments in this section must NOT contain a comma.
@@ -74,8 +74,15 @@ W,25-29,10,2,CHRISTOPHERSON,CHEYENNE,,383M-1DNUK,Lake Berryessa,Lake Berryessa 1
 W,25-29,8,6,Alongi,Claire,L,383R-YBXDP,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:20:31.00,1
 W,25-29,9,4,COHEN,ARIELLA,C,383P-0AJ09,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,30:02.00,1
 W,25-29,10,2,Talbot,Jessica,P,383T-08C64,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:25:57.00,1
-W,30-34,1,22,ARNOLD,ALLISON,A,383K-09827,Keller Cove,Keller Cove 1 Mile,2023-09-17,22:36.00,1
+W,25-29,11,0,McQuillan,Elaine,D,383B-0ASYU,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:41:51.00,1
+W,25-29,11,0,EGGART,ASHLEY,,383E-Y305U,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:00:28.00,1
+W,25-29,13,0,GOODWIN,MICHELLE,,383R-2CBBT,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:11:32.00,1
+W,25-29,11,0,ALGEO,GRACE,N,3839-4RZGX,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,30:35.00,1
+W,25-29,13,0,KALHORI,POONEH,S,383B-XRCGU,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,31:48.00,1
+W,25-29,15,0,MILLER,MADISON,K,383S-D0CPW,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,33:57.00,1
+W,25-29,16,0,BRICKMAN,SARAH,E,383N-5JXN8,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,35:33.00,1
 W,30-34,1,22,ARNOLD,ALLISON,A,383K-09827,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,9:42.00,1
+W,30-34,1,22,ARNOLD,ALLISON,A,383K-09827,Keller Cove,Keller Cove 1 Mile,2023-09-17,22:36.00,1
 W,30-34,2,18,ARNOLD,ALLISON,A,383K-09827,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,41:29.00,1
 W,30-34,2,18,ARNOLD,ALLISON,A,383K-09827,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,21:03.00,1
 W,30-34,2,18,ARNOLD,ALLISON,A,383K-09827,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,18:18.00,1
@@ -84,8 +91,8 @@ W,30-34,1,22,BREED,CATHERINE,,3835-0A02H,Lake Berryessa,Lake Berryessa 2 Mile (W
 W,30-34,1,22,BREED,CATHERINE,,3835-0A02H,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,21:00.00,1
 W,30-34,1,22,BREED,CATHERINE,,3835-0A02H,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,17:59.00,1
 W,30-34,1,22,BREED,CATHERINE,,3835-0A02H,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,57:34.90,1
-W,30-34,2,18,MCBRIDE,BETH,,383N-4YVNP,Keller Cove,Keller Cove 1 Mile,2023-09-17,34:28.00,1
 W,30-34,2,18,MCBRIDE,BETH,,383N-4YVNP,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,13:32.00,1
+W,30-34,2,18,MCBRIDE,BETH,,383N-4YVNP,Keller Cove,Keller Cove 1 Mile,2023-09-17,34:28.00,1
 W,30-34,4,14,MCBRIDE,BETH,,383N-4YVNP,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,45:43.00,1
 W,30-34,4,14,MCBRIDE,BETH,,383N-4YVNP,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,28:42.00,1
 W,30-34,9,4,MCBRIDE,BETH,,383N-4YVNP,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,54:37.00,1
@@ -136,6 +143,21 @@ W,30-34,9,4,BROWNLIE,KERIANNE,C,383M-0A8WH,Donner Lake Swim,Donner Lake Swim 2.7
 W,30-34,10,2,BROWNLIE,KERIANNE,C,383M-0A8WH,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,29:00.00,1
 W,30-34,12,0,BROWNLIE,KERIANNE,C,383M-0A8WH,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,55:43.00,1
 W,30-34,10,2,O'Hearn,Hannah,,383W-0B0A4,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:19:22.00,1
+W,30-34,11,0,Belick,Marielle,,383P-0B77C,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:21:21.00,1
+W,30-34,12,0,Hradecky,Paige,,383Z-NCKWE,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:25:29.00,1
+W,30-34,14,0,Lawson,Joanna,J,383H-AZPNG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:31:46.00,1
+W,30-34,15,0,Son,Hilary,J,383A-FBK6F,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:55:36.00,1
+W,30-34,11,0,GRIFFITHS,JOANNA,S,383P-VYF49,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,55:40.00,1
+W,30-34,13,0,GEIDUSCHEK,ANNA,R,383M-NK8F8,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,56:43.00,1
+W,30-34,14,0,GETTEL,KALEENA,,383X-09NXW,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:00:06.00,1
+W,30-34,16,0,DARBY,KATE,,383P-KTHRC,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:09:26.00,1
+W,30-34,17,0,HAMMILL,TAYLOR,,383D-F8DVK,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:09:30.00,1
+W,30-34,18,0,CAMACHO,ADRIANNE,,3834-D0C8M,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:12:55.00,1
+W,30-34,11,0,BIEL,SOPHIA,G,383A-0B7EJ,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,29:23.00,1
+W,30-34,14,0,BARTRAM,HANNA,,383R-01FEH,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,30:36.00,1
+W,30-34,15,0,VANCE,HILARY,,3832-T0TM3,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,32:16.00,1
+W,30-34,16,0,FOGELSON,JULIA,,383H-3FVH8,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,32:35.00,1
+W,30-34,17,0,RAVIV,ROTEM,,383Y-NF0HN,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,41:04.00,1
 W,35-39,1,22,West,Meredith,A,383Z-03PVE,Lake Del Valle,Lake Del Valle 5K,2023-08-26,1:36:44.00,1
 W,35-39,1,22,West,Meredith,A,383Z-03PVE,Keller Cove,Keller Cove 2 Mile,2023-09-17,1:08:18.00,1
 W,35-39,2,18,West,Meredith,A,383Z-03PVE,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,25:21.00,1
@@ -184,6 +206,9 @@ W,35-39,8,6,Tzou,Harriet,,3833-XPM3U,Donner Lake Swim,Donner Lake Swim 2.7 Mile,
 W,35-39,9,4,Crompton,Octavia,V,3833-0B16J,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:20:25.00,1
 W,35-39,9,4,RICE,LINDSEY,,383A-ESNUT,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:15:49.00,1
 W,35-39,10,2,CHAIYASANE,KOUNG,,383G-09709,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,44:45.00,1
+W,35-39,12,0,Shapiro,Kristie,,383J-0AZ6C,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:34:57.00,1
+W,35-39,14,0,Lamb,Allison,,3833-09SGJ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:39:28.00,1
+W,35-39,11,0,RUBIN,NAOMI,,383N-VWFM8,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,48:17.00,1
 W,40-44,1,22,NEHREBECKI,HELENE,,3838-06JFA,Lake Del Valle,Lake Del Valle 10K,2023-08-26,3:06:23.00,1
 W,40-44,1,22,NEHREBECKI,HELENE,,3838-06JFA,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,25:55.00,1
 W,40-44,2,18,NEHREBECKI,HELENE,,3838-06JFA,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,11:53.00,1
@@ -248,6 +273,18 @@ W,40-44,10,2,Bacolini,Lindsey,J,383G-03H0Z,Donner Lake Swim,Donner Lake Swim 2.7
 W,40-44,10,2,TOPPING,CATHERINE,,383X-Y2NSS,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,34:57.00,1
 W,40-44,10,2,BRIGGS,STEPHANIE,,3837-0A8JV,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:05:59.00,1
 W,40-44,13,0,BRIGGS,STEPHANIE,,3837-0A8JV,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,36:33.00,1
+W,40-44,11,0,Muraki,Miya,,383S-05U76,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:32:35.00,1
+W,40-44,12,0,Thomas,Mary,,383R-03Y4G,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:32:35.00,1
+W,40-44,13,0,Scaduto,Michelle,,383Z-NF8T7,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:33:00.00,1
+W,40-44,14,0,Fields,Rachael,C,383F-03JCW,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:33:15.00,1
+W,40-44,15,0,Tileston,Kali,,3832-CB6T8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:33:18.00,1
+W,40-44,16,0,Dubois-Boldt,Maggie,,383W-3BRMG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:37:04.00,1
+W,40-44,11,0,SHIMONISHI,TAE,,383U-4UYP9,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,34:58.00,1
+W,40-44,12,0,LEE,JEZ,,383X-72PWB,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,35:22.00,1
+W,40-44,15,0,SMITH,STACEY,,3839-EC269,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,40:04.00,1
+W,40-44,16,0,CHICO,PATRICIA,,3830-070PU,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,41:02.00,1
+W,40-44,17,0,MELISH,SARA,,3831-6S7K2,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,41:45.00,1
+W,40-44,18,0,LIU,MINYI,,383W-B41DH,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,55:20.00,1
 W,45-49,1,22,PROFUMO,TESLA,E,3838-068K7,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,45:32.00,1
 W,45-49,1,22,PROFUMO,TESLA,E,3838-068K7,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,20:32.00,1
 W,45-49,1,22,PROFUMO,TESLA,E,3838-068K7,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:03:55.00,1
@@ -304,6 +341,15 @@ W,45-49,9,4,SILVA FARIA SNODGRASS,ISABEL,R,383Y-JFHUZ,Lake Berryessa,Lake Berrye
 W,45-49,9,4,BLACK,SIERRA,A,3833-5ZT9V,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,37:47.00,1
 W,45-49,10,2,Spencer,Mara,J,3831-ZS0W5,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:24:32.00,1
 W,45-49,10,2,ZAHARRIS,LILIA,M,383B-094FK,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,39:12.00,1
+W,45-49,11,0,Jensen-Warner,Beth,L,3838-03JWU,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:25:01.00,1
+W,45-49,12,0,Sattely,Elizabeth,,383G-R6E66,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:25:01.00,1
+W,45-49,13,0,Mac Mahon,Sarah,P,383T-03VPC,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:25:34.00,1
+W,45-49,14,0,Lentz,Kari,A,3837-47WYG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:30:02.00,1
+W,45-49,16,0,Conroy,Shannon,M,383P-03PZ0,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:40:56.00,1
+W,45-49,17,0,Cumming,Margaret,E,383P-07E5Y,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:46:03.00,1
+W,45-49,14,0,SACKETT,MARY,M,3834-041UZ,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:34:19.00,1
+W,45-49,12,0,SCHUELLER,EVI,,383X-VG6MD,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,42:52.00,1
+W,45-49,13,0,CHEN,MARRIE,A,383Y-03ZX9,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,43:25.00,1
 W,50-54,1,22,HERTZER,CYNTHIA,J,383W-CHSWM,Santa Cruz Cruise,Santa Cruz Cruise 2 Mile,2023-07-30,48:47.00,1
 W,50-54,1,22,HERTZER,CYNTHIA,J,383W-CHSWM,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,25:27.00,1
 W,50-54,1,22,HERTZER,CYNTHIA,J,383W-CHSWM,Keller Cove,Keller Cove 2 Mile,2023-09-17,56:56.00,1
@@ -382,6 +428,19 @@ W,50-54,9,4,STYNES,KELLY,H,383U-04EH3,Lake Del Valle,Lake Del Valle 2.5K,2023-08
 W,50-54,13,0,STYNES,KELLY,H,383U-04EH3,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,36:07.00,1
 W,50-54,14,0,STYNES,KELLY,H,383U-04EH3,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:06:17.00,1
 W,50-54,10,2,Olsen,Sara,W,3832-UH5CH,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,1:08:41.00,1
+W,50-54,11,0,Jackson,Bronwyn,A,383K-0B1EA,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,1:10:11.00,1
+W,50-54,11,0,Wilson,Christi,A,383K-06YGJ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:31:48.00,1
+W,50-54,13,0,Ouchi,Tricia,D,383B-9T9VC,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:36:41.00,1
+W,50-54,15,0,Metcalf,Sara,,3838-HGZZ5,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:39:14.00,1
+W,50-54,16,0,Chung,Heejay,A,383R-0680Y,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:43:28.00,1
+W,50-54,19,0,Cahill,Sheila,M,383C-Y20UA,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,2:24:41.00,1
+W,50-54,12,0,KONING,PATRICIA,B,383W-VP0SX,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:05:44.00,1
+W,50-54,15,0,OGBURN,KATHERINE,,3836-FENAV,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:15:11.00,1
+W,50-54,16,0,MOORE,CAROLYN,,383M-09DDX,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:22:33.00,1
+W,50-54,11,0,MAGNANI,MARY,,383A-01YWR,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,35:29.00,1
+W,50-54,13,0,MAGNANI,MARY,,383A-01YWR,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:05:58.00,1
+W,50-54,14,0,GALPERN,EMILY,A,383V-04Z11,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,44:31.00,1
+W,50-54,15,0,SHAFA,ATOSSA,,3831-03KNP,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,51:00.00,1
 W,55-59,1,22,HAZEN,LISA,,3834-03M46,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,46:08.00,1
 W,55-59,1,22,HAZEN,LISA,,3834-03M46,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,24:21.00,1
 W,55-59,1,22,HAZEN,LISA,,3834-03M46,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,20:25.00,1
@@ -474,12 +533,39 @@ W,55-59,9,4,Goldman,Lisa,K,3837-03FF9,Donner Lake Swim,Donner Lake Swim 2.7 Mile
 W,55-59,9,4,Carr,Denise,,383H-0AEFN,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,35:51.00,1
 W,55-59,10,2,Anderson,Kirsten,,3838-06KDR,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,35:38.00,1
 W,55-59,10,2,Pasztor,Suzanne,B,3834-03UZV,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,40:58.00,1
+W,55-59,11,0,Rogers,Julia,,383N-077AX,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,41:10.00,1
+W,55-59,12,0,Hu,Qing,,383H-P6YRG,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,56:51.00,1
+W,55-59,12,0,Cabot,Michele,,3832-GVD87,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,47:27.00,1
+W,55-59,13,0,Fackert,Susan,L,383K-062KW,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,47:47.00,1
+W,55-59,14,0,Gray,Kara,L,383P-03FC0,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,50:49.00,1
+W,55-59,15,0,MacDonald,Kate,,383W-F6V2B,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,54:36.00,1
+W,55-59,11,0,Trusso,Amy,F,3838-07CF0,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:23:26.00,1
+W,55-59,12,0,Cavalli,Christina,,383A-008G0,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:23:47.00,1
+W,55-59,14,0,Beegle,Janet,,383U-03H9S,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:28:13.00,1
+W,55-59,16,0,Desmond,Marie,,383Y-XVYP5,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:32:46.00,1
+W,55-59,17,0,Whitten,Kristi,H,383A-E9SST,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:38:23.00,1
+W,55-59,18,0,Merical,Stephanie,L,3834-JS21X,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:39:46.00,1
+W,55-59,19,0,Gilfillan,K Kiely,,3831-03R8M,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:46:55.00,1
+W,55-59,20,0,Byrne,Angela,,3833-DKSVH,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:58:46.00,1
+W,55-59,21,0,Wagner,Karen,,383S-JU87C,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,2:17:05.00,1
+W,55-59,11,0,RHODES,JACKIE,B,383U-02W5T,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,54:21.00,1
+W,55-59,17,0,MCHALE,CAROL,S,3837-03P7A,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:04:37.00,1
+W,55-59,15,0,JORGENSEN,KIMBERLY,A,383N-03K4P,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:30:59.00,1
+W,55-59,18,0,JORGENSEN,KIMBERLY,A,383N-03K4P,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:06:55.00,1
+W,55-59,19,0,KOSSA,CHRISTINA,I,3832-0ABJ2,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:09:59.00,1
+W,55-59,16,0,KELLY SMETHURST,ANDREA,E,3835-06DFV,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,59:01.00,1
+W,55-59,20,0,KELLY SMETHURST,ANDREA,E,3835-06DFV,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:13:09.00,1
+W,55-59,12,0,HENSLER HEATH,TIA,,3839-1H9UA,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,32:38.00,1
+W,55-59,13,0,WHIPPLE,DIANA,S,383H-0064N,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,32:39.00,1
+W,55-59,14,0,KELLER,SABINA,,383W-0A2VW,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,34:22.00,1
+W,55-59,15,0,GARRETT,JULIA,K,383B-KTZ4R,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,36:26.00,1
+W,55-59,16,0,VERSCHUUR,JOANNEKE,,383D-03Y5R,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,40:26.00,1
 W,60-64,1,22,ELSBACH,KIMBERLY,D,3831-D0NUT,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,45:46.00,1
 W,60-64,1,22,ELSBACH,KIMBERLY,D,3831-D0NUT,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,23:30.00,1
 W,60-64,1,22,ELSBACH,KIMBERLY,D,3831-D0NUT,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:06:49.00,1
 W,60-64,1,22,ELSBACH,KIMBERLY,D,3831-D0NUT,Lake Del Valle,Lake Del Valle 5K,2023-08-26,1:14:30.00,1
-W,60-64,1,22,ELSBACH,KIMBERLY,D,3831-D0NUT,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,36:19.00,1
 W,60-64,1,22,ELSBACH,KIMBERLY,D,3831-D0NUT,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,24:01.00,1
+W,60-64,1,22,ELSBACH,KIMBERLY,D,3831-D0NUT,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,36:19.00,1
 W,60-64,1,22,TIEDEMANN,ELIZABETH,B,383C-03JC8,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,11:36.00,1
 W,60-64,2,18,TIEDEMANN,ELIZABETH,B,383C-03JC8,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,39:16.00,1
 W,60-64,2,18,TIEDEMANN,ELIZABETH,B,383C-03JC8,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,25:14.00,1
@@ -493,8 +579,8 @@ W,60-64,2,18,RUSSELL,JANE,E,383V-074TS,Santa Cruz Cruise,Santa Cruz Cruise 2 Mil
 W,60-64,2,18,RUSSELL,JANE,E,383V-074TS,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,11:47.00,1
 W,60-64,3,16,RUSSELL,JANE,E,383V-074TS,Lake Del Valle,Lake Del Valle 5K,2023-08-26,1:26:09.00,1
 W,60-64,4,14,RUSSELL,JANE,E,383V-074TS,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,54:18.00,1
-W,60-64,4,14,RUSSELL,JANE,E,383V-074TS,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,27:14.00,1
 W,60-64,4,14,RUSSELL,JANE,E,383V-074TS,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,43:28.00,1
+W,60-64,4,14,RUSSELL,JANE,E,383V-074TS,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,27:14.00,1
 W,60-64,5,12,RUSSELL,JANE,E,383V-074TS,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,28:13.00,1
 W,60-64,1,22,TAYLOR,CATHERINE,W,383M-081Y6,Keller Cove,Keller Cove 2 Mile,2023-09-17,1:06:45.00,1
 W,60-64,3,16,TAYLOR,CATHERINE,W,383M-081Y6,Lake Del Valle,Lake Del Valle 10K,2023-08-26,3:19:46.00,1
@@ -565,14 +651,24 @@ W,60-64,9,4,Rus,Regina,,383B-03FJG,Santa Cruz Rough Water,Santa Cruz Rough Water
 W,60-64,10,2,COURVILLE,CAROL,J,383H-03MKD,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,32:12.00,1
 W,60-64,10,2,Field,Jean,W,383R-CPJBJ,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,1:01:52.00,1
 W,60-64,10,2,Tweten,Patricia,L,383V-03K62,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:39:55.00,1
+W,60-64,11,0,ERICKSON,SONJA,,3830-0A8CE,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,33:43.00,1
+W,60-64,12,0,WERBY,VICKI,H,3838-TPNGR,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,34:49.00,1
+W,60-64,13,0,LANE,CELESTE,M,3832-08877,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,41:01.00,1
+W,60-64,16,0,MENCARINI,SUSAN,,383Y-03FB7,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,42:12.00,1
+W,60-64,17,0,CASILLAS,LINDA,M,383B-03PRE,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,43:40.00,1
+W,60-64,12,0,DIBLEY,ALLISON,M,383J-071HA,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:32:24.00,1
+W,60-64,20,0,DIBLEY,ALLISON,M,383J-071HA,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,52:52.00,1
+W,60-64,14,0,Queirolo Nee,Vivian,,3835-03Y71,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,1:10:45.00,1
+W,60-64,12,0,Carboni,Lisa,,383S-0AMMT,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:47:08.00,1
+W,60-64,11,0,Grubb,Laura,L,383R-07GYU,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,34:55.00,1
 W,65-69,1,22,QUINN,PHYLLIS,E,383K-03F7Y,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:21:23.00,1
 W,65-69,1,22,QUINN,PHYLLIS,E,383K-03F7Y,Lake Del Valle,Lake Del Valle 5K,2023-08-26,1:35:35.00,1
-W,65-69,1,22,QUINN,PHYLLIS,E,383K-03F7Y,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,46:34.00,1
 W,65-69,1,22,QUINN,PHYLLIS,E,383K-03F7Y,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,29:59.00,1
+W,65-69,1,22,QUINN,PHYLLIS,E,383K-03F7Y,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,46:34.00,1
 W,65-69,2,18,QUINN,PHYLLIS,E,383K-03F7Y,Lake Berryessa,Lake Berryessa 2 Mile (Womens),2023-06-03,1:00:11.00,1
 W,65-69,2,18,QUINN,PHYLLIS,E,383K-03F7Y,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,31:11.00,1
-W,65-69,1,22,HICKEL,JESSIE,J,383D-03FVA,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,16:19.00,1
 W,65-69,1,22,HICKEL,JESSIE,J,383D-03FVA,Keller Cove,Keller Cove 1 Mile,2023-09-17,40:29.00,1
+W,65-69,1,22,HICKEL,JESSIE,J,383D-03FVA,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,16:19.00,1
 W,65-69,2,18,HICKEL,JESSIE,J,383D-03FVA,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,33:20.00,1
 W,65-69,3,16,HICKEL,JESSIE,J,383D-03FVA,Lake Berryessa,Lake Berryessa 1 Mile (Womens),2023-06-03,33:55.00,1
 W,65-69,3,16,HICKEL,JESSIE,J,383D-03FVA,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,53:09.00,1
@@ -699,6 +795,8 @@ M,25-29,6,10,Price,John,C,383R-F2DYW,Donner Lake Swim,Donner Lake Swim 2.7 Mile,
 M,25-29,7,8,Jang,Connor,,3831-1FK2M,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:23:37.00,1
 M,25-29,8,6,Talbot,Tad,,383M-YV3MR,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:26:14.00,1
 M,25-29,10,2,Magee,Michael,J,383F-KG69F,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:28:45.00,1
+M,25-29,11,0,White,Gavin,H,383S-AMKE8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:36:14.00,1
+M,25-29,12,0,Root,Nicholas,J,383X-4FN7Z,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,2:17:39.00,1
 M,30-34,1,22,CALHOUN,JACK,,383X-06Y9W,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,43:42.00,1
 M,30-34,1,22,CALHOUN,JACK,,383X-06Y9W,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,18:33.00,1
 M,30-34,1,22,CALHOUN,JACK,,383X-06Y9W,Santa Cruz Cruise,Santa Cruz Cruise 2 Mile,2023-07-30,43:06.00,1
@@ -709,8 +807,8 @@ M,30-34,1,22,CALHOUN,JACK,,383X-06Y9W,Lake Del Valle,Lake Del Valle 1.2K,2023-08
 M,30-34,2,18,CALHOUN,JACK,,383X-06Y9W,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,22:46.00,1
 M,30-34,2,18,FERGUSON,CHRISTOPHER,P,383X-0AYJY,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,20:05.00,1
 M,30-34,2,18,FERGUSON,CHRISTOPHER,P,383X-0AYJY,Lake Del Valle,Lake Del Valle 5K,2023-08-26,1:14:38.00,1
-M,30-34,2,18,FERGUSON,CHRISTOPHER,P,383X-0AYJY,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,35:15.00,1
 M,30-34,2,18,FERGUSON,CHRISTOPHER,P,383X-0AYJY,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,22:57.00,1
+M,30-34,2,18,FERGUSON,CHRISTOPHER,P,383X-0AYJY,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,35:15.00,1
 M,30-34,3,16,FERGUSON,CHRISTOPHER,P,383X-0AYJY,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,44:28.00,1
 M,30-34,3,16,FERGUSON,CHRISTOPHER,P,383X-0AYJY,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,22:58.00,1
 M,30-34,1,22,Dowley,Thomas,B,383G-ECRDW,Keller Cove,Keller Cove 1 Mile,2023-09-17,25:09.00,1
@@ -751,13 +849,23 @@ M,30-34,7,8,HASHEMI,SAMAN,,3831-071CG,Lake Berryessa,Lake Berryessa 2 Mile (Mens
 M,30-34,7,8,Margolis,Zach,,383F-08EZ7,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:08:29.00,1
 M,30-34,9,4,HAUSMANN,BRIAN,D,383T-FP2EG,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,29:37.00,1
 M,30-34,10,2,PINE,JUSTIN,,383E-M7EN7,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,57:26.00,1
+M,30-34,11,0,BARTOLO PEREZ,CESAR,,3838-D733K,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,37:15.00,1
+M,30-34,11,0,BAUTISTA,JAIR,,383V-TWM70,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:00:21.00,1
+M,30-34,15,0,BAUTISTA,JAIR,,383V-TWM70,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:22:04.00,1
+M,30-34,12,0,MOSER,RYAN,,3838-07W0U,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:00:55.00,1
+M,30-34,12,0,MOSER,RYAN,,3838-07W0U,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:16:09.00,1
+M,30-34,14,0,RISK,MICHAEL,,383P-1XXMA,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:03:53.00,1
+M,30-34,11,0,Harding,Keevan,G,383H-06JPG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:15:26.00,1
+M,30-34,13,0,Higgins,Ryan,F,383G-09UZU,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:18:02.00,1
+M,30-34,14,0,Thompson,Andrew,L,383K-58PKB,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:21:40.00,1
+M,30-34,16,0,Tomlinson,Bill,J,3833-KS7UJ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:32:53.00,1
 M,35-39,1,22,LA TOURETTE,CHAD,E,3834-09H5H,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,39:01.00,1
 M,35-39,1,22,LA TOURETTE,CHAD,E,3834-09H5H,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,20:25.00,1
 M,35-39,1,22,LA TOURETTE,CHAD,E,3834-09H5H,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,31:01.00,1
 M,35-39,1,22,LA TOURETTE,CHAD,E,3834-09H5H,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,19:37.00,1
 M,35-39,1,22,LA TOURETTE,CHAD,E,3834-09H5H,Keller Cove,Keller Cove 2 Mile,2023-09-17,43:40.00,1
-M,35-39,1,22,SAVULICH,BOBBY,,383Y-JSXSV,Keller Cove,Keller Cove 1 Mile,2023-09-17,25:07.00,1
 M,35-39,1,22,SAVULICH,BOBBY,,383Y-JSXSV,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,9:59.00,1
+M,35-39,1,22,SAVULICH,BOBBY,,383Y-JSXSV,Keller Cove,Keller Cove 1 Mile,2023-09-17,25:07.00,1
 M,35-39,2,18,SAVULICH,BOBBY,,383Y-JSXSV,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,36:28.00,1
 M,35-39,2,18,SAVULICH,BOBBY,,383Y-JSXSV,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,23:02.00,1
 M,35-39,3,16,SAVULICH,BOBBY,,383Y-JSXSV,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,24:41.00,1
@@ -802,6 +910,8 @@ M,35-39,8,6,LEE,CHRISTOPHER,A,383R-060MU,Lake Berryessa,Lake Berryessa 2 Mile (M
 M,35-39,9,4,GOBLE,JARED,B,3833-0973D,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,55:44.00,1
 M,35-39,9,4,Kang,Alex,,3833-09Y63,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:30:52.00,1
 M,35-39,10,2,Tynes,Grayson,D,383F-09UPT,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:33:00.00,1
+M,35-39,11,0,HASANI,HAMED,,3833-N973M,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:36:33.00,1
+M,35-39,12,0,HASANI,HAMED,,3833-N973M,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:09:55.00,1
 M,40-44,1,22,Holbrook,Chad,D,383Y-ZX84M,Keller Cove,Keller Cove 1 Mile,2023-09-17,27:33.00,1
 M,40-44,1,22,Holbrook,Chad,D,383Y-ZX84M,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,11:04.00,1
 M,40-44,2,18,Holbrook,Chad,D,383Y-ZX84M,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,37:57.00,1
@@ -851,15 +961,22 @@ M,40-44,9,4,WATERSON,KEVIN,,3834-08CRR,Lake Berryessa,Lake Berryessa 2 Mile (Men
 M,40-44,9,4,Fouts,Christopher,B,383V-03P2U,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:10:51.00,1
 M,40-44,10,2,SAGIV,DORON,,383H-PRPXE,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:04:08.00,1
 M,40-44,10,2,Lancara,Matt,,383N-03EFV,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:12:49.00,1
+M,40-44,11,0,CASTANO-AGUADO,IGNACIO,,383F-06BZT,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:05:55.00,1
+M,40-44,11,0,Dalton,Ryan,M,3830-06NT9,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:12:57.00,1
+M,40-44,13,0,Matsushino,Jason,M,383Z-041WN,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:14:44.00,1
+M,40-44,14,0,Smarkel,Augie,D,383W-09Y6C,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:14:58.00,1
+M,40-44,15,0,Fischbach,Michael,,383W-MG173,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:16:50.00,1
+M,40-44,16,0,Tofanelli,Chris,J,383V-05U39,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:18:42.00,1
+M,40-44,18,0,Marlow,Daniel,A,383G-B2R5E,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:30:09.00,1
 M,45-49,1,22,GILLIS,TREVOR,D,383A-03J54,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,39:42.00,1
 M,45-49,1,22,GILLIS,TREVOR,D,383A-03J54,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,20:54.00,1
 M,45-49,1,22,GILLIS,TREVOR,D,383A-03J54,Lake Del Valle,Lake Del Valle 5K,2023-08-26,1:05:40.00,1
 M,45-49,1,22,GILLIS,TREVOR,D,383A-03J54,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,31:31.00,1
 M,45-49,1,22,GILLIS,TREVOR,D,383A-03J54,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,20:33.00,1
-M,45-49,1,22,GILLIS,TREVOR,D,383A-03J54,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,9:03.00,1
 M,45-49,1,22,GILLIS,TREVOR,D,383A-03J54,Keller Cove,Keller Cove 1 Mile,2023-09-17,21:55.00,1
-M,45-49,2,18,BRENNAN,CURTIS,J,383V-CBREN,Keller Cove,Keller Cove 1 Mile,2023-09-17,27:11.00,1
+M,45-49,1,22,GILLIS,TREVOR,D,383A-03J54,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,9:03.00,1
 M,45-49,2,18,BRENNAN,CURTIS,J,383V-CBREN,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,10:53.00,1
+M,45-49,2,18,BRENNAN,CURTIS,J,383V-CBREN,Keller Cove,Keller Cove 1 Mile,2023-09-17,27:11.00,1
 M,45-49,3,16,BRENNAN,CURTIS,J,383V-CBREN,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,37:48.00,1
 M,45-49,3,16,BRENNAN,CURTIS,J,383V-CBREN,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,23:34.00,1
 M,45-49,4,14,BRENNAN,CURTIS,J,383V-CBREN,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,46:38.00,1
@@ -916,13 +1033,18 @@ M,45-49,9,4,COCHRAN,ERIK,L,3832-09CDW,Lake Berryessa,Lake Berryessa 1 Mile (Mens
 M,45-49,9,4,Zeichick,Brian,A,3837-NJ4TT,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:22:48.00,1
 M,45-49,10,2,HANNAN,ZACHARY,,383Y-7BDVB,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,53:05.00,1
 M,45-49,10,2,Fluet,Edward,R,383F-04A5D,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:23:40.00,1
+M,45-49,11,0,MURRAY,STEVEN,J,3836-5C903,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,34:01.00,1
+M,45-49,12,0,GAWLICK,MATTHEW,C,383F-0A7EZ,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,35:33.00,1
+M,45-49,13,0,PITESKY,MAURICE,,383W-091BX,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:14:15.00,1
+M,45-49,11,0,Zakaluzny,Scott,,383M-09XZ2,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:37:24.00,1
+M,45-49,12,0,Santiago,Keith,,383M-07VPV,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:37:58.00,1
 M,50-54,1,22,WINSOR,BRAD,,383M-03J9D,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,43:23.00,1
 M,50-54,1,22,WINSOR,BRAD,,383M-03J9D,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,22:45.00,1
 M,50-54,1,22,WINSOR,BRAD,,383M-03J9D,Santa Cruz Cruise,Santa Cruz Cruise 2 Mile,2023-07-30,42:04.00,1
 M,50-54,1,22,WINSOR,BRAD,,383M-03J9D,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:00:56.00,1
 M,50-54,1,22,WINSOR,BRAD,,383M-03J9D,Lake Del Valle,Lake Del Valle 5K,2023-08-26,1:08:54.00,1
-M,50-54,1,22,WINSOR,BRAD,,383M-03J9D,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,21:55.00,1
 M,50-54,1,22,WINSOR,BRAD,,383M-03J9D,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,33:26.00,1
+M,50-54,1,22,WINSOR,BRAD,,383M-03J9D,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,21:55.00,1
 M,50-54,1,22,Fahlen,Mark,T,383T-003TT,Keller Cove,Keller Cove 1 Mile,2023-09-17,27:44.00,1
 M,50-54,1,22,Fahlen,Mark,T,383T-003TT,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,11:30.00,1
 M,50-54,2,18,Fahlen,Mark,T,383T-003TT,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,21:52.00,1
@@ -983,6 +1105,25 @@ M,50-54,10,2,McCarthy,Joseph,F,3839-03FHX,Lake Del Valle,Lake Del Valle 1.2K,202
 M,50-54,10,2,Hertzer,Keith,,383Z-098B3,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,42:56.00,1
 M,50-54,10,2,Nordberg,Mark,S,3833-JPNY5,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:26:41.00,1
 M,50-54,10,2,Meyer,David,,383P-8EHFB,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,43:58.00,1
+M,50-54,12,0,BIELLO,JOSEPH,A,383H-03YFV,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,32:12.00,1
+M,50-54,13,0,LOWRY,JASON,D,3835-0AZ8Y,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,34:25.00,1
+M,50-54,13,0,LOWRY,JASON,D,3835-0AZ8Y,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:27:41.00,1
+M,50-54,14,0,YANG,JERRY,,3839-06YRT,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,35:34.00,1
+M,50-54,16,0,YANG,JERRY,,3839-06YRT,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:12:09.00,1
+M,50-54,15,0,EDWARDS,JEFFREY,D,3834-03KSW,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:12:03.00,1
+M,50-54,15,0,EDWARDS,JEFFREY,D,3834-03KSW,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,38:08.00,1
+M,50-54,11,0,SANDERS,DREW,Y,383U-041A8,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,56:47.00,1
+M,50-54,13,0,ALEMAYEHU,FASICA,,383U-E16NH,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:03:43.00,1
+M,50-54,14,0,STICKLER,JIM,D,383F-0A6AJ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:41:32.00,1
+M,50-54,18,0,STICKLER,JIM,D,383F-0A6AJ,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:15:09.00,1
+M,50-54,19,0,WETHERELL,JOHN,T,383E-Y20CE,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:29:50.00,1
+M,50-54,11,0,Claassen,John,S,383E-2BD08,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,37:46.00,1
+M,50-54,12,0,Varellas,Jimmy,E,383T-E42BE,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,44:38.00,1
+M,50-54,11,0,Weisman,Steve,,383T-05PNJ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:27:01.00,1
+M,50-54,12,0,Kinley,Jeff,L,3837-0AE9G,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:27:07.00,1
+M,50-54,15,0,Barros,Alexandre,,383P-0768A,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:42:52.00,1
+M,50-54,16,0,Cronan,William,A,3833-8EM1D,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:45:24.00,1
+M,50-54,17,0,Cohen,David,G,3839-07XC5,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:54:26.00,1
 M,55-59,1,22,LEDERMAN,DAVID,,383K-00642,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,20:08.00,1
 M,55-59,1,22,LEDERMAN,DAVID,,383K-00642,Santa Cruz Cruise,Santa Cruz Cruise 2 Mile,2023-07-30,45:24.00,1
 M,55-59,1,22,LEDERMAN,DAVID,,383K-00642,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:03:05.00,1
@@ -1052,20 +1193,35 @@ M,55-59,10,2,JOHNSON,RON,A,383R-03TWN,Lake Berryessa,Lake Berryessa 1 Mile (Mens
 M,55-59,11,0,JOHNSON,RON,A,383R-03TWN,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:03:14.00,1
 M,55-59,10,2,YERBY,MICHAEL,J,3834-0615X,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:00:42.00,1
 M,55-59,10,2,Mockus,Jeff,,383X-JM0KE,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:23:29.00,1
+M,55-59,11,0,Frew,James,J,383Y-03JRJ,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,47:35.00,1
+M,55-59,11,0,ANDRE,SCOTT,C,3838-03TNR,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,31:08.00,1
+M,55-59,12,0,EHRENBERGER,DENNIS,K,383R-08FJC,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,36:25.00,1
+M,55-59,12,0,GONZALEZ,ERNESTO,T,3836-03RJ8,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:09:49.00,1
+M,55-59,13,0,GONZALEZ,ERNESTO,T,3836-03RJ8,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,38:44.00,1
+M,55-59,13,0,OREILLY,DAVID,J,383P-8FV65,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:11:05.00,1
+M,55-59,16,0,OREILLY,DAVID,J,383P-8FV65,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:44:53.00,1
+M,55-59,14,0,GRIFFITHS,JOHN,P,383A-075R1,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,43:26.00,1
+M,55-59,13,0,Atkins,Steve,J,383R-0AZ8T,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:39:02.00,1
+M,55-59,14,0,Keating,Brian,J,383Y-0402E,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:42:18.00,1
+M,55-59,15,0,Sohrabi,Sohrab,,383U-082F1,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:42:46.00,1
+M,55-59,17,0,Devlin,Patrick,A,383J-05V1F,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:45:22.00,1
+M,55-59,18,0,Muzzy,Richard,J,383C-AH9A2,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:52:02.00,1
+M,55-59,19,0,Shahani,Lalit,K,383F-03EWM,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:54:36.00,1
+M,55-59,20,0,Devine,John,P,3830-06S9R,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:57:46.00,1
 M,60-64,1,22,TAINTY,CHRIS,J,383B-03JCS,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,20:14.00,1
 M,60-64,1,22,TAINTY,CHRIS,J,383B-03JCS,Santa Cruz Cruise,Santa Cruz Cruise 2 Mile,2023-07-30,45:16.00,1
-M,60-64,1,22,TAINTY,CHRIS,J,383B-03JCS,Keller Cove,Keller Cove 2 Mile,2023-09-17,52:04.00,1
 M,60-64,1,22,TAINTY,CHRIS,J,383B-03JCS,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,10:48.00,1
+M,60-64,1,22,TAINTY,CHRIS,J,383B-03JCS,Keller Cove,Keller Cove 2 Mile,2023-09-17,52:04.00,1
 M,60-64,2,18,TAINTY,CHRIS,J,383B-03JCS,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,45:35.00,1
 M,60-64,2,18,TAINTY,CHRIS,J,383B-03JCS,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,24:07.00,1
 M,60-64,2,18,CARR,MIKE,W,3838-03YAS,Lake Del Valle,Lake Del Valle 5K,2023-08-26,1:17:09.00,1
-M,60-64,2,18,CARR,MIKE,W,3838-03YAS,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,38:13.00,1
 M,60-64,2,18,CARR,MIKE,W,3838-03YAS,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,23:42.00,1
+M,60-64,2,18,CARR,MIKE,W,3838-03YAS,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,38:13.00,1
 M,60-64,3,16,CARR,MIKE,W,3838-03YAS,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:09:06.00,1
 M,60-64,6,10,CARR,MIKE,W,3838-03YAS,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,47:22.00,1
 M,60-64,6,10,CARR,MIKE,W,3838-03YAS,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,25:00.00,1
-M,60-64,2,18,PYRCH,MICHAEL,J,3834-03MJ5,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,13:15.00,1
 M,60-64,2,18,PYRCH,MICHAEL,J,3834-03MJ5,Keller Cove,Keller Cove 1 Mile,2023-09-17,32:48.00,1
+M,60-64,2,18,PYRCH,MICHAEL,J,3834-03MJ5,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,13:15.00,1
 M,60-64,7,8,PYRCH,MICHAEL,J,3834-03MJ5,Lake Del Valle,Lake Del Valle 2.5K,2023-08-27,46:34.00,1
 M,60-64,7,8,PYRCH,MICHAEL,J,3834-03MJ5,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,29:09.00,1
 M,60-64,8,6,PYRCH,MICHAEL,J,3834-03MJ5,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,26:13.00,1
@@ -1127,6 +1283,26 @@ M,60-64,10,2,BOWER,RALPH,,383A-088PM,Lake Berryessa,Lake Berryessa 2 Mile (Mens)
 M,60-64,10,2,BOWER,RALPH,,383A-088PM,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,29:51.00,1
 M,60-64,9,4,Vasquez,Rick,A,383X-03N7E,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:20:50.00,1
 M,60-64,10,2,Zuber,David,,383W-0AEEN,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:21:19.00,1
+M,60-64,12,0,Keith,Jay,,383R-09XZA,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,28:53.00,1
+M,60-64,13,0,Ferraro,Bob,L,3831-041J4,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,28:59.00,1
+M,60-64,14,0,Hern,Steve,,383X-03XAV,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,29:01.00,1
+M,60-64,14,0,COOMBS,CRAIG,,383N-03KM5,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:02:14.00,1
+M,60-64,15,0,NEDERVOLD,ERIC,W,383B-03EWA,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:02:43.00,1
+M,60-64,16,0,CURRAN,BARRY,I,3834-03Z5W,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:03:41.00,1
+M,60-64,17,0,REMINGTON,TODD,E,383Z-0B134,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:05:24.00,1
+M,60-64,18,0,HUTCHINSON,JOHN,W,383T-03FXD,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:14:59.00,1
+M,60-64,19,0,INCHAUSTI,ROBERT,,383N-084UG,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:21:10.00,1
+M,60-64,20,0,STOUT,WAYNE,,3831-08FJV,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:23:00.00,1
+M,60-64,12,0,GRACE,MIKE,,3832-03FDK,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,58:37.00,1
+M,60-64,12,0,GRACE,MIKE,,3832-03FDK,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,32:04.00,1
+M,60-64,14,0,MOORE,NATHAN,P,383H-05TKM,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,42:09.00,1
+M,60-64,15,0,FERRELL,BART,C,383U-0B3UE,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,44:35.00,1
+M,60-64,11,0,Gjerde,Anders,R,383Y-03SNT,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:24:29.00,1
+M,60-64,12,0,Nichols,Frank,T,383S-03KGP,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:25:24.00,1
+M,60-64,13,0,Graffis,Patrick,D,383X-03JZ9,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:31:05.00,1
+M,60-64,14,0,Glomb,Marc,D,3837-03G9K,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:32:59.00,1
+M,60-64,15,0,Gall,Jeff,M,383G-075MX,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:56:23.00,1
+M,60-64,16,0,Talbot,John,D,383T-03H49,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:59:59.00,1
 M,65-69,1,22,GUADAGNI,PETER,,383V-03GFZ,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,25:40.00,1
 M,65-69,1,22,GUADAGNI,PETER,,383V-03GFZ,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,21:55.00,1
 M,65-69,1,22,GUADAGNI,PETER,,383V-03GFZ,Santa Cruz Cruise,Santa Cruz Cruise 2 Mile,2023-07-30,48:51.00,1
@@ -1195,6 +1371,9 @@ M,65-69,10,2,PHEFFER,JOE,,3838-D2AE1,Lake Berryessa,Lake Berryessa 2 Mile (Mens)
 M,65-69,10,2,PHEFFER,JOE,,3838-D2AE1,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:37:17.00,1
 M,65-69,9,4,SOMERS,DOUG,,383G-03MH7,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,36:24.00,1
 M,65-69,10,2,KINNIER,THOMAS,A,383D-0679N,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,39:17.00,1
+M,65-69,11,0,BRONSON,CHARLES,B,383U-0A63K,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,40:32.00,1
+M,65-69,11,0,SKULINA,KEN,,383F-03F5X,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:26:22.00,1
+M,65-69,15,0,SKULINA,KEN,,383F-03F5X,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,54:31.00,1
 M,70-74,1,22,SMALL,STEPHEN,A,383J-03GV2,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,29:15.00,1
 M,70-74,1,22,SMALL,STEPHEN,A,383J-03GV2,Keller Cove,Keller Cove 2 Mile,2023-09-17,1:10:07.00,1
 M,70-74,2,18,SMALL,STEPHEN,A,383J-03GV2,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:02:05.00,1
@@ -1423,14 +1602,14 @@ M,50-54,3,16,Luton,Dustin,E,383M-SJFJN,Donner Lake Swim,Donner Lake Swim 2.7 Mil
 M,50-54,5,12,Cronan,Rob,T,3835-UU7CD,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:50:32.00,2
 M,55-59,1,22,ROSSITER,JOHN,S,3837-0A5Z8,Santa Cruz Rough Water,Santa Cruz Rough Water 1 Mile,2023-07-29,21:22.00,2
 M,55-59,1,22,ROSSITER,JOHN,S,3837-0A5Z8,Lake Del Valle,Lake Del Valle 10K,2023-08-26,2:52:56.00,2
-M,55-59,1,22,ROSSITER,JOHN,S,3837-0A5Z8,Keller Cove,Keller Cove 1 Mile,2023-09-17,27:21.00,2
 M,55-59,1,22,ROSSITER,JOHN,S,3837-0A5Z8,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,11:12.00,2
+M,55-59,1,22,ROSSITER,JOHN,S,3837-0A5Z8,Keller Cove,Keller Cove 1 Mile,2023-09-17,27:21.00,2
 M,55-59,2,18,ROSSITER,JOHN,S,3837-0A5Z8,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,51:55.00,2
 M,55-59,2,18,ROSSITER,JOHN,S,3837-0A5Z8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:09:58.00,2
 M,55-59,1,22,BEDSWORTH,JAY,W,383X-03X00,Lake Del Valle,Lake Del Valle 1.2K,2023-08-27,30:23.00,2
 M,55-59,2,18,BEDSWORTH,JAY,W,383X-03X00,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,33:34.00,2
-M,55-59,2,18,BEDSWORTH,JAY,W,383X-03X00,Keller Cove,Keller Cove 1 Mile,2023-09-17,33:01.00,2
 M,55-59,2,18,BEDSWORTH,JAY,W,383X-03X00,Keller Cove,Keller Cove 1/2 Mile,2023-09-17,13:09.00,2
+M,55-59,2,18,BEDSWORTH,JAY,W,383X-03X00,Keller Cove,Keller Cove 1 Mile,2023-09-17,33:01.00,2
 M,55-59,5,12,BEDSWORTH,JAY,W,383X-03X00,Lake Berryessa,Lake Berryessa 2 Mile (Mens),2023-06-03,1:05:28.00,2
 M,55-59,5,12,BEDSWORTH,JAY,W,383X-03X00,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2023-08-12,1:25:00.00,2
 M,55-59,1,22,TODD,MITCHELL,A,3834-0AWCE,Lake Berryessa,Lake Berryessa 1 Mile (Mens),2023-06-03,31:45.00,2

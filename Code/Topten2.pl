@@ -625,7 +625,7 @@ my %USMSRecordsFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"USMSRecordsFil
 my $PMSOpenWaterResultFile = PMSStruct::GetMacrosRef()->{"PMSOpenWaterResultFile"};
 my $FakeSplashDataFile = PMSStruct::GetMacrosRef()->{"FakeSplashDataFile"};
 my %USMSEpostalsFiles;
-if( $generateEPostal ) {
+if( $generateEPostal && defined( PMSStruct::GetMacrosRef()->{"USMSEpostals"} ) ) {
 	%USMSEpostalsFiles = split /[;]/, PMSStruct::GetMacrosRef()->{"USMSEpostals"};
 }
 
@@ -944,20 +944,6 @@ exit(0);
 
 
 
-####!!!! Note: the following was copied from GetResults.pl. We need to put this in one place!
-#				$meetTitle = CleanMeetTitle( $meetTitle );
-# CleanMeetTitle - badly named!  clean the passed string, removing HTML escaped strings with their equivalence.
-#
-sub CleanMeetTitle( $ ) {
-	my $meetTitle = $_[0];
-	$meetTitle =~ s/&amp;/&/g;
-	$meetTitle =~ s/“/"/g;
-	$meetTitle =~ s/”/"/g;
-	return $meetTitle;
-} # end of CleanMeetTitle()
-
-
-
 
 ###################################################################################
 #### PMS ##########################################################################
@@ -1165,7 +1151,7 @@ sub PMSProcessResults($$) {
 							PMSLogging::DumpWarning( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: " .
 								"\n   Couldn't find regNum " .
 								"($regNum) in RSIDN_$yearBeingProcessed.  NOTE: this warning for this regNum will " .
-								"not be repeated.\n" .
+								"not be repeated.\n(NOTE that we're actually looking for the LMSC code and swimmer id, not full regnum)\n" .
 								"  This is FATAL - This Top 10 result will be " .
 								"IGNORED since we can't confirm that this swimmer is a PAC swimmer.  Result line:" .
 								"\n     $rowAsString" );
@@ -1213,12 +1199,7 @@ sub PMSProcessResults($$) {
 					}
 					####$$$$ end of debugging
 					
-					# at this point the meetTitle might have some funky characters in it (reason: in this case the data we are processing
-					# came from a Excel export from the USMS site, exported as a CSV, but the Unicode characters, for example smart quotes,
-					# don't come across correctly. We're going to try to convert such characters into simple equivalents.)
-					$meetTitle = CleanMeetTitle( $meetTitle );
-					
-					my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, $meetTitle,
+					my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, "", $meetTitle,
 						"(none yet)", $org, $course, $date, $date, 1 );
 					
 					TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $currentAgeGroup, $currentGender, 
@@ -2189,7 +2170,7 @@ sub PMSProcessOpenWater($) {
 						# ... meetispms (1 or 0)
 						# NOTE:  we are supplying the event name for the meet name since each OW event is counted as
 						# a separate "meet" - swimming 3 OW events is the same as swimming in 3 PAC events.
-						my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, $eventName, 
+						my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, "", $eventName, 
 							"http://data.pacificmasters.org/content/open-water-swims", $org, $course, 
 							$eventDate, $eventDate, 1 );
 
@@ -2366,7 +2347,7 @@ sub ProcessFakeSplashes($) {
 					my $eventId = TT_MySqlSupport::AddNewEventIfNecessary( $distance, $units, 
 						PMSUtil::CanonicalStroke( $stroke ) );
 
-					my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, $meetTitle,
+					my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, "", $meetTitle,
 						$meetLink, $org, $course, $date, $date, $meetIsPMS );
 
 					TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $ageGroup, $gender, $rank, 
@@ -2577,7 +2558,7 @@ sub PMSProcessEPostal( $$ ) {
 										PMSLogging::DumpWarning( "", "", "Topten::PMSProcessEPostal(): Line $lineNum of $simpleFileName: " .
 											"\n   Couldn't find USMSRegNum " .
 											"($USMSRegNum) in RSIDN_$yearBeingProcessed.  NOTE: this error for this USMSRegNum will " .
-											"not be repeated.\n" .
+											"not be repeated.\n(NOTE that we're actually looking for the LMSC code and swimmer id, not full regnum)\n" .
 											"  This is FATAL - This ePostal result will be " .
 											"IGNORED since we can't confirm that this swimmer is a PAC swimmer.  Result line:" .
 											"\n     $rowAsString" );
@@ -2612,7 +2593,7 @@ sub PMSProcessEPostal( $$ ) {
 									$gender, $USMSRegNum, $age, $currentAgeGroup, $team );
 
 								# add this meet to our DB if necessary
-								my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, $meetTitle,
+								my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, "", $meetTitle,
 									$meetLink, $org, $course, $beginDate, $endDate, $isPMS );
 								
 								# Convert the $distanceOrTime to an integer for storage into the DB.
@@ -2981,7 +2962,7 @@ sub ComputePlaceForAllSwimmers() {
 						$rank = $order;
 					}
 					$previousPoints = $totalPoints;
-					$query = "INSERT INTO FinalPlaceSAG (SwimmerId,AgeGroup,ListOrder,Rank) " .
+					$query = "INSERT INTO FinalPlaceSAG (SwimmerId,AgeGroup,ListOrder,sRank) " .
 						"VALUES ('$swimmerId','$ageGroup','$order','$rank')";
 					my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
 	
@@ -3045,7 +3026,7 @@ sub ComputePlaceForAllSwimmers() {
 						$rank = $order;
 					}
 					$previousPoints = $totalPoints;
-					$query = "INSERT INTO FinalPlaceCAG (SwimmerId,AgeGroup,ListOrder,Rank) " .
+					$query = "INSERT INTO FinalPlaceCAG (SwimmerId,AgeGroup,ListOrder,sRank) " .
 						"VALUES ('$swimmerId','$ageGroupSelected','$order','$rank')";
 					my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
 	
@@ -3317,7 +3298,7 @@ sub PrintResultsHTML($$$$$) {
 			my $lastName = $resultHash->{'LastName'};
 			my $team = $resultHash->{'RegisteredTeamInitials'};
 			my $ageGroup = $resultHash->{'AgeGroup'};			# of the form 18-24 or 18-24:25-29
-			my $rank = $resultHash->{'Rank'};					# rank of swimmer in their gender/agegroup
+			my $rank = $resultHash->{'sRank'};					# rank of swimmer in their gender/agegroup
 			my $points = $resultHash->{'Points'};
 			my $listOrder = $resultHash->{'ListOrder'};
 			my $ageGroupCAG = $resultHash->{'AgeGroupCAG'};		# of the form 18-24
@@ -3796,7 +3777,8 @@ sub PrintResultsHTML($$$$$) {
 	while( $numTopPoints < $TT_Struct::NumHighPoints ) {
 		my $resultHash = $sth->fetchrow_hashref;
 		if( !defined $resultHash ) {
-			PMSLogging::DumpError( "", "", "Ran out of top female point getters!", 1 );
+			PMSLogging::DumpError( "", "", "Ran out of top female point getters! (Found only $numTopPoints out " .
+				"of $TT_Struct::NumHighPoints)", 1 );
 			last;
 		}
 		my $swimmerId = $resultHash->{"SwimmerId"};
@@ -3832,7 +3814,8 @@ sub PrintResultsHTML($$$$$) {
 	while( $numTopPoints <= $TT_Struct::NumHighPoints ) {
 		my $resultHash = $sth->fetchrow_hashref;
 		if( !defined $resultHash ) {
-			PMSLogging::DumpError( "", "", "Ran out of top male point getters!", 1 );
+			PMSLogging::DumpError( "", "", "Ran out of top male point getters!  (Found only $numTopPoints out " .
+				"of $TT_Struct::NumHighPoints)", 1 );
 			last;
 		}
 		my $swimmerId = $resultHash->{"SwimmerId"};
@@ -4037,7 +4020,7 @@ sub GetPlaceOrderedSwimmersQuery {
 		# keep split age groups
 		$query =
 			"SELECT FirstName,MiddleInitial,LastName,RegisteredTeamInitials,FinalPlaceSAG.AgeGroup as AgeGroup, " .
-				"Rank,ListOrder,SUM(TotalPoints) as Points,FinalPlaceSAG.AgeGroup AS AgeGroupCAG, " .
+				"sRank,ListOrder,SUM(TotalPoints) as Points,FinalPlaceSAG.AgeGroup AS AgeGroupCAG, " .
 				"Swimmer.Gender as Gender,Swimmer.SwimmerId as SwimmerId, Swimmer.RegNum as RegNum," .
 				"Sector,SectorReason " .
 				"FROM (FinalPlaceSAG JOIN Swimmer) JOIN Points " .
@@ -4045,7 +4028,7 @@ sub GetPlaceOrderedSwimmersQuery {
 				$genderPart .
 				"AND Points.SwimmerId=Swimmer.SwimmerId " .
 				"AND Points.AgeGroup=FinalPlaceSAG.AgeGroup " .
-				"GROUP BY Swimmer.SwimmerId,FinalPlaceSAG.AgeGroup,FinalPlaceSAG.Rank,FinalPlaceSAG.ListOrder " .
+				"GROUP BY Swimmer.SwimmerId,FinalPlaceSAG.AgeGroup,FinalPlaceSAG.sRank,FinalPlaceSAG.ListOrder " .
 				"ORDER BY Gender ASC,FinalPlaceSAG.AgeGroup ASC,ListOrder ASC " .
 				$limitPart;
 	} else {
@@ -4053,7 +4036,7 @@ sub GetPlaceOrderedSwimmersQuery {
 		$query =
 			"SELECT FirstName,MiddleInitial,LastName,RegisteredTeamInitials," .
 				"(IF(Swimmer.AgeGroup2='',Swimmer.AgeGroup1,Swimmer.AgeGroup2)) as AgeGroupCAG, " .
-				"Rank,ListOrder,SUM(TotalPoints) AS Points,FinalPlaceCAG.AgeGroup AS AgeGroup, " .
+				"sRank,ListOrder,SUM(TotalPoints) AS Points,FinalPlaceCAG.AgeGroup AS AgeGroup, " .
 				"Swimmer.Gender as Gender,Swimmer.SwimmerId as SwimmerId, Swimmer.RegNum as RegNum," .
 				"Sector,SectorReason " .
 				"FROM (FinalPlaceCAG JOIN Swimmer) JOIN Points 
@@ -4062,7 +4045,7 @@ sub GetPlaceOrderedSwimmersQuery {
 				"AND Points.SwimmerId=Swimmer.SwimmerId " .
 				"AND Points.AgeGroup=FinalPlaceCAG.AgeGroup " .
 				"AND Points.AgeGroup=(IF(Swimmer.AgeGroup2='',Swimmer.AgeGroup1,CONCAT(Swimmer.AgeGroup1,':',Swimmer.AgeGroup2))) " .
-				"GROUP BY Swimmer.SwimmerId,FinalPlaceCAG.AgeGroup,FinalPlaceCAG.Rank,FinalPlaceCAG.ListOrder " .
+				"GROUP BY Swimmer.SwimmerId,FinalPlaceCAG.AgeGroup,FinalPlaceCAG.sRank,FinalPlaceCAG.ListOrder " .
 				"ORDER BY Gender ASC,AgeGroupCAG ASC,ListOrder ASC " .
 				$limitPart;
 	}
@@ -4187,7 +4170,8 @@ sub PrintFullExcelResults($$$$) {
 		my $resultHash = $sth->fetchrow_hashref;
 		if( !defined $resultHash ) {
 			PMSLogging::DumpError( "", "", "PrintFullExcelResults(): Ran out of top female " .
-				"point getters (who meet minimum requirements)!", 1 );
+				"point getters (who meet minimum requirements)! (Found only $numTopPoints out " .
+				"of $TT_Struct::NumHighPoints)", 1 );
 			last;
 		}
 		my $swimmerId = $resultHash->{"SwimmerId"};
@@ -4242,7 +4226,8 @@ sub PrintFullExcelResults($$$$) {
 		my $resultHash = $sth->fetchrow_hashref;
 		if( !defined $resultHash ) {
 			PMSLogging::DumpError( "", "", "PrintFullExcelResults(): Ran out of top male " .
-				"point getters (who meet minimum requirements)!", 1 );
+				"point getters (who meet minimum requirements)! (Found only $numTopPoints out " .
+				"of $TT_Struct::NumHighPoints)", 1 );
 			last;
 		}
 		my $swimmerId = $resultHash->{"SwimmerId"};
@@ -4345,7 +4330,7 @@ sub PrintFullExcelResults($$$$) {
 			my $lastName = $resultHash->{'LastName'};
 			my $team = $resultHash->{'RegisteredTeamInitials'};
 			my $ageGroup = $resultHash->{'AgeGroup'};
-			my $rank = $resultHash->{'Rank'};							# rank of swimmer in their gender/agegroup
+			my $rank = $resultHash->{'sRank'};							# rank of swimmer in their gender/agegroup
 			my $points = $resultHash->{'Points'};
 			my $listOrder = $resultHash->{'ListOrder'};
 			my $ageGroupCAG = $resultHash->{'AgeGroupCAG'};
@@ -4607,7 +4592,7 @@ sub PrintResultsExcelTopN($$$$) {
 			my $lastName = $resultHash->{'LastName'};
 			my $team = $resultHash->{'RegisteredTeamInitials'};
 			my $ageGroup = $resultHash->{'AgeGroup'};
-			my $rank = $resultHash->{'Rank'};							# rank of swimmer in their gender/agegroup
+			my $rank = $resultHash->{'sRank'};							# rank of swimmer in their gender/agegroup
 			my $points = $resultHash->{'Points'};
 			my $listOrder = $resultHash->{'ListOrder'};
 			my $ageGroupCAG = $resultHash->{'AgeGroupCAG'};

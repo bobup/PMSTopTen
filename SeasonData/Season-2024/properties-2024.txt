@@ -1,7 +1,7 @@
-## properties-2023.txt
+## properties-2024.txt
 ### This is the property file used by the Topten program.
 
-# Copyright (c) 2016-2023 Bob Upshaw.  This software is covered under the Open Source MIT License 
+# Copyright (c) 2016-2024 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
 # UNLESS OTHERWISE STATED:
 # All file names are relative to the SourceData directory, which is a subdirectory
@@ -95,7 +95,7 @@ PMSOpenWaterResultFile \
 #		Meet Begin Date - (yyyy-mm-dd)@@@
 #		Meet End Date - (yyyy-mm-dd)@@@ 
 #		Meet is sanctioned by PMS - (yes=1, no=0)
-USMSEpostals \
+USMSEpostals-old \
 						epostal-1hr-{YearBeingProcessed}-men-bup.csv; \
 							USMS@@@ \
 							0@@@ \
@@ -155,46 +155,5 @@ USMSEpostals \
 							https://www.usms.org/events/national-championships/virtual-championships/2023-virtual-championships/2023-5k-10k-virtual-championship@@@ \
 							{YearBeingProcessed}-05-15@@@ \
 							{YearBeingProcessed}-09-15@@@ \
-							0; \
-						epostal-3000-{YearBeingProcessed}-men.csv; \
-							USMS@@@ \
-							3000@@@ \
-							0@@@ \
-							Yards@@@ \
-							{YearBeingProcessed} USMS 3000/6000 Virtual Championship@@@ \
-							https://www.usms.org/events/national-championships/virtual-championships/2023-virtual-championships/2023-3000-6000-virtual-championship@@@ \
-							{YearBeingProcessed}-09-15@@@ \
-							{YearBeingProcessed}-11-15@@@ \
-							0; \
-						epostal-3000-{YearBeingProcessed}-women.csv; \
-							USMS@@@ \
-							3000@@@ \
-							0@@@ \
-							Yards@@@ \
-							{YearBeingProcessed} USMS 3000/6000 Virtual Championship@@@ \
-							https://www.usms.org/events/national-championships/virtual-championships/2023-virtual-championships/2023-3000-6000-virtual-championship@@@ \
-							{YearBeingProcessed}-09-15@@@ \
-							{YearBeingProcessed}-11-15@@@ \
-							0; \
-						epostal-6000-{YearBeingProcessed}-men.csv; \
-							USMS@@@ \
-							6000@@@ \
-							0@@@ \
-							Yards@@@ \
-							{YearBeingProcessed} USMS 3000/6000 Virtual Championship@@@ \
-							https://www.usms.org/events/national-championships/virtual-championships/2023-virtual-championships/2023-3000-6000-virtual-championship@@@ \
-							{YearBeingProcessed}-09-15@@@ \
-							{YearBeingProcessed}-11-15@@@ \
-							0; \
-						epostal-6000-{YearBeingProcessed}-women.csv; \
-							USMS@@@ \
-							6000@@@ \
-							0@@@ \
-							Yards@@@ \
-							{YearBeingProcessed} USMS 3000/6000 Virtual Championship@@@ \
-							https://www.usms.org/events/national-championships/virtual-championships/2023-virtual-championships/2023-3000-6000-virtual-championship@@@ \
-							{YearBeingProcessed}-09-15@@@ \
-							{YearBeingProcessed}-11-15@@@ \
 							0;
-							
 >endoffile
