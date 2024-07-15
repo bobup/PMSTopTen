@@ -17,7 +17,6 @@ Vacaville Super Bowl Masters Meet	(IS a PAC sanctioned meet)	PAC	SCY	2024-2-10	2
 The City Mile	(IS a PAC sanctioned meet)	PAC	SCY	2024-2-25	20240225CCCMY	https://www.usms.org/comp/meets/meet.php?MeetID=20240225CCCMY
 Palm Springs Masters SCY Swim Meet	(NOT a PAC sanctioned meet)	PAC	SCY	2024-2-25	20240225PALMSPY	https://www.usms.org/comp/meets/meet.php?MeetID=20240225PALMSPY
 2024 World Aquatics Masters Championships	(NOT a PAC sanctioned meet)	PAC	LCM	2024-2-26 - 2024-3-3	20240223worldsL	https://www.usms.org/comp/meets/meet.php?MeetID=20240223worldsL
-2024 CA/NV Speedo Sectionals	(NOT a PAC sanctioned meet)	PAC	LCM	2024-2-29 - 2024-3-3	20240303TCA24L	https://www.usms.org/comp/meets/meet.php?MeetID=20240303TCA24L
 Southeast Zone SCY Championship	(NOT a PAC sanctioned meet)	PAC	SCY	2024-2-3 - 2024-2-4	20240203SEZoneY	https://www.usms.org/comp/meets/meet.php?MeetID=20240203SEZoneY
 2024 Delaware Valley LMSC Upper Perk Valley Y Masters Meet	(NOT a PAC sanctioned meet)	PAC	SCY	2024-2-4	20240204PERKVYY	https://www.usms.org/comp/meets/meet.php?MeetID=20240204PERKVYY
 2024 Albatross Open (SCM)	(NOT a PAC sanctioned meet)	PAC	SCM	2024-3-16	20240316ALB24S	https://www.usms.org/comp/meets/meet.php?MeetID=20240316ALB24S
@@ -39,4 +38,14 @@ Rose Bowl Masters SCY Meet	(NOT a PAC sanctioned meet)	PAC	SCY	2024-4-20	2024042
 2024 COMSA State SCY Swim Meet	(NOT a PAC sanctioned meet)	PAC	SCY	2024-4-26 - 2024-4-28	20240426StateY	https://www.usms.org/comp/meets/meet.php?MeetID=20240426StateY
 2024 SPMS SCY Championships	(NOT a PAC sanctioned meet)	PAC	SCY	2024-4-5 - 2024-4-7	20240405CCAMSPY	https://www.usms.org/comp/meets/meet.php?MeetID=20240405CCAMSPY
 2024 TEAM Eugene Winter SCY Swim Meet	(NOT a PAC sanctioned meet)	PAC	SCY	2024-4-6	20240120EugeneY	https://www.usms.org/comp/meets/meet.php?MeetID=20240120EugeneY
+2024 Metropolitan SCY Champs at AGUA Masters	(NOT a PAC sanctioned meet)	PAC	SCY	2024-4-6	20240406AGUA24Y	https://www.usms.org/comp/meets/meet.php?MeetID=20240406AGUA24Y
 Foothills Masters 2nd Annual Spring Splash 2024	(NOT a PAC sanctioned meet)	PAC	SCY	2024-4-7	20240407FMSTY	https://www.usms.org/comp/meets/meet.php?MeetID=20240407FMSTY
+Pacific Masters Swimming Short Course Yards Championships	(IS a PAC sanctioned meet)	PAC	SCY	2024-5-17 - 2024-5-19	20240517PMSCYY	https://www.usms.org/comp/meets/meet.php?MeetID=20240517PMSCYY
+Mission Viejo Nadadores Masters LCM Swim Meet	(NOT a PAC sanctioned meet)	PAC	LCM	2024-5-19	20240519MVNMAYL	https://www.usms.org/comp/meets/meet.php?MeetID=20240519MVNMAYL
+2024 SPEEDO CANADIAN MASTERS CHAMPIONSHIPS	(NOT a PAC sanctioned meet)	PAC	SCM	2024-5-24 - 2024-5-26	20240526CANADAS	https://www.usms.org/comp/meets/meet.php?MeetID=20240526CANADAS
+Swim into Summer Masters Meet 2024	(NOT a PAC sanctioned meet)	PAC	LCM	2024-5-31	20240531SwimSuL	https://www.usms.org/comp/meets/meet.php?MeetID=20240531SwimSuL
+Paul Cate Sedona Spring Classic	(NOT a PAC sanctioned meet)	PAC	SCY	2024-5-4	20240504PaulCY	https://www.usms.org/comp/meets/meet.php?MeetID=20240504PaulCY
+OC Riptide Aquatics Masters LCM Meet	(NOT a PAC sanctioned meet)	PAC	LCM	2024-6-1	20240601RIPTHBL	https://www.usms.org/comp/meets/meet.php?MeetID=20240601RIPTHBL
+2024 Bumpy Jones Classic Long Course Meet	(NOT a PAC sanctioned meet)	PAC	LCM	2024-6-8 - 2024-6-9	20240608BUMPYL	https://www.usms.org/comp/meets/meet.php?MeetID=20240608BUMPYL
+Pacific Northwest Masters LCM Summer Meet	(NOT a PAC sanctioned meet)	PAC	LCM	2024-7-6 - 2024-7-7	20240706PNALCML	https://www.usms.org/comp/meets/meet.php?MeetID=20240706PNALCML
+Silver State Masters LCM	(IS a PAC sanctioned meet)	PAC	LCM	2024-7-7	20240707SSLCML	https://www.usms.org/comp/meets/meet.php?MeetID=20240707SSLCML

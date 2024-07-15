@@ -369,6 +369,9 @@ my %USMSRecordsFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"USMSRecordsFil
 my $PMSOpenWaterResultFile = PMSStruct::GetMacrosRef()->{"PMSOpenWaterResultFile"};
 my %USMSEpostalsFiles;
 
+if( (!defined PMSStruct::GetMacrosRef()->{"USMSEpostals"}) || (PMSStruct::GetMacrosRef()->{"USMSEpostals"} eq "") ) {
+	$generateEPostal = 0;
+}
 if( $generateEPostal ) {
 	%USMSEpostalsFiles = split /[;]/, PMSStruct::GetMacrosRef()->{"USMSEpostals"};
 }

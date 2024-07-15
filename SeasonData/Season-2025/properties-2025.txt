@@ -1,7 +1,7 @@
-## properties-2024.txt
+## properties-2025.txt
 ### This is the property file used by the Topten program.
 
-# Copyright (c) 2016-2024 Bob Upshaw.  This software is covered under the Open Source MIT License 
+# Copyright (c) 2016-2025 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
 # UNLESS OTHERWISE STATED:
 # All file names are relative to the SourceData directory, which is a subdirectory
