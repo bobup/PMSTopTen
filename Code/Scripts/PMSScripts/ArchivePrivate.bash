@@ -8,6 +8,8 @@
 # To execute just run this script with no arguments. Your CWD can be anywhere, since
 #	it will use the location of the script to find the root of the PMSTopten tree.
 #
+# The archive file is stored in ~/Automation/Private/
+#
 
 STARTDATE=`date +'%a, %b %d %G at %l:%M:%S %p %Z'`
 SIMPLE_SCRIPT_NAME=`basename $0`
@@ -21,9 +23,13 @@ TARBALL_FULL_NAME=$TARBALL_DIR/$TARBALL_SIMPLE_NAME
 
 pushd $SCRIPT_DIR_FULL_NAME/../../../  >/dev/null
 
-tar cvf $TARBALL_FULL_NAME \
+tar czf $TARBALL_FULL_NAME \
 			SeasonData/Season-*/PMSSwimmerData/*RSIND*.csv \
 			SeasonData/Season-*/properties_DB-*.txt
+
+# clean up old archive files (keep newest 5):
+pushd $TARBALL_DIR >/dev/null 
+ls -tp | grep -v '/$' | tail -n +6 | xargs -I {} rm -- {}
 
 echo "$SIMPLE_SCRIPT_NAME: Done constructing $TARBALL_FULL_NAME"
 

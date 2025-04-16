@@ -247,6 +247,7 @@ use lib File::Spec->catdir( $FindBin::Bin, '..', '..', '..', 'PMSPerlModules' );
 require PMS_ImportPMSData;
 require PMSMacros;
 require PMSLogging;
+require PMSProcess2SingleFile;
 require PMSTemplate;
 
 if( $GENERATE_RANK_SECTORS ) {
@@ -2477,11 +2478,14 @@ sub PMSProcessEPostal( $$ ) {
 						print "\n";
 					} # end debug
 					
-					# do we have a result line? if so, the first column must be in the form 
-					#	Xdddd
-					# where X is the gender (M or F) and dddd[dd] is the age group (e.g. 6064)
-					# NOTE: the [dd] allows for the age group "100104". Yes, there have been such swimmers. Impressive!
-					if( $row[0] =~ m/^[M|m|f|F]\d\d\d\d(\d\d)?$/ ) {
+					# look for special case:  "empty" line (line with only spaces and commas)
+					if( $rowAsString =~ m/^[\s,]*$/ ) {
+						next;
+					}
+					# do we have a result line? If so, the first column must give the gender and age group.
+					# We'll use the (fairly) relaxed rules used by AGSOTY processing:
+					my ($genAgegrp, $newGender, $newAgeGrp) = PMSProcess2SingleFile::GenderAgeGrpRow( \@row, $lineNum, $row[0] );
+	        		if( $genAgegrp == 3 ) {
 						# we have a result line
 						$numResultLines++;
 						#
@@ -2511,7 +2515,6 @@ sub PMSProcessEPostal( $$ ) {
 							my $fullName = "$firstName $middleInitial $lastName";	# used below for error message
 							my $age = PMSUtil::trim( $row[6] );
 							my $team = $row[5];
-							my $gender = my $currentAgeGroup = $row[0];
 							my $dob = $row[8];   # m/d/y or empty string - not used here!!
 							my $distanceOrTime = $row[9];
 							my $natRecord = $row[10];
@@ -2519,18 +2522,9 @@ sub PMSProcessEPostal( $$ ) {
 								# we have a row representing a PMS swimmer who placed for points
 								$numPMSScoringResults++;
 								# NOTE: we don't consider an ePostal an "event" - it's a meet only.
-								if( $natRecord ) {
+								if( $natRecord && ($place == 1) ) {
 									# note that we've seen at least one ePostal National record from this $org
 									$missingResults{"$org-$courseRecord"} = 0;
-								}
-								$gender =~ s/^(.).*$/$1/;
-								$currentAgeGroup =~ s/^.(.*)$/$1/;		# e.g. 4549 or 100104
-								if( length( $currentAgeGroup ) > 4 ) {
-									# we have the case of '100104'
-									$currentAgeGroup =~ s/^(...)(...)$/$1-$2/;		# e.g. 100-104
-								} else {
-									# we have the case of 4549
-									$currentAgeGroup =~ s/^(..)(..)$/$1-$2/;		# e.g. 45-49
 								}
 								# these values come from the RSIDN file:
 								my ($RSIDNFirstName, $RSIDNMiddleInitial, $RSIDNLastName, $RSIDNTeam);
@@ -2566,21 +2560,20 @@ sub PMSProcessEPostal( $$ ) {
 									$TT_Struct::hashOfInvalidRegNums{"$USMSRegNum:$fullName"} = $count+1;
 									# remember the org and course we're seeing this problem in.  
 									if( !defined $TT_Struct::hashOfInvalidRegNums{"$USMSRegNum:$fullName:OrgCourse"} ) {
-										$TT_Struct::hashOfInvalidRegNums{"$USMSRegNum:$fullName:OrgCourse"} = "$currentAgeGroup;$org:$course";
+										$TT_Struct::hashOfInvalidRegNums{"$USMSRegNum:$fullName:OrgCourse"} = "$newAgeGrp;$org:$course";
 									} elsif( $TT_Struct::hashOfInvalidRegNums{"$USMSRegNum:$fullName:OrgCourse"} !~ m/$org:$course/ ) {
 										$TT_Struct::hashOfInvalidRegNums{"$USMSRegNum:$fullName:OrgCourse"} .= ",$org:$course";
 									}
 									next;	# don't give points to this swimmer
 								}
 								
-								$gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $gender );	# single letter
 								# perform some sanity checks:
 								# NOTE: sometimes epostals don't give the swimmer's age. We could use their reg number and get it
 								# but I'm not going to bother.
 								if( $age ne "" ) {
-									if( ! ValidateAge( $age, $currentAgeGroup ) ) {
+									if( ! ValidateAge( $age, $newAgeGrp ) ) {
 										PMSLogging::DumpError( "", "", "Topten::PMSProcessEPostal(): Line $lineNum of $simpleFileName: Age error: " .
-											"('$fileName') Age is $age but line is for agegroup '$currentAgeGroup'", 1 );
+											"('$fileName') Age is $age but line is for agegroup '$newAgeGrp'", 1 );
 									}
 								}
 					
@@ -2590,7 +2583,7 @@ sub PMSProcessEPostal( $$ ) {
 								# add this swimmer to our DB if necessary
 								my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
 									$firstName, $middleInitial, $lastName,
-									$gender, $USMSRegNum, $age, $currentAgeGroup, $team );
+									$newGender, $USMSRegNum, $age, $newAgeGrp, $team );
 
 								# add this meet to our DB if necessary
 								my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, "", $meetTitle,
@@ -2607,24 +2600,34 @@ sub PMSProcessEPostal( $$ ) {
 									$durationType = 2;  # "distance" is really a distance
 								}
 					
-								TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $currentAgeGroup, $gender, 
+								TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $newAgeGrp, $newGender, 
 									$place, $points, $swimmerId, $eventId, $org, $course, $meetId, $distanceOrTime, $beginDate,
 									$durationType );
 
+								my $record = "";
 								if( $natRecord ) {
-									# this swimmer earned a national record doing this ePostal. Add this as a separate
-									# splash: (25 points)
-									TT_MySqlSupport::AddNewRecordSplash( $fileName, $lineNum, $courseRecord, $org, $eventId, $gender,
-										$currentAgeGroup, 1, $swimmerId, 0, 25, $meetId, $beginDate, $distanceOrTime, $durationType );
+									if( $place == 1 ) {
+										# this swimmer earned a national record doing this ePostal. Add this as a separate
+										# splash: (25 points)
+										TT_MySqlSupport::AddNewRecordSplash( $fileName, $lineNum, $courseRecord, $org, $eventId, $newGender,
+											$newAgeGrp, 1, $swimmerId, 0, 25, $meetId, $beginDate, $distanceOrTime, $durationType );
+										$record = "(PLUS A RECORD worth 25 points)"
+									} else {
+										# huh??? this swimmer didn't take first place in their gender/age group, but still set a record?
+										# That can't be...
+										PMSLogging::DumpError( "", "", "Topten::PMSProcessEPostal(): Line $lineNum of $simpleFileName:\n" .
+										"    This swimmer got a record, but they did not take FIRST place! We will ignore the record.\n" .
+										"    These results need to be fixed!!", 1 );
+									}
 								}
 								
-								PMSLogging::DumpNote( "", $lineNum, "PMS swimmer got $points points: $firstName $middleInitial $lastName " .
-									"($gender/$age, dob=$dob, reg#=$USMSRegNum, place=$place)" );
+								PMSLogging::DumpNote( "", $lineNum, "PMS swimmer got $points points" . $record . ": $firstName $middleInitial $lastName " .
+									"($newGender/$age, dob=$dob, reg#=$USMSRegNum, place=$place)" );
 									
 							} # end of '...we have a row representing a PMS swimmer who placed for points'
 							else {
 								PMSLogging::DumpNote( "", $lineNum, "PMS swimmer with no points: $firstName $middleInitial $lastName " .
-									"($gender/$age, dob=$dob, reg#=$USMSRegNum, place=$place)" );
+									"($newGender/$age, dob=$dob, reg#=$USMSRegNum, place=$place)" );
 							}
 						} # end of '...this is a result for a PMS swimmer...'
 					} # end of '...we have a result line...'
@@ -3270,11 +3273,7 @@ sub PrintResultsHTML($$$$$) {
 	# first, the initial part of the master HTML file
 	# (Oct, 2021: See PMSConstants::season for a USMS change for 2021. Handle a detail here before
 	#  processing this template:)
-	PMSConstants::FixLCMSeasonRangeFor2021( $yearBeingProcessed );
-	# the following macro is used to make the comments at the top of the file correctly identify 
-	# the season for LCM:
-	PMSStruct::GetMacrosRef()->{"LCMEndOfSeasonDay"} = $PMSConstants::LCMEndOfSeasonDay;
-	PMSStruct::GetMacrosRef()->{"LCMStartOfSeasonDay"} = $PMSConstants::LCMStartOfSeasonDay;
+	PMSConstants::FixSeasonRange( $yearBeingProcessed );
 	PMSTemplate::ProcessHTMLTemplate( $templateStartHead, $masterGeneratedHTMLFileHandle );
 
 	# Since we have already computed the points and places for every swimmer we are going to 

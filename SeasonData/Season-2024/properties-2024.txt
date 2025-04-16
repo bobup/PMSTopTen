@@ -100,67 +100,110 @@ PMSOpenWaterResultFile \
 #		Meet Begin Date - (yyyy-mm-dd)@@@
 #		Meet End Date - (yyyy-mm-dd)@@@ 
 #		Meet is sanctioned by PMS - (yes=1, no=0)
-USMSEpostals
-
-USMSEpostals-old \
-						epostal-1hr-{YearBeingProcessed}-men-bup.csv; \
+USMSEpostals \
+						ePostal/1nov2024-v2/2024 1HVC Final Results-men.csv; \
 							USMS@@@ \
 							0@@@ \
 							1 hour@@@ \
 							Yards@@@ \
 							{YearBeingProcessed} USMS 1-Hour Virtual Championship@@@ \
-							https://www.usms.org/events/national-championships/virtual-championships/{YearBeingProcessed}-virtual-championships/{YearBeingProcessed}-1-hour-virtual-championship@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2024-virtual-championships/2024-1hr-virtual-championship@@@ \
 							{YearBeingProcessed}-01-01@@@ \
 							{YearBeingProcessed}-01-31@@@ \
 							0; \
-						epostal-1hr-{YearBeingProcessed}-women.csv; \
+						ePostal/16nov2024-v3/OHV2024.csv; \
 							USMS@@@ \
 							0@@@ \
 							1 hour@@@ \
 							Yards@@@ \
 							{YearBeingProcessed} USMS 1-Hour Virtual Championship@@@ \
-							https://www.usms.org/events/national-championships/virtual-championships/{YearBeingProcessed}-virtual-championships/{YearBeingProcessed}-1-hour-virtual-championship@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2024-virtual-championships/2024-1hr-virtual-championship@@@ \
 							{YearBeingProcessed}-01-01@@@ \
 							{YearBeingProcessed}-01-31@@@ \
 							0; \
-						epostal-5k-{YearBeingProcessed}-men.csv;  \
+						ePostal/1nov2024-v2/2024 USMS 5k10k Virtual Championship Individual Results-Men5k.csv;  \
 							USMS@@@ \
 							5000@@@ \
 							0@@@ \
 							Meters@@@ \
 							{YearBeingProcessed} USMS 5K/10K Virtual Championship@@@ \
-							https://www.usms.org/events/national-championships/virtual-championships/2023-virtual-championships/2023-5k-10k-virtual-championship@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2024-virtual-championships/2024-5k-10k-virtual-championship@@@ \
 							{YearBeingProcessed}-05-15@@@ \
 							{YearBeingProcessed}-09-15@@@ \
 							0; \
-						epostal-5k-{YearBeingProcessed}-women.csv; \
+						ePostal/1nov2024-v2/2024 USMS 5k10k Virtual Championship Individual Results-Women5k.csv; \
 							USMS@@@ \
 							5000@@@ \
 							0@@@ \
 							Meters@@@ \
 							{YearBeingProcessed} USMS 5K/10K Virtual Championship@@@ \
-							https://www.usms.org/events/national-championships/virtual-championships/2023-virtual-championships/2023-5k-10k-virtual-championship@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2024-virtual-championships/2024-5k-10k-virtual-championship@@@ \
 							{YearBeingProcessed}-05-15@@@ \
 							{YearBeingProcessed}-09-15@@@ \
 							0; \
-						epostal-10k-{YearBeingProcessed}-men.csv; \
+						ePostal/1nov2024-v2/2024 USMS 5k10k Virtual Championship Individual Results-Mens10k.csv; \
 							USMS@@@ \
 							10000@@@ \
 							0@@@ \
 							Meters@@@ \
 							{YearBeingProcessed} USMS 5K/10K Virtual Championship@@@ \
-							https://www.usms.org/events/national-championships/virtual-championships/2023-virtual-championships/2023-5k-10k-virtual-championship@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2024-virtual-championships/2024-5k-10k-virtual-championship@@@ \
 							{YearBeingProcessed}-05-15@@@ \
 							{YearBeingProcessed}-09-15@@@ \
 							0; \
-						epostal-10k-{YearBeingProcessed}-women.csv; \
+						ePostal/1nov2024-v2/2024 USMS 5k10k Virtual Championship Individual Results-Womens10k.csv; \
 							USMS@@@ \
 							10000@@@ \
 							0@@@ \
 							Meters@@@ \
 							{YearBeingProcessed} USMS 5K/10K Virtual Championship@@@ \
-							https://www.usms.org/events/national-championships/virtual-championships/2023-virtual-championships/2023-5k-10k-virtual-championship@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2024-virtual-championships/2024-5k-10k-virtual-championship@@@ \
 							{YearBeingProcessed}-05-15@@@ \
 							{YearBeingProcessed}-09-15@@@ \
+							0; \
+						ePostal-3k+6k/v2/2024 USMS 3k 6k Final Results-Men3k.csv; \
+							USMS@@@ \
+							3000@@@ \
+							0@@@ \
+							Yards@@@ \
+							{YearBeingProcessed} USMS 3000/6000 Virtual Championship @@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2024-virtual-championships/2024-3000-6000-virtual-championship@@@ \
+							{YearBeingProcessed}-09-15@@@ \
+							{YearBeingProcessed}-11-15@@@ \
+							0; \
+						ePostal-3k+6k/v2/2024 USMS 3k 6k Final Results-Men6k.csv; \
+							USMS@@@ \
+							6000@@@ \
+							0@@@ \
+							Yards@@@ \
+							{YearBeingProcessed} USMS 3000/6000 Virtual Championship @@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2024-virtual-championships/2024-3000-6000-virtual-championship@@@ \
+							{YearBeingProcessed}-09-15@@@ \
+							{YearBeingProcessed}-11-15@@@ \
+							0; \
+						ePostal-3k+6k/v2/2024 USMS 3k 6k Final Results-Women3k.csv; \
+							USMS@@@ \
+							3000@@@ \
+							0@@@ \
+							Yards@@@ \
+							{YearBeingProcessed} USMS 3000/6000 Virtual Championship @@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2024-virtual-championships/2024-3000-6000-virtual-championship@@@ \
+							{YearBeingProcessed}-09-15@@@ \
+							{YearBeingProcessed}-11-15@@@ \
+							0; \
+						ePostal-3k+6k/v2/2024 USMS 3k 6k Final Results-Women6k.csv; \
+							USMS@@@ \
+							6000@@@ \
+							0@@@ \
+							Yards@@@ \
+							{YearBeingProcessed} USMS 3000/6000 Virtual Championship @@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2024-virtual-championships/2024-3000-6000-virtual-championship@@@ \
+							{YearBeingProcessed}-09-15@@@ \
+							{YearBeingProcessed}-11-15@@@ \
 							0;
+
 >endoffile
+
+
+							
+							

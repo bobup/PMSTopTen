@@ -118,8 +118,6 @@ my $generateUSMSRecords		= ($RESULT_FILES_TO_READ & 0b1000);		# set to non-zero 
 my $generatePMSOW			= ($RESULT_FILES_TO_READ & 0b10000);		# set to non-zero if we are supposed to generate PMS OW points, 0 if not.
 my $generateEPostal			= ($RESULT_FILES_TO_READ & 0b1000000);	# set to non-zero if we are supposed to generate ePostal points, 0 if not.
 
-
-
 ####################
 # Usage string
 ####################
@@ -471,7 +469,7 @@ if( ($RESULT_FILES_TO_READ & 0b1000) != 0 ) {
 if( ($RESULT_FILES_TO_READ & 0b10000) != 0 ) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	my ($numResultLines, $numEvents) = 
-		GetPMSOWResults( "http://data.pacificmasters.org/points/OWPoints/$PMSOpenWaterResultFile",
+		GetPMSOWResults( "https://data.pacificmasters.org/points/OWPoints/$PMSOpenWaterResultFile",
 			"$sourceDataDir/$PMSOpenWaterResultFile" );
 	if( $numResultLines == 0 ) {
 		# try historical data...
@@ -824,9 +822,10 @@ sub ParseFileDownloadHttpResponse( $$$$$$ ) {
 	$callbackStateRef->{"numBytesSeen"} += length( $content );
 
 	if( $debug ) {
-		print "ParseFileDownloadHttpResponse() called:  numCallbackCalls=$numCallbackCalls, total bytes seen=" .
+		PMSLogging::PrintLog( "", "", "ParseFileDownloadHttpResponse(): linkToResults='$linkToResults'\n    " .
+			"numCallbackCalls=$numCallbackCalls, total bytes seen=" .
 			$callbackStateRef->{"numBytesSeen"} . ", success=" . 
-			(defined $httpResponseRef->{'success'}?$httpResponseRef->{'success'}:"undefined") . "\n";
+			(defined $httpResponseRef->{'success'}?$httpResponseRef->{'success'}:"undefined"), 1 )
 	}
 	
 	# before doing anything make sure we didn't get an error
@@ -1498,7 +1497,7 @@ sub GetPMSRecords_old( $$$$$$ ) {
 
 # ParsePMSRecordsHttpResponse - parse the response to the request made by GetPMSRecords() above.
 #
-sub ParsePMSRecordsHttpResponse_old( $$$$$$$$ ) {
+sub ParsePMSRecordsHttpResponse_old_deleteThis( $$$$$$$$ ) {
 	my( $callbackStateRef, $linkToResults, $org, $course, $minDate, $maxDate,
 		$content, $httpResponseRef ) = @_;
 	my $numCallbackCalls = $callbackStateRef->{"numCallbackCalls"}+1;
@@ -1621,7 +1620,7 @@ sub ParsePMSRecordsHttpResponse_old( $$$$$$$$ ) {
 	
 	$callbackStateRef->{"numLines"} += $numLinesThisCall;
 
-} # end of ParsePMSRecordsHttpResponse()
+} # end of ParsePMSRecordsHttpResponse_old_deleteThis()
 
 
 
@@ -1755,6 +1754,20 @@ sub GetPMSOWResults( $$ ) {
 	my $tinyHttp = HTTP::Tiny->new( );
 	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSOWResults(): Get the results for PAC open water...", 1 );
 	PMSLogging::PrintLogNoNL( "", "", "url='$linkToResults',\n  destination='$resultFileName'...", 1 );
+
+
+if(0) {
+my $response = $tinyHttp->get( "https://data.pacificmasters.org/points/OWPoints/2024PacMastersOWPlacesForEachSwimmer.csv" );
+print "success=" .  $response->{success} . "\n";
+print "$response->{status} $response->{reason}\n";
+print "content: **********\n";
+print $response->{content} if length $response->{content};
+
+return (1,1);
+
+}
+
+
 
 			# set up callback for file download
 			my %callbackFileDownloadState = (
