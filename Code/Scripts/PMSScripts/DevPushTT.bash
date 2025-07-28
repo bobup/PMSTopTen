@@ -11,8 +11,9 @@
 #	$2 - One of:
 #		-gGenSubDir - the sub directory of the default directory from which files are pushed.
 #			Also used as the sub directory of the default directory to which the files are pushed.
+#			Ex: -gtestDir/test2
 #		xxx - something else, in which case it's ignored. Only necessary if you want to pass
-#		a value for $3
+#		a value for $3.
 #	$3 - (optional) if passed, and equal to 'y', then don't send an email if we don't do the push when
 #		the index.html file can't be found.
 #

@@ -1,0 +1,737 @@
+"2025PacMasters:  Points and place for every swimmer who swam an OW event."
+Generated on Mon Jul 14 2025 EDT 05:02:33 PM EDT
+"(AGSOTY only considers Category 1 swims for points but considers ALL finished swims as a PMS swim.)"
+#
+"NOTE: all data follows the line below beginning with Gender"
+ALSO: comments in this section must NOT contain a comma.
+VERSION: 2
+numSwimsToConsider=5
+Gender,Age Group,Place,Points,Last Name,First Name,Middle,Regnum,Meet Name,Event Name,Event Date,Duration,Category
+W,18-24,1,22,BLAKE,ELLA,R,385U-ED6YS,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,44:25.00,1
+W,18-24,1,22,BLAKE,ELLA,R,385U-ED6YS,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,21:54.00,1
+W,18-24,2,18,GLANVILLE,MCKAELA,,385D-42J5K,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,44:41.00,1
+W,18-24,2,18,GLANVILLE,MCKAELA,,385D-42J5K,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,21:57.00,1
+W,18-24,3,16,REDMOND,VIVIAN,A,385F-VVAWN,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,53:48.00,1
+W,18-24,4,14,REDMOND,VIVIAN,A,385F-VVAWN,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,26:18.00,1
+W,18-24,1,22,Henneberger,Violet,H,3857-KD0EN,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,32:17.00,1
+W,18-24,1,22,Mordec,Marta,,385N-WTTXT,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,52:54.00,1
+W,18-24,2,18,Evans,Elizabeth,J,3853-MB2S4,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,45:47.00,1
+W,18-24,2,18,Tet,Amy,E,385F-NP5SR,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,53:29.00,1
+W,18-24,3,16,KOS,SARA,Y,3859-A2E2U,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,22:56.00,1
+W,18-24,3,16,Croteau,Sylvie,,385C-H6PPN,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:09:34.00,1
+W,18-24,4,14,OTTO,CLARE,M,385E-SKPD5,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,54:21.00,1
+W,18-24,5,12,MCCREARY,SIMONE,A,3856-FPC2P,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,55:21.00,1
+W,18-24,5,12,TWEET,HAELIE,J,3853-ZZ8CB,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,27:34.00,1
+W,18-24,6,10,PERIWAL,INDRA,,385T-WSH0Z,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,30:06.00,1
+W,18-24,7,8,Chavez,Sabrina,,385Z-E42VX,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,31:25.00,1
+W,18-24,8,6,ELMER,CAROLINE,,385J-YSE07,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,37:36.00,1
+W,25-29,1,22,BLANKLEY,STEPHANIE,A,385E-REH1A,Lake Del Valle,Lake Del Valle 10K,2025-06-14,2:48:49.00,1
+W,25-29,1,22,BLANKLEY,STEPHANIE,A,385E-REH1A,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,24:00.00,1
+W,25-29,2,18,BLANKLEY,STEPHANIE,A,385E-REH1A,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,46:02.00,1
+W,25-29,2,18,BLANKLEY,STEPHANIE,A,385E-REH1A,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,40:08.00,1
+W,25-29,3,16,BLANKLEY,STEPHANIE,A,385E-REH1A,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,23:18.00,1
+W,25-29,1,22,BURNS,VIRGINIA,B,3850-21JXF,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,45:56.00,1
+W,25-29,2,18,BURNS,VIRGINIA,B,3850-21JXF,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,22:50.00,1
+W,25-29,1,22,CROW,VIVIAN,A,3850-09ZR6,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:26:54.00,1
+W,25-29,4,14,CROW,VIVIAN,A,3850-09ZR6,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,49:55.00,1
+W,25-29,4,14,TUCKER,CARSON,,3856-19T3X,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,26:08.00,1
+W,25-29,5,12,TUCKER,CARSON,,3856-19T3X,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,52:23.00,1
+W,25-29,1,22,Dahlke,Mikaela,S,385K-ZDR36,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,37:32.00,1
+W,25-29,1,22,HARRISON,MATTI,J,3859-S1BGB,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,22:10.00,1
+W,25-29,3,16,ZHENG,ADA,,385K-AZK5Z,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,53:19.00,1
+W,25-29,9,4,ZHENG,ADA,,385K-AZK5Z,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,30:59.00,1
+W,25-29,6,10,MARTIN,SONIA,M,385P-UWDPF,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,27:28.00,1
+W,25-29,7,8,MARTIN,SONIA,M,385P-UWDPF,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,53:26.00,1
+W,25-29,2,18,Wang,Yida,,385A-92YVM,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:47:30.00,1
+W,25-29,2,18,Yih,Allison,S,385W-1Z9F2,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:08:29.00,1
+W,25-29,2,18,Busatto,Katherine,L,385Z-7E4S7,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,43:42.00,1
+W,25-29,3,16,SCHMITZ,BONNIE,C,385C-DHU4E,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,48:03.00,1
+W,25-29,7,8,WU,JESSICA,,385D-KWH3Z,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,27:29.00,1
+W,25-29,8,6,WU,JESSICA,,385D-KWH3Z,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,55:26.00,1
+W,25-29,5,12,CONNELLY,CAROLINE,A,385R-XW5M2,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,27:10.00,1
+W,25-29,6,10,MARTIN,MCKENNA,,385P-JUBTW,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,52:35.00,1
+W,25-29,8,6,SHERMAN,JULIA,,3857-E2YPT,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,28:38.00,1
+W,25-29,9,4,ERICKSON,KATIE,,385B-KFR0P,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,55:49.00,1
+W,25-29,10,2,RAMADAN,SAMANTHA,,385A-1EB9T,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,57:23.00,1
+W,25-29,10,2,VALENCIA,JULIANA,,385R-FHMPS,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,39:30.00,1
+W,30-34,1,22,BREED,CATHERINE,,385R-0A02H,Lake Del Valle,Lake Del Valle 10K,2025-06-14,2:32:16.00,1
+W,30-34,2,18,BREED,CATHERINE,,385R-0A02H,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,40:37.00,1
+W,30-34,3,16,BREED,CATHERINE,,385R-0A02H,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,22:56.00,1
+W,30-34,1,22,ARNOLD,ALLISON,A,3850-09827,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,40:08.00,1
+W,30-34,1,22,ARNOLD,ALLISON,A,3850-09827,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,20:16.00,1
+W,30-34,4,14,WOO,EMILY,,385X-6WJ2N,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:43:52.00,1
+W,30-34,5,12,WOO,EMILY,,385X-6WJ2N,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,30:02.00,1
+W,30-34,8,6,WOO,EMILY,,385X-6WJ2N,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,30:35.00,1
+W,30-34,9,4,WOO,EMILY,,385X-6WJ2N,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:00:12.00,1
+W,30-34,1,22,THORP,VALERIE,M,385Y-0793E,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:23:32.00,1
+W,30-34,4,14,THORP,VALERIE,M,385Y-0793E,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,46:54.00,1
+W,30-34,2,18,DAVIS,ALLIE,C,385F-08AXC,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,21:14.00,1
+W,30-34,3,16,DAVIS,ALLIE,C,385F-08AXC,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,45:34.00,1
+W,30-34,2,18,HWANG,JENN,,385H-09GHM,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,27:49.00,1
+W,30-34,4,14,HWANG,JENN,,385H-09GHM,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,27:26.00,1
+W,30-34,3,16,FERROGGIARO,ALEX,,385C-GVWCA,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,28:53.00,1
+W,30-34,5,12,FERROGGIARO,ALEX,,385C-GVWCA,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,27:44.00,1
+W,30-34,2,18,ROSAS,RACHEL,E,3855-08CF2,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:34:28.00,1
+W,30-34,7,8,ROSAS,RACHEL,E,3855-08CF2,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,55:30.00,1
+W,30-34,1,22,Skoda,Anette,,385B-0717A,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,44:47.00,1
+W,30-34,1,22,Pedote,Elyssa,,3855-0A9T3,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,25:11.00,1
+W,30-34,2,18,Soltero,Mariah,C,385V-0AMB1,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,49:58.00,1
+W,30-34,2,18,Surya,Amritha,,385M-6A1GA,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:21:48.00,1
+W,30-34,3,16,Rudebusch,Jane,A,385K-6TDKH,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,53:04.00,1
+W,30-34,3,16,Wood,Alexandra,G,385X-6GJW3,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:23:20.00,1
+W,30-34,3,16,McCarthy,Alexandra,B,3853-096R0,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:36:33.00,1
+W,30-34,4,14,Phelps,McKenzie,,385F-12WRE,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:03:24.00,1
+W,30-34,4,14,Azaret,Lydia,A,3855-FBD8G,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,29:50.00,1
+W,30-34,5,12,SALLOMI,LILLY,,385M-VZXGG,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:21:42.00,1
+W,30-34,15,0,SALLOMI,LILLY,,385M-VZXGG,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,47:08.00,1
+W,30-34,5,12,DEROUSSEAU,KARISSA,,3850-07MUZ,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,47:59.00,1
+W,30-34,6,10,NIEMIRA,REBECCA,W,3851-0B482,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,28:01.00,1
+W,30-34,6,10,SBOROV,ALEXANDRA,E,385G-VHXCJ,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,51:10.00,1
+W,30-34,7,8,Straus,Allison,,3853-F3HTN,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,29:43.00,1
+W,30-34,9,4,FINNIGAN,FRANCHESCA,J,3850-07GKZ,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,32:49.00,1
+W,30-34,10,2,FINNIGAN,FRANCHESCA,J,3850-07GKZ,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:05:32.00,1
+W,30-34,8,6,LEATHER,JENNIFER,M,385V-07G1S,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,56:20.00,1
+W,30-34,10,2,MACPHERSON,ROSHENA,,3856-99MG7,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,32:52.00,1
+W,35-39,1,22,McBride,Beth,,385E-4YVNP,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,28:02.00,1
+W,35-39,1,22,McBride,Beth,,385E-4YVNP,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,48:59.00,1
+W,35-39,1,22,LI,JING,,385J-J1NG6,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,26:21.00,1
+W,35-39,2,18,LI,JING,,385J-J1NG6,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,51:46.00,1
+W,35-39,2,18,THOMAS,ALEXANDRA,,385C-07PCW,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,27:00.00,1
+W,35-39,2,18,THOMAS,ALEXANDRA,,385C-07PCW,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,29:12.00,1
+W,35-39,3,16,JACKSON,MARIN,,3856-0BAS1,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,58:02.00,1
+W,35-39,3,16,JACKSON,MARIN,,3856-0BAS1,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,28:57.00,1
+W,35-39,2,18,REILLY,EMILY,E,385G-08FEK,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,49:21.00,1
+W,35-39,4,14,REILLY,EMILY,E,385G-08FEK,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,30:38.00,1
+W,35-39,3,16,Woodworth,Kathryn,E,385Z-VTDRK,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,1:16:30.00,1
+W,35-39,4,14,Woodworth,Kathryn,E,385Z-VTDRK,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,54:26.00,1
+W,35-39,1,22,GRAEVEN,RAINEY,H,3855-06ECC,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,51:29.00,1
+W,35-39,5,12,GETTEL,KALEENA,,3856-09NXW,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:01:44.00,1
+W,35-39,7,8,GETTEL,KALEENA,,3856-09NXW,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,31:59.00,1
+W,35-39,3,16,Wyman,Alexa,K,385X-A5CDA,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,52:13.00,1
+W,35-39,4,14,BADDORF,ALICIA,K,385F-2TJRF,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,59:24.00,1
+W,35-39,5,12,Sudame,Meeti,S,385E-SYTSR,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:01:57.00,1
+W,35-39,5,12,HORN,ANNIE,,385W-0ADUN,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,30:49.00,1
+W,35-39,6,10,SLATTERY,CLAIRE,E,385M-VMHCX,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,31:01.00,1
+W,35-39,6,10,KATSIN,HILLARY,H,385C-NYAWV,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:33:58.00,1
+W,35-39,8,6,CASSILAGIO,MICHELLE,J,385V-HNUF9,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,32:45.00,1
+W,35-39,9,4,PHONG,RACHEL,Y,3852-TN5US,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,33:06.00,1
+W,35-39,10,2,TRIKANNAD,NAMITA,,385X-0AHA0,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,43:52.00,1
+W,40-44,1,22,RUEDA,MARCELA,,385W-03YSX,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,28:37.00,1
+W,40-44,2,18,RUEDA,MARCELA,,385W-03YSX,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,49:03.00,1
+W,40-44,3,16,RUEDA,MARCELA,,385W-03YSX,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:21:33.00,1
+W,40-44,5,12,RUEDA,MARCELA,,385W-03YSX,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,56:19.00,1
+W,40-44,5,12,RUEDA,MARCELA,,385W-03YSX,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,28:41.00,1
+W,40-44,1,22,HARDIN,MEGHAN,S,385M-092HZ,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,46:41.00,1
+W,40-44,1,22,HARDIN,MEGHAN,S,385M-092HZ,Lake Del Valle,Lake Del Valle 10K,2025-06-14,2:58:07.00,1
+W,40-44,2,18,HARDIN,MEGHAN,S,385M-092HZ,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,24:09.00,1
+W,40-44,3,16,MOORE,STEPHANIE,S,385S-0490X,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,48:40.00,1
+W,40-44,3,16,MOORE,STEPHANIE,S,385S-0490X,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,24:26.00,1
+W,40-44,3,16,LYTVYNOVA,IULIIA,,385T-WU17R,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,54:48.00,1
+W,40-44,7,8,LYTVYNOVA,IULIIA,,385T-WU17R,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:06:19.00,1
+W,40-44,1,22,Herson,Julie,,3856-JD576,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,42:30.00,1
+W,40-44,1,22,MAREK,GINA,M,385E-03X3B,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,23:56.00,1
+W,40-44,1,22,West,Meredith,A,3854-03PVE,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:45:35.00,1
+W,40-44,4,14,CARNEY,MONICA,M,385P-03TGF,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:02:39.00,1
+W,40-44,8,6,CARNEY,MONICA,M,385P-03TGF,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,36:23.00,1
+W,40-44,2,18,HARDY,SARA,D,3853-7APE2,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,48:00.00,1
+W,40-44,2,18,Pock,Keri,M,385M-03T45,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,32:20.00,1
+W,40-44,2,18,Weldon-Linne,Leksi,,385B-6PGZD,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:21:15.00,1
+W,40-44,2,18,Smith,Bernadette,D,385B-49RYA,Lake Del Valle,Lake Del Valle 5K,2025-06-14,2:30:38.00,1
+W,40-44,3,16,White,Lisa,A,385D-03U9K,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,40:43.00,1
+W,40-44,4,14,GEREN,JACQUELYN,,385B-05PYW,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,27:50.00,1
+W,40-44,4,14,Mcclurg,Chris,A,385T-8K9BE,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,43:18.00,1
+W,40-44,4,14,SCHIANO,CHELSEA,,385G-E9TJF,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,52:27.00,1
+W,40-44,6,10,MCKEANY,ALLISON,M,3854-T7FFS,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,30:50.00,1
+W,40-44,6,10,Curley O'Brien,Molly,J,385N-03VHF,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,59:53.00,1
+W,40-44,7,8,SPRINGER,KIMBERLY,,385X-PEVU5,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,32:40.00,1
+W,40-44,9,4,ABBOTT,BRIDGET,,385V-0A1AM,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:17:50.00,1
+W,40-44,9,4,ABBOTT,BRIDGET,,385V-0A1AM,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,36:49.00,1
+W,40-44,8,6,BRINKLEY,CATHERINE,,385R-0BATC,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:14:58.00,1
+W,40-44,10,2,BROUWER,SUSANNAH,,385Z-22MNX,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,38:02.00,1
+W,45-49,1,22,METZGER,SARABETH,E,385F-002DY,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,23:56.00,1
+W,45-49,1,22,METZGER,SARABETH,E,385F-002DY,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,40:16.00,1
+W,45-49,2,18,METZGER,SARABETH,E,385F-002DY,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,44:34.00,1
+W,45-49,2,18,METZGER,SARABETH,E,385F-002DY,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,22:09.00,1
+W,45-49,2,18,METZGER,SARABETH,E,385F-002DY,Lake Del Valle,Lake Del Valle 10K,2025-06-14,2:44:10.00,1
+W,45-49,1,22,SMITH,CARRIE,L,385N-03PVX,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:31:25.00,1
+W,45-49,2,18,SMITH,CARRIE,L,385N-03PVX,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,26:41.00,1
+W,45-49,2,18,SMITH,CARRIE,L,385N-03PVX,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,46:32.00,1
+W,45-49,4,14,SMITH,CARRIE,L,385N-03PVX,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,26:02.00,1
+W,45-49,5,12,SMITH,CARRIE,L,385N-03PVX,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,52:03.00,1
+W,45-49,1,22,GEORGE,HEIDI,S,385R-03KD2,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,40:07.00,1
+W,45-49,1,22,GEORGE,HEIDI,S,385R-03KD2,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,20:10.00,1
+W,45-49,3,16,GROSKOPF,SARAH,L,385P-03KAH,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,28:56.00,1
+W,45-49,3,16,GROSKOPF,SARAH,L,385P-03KAH,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,49:20.00,1
+W,45-49,7,8,GROSKOPF,SARAH,L,385P-03KAH,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,57:56.00,1
+W,45-49,3,16,HAHNEL,CARRIE,,385X-GXNY5,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,49:19.00,1
+W,45-49,3,16,HAHNEL,CARRIE,,385X-GXNY5,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,24:10.00,1
+W,45-49,1,22,Profumo,Tesla,E,385M-068K7,Lake Del Valle,Lake Del Valle 10K,2025-06-14,2:37:53.00,1
+W,45-49,2,18,Scott,Emily,,385A-05SC6,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:56:06.00,1
+W,45-49,3,16,Sharpe,Elizabeth,M,385F-0B4U3,Lake Del Valle,Lake Del Valle 10K,2025-06-14,2:48:07.00,1
+W,45-49,3,16,CUMMING,MARGARET,E,385D-07E5Y,Lake Del Valle,Lake Del Valle 5K,2025-06-14,2:11:39.00,1
+W,45-49,11,0,CUMMING,MARGARET,E,385D-07E5Y,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:17:23.00,1
+W,45-49,4,14,Walitt,Jessica,I,3859-03UMV,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,55:59.00,1
+W,45-49,4,14,Karell,Claudia,,385S-A938S,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,34:05.00,1
+W,45-49,4,14,Briggs,Stephanie,M,385N-0A8JV,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:08:09.00,1
+W,45-49,4,14,Stankov-Hodge,Marina,J,3857-J73C8,Lake Del Valle,Lake Del Valle 5K,2025-06-14,2:14:47.00,1
+W,45-49,12,0,Stankov-Hodge,Marina,J,3857-J73C8,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,37:30.00,1
+W,45-49,7,8,KEOUGH,EMILY,J,3856-9389P,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,31:37.00,1
+W,45-49,8,6,KEOUGH,EMILY,J,3856-9389P,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:00:09.00,1
+W,45-49,4,14,DUBY,KRISTIN,A,385R-01N6R,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,51:25.00,1
+W,45-49,5,12,JENSEN-WARNER,BETH,L,3859-03JWU,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,29:33.00,1
+W,45-49,5,12,Jensen,Elizabeth,,385K-09V7E,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:00:48.00,1
+W,45-49,11,0,Jensen,Elizabeth,,385K-09V7E,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,35:08.00,1
+W,45-49,5,12,ISENHOWER,SHANNON,,385X-6HJMW,Lake Del Valle,Lake Del Valle 5K,2025-06-14,2:15:59.00,1
+W,45-49,12,0,ISENHOWER,SHANNON,,385X-6HJMW,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:17:29.00,1
+W,45-49,5,12,Gabe,Christina,J,3852-6PNCC,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,40:04.00,1
+W,45-49,6,10,TOPPING,CATHERINE,,385W-Y2NSS,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,30:54.00,1
+W,45-49,6,10,DAVIS,TAYLOR,H,3852-739B3,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,57:27.00,1
+W,45-49,8,6,KUNZ,KATHERINE,M,385J-03ZKG,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,31:46.00,1
+W,45-49,9,4,Holsinger,Karina,,3856-FRETD,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,34:31.00,1
+W,45-49,9,4,CHRISTOPHER,ELIZABETH,I,385S-03FF6,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:01:19.00,1
+W,45-49,10,2,Gentles Ellison,Melanie,H,385W-071K6,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,35:00.00,1
+W,45-49,10,2,SWEDLOW,KARA,,385Z-TRJMZ,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:08:08.00,1
+W,50-54,2,18,WENDELL,JENNIFER,B,385E-09AJ2,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,29:49.00,1
+W,50-54,3,16,WENDELL,JENNIFER,B,385E-09AJ2,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,57:55.00,1
+W,50-54,1,22,EISNER,SARAH,L,3856-03M0T,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,28:53.00,1
+W,50-54,5,12,EISNER,SARAH,L,3856-03M0T,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,58:51.00,1
+W,50-54,2,18,MARTIN,NIKKI,,3853-093VS,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,57:21.00,1
+W,50-54,4,14,MARTIN,NIKKI,,3853-093VS,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,30:25.00,1
+W,50-54,1,22,GREAVES,MARY,E,3855-03XBW,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,51:05.00,1
+W,50-54,1,22,Edelmann,Friederike,,3852-T7UET,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,48:52.00,1
+W,50-54,1,22,Bahr,Hallie,R,385N-05G2W,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,39:17.00,1
+W,50-54,1,22,Pledger,Abby,B,3858-03X25,Lake Del Valle,Lake Del Valle 10K,2025-06-14,2:56:03.00,1
+W,50-54,1,22,Kory,Deborah,L,385R-07ZEV,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:34:07.00,1
+W,50-54,5,12,SINGH,JO,,385W-4PWA1,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,30:51.00,1
+W,50-54,7,8,SINGH,JO,,385W-4PWA1,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:05:26.00,1
+W,50-54,2,18,Croteau,Dominique,,385G-09XTG,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,52:01.00,1
+W,50-54,2,18,Gore,Amita,S,385Y-5ZJJP,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,48:37.00,1
+W,50-54,3,16,Eli,Lisa,D,3853-07XNR,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,52:24.00,1
+W,50-54,3,16,Elkind,Lauren,,385P-5JB2A,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,51:26.00,1
+W,50-54,3,16,DRAKE,CAROLYN,,385B-KXFUN,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,30:25.00,1
+W,50-54,4,14,JOAST,ANGELIKA,,3858-3TNPM,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,58:36.00,1
+W,50-54,6,10,POST,DIAHANNA,L,3857-03XWX,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,32:45.00,1
+W,50-54,6,10,SILVA FARIA SNODGRASS,ISABEL,R,3855-JFHUZ,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:01:36.00,1
+W,50-54,7,8,GILLET,EDITH,,3857-6D3CU,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,34:21.00,1
+W,50-54,8,6,ROPPEL,CORNELIA,,385F-XKS78,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,42:26.00,1
+W,50-54,8,6,MAGNANI,MARY,,385J-01YWR,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:06:49.00,1
+W,50-54,9,4,RENTERIA,GABRIELLA,,385U-09FA5,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,44:54.00,1
+W,50-54,9,4,MO,AILEEN,Y,385T-09WJJ,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:09:57.00,1
+W,50-54,10,2,WHITE,ANGELA,,385B-FGYMN,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,47:31.00,1
+W,50-54,10,2,SAMOUR,DIANA,,385W-H0EH2,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:13:22.00,1
+W,55-59,1,22,HERTZER,CYNTHIA,J,3857-CHSWM,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,52:02.00,1
+W,55-59,1,22,HERTZER,CYNTHIA,J,3857-CHSWM,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,26:53.00,1
+W,55-59,1,22,HERTZER,CYNTHIA,J,3857-CHSWM,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,27:11.00,1
+W,55-59,1,22,HERTZER,CYNTHIA,J,3857-CHSWM,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,45:37.00,1
+W,55-59,4,14,HERTZER,CYNTHIA,J,3857-CHSWM,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:09:52.00,1
+W,55-59,2,18,SHU,VICKI,,3850-02YSG,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,27:55.00,1
+W,55-59,2,18,SHU,VICKI,,3850-02YSG,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,28:13.00,1
+W,55-59,2,18,SHU,VICKI,,3850-02YSG,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,47:15.00,1
+W,55-59,3,16,SHU,VICKI,,3850-02YSG,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:36:25.00,1
+W,55-59,5,12,SHU,VICKI,,3850-02YSG,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,57:53.00,1
+W,55-59,1,22,SONDAG,LYNN,S,385J-07P2X,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:32:51.00,1
+W,55-59,2,18,SONDAG,LYNN,S,385J-07P2X,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,52:31.00,1
+W,55-59,3,16,JONES,SARA,,385Z-041EC,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,55:40.00,1
+W,55-59,4,14,JONES,SARA,,385Z-041EC,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,28:34.00,1
+W,55-59,3,16,PERRUCCI,ALISSA,,385G-03GS6,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,28:34.00,1
+W,55-59,4,14,PERRUCCI,ALISSA,,385G-03GS6,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,50:07.00,1
+W,55-59,4,14,DE LA TORRE,YASUKO,,385H-03JJY,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,57:22.00,1
+W,55-59,4,14,DE LA TORRE,YASUKO,,385H-03JJY,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:38:50.00,1
+W,55-59,5,12,ALEXANDER,JANET,,385F-VZY1B,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,33:39.00,1
+W,55-59,5,12,ALEXANDER,JANET,,385F-VZY1B,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,57:18.00,1
+W,55-59,3,16,ASK,JULIE,A,385C-03M9U,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,48:07.00,1
+W,55-59,8,6,ASK,JULIE,A,385C-03M9U,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:04:00.00,1
+W,55-59,5,12,MAROON,ANNE,,385A-BFUH8,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:46:16.00,1
+W,55-59,6,10,MAROON,ANNE,,385A-BFUH8,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:00:19.00,1
+W,55-59,1,22,Bleul-Gohlke,Cornelia,,385Z-03GR5,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:06:58.00,1
+W,55-59,2,18,Brisson,Karen Simontacchi,,385D-03H68,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:33:36.00,1
+W,55-59,2,18,Ferguson,Michelle,R,385A-005NC,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:08:05.00,1
+W,55-59,3,16,Lindstrom,Susie,J,385U-066EE,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:09:09.00,1
+W,55-59,3,16,Salmon,Dori,M,385C-03RVP,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,39:34.00,1
+W,55-59,5,12,Odom,Janell,L,3858-08565,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:22:19.00,1
+W,55-59,6,10,CERUTI,LUCRECIA,M,3850-0854A,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,36:39.00,1
+W,55-59,6,10,Zeng,Wenjiang,,385N-ES41X,Lake Del Valle,Lake Del Valle 5K,2025-06-14,2:07:57.00,1
+W,55-59,7,8,KELLER,SABINA,,3857-0A2VW,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:02:36.00,1
+W,55-59,7,8,OLSEN,SARA,W,385U-UH5CH,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,41:29.00,1
+W,55-59,8,6,HU,QING,,3852-P6YRG,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,1:02:36.00,1
+W,55-59,9,4,JUSON,JUSTINE,,385Y-0B27C,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:04:00.00,1
+W,55-59,10,2,Wallis,Christina,M,385F-0YDK7,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:12:14.00,1
+W,60-64,1,22,ELSBACH,KIMBERLY,D,385V-D0NUT,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,46:00.00,1
+W,60-64,1,22,ELSBACH,KIMBERLY,D,385V-D0NUT,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,23:46.00,1
+W,60-64,1,22,ELSBACH,KIMBERLY,D,385V-D0NUT,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:18:28.00,1
+W,60-64,2,18,ELSBACH,KIMBERLY,D,385V-D0NUT,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,24:49.00,1
+W,60-64,2,18,ELSBACH,KIMBERLY,D,385V-D0NUT,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,40:46.00,1
+W,60-64,1,22,HAZEN,LISA,,385S-03M46,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,24:26.00,1
+W,60-64,1,22,HAZEN,LISA,,385S-03M46,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,40:15.00,1
+W,60-64,2,18,HAZEN,LISA,,385S-03M46,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,24:12.00,1
+W,60-64,2,18,HAZEN,LISA,,385S-03M46,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:18:41.00,1
+W,60-64,3,16,HAZEN,LISA,,385S-03M46,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,46:38.00,1
+W,60-64,3,16,COUCH,STEPHANIE,D,385W-03UKW,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,24:37.00,1
+W,60-64,3,16,COUCH,STEPHANIE,D,385W-03UKW,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:21:10.00,1
+W,60-64,3,16,COUCH,STEPHANIE,D,385W-03UKW,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,24:59.00,1
+W,60-64,3,16,COUCH,STEPHANIE,D,385W-03UKW,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,42:17.00,1
+W,60-64,4,14,COUCH,STEPHANIE,D,385W-03UKW,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,48:25.00,1
+W,60-64,4,14,WARD,LISA,A,385V-006FT,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,25:26.00,1
+W,60-64,4,14,WARD,LISA,A,385V-006FT,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:23:11.00,1
+W,60-64,4,14,WARD,LISA,A,385V-006FT,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,25:07.00,1
+W,60-64,5,12,WARD,LISA,A,385V-006FT,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,49:40.00,1
+W,60-64,5,12,RUSSELL,JANE,E,3858-074TS,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,26:29.00,1
+W,60-64,5,12,RUSSELL,JANE,E,3858-074TS,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,46:12.00,1
+W,60-64,6,10,RUSSELL,JANE,E,3858-074TS,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:30:35.00,1
+W,60-64,7,8,RUSSELL,JANE,E,3858-074TS,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,52:43.00,1
+W,60-64,7,8,RUSSELL,JANE,E,3858-074TS,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,27:12.00,1
+W,60-64,4,14,TIEDEMANN,ELIZABETH,B,385G-03JC8,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,45:32.00,1
+W,60-64,5,12,TIEDEMANN,ELIZABETH,B,385G-03JC8,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,26:49.00,1
+W,60-64,6,10,TIEDEMANN,ELIZABETH,B,385G-03JC8,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,51:38.00,1
+W,60-64,7,8,TIEDEMANN,ELIZABETH,B,385G-03JC8,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,27:15.00,1
+W,60-64,6,10,CARTER,MONICA,A,385X-ZDAUD,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,27:09.00,1
+W,60-64,6,10,CARTER,MONICA,A,385X-ZDAUD,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,26:50.00,1
+W,60-64,6,10,CARTER,MONICA,A,385X-ZDAUD,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,46:22.00,1
+W,60-64,8,6,CARTER,MONICA,A,385X-ZDAUD,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,54:29.00,1
+W,60-64,1,22,MUSSER,ELIZABETH,A,3853-0401V,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:08:25.00,1
+W,60-64,10,2,MUSSER,ELIZABETH,A,3853-0401V,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,30:14.00,1
+W,60-64,11,0,MUSSER,ELIZABETH,A,3853-0401V,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,58:42.00,1
+W,60-64,2,18,QUICK,SARAH,E,3857-094JH,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,46:36.00,1
+W,60-64,5,12,Hight,Ann,M,385F-004J0,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:27:12.00,1
+W,60-64,8,6,CARDOZA,ANN,M,3852-03FGT,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,29:06.00,1
+W,60-64,9,4,CARDOZA,ANN,M,3852-03FGT,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,56:26.00,1
+W,60-64,7,8,Gray,Kara,L,385D-03FC0,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,53:59.00,1
+W,60-64,7,8,Riley,Jayne,E,385C-07ZZP,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:31:48.00,1
+W,60-64,9,4,HASKELL,ROCIO,,385U-V1U52,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,35:59.00,1
+W,60-64,9,4,HASKELL,ROCIO,,385U-V1U52,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:02:21.00,1
+W,60-64,14,0,HASKELL,ROCIO,,385U-V1U52,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,36:57.00,1
+W,60-64,9,4,TAYLOR,CATHERINE,W,385F-081Y6,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,29:12.00,1
+W,60-64,10,2,TAYLOR,CATHERINE,W,385F-081Y6,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,58:33.00,1
+W,60-64,8,6,Boone,Danielle,,385G-06S8H,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,28:22.00,1
+W,60-64,8,6,ADLER,FELICIA,M,385A-03F4N,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:01:00.00,1
+W,60-64,14,0,ADLER,FELICIA,M,385A-03F4N,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:14:33.00,1
+W,60-64,8,6,Lewis,Laurie,J,385X-03YD1,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:44:00.00,1
+W,60-64,10,2,Focha,Teresa,M,3857-03NDN,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,38:29.00,1
+W,60-64,10,2,Focha,Teresa,M,3857-03NDN,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:07:06.00,1
+W,60-64,11,0,Focha,Teresa,M,3857-03NDN,Lake Del Valle,Lake Del Valle 5K,2025-06-14,2:19:15.00,1
+W,60-64,9,4,Tyler,Christine,A,385C-09CSP,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:51:07.00,1
+W,60-64,10,2,PHALEN,JENNIFER,,385E-JENNY,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:54:26.00,1
+W,60-64,12,0,PHALEN,JENNIFER,,385E-JENNY,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:01:10.00,1
+W,60-64,12,0,PHALEN,JENNIFER,,385E-JENNY,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,30:42.00,1
+W,65-69,1,22,WALTS,MERRIE,E,385F-00CPW,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,51:21.00,1
+W,65-69,1,22,WALTS,MERRIE,E,385F-00CPW,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,26:11.00,1
+W,65-69,1,22,WALTS,MERRIE,E,385F-00CPW,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:30:28.00,1
+W,65-69,1,22,WALTS,MERRIE,E,385F-00CPW,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,26:44.00,1
+W,65-69,1,22,WALTS,MERRIE,E,385F-00CPW,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,46:46.00,1
+W,65-69,3,16,Hickel,Jessie,J,385Z-03FVA,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,31:23.00,1
+W,65-69,4,14,Hickel,Jessie,J,385Z-03FVA,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:01:21.00,1
+W,65-69,4,14,LOFLIN,CAROL,A,385T-03UZU,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,35:55.00,1
+W,65-69,4,14,LOFLIN,CAROL,A,385T-03UZU,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:00:11.00,1
+W,65-69,5,12,MEIS,JULIE,A,385S-004V9,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,38:43.00,1
+W,65-69,7,8,MEIS,JULIE,A,385S-004V9,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:11:54.00,1
+W,65-69,6,10,GRIEST,KELLEY,L,385W-07VEV,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,41:51.00,1
+W,65-69,6,10,GRIEST,KELLEY,L,385W-07VEV,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:17:02.00,1
+W,65-69,2,18,DAVIS,CATHERINE,,3853-03F0W,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,58:55.00,1
+W,65-69,2,18,Fox,Linda,J,385S-03K0N,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,52:32.00,1
+W,65-69,2,18,Schaefer,Vicki,J,385X-03KCB,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,43:14.00,1
+W,65-69,2,18,MEYER,MARGUERITE,,385C-03FG4,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,26:33.00,1
+W,65-69,3,16,BRACKEN,JUDY,,385J-03FUP,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:00:50.00,1
+W,65-69,3,16,Jaffer,Johanna,,3856-03NWJ,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,54:34.00,1
+W,65-69,5,12,Hardin,Cheryl,A,3850-05SVD,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:03:49.00,1
+W,65-69,5,12,JAY,JULIE,M,3859-K9JSA,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:08:41.00,1
+W,65-69,6,10,BASILE,KATY,,3850-03G4V,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:10:13.00,1
+W,65-69,7,8,FASSBINDER,MARY,,3851-WRHM2,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,49:47.00,1
+W,65-69,8,6,SHEPHERD,LYNN,,385A-03J4M,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:13:35.00,1
+W,65-69,9,4,BERGMANN,SUSAN,M,3859-03G8S,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:16:49.00,1
+W,70-74,1,22,QUINN,PHYLLIS,E,3850-03F7Y,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:46:53.00,1
+W,70-74,1,22,QUINN,PHYLLIS,E,3850-03F7Y,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,30:39.00,1
+W,70-74,1,22,QUINN,PHYLLIS,E,3850-03F7Y,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,54:35.00,1
+W,70-74,2,18,QUINN,PHYLLIS,E,3850-03F7Y,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,59:50.00,1
+W,70-74,3,16,QUINN,PHYLLIS,E,3850-03F7Y,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,32:11.00,1
+W,70-74,1,22,VAL,LAURA,B,385R-03H9F,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,48:20.00,1
+W,70-74,1,22,VAL,LAURA,B,385R-03H9F,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,24:41.00,1
+W,70-74,3,16,BANKS,PATRICIA,A,385J-03MGT,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,45:32.00,1
+W,70-74,5,12,BANKS,PATRICIA,A,385J-03MGT,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,43:14.00,1
+W,70-74,2,18,DEROUSSEAU,HANNAH,A,385R-0667B,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,30:50.00,1
+W,70-74,2,18,Doherty,Martha,F,385E-03K8V,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,43:19.00,1
+W,70-74,3,16,BAILEY,LEE ANN,,385K-03GEU,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:18:58.00,1
+W,70-74,4,14,HART,ROBIN,D,385N-03SKK,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:44:47.00,1
+W,70-74,4,14,HARMS,KILDINE,,385W-03GG1,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,42:24.00,1
+W,75-79,1,22,CAMPBELL,DIANE,P,3857-03JTN,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,39:36.00,1
+W,75-79,3,16,CAMPBELL,DIANE,P,3857-03JTN,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,39:30.00,1
+W,75-79,3,16,CAMPBELL,DIANE,P,3857-03JTN,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:07:25.00,1
+W,75-79,1,22,DUTRO,CYNTHIA,L,385T-03G5A,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:17:20.00,1
+W,75-79,2,18,DUTRO,CYNTHIA,L,385T-03G5A,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,39:55.00,1
+W,75-79,1,22,GUTHRIE,SALLY,K,385T-028TM,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,55:14.00,1
+W,75-79,3,16,GUTHRIE,SALLY,K,385T-028TM,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,51:05.00,1
+W,75-79,2,18,Scott,Stephanie,I,3858-03K0Y,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,36:32.00,1
+W,75-79,2,18,Scott,Stephanie,I,3858-03K0Y,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:04:15.00,1
+W,75-79,1,22,Lee,Jane,V,385F-03FG7,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,34:50.00,1
+W,80-84,1,22,CANTINI-NORKIN,MARY,,385M-03JBK,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,1:13:46.00,1
+W,80-84,1,22,CANTINI-NORKIN,MARY,,385M-03JBK,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,1:11:17.00,1
+M,18-24,1,22,Caplan,Samuel,A,385U-WBZ0K,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,22:03.00,1
+M,18-24,2,18,LAPACHET,AIDAN,J,385G-N8ZNP,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,22:46.00,1
+M,18-24,3,16,CASAES,MARCUS,J,3857-7EMM2,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,29:15.00,1
+M,18-24,4,14,PACOE,DOMINIC,J,3852-4MS64,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,29:26.00,1
+M,25-29,1,22,WAKELAND,CLARK,,385S-T9EJ8,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,20:20.00,1
+M,25-29,2,18,WAKELAND,CLARK,,385S-T9EJ8,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,40:51.00,1
+M,25-29,1,22,RANSFORD,PATRICK,J,385N-GTS7Z,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,39:30.00,1
+M,25-29,2,18,RANSFORD,PATRICK,J,385N-GTS7Z,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,20:28.00,1
+M,25-29,3,16,ROBERTS,WILL,,385N-G2T68,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,42:21.00,1
+M,25-29,3,16,ROBERTS,WILL,,385N-G2T68,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,21:41.00,1
+M,25-29,4,14,ANDREW,MARK,W,385H-8N4WX,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,46:16.00,1
+M,25-29,5,12,ANDREW,MARK,W,385H-8N4WX,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,24:01.00,1
+M,25-29,4,14,JACOBSEN,CARTER,O,385V-3D6RV,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,22:20.00,1
+M,25-29,5,12,JACOBSEN,CARTER,O,385V-3D6RV,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,46:27.00,1
+M,25-29,1,22,Staka,Christopher,,3851-YK94P,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,45:49.00,1
+M,25-29,1,22,Torre,Daniel,J,3858-A9XYX,Lake Del Valle,Lake Del Valle 10K,2025-06-14,2:43:58.00,1
+M,25-29,1,22,Jerome,Bradley,,3852-8CT02,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:12:52.00,1
+M,25-29,2,18,Aubin,Christopher,,3853-976J1,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:15:15.00,1
+M,25-29,6,10,Schmiegel,Daniel,E,385G-HK23Y,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,24:07.00,1
+M,25-29,7,8,Schmiegel,Daniel,E,385G-HK23Y,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,47:21.00,1
+M,25-29,2,18,Francoeur,Antoine,,385F-GWGMK,Lake Del Valle,Lake Del Valle 10K,2025-06-14,2:48:48.00,1
+M,25-29,3,16,Olson,Blake,R,385N-PMY6Z,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:22:59.00,1
+M,25-29,8,6,BOROWSKY,ALEXANDER,T,3855-09M4J,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,25:40.00,1
+M,25-29,9,4,BOROWSKY,ALEXANDER,T,3855-09M4J,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,49:43.00,1
+M,25-29,6,10,MAIER,HENRY,,385P-FCJ10,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,46:48.00,1
+M,25-29,7,8,KOS,SEAN,,385H-3SEKN,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,24:59.00,1
+M,25-29,8,6,GARCIA,ERIK,M,385U-EPZT2,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,47:46.00,1
+M,25-29,9,4,CHAVEZ,LIAM,M,385N-6TU8S,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,27:25.00,1
+M,25-29,10,2,CHEN,ANDY,,3853-KNT3P,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:04:51.00,1
+M,25-29,10,2,EDIGER,TRAVIS,L,385M-0BB2S,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,27:44.00,1
+M,30-34,1,22,BERNSTEIN,JOBY,,385A-09DD7,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,40:10.00,1
+M,30-34,1,22,BERNSTEIN,JOBY,,385A-09DD7,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,20:13.00,1
+M,30-34,1,22,BERNSTEIN,JOBY,,385A-09DD7,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,21:14.00,1
+M,30-34,1,22,BERNSTEIN,JOBY,,385A-09DD7,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,35:09.00,1
+M,30-34,1,22,GOARD,ANDREW,M,385S-0B5B3,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:05:28.00,1
+M,30-34,5,12,GOARD,ANDREW,M,385S-0B5B3,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,48:06.00,1
+M,30-34,5,12,GOARD,ANDREW,M,385S-0B5B3,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,24:08.00,1
+M,30-34,1,22,Korman,Matthew,D,385A-0AYN0,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:16:43.00,1
+M,30-34,2,18,Korman,Matthew,D,385A-0AYN0,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,44:32.00,1
+M,30-34,3,16,MALONE,REED,H,385U-DCWHN,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,46:20.00,1
+M,30-34,3,16,MALONE,REED,H,385U-DCWHN,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,23:15.00,1
+M,30-34,4,14,CLEAVENGER,DILLON,C,385E-071YN,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,47:57.00,1
+M,30-34,4,14,CLEAVENGER,DILLON,C,385E-071YN,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,23:49.00,1
+M,30-34,5,12,BAUTISTA,JAIR,,3858-TWM70,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:37:10.00,1
+M,30-34,7,8,BAUTISTA,JAIR,,3858-TWM70,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,28:11.00,1
+M,30-34,8,6,BAUTISTA,JAIR,,3858-TWM70,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,56:42.00,1
+M,30-34,6,10,CULICK,ADAM,,385U-TSKB7,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,55:23.00,1
+M,30-34,6,10,CULICK,ADAM,,385U-TSKB7,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,28:01.00,1
+M,30-34,2,18,COSGAREA,ANDREW,D,385J-0AYE4,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,20:53.00,1
+M,30-34,2,18,Summers,Alex,,385U-WDWMC,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,27:05.00,1
+M,30-34,2,18,Kos,Ian,,385D-P4C36,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:12:28.00,1
+M,30-34,2,18,MacDonald,Patrick,O,385Z-B7811,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:23:33.00,1
+M,30-34,3,16,Kreher,Kevin,,385N-CGT2M,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:29:44.00,1
+M,30-34,3,16,Smith,Sam,L,3855-MEEZ3,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:16:31.00,1
+M,30-34,3,16,Goyal,Pulak,,385K-MM1NX,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,37:37.00,1
+M,30-34,4,14,Barta,Paul,J,385V-0AHW5,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:32:17.00,1
+M,30-34,7,8,SHAFFER,LUKE,B,385U-K0GEG,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,55:55.00,1
+M,30-34,8,6,GU,YUE SHEN,,385F-A8APZ,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,30:10.00,1
+M,30-34,9,4,HUANG,COREY,,385Z-46GGZ,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:03:10.00,1
+M,35-39,1,22,CALHOUN,JACK,,3856-06Y9W,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:13:08.00,1
+M,35-39,2,18,CALHOUN,JACK,,3856-06Y9W,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,41:58.00,1
+M,35-39,2,18,CALHOUN,JACK,,3856-06Y9W,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,20:38.00,1
+M,35-39,2,18,CALHOUN,JACK,,3856-06Y9W,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,21:23.00,1
+M,35-39,2,18,CALHOUN,JACK,,3856-06Y9W,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,35:39.00,1
+M,35-39,1,22,LA TOURETTE,CHAD,E,385S-09H5H,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,38:53.00,1
+M,35-39,1,22,LA TOURETTE,CHAD,E,385S-09H5H,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,20:05.00,1
+M,35-39,1,22,LA TOURETTE,CHAD,E,385S-09H5H,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,20:16.00,1
+M,35-39,1,22,LA TOURETTE,CHAD,E,385S-09H5H,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,33:56.00,1
+M,35-39,3,16,SCHMIDT,BRIAN,J,3857-MZXJV,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:17:17.00,1
+M,35-39,5,12,SCHMIDT,BRIAN,J,3857-MZXJV,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,22:55.00,1
+M,35-39,6,10,SCHMIDT,BRIAN,J,3857-MZXJV,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,45:11.00,1
+M,35-39,3,16,GUTTMANN,MARCUS,,385G-0B3WE,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,43:05.00,1
+M,35-39,3,16,GUTTMANN,MARCUS,,385G-0B3WE,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,21:01.00,1
+M,35-39,3,16,Savulich,Bobby,,3855-JSXSV,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,40:02.00,1
+M,35-39,4,14,Savulich,Bobby,,3855-JSXSV,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,23:49.00,1
+M,35-39,4,14,ROGERS,CHASEN,J,385P-ASH25,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,44:37.00,1
+M,35-39,5,12,ROGERS,CHASEN,J,385P-ASH25,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,25:19.00,1
+M,35-39,9,4,ROGERS,CHASEN,J,385P-ASH25,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,26:30.00,1
+M,35-39,12,0,ROGERS,CHASEN,J,385P-ASH25,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,50:00.00,1
+M,35-39,4,14,WALL,DANIEL,D,385H-G7BDN,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,44:22.00,1
+M,35-39,4,14,WALL,DANIEL,D,385H-G7BDN,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,22:07.00,1
+M,35-39,1,22,Wang,Andrew,L,385M-086HA,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:07:19.00,1
+M,35-39,2,18,Christensen,Jon,,385Y-08BTJ,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:14:14.00,1
+M,35-39,7,8,BORCHARD,ADAM,C,385Y-0AD8J,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,45:39.00,1
+M,35-39,7,8,BORCHARD,ADAM,C,385Y-0AD8J,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,23:21.00,1
+M,35-39,6,10,PIIRAINEN,JOHN,T,3858-6CGMN,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,22:58.00,1
+M,35-39,8,6,PIIRAINEN,JOHN,T,3858-6CGMN,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,45:47.00,1
+M,35-39,3,16,Newell,Rob,H,3850-09H84,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,22:54.00,1
+M,35-39,5,12,Zachan,Matthew,T,385S-4G58K,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,44:37.00,1
+M,35-39,6,10,Ortiz,Enrique,,3857-0AK47,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,28:04.00,1
+M,35-39,8,6,TAYLOR,RUSSELL,P,3854-09RRH,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,24:09.00,1
+M,35-39,10,2,TAYLOR,RUSSELL,P,3854-09RRH,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,47:45.00,1
+M,35-39,9,4,FERGUSON,CHRISTOPHER,P,385W-0AYJY,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,45:47.00,1
+M,35-39,10,2,PORTER,MICHAEL,A,3853-07YU8,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,28:50.00,1
+M,35-39,13,0,PORTER,MICHAEL,A,3853-07YU8,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,56:02.00,1
+M,40-44,1,22,SONG,JIMMY,,385A-09EU2,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,28:26.00,1
+M,40-44,2,18,SONG,JIMMY,,385A-09EU2,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,48:49.00,1
+M,40-44,3,16,SONG,JIMMY,,385A-09EU2,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,28:20.00,1
+M,40-44,7,8,SONG,JIMMY,,385A-09EU2,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,55:06.00,1
+M,40-44,1,22,Law,David,,385R-09UK6,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,47:34.00,1
+M,40-44,2,18,Law,David,,385R-09UK6,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,28:32.00,1
+M,40-44,1,22,KEMP,NIKKOLAS,E,3857-06DZ0,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,23:51.00,1
+M,40-44,4,14,KEMP,NIKKOLAS,E,3857-06DZ0,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,50:28.00,1
+M,40-44,2,18,Smarkel,Augie,D,3857-09Y6C,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,25:43.00,1
+M,40-44,3,16,Smarkel,Augie,D,3857-09Y6C,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,49:52.00,1
+M,40-44,3,16,Alexander,James,R,3856-J8X2R,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,30:27.00,1
+M,40-44,3,16,Alexander,James,R,3856-J8X2R,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,53:39.00,1
+M,40-44,1,22,PAYNE,KYLE,S,385Z-04ZBD,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,47:38.00,1
+M,40-44,1,22,Rinehart,Billy,E,385M-H0M2R,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:22:36.00,1
+M,40-44,2,18,JOHNSON,LUKE,B,385P-06SPS,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,47:55.00,1
+M,40-44,4,14,Dumont,Joseph,,3851-YB148,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,31:46.00,1
+M,40-44,7,8,GETTEL,DOUGLAS,,385D-0AXFE,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,35:19.00,1
+M,40-44,8,6,GETTEL,DOUGLAS,,385D-0AXFE,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:10:02.00,1
+M,40-44,4,14,PONTTI,ANDREW,J,385P-KAXVB,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,32:59.00,1
+M,40-44,5,12,Mukherjee,Subhankar,,3852-SUFKW,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,42:44.00,1
+M,40-44,5,12,SU,FELIX,,385D-TMUUY,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,33:51.00,1
+M,40-44,5,12,KUPER-SMITH,BRADLEY,,385M-09PMG,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,51:07.00,1
+M,40-44,6,10,HERNANDEZ,RAY,,385H-ZZMF5,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,35:12.00,1
+M,40-44,6,10,Cox,Gregory,A,385M-09MZV,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,51:43.00,1
+M,40-44,9,4,ZENOBIA,DANIEL,,3853-NEZMP,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:11:24.00,1
+M,45-49,1,22,Lemke,Zebron,J,385M-03S8A,Lake Del Valle,Lake Del Valle 10K,2025-06-14,2:30:06.00,1
+M,45-49,1,22,Lemke,Zebron,J,385M-03S8A,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,22:05.00,1
+M,45-49,1,22,Lemke,Zebron,J,385M-03S8A,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,37:15.00,1
+M,45-49,1,22,BRENNAN,CURTIS,J,3858-CBREN,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,25:04.00,1
+M,45-49,2,18,BRENNAN,CURTIS,J,3858-CBREN,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:20:56.00,1
+M,45-49,3,16,BRENNAN,CURTIS,J,3858-CBREN,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,46:40.00,1
+M,45-49,2,18,WADA,ELLISON,R,385Z-03H75,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,28:40.00,1
+M,45-49,4,14,WADA,ELLISON,R,385Z-03H75,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:39:38.00,1
+M,45-49,6,10,WADA,ELLISON,R,385Z-03H75,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,57:34.00,1
+M,45-49,1,22,FERGUSON,ANDREW,G,385B-046YU,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:17:17.00,1
+M,45-49,2,18,FERGUSON,ANDREW,G,385B-046YU,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,45:53.00,1
+M,45-49,2,18,Frazier,Michael,,385W-07N77,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,29:04.00,1
+M,45-49,5,12,Frazier,Michael,,385W-07N77,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:42:35.00,1
+M,45-49,2,18,Hancock,Emmit,M,3859-03KDU,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,54:27.00,1
+M,45-49,6,10,Hancock,Emmit,M,3859-03KDU,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:48:07.00,1
+M,45-49,3,16,LUCCHESE,JON,S,3851-05S2M,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,30:06.00,1
+M,45-49,7,8,LUCCHESE,JON,S,3851-05S2M,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,57:41.00,1
+M,45-49,1,22,Kennedy,Charles,,3858-0ASC9,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,43:10.00,1
+M,45-49,2,18,Brown,Matthew,R,3852-0410S,Lake Del Valle,Lake Del Valle 10K,2025-06-14,2:36:49.00,1
+M,45-49,3,16,Kirk,Bryan,D,3852-AH99W,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:28:00.00,1
+M,45-49,3,16,Popko,David,A,385W-0836U,Lake Del Valle,Lake Del Valle 10K,2025-06-14,2:46:51.00,1
+M,45-49,3,16,Mustiazza,Oleg,,385F-06M9Y,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,58:15.00,1
+M,45-49,4,14,DONLON,KEVIN,H,385N-03XSP,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,51:00.00,1
+M,45-49,5,12,BOLZ,BRIAN,,3853-04ZDT,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,53:57.00,1
+M,45-49,7,8,Green,Stephen,,385S-H75F2,Lake Del Valle,Lake Del Valle 5K,2025-06-14,2:38:34.00,1
+M,45-49,8,6,Castano-Aguado,Ignacio,,385X-06BZT,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:05:31.00,1
+M,50-54,1,22,GILLIS,TREVOR,D,385B-03J54,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,40:31.00,1
+M,50-54,1,22,GILLIS,TREVOR,D,385B-03J54,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,20:46.00,1
+M,50-54,1,22,GILLIS,TREVOR,D,385B-03J54,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:09:57.00,1
+M,50-54,1,22,GILLIS,TREVOR,D,385B-03J54,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,21:10.00,1
+M,50-54,1,22,GILLIS,TREVOR,D,385B-03J54,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,35:06.00,1
+M,50-54,2,18,ROSALES-DELMORAL,ROMER,,3858-TDTNE,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,24:58.00,1
+M,50-54,2,18,ROSALES-DELMORAL,ROMER,,3858-TDTNE,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,41:28.00,1
+M,50-54,5,12,ROSALES-DELMORAL,ROMER,,3858-TDTNE,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,23:56.00,1
+M,50-54,6,10,ROSALES-DELMORAL,ROMER,,3858-TDTNE,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,49:49.00,1
+M,50-54,3,16,Wehmann,Todd,,385U-09V9T,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:29:36.00,1
+M,50-54,4,14,Wehmann,Todd,,385U-09V9T,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,44:18.00,1
+M,50-54,9,4,Wehmann,Todd,,385U-09V9T,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,51:49.00,1
+M,50-54,9,4,Wehmann,Todd,,385U-09V9T,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,26:48.00,1
+M,50-54,2,18,WINSOR,BRAD,,385F-03J9D,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,42:04.00,1
+M,50-54,2,18,WINSOR,BRAD,,385F-03J9D,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,20:50.00,1
+M,50-54,3,16,CROWLEY,TERRY,B,385H-065HC,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,43:01.00,1
+M,50-54,7,8,CROWLEY,TERRY,B,385H-065HC,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,25:52.00,1
+M,50-54,8,6,CROWLEY,TERRY,B,385H-065HC,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,51:20.00,1
+M,50-54,3,16,Cousineau,B Paul,,385U-03JAD,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,46:03.00,1
+M,50-54,4,14,Cousineau,B Paul,,385U-03JAD,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,23:50.00,1
+M,50-54,4,14,ATCHISON,DEAN,T,385B-DATCH,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,46:37.00,1
+M,50-54,6,10,ATCHISON,DEAN,T,385B-DATCH,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,24:17.00,1
+M,50-54,5,12,Tucker,Justin,,385K-0AYRC,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,27:09.00,1
+M,50-54,5,12,Tucker,Justin,,385K-0AYRC,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,45:32.00,1
+M,50-54,4,14,Hertzer,Keith,,3854-098B3,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,26:46.00,1
+M,50-54,6,10,Hertzer,Keith,,3854-098B3,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,47:44.00,1
+M,50-54,2,18,Chapman,John,F,3854-05XFZ,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:18:47.00,1
+M,50-54,7,8,LEHNERT,AHREN,E,385H-07TZ7,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,30:06.00,1
+M,50-54,7,8,LEHNERT,AHREN,E,385H-07TZ7,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,51:05.00,1
+M,50-54,12,0,LEHNERT,AHREN,E,385H-07TZ7,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:01:07.00,1
+M,50-54,3,16,JOE,STEPHAN,P,385E-034HH,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,23:41.00,1
+M,50-54,3,16,Grabisch,Marc,,385B-0AY9M,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,25:16.00,1
+M,50-54,7,8,BESOCKE,DANIEL,W,385U-06876,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,49:56.00,1
+M,50-54,8,6,BESOCKE,DANIEL,W,385U-06876,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,26:00.00,1
+M,50-54,5,12,CASAES,RAPHAEL,,385G-09PRR,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,49:12.00,1
+M,50-54,6,10,Thompson,Mike,W,385Y-0ATYC,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,29:02.00,1
+M,50-54,8,6,Prodoehl,Jason,C,3859-03P3C,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,56:23.00,1
+M,50-54,8,6,Johnson,Chad,,385T-TWA72,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,32:28.00,1
+M,50-54,9,4,Hansjeliana,Victor,,385Z-WXXBC,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,35:09.00,1
+M,50-54,10,2,DELMIS,IVO,,385J-1K3NX,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,56:10.00,1
+M,50-54,10,2,DELMIS,IVO,,385J-1K3NX,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,28:28.00,1
+M,55-59,1,22,LEDERMAN,DAVID,,3850-00642,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,23:53.00,1
+M,55-59,2,18,LEDERMAN,DAVID,,3850-00642,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,44:23.00,1
+M,55-59,2,18,LEDERMAN,DAVID,,3850-00642,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,22:00.00,1
+M,55-59,2,18,LEDERMAN,DAVID,,3850-00642,Lake Del Valle,Lake Del Valle 10K,2025-06-14,2:36:29.00,1
+M,55-59,2,18,LEDERMAN,DAVID,,3850-00642,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,39:40.00,1
+M,55-59,2,18,SHOEMAKER,SCOT,D,385R-03MYJ,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,28:06.00,1
+M,55-59,3,16,SHOEMAKER,SCOT,D,385R-03MYJ,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,49:17.00,1
+M,55-59,5,12,SHOEMAKER,SCOT,D,385R-03MYJ,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,56:42.00,1
+M,55-59,8,6,SHOEMAKER,SCOT,D,385R-03MYJ,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,29:00.00,1
+M,55-59,1,22,WELLS,BARTON,S,385B-03WKA,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,40:00.00,1
+M,55-59,1,22,WELLS,BARTON,S,385B-03WKA,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,20:06.00,1
+M,55-59,1,22,Angel,Jorge,I,3853-06M7G,Lake Del Valle,Lake Del Valle 10K,2025-06-14,2:36:19.00,1
+M,55-59,1,22,Angel,Jorge,I,3853-06M7G,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,37:09.00,1
+M,55-59,1,22,LANGNER,MIKAEL,,3851-041F6,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:38:48.00,1
+M,55-59,5,12,LANGNER,MIKAEL,,3851-041F6,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,26:28.00,1
+M,55-59,8,6,LANGNER,MIKAEL,,3851-041F6,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:04:06.00,1
+M,55-59,3,16,KLEBAHN,PERRY,A,385S-03BXP,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,52:35.00,1
+M,55-59,7,8,KLEBAHN,PERRY,A,385S-03BXP,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,27:58.00,1
+M,55-59,2,18,Porter,Ron,D,385X-DX7HU,Lake Del Valle,Lake Del Valle 5K,2025-06-14,2:00:21.00,1
+M,55-59,3,16,Lazaraton,Steve,D,385K-0X38U,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:04:08.00,1
+M,55-59,3,16,SCHMIDT,ALAN,T,385T-02ZGN,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,25:07.00,1
+M,55-59,4,14,KILMARTIN,PHILIP,,3850-06Y8M,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,55:34.00,1
+M,55-59,4,14,Green,Joel,A,3855-03FT5,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,51:27.00,1
+M,55-59,4,14,NEIDHOEFER,CHARLES,,385S-03U1E,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,25:40.00,1
+M,55-59,5,12,Flanagan,Sean,M,385W-041N6,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,51:59.00,1
+M,55-59,6,10,Barros,Alexandre,,385D-0768A,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:01:36.00,1
+M,55-59,6,10,SCHROEDER,DARREN,D,3853-041SH,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,27:33.00,1
+M,55-59,6,10,LOWRY,JASON,D,3856-0AZ8Y,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:00:14.00,1
+M,55-59,7,8,WILLIAMS,KEVIN,,385N-TN026,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:01:09.00,1
+M,55-59,9,4,MARCUS,JONO,,385N-WD4H4,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,29:27.00,1
+M,55-59,9,4,EDWARDS,JEFFREY,D,385S-03KSW,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:09:54.00,1
+M,55-59,10,2,DEVLIN,PATRICK,A,3851-05V1F,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,35:19.00,1
+M,55-59,10,2,OREILLY,DAVID,J,385D-8FV65,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:11:08.00,1
+M,55-59,11,0,OREILLY,DAVID,J,385D-8FV65,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,37:01.00,1
+M,60-64,1,22,BOONE,JON,,3855-05VDE,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,42:52.00,1
+M,60-64,2,18,BOONE,JON,,3855-05VDE,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,25:13.00,1
+M,60-64,3,16,BOONE,JON,,3855-05VDE,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,25:18.00,1
+M,60-64,4,14,BOONE,JON,,3855-05VDE,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,49:56.00,1
+M,60-64,4,14,BOONE,JON,,3855-05VDE,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:27:53.00,1
+M,60-64,2,18,BRANCAMP,DAVID,,385H-03F7M,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,43:52.00,1
+M,60-64,3,16,BRANCAMP,DAVID,,385H-03F7M,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,49:46.00,1
+M,60-64,3,16,BRANCAMP,DAVID,,385H-03F7M,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:26:15.00,1
+M,60-64,3,16,BRANCAMP,DAVID,,385H-03F7M,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,26:16.00,1
+M,60-64,4,14,BRANCAMP,DAVID,,385H-03F7M,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,25:34.00,1
+M,60-64,1,22,RICHARDS,KIRK,,3855-0AYKT,Lake Del Valle,Lake Del Valle 10K,2025-06-14,2:50:37.00,1
+M,60-64,2,18,RICHARDS,KIRK,,3855-0AYKT,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,47:23.00,1
+M,60-64,2,18,RICHARDS,KIRK,,3855-0AYKT,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,23:50.00,1
+M,60-64,1,22,KENNEDY,JEFF,M,385V-096AW,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,46:35.00,1
+M,60-64,1,22,KENNEDY,JEFF,M,385V-096AW,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,23:33.00,1
+M,60-64,3,16,Piatt,Vince,T,385D-06ENC,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,50:20.00,1
+M,60-64,4,14,Piatt,Vince,T,385D-06ENC,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,29:41.00,1
+M,60-64,5,12,Hitchings,Andrew,M,3854-03H4E,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,51:35.00,1
+M,60-64,6,10,Hitchings,Andrew,M,3854-03H4E,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,26:36.00,1
+M,60-64,1,22,Chao,Hector,,385R-03FC4,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,23:53.00,1
+M,60-64,1,22,Arris,Todd,E,385V-03H46,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:19:59.00,1
+M,60-64,2,18,Notaro,Michael,,385G-03ZSP,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:08:10.00,1
+M,60-64,2,18,Nootbaar,Tom,T,385N-03Y7M,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:23:33.00,1
+M,60-64,7,8,YERBY,MICHAEL,J,385S-0615X,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,58:29.00,1
+M,60-64,7,8,YERBY,MICHAEL,J,385S-0615X,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,28:37.00,1
+M,60-64,4,14,Halperin,Ernst,A,385V-03JAC,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:03:41.00,1
+M,60-64,5,12,ALARAB,ALLAN,M,385U-03NCU,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,25:38.00,1
+M,60-64,5,12,Nagel,Roland,J,3859-03FH0,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:33:47.00,1
+M,60-64,5,12,Jackson,Mark,A,385C-9YJ8W,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,37:50.00,1
+M,60-64,6,10,WU,LONG,,385A-03Z6S,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,40:03.00,1
+M,60-64,11,0,WU,LONG,,385A-03Z6S,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,36:32.00,1
+M,60-64,6,10,Keith,Jay,,385C-09XZA,Lake Del Valle,Lake Del Valle 5K,2025-06-14,2:09:36.00,1
+M,60-64,6,10,MONROE,NICHOLAS,G,385V-JP9KE,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,53:58.00,1
+M,60-64,7,8,Ferrero,Joseph,J,385F-03K4R,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,42:05.00,1
+M,60-64,14,0,Ferrero,Joseph,J,385F-03K4R,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,42:13.00,1
+M,60-64,8,6,Inouye,Robert,,385J-03G9P,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,33:31.00,1
+M,60-64,8,6,GRUENDER,PETER,,3855-03R8X,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,59:11.00,1
+M,60-64,9,4,DAILEY,SCOTT,,3851-UP5B9,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,33:50.00,1
+M,60-64,9,4,LYNCH,PATRICE,O,385V-A2ZMY,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:00:20.00,1
+M,60-64,10,2,Snipes,Charles,,385H-0806S,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,35:41.00,1
+M,60-64,10,2,ANDRE,SCOTT,C,385M-03TNR,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:00:35.00,1
+M,65-69,1,22,Tainty,Chris,J,385H-03JCS,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,44:56.00,1
+M,65-69,1,22,Tainty,Chris,J,385H-03JCS,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,23:42.00,1
+M,65-69,1,22,Tainty,Chris,J,385H-03JCS,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:18:24.00,1
+M,65-69,1,22,Tainty,Chris,J,385H-03JCS,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,23:55.00,1
+M,65-69,1,22,Tainty,Chris,J,385H-03JCS,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,40:10.00,1
+M,65-69,3,16,PYRCH,MICHAEL,J,385S-03MJ5,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,28:47.00,1
+M,65-69,3,16,PYRCH,MICHAEL,J,385S-03MJ5,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:45:53.00,1
+M,65-69,4,14,PYRCH,MICHAEL,J,385S-03MJ5,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,30:15.00,1
+M,65-69,4,14,PYRCH,MICHAEL,J,385S-03MJ5,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,52:03.00,1
+M,65-69,6,10,PYRCH,MICHAEL,J,385S-03MJ5,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:00:27.00,1
+M,65-69,2,18,JEHA,JOHN,C,385B-03WSE,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:41:03.00,1
+M,65-69,3,16,JEHA,JOHN,C,385B-03WSE,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,56:19.00,1
+M,65-69,3,16,JEHA,JOHN,C,385B-03WSE,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,28:32.00,1
+M,65-69,4,14,JEHA,JOHN,C,385B-03WSE,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,29:17.00,1
+M,65-69,2,18,FRAZIER,MARK,,385G-075CS,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,46:50.00,1
+M,65-69,2,18,FRAZIER,MARK,,385G-075CS,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,24:37.00,1
+M,65-69,2,18,Justeson,Jeff,A,3854-03F61,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,25:41.00,1
+M,65-69,2,18,Justeson,Jeff,A,3854-03F61,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,42:56.00,1
+M,65-69,1,22,Guedj,Jack,,385H-0AGE1,Lake Del Valle,Lake Del Valle 10K,2025-06-14,3:26:14.00,1
+M,65-69,5,12,Woodruff,David,L,385K-03HFT,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,31:15.00,1
+M,65-69,8,6,Woodruff,David,L,385K-03HFT,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:03:36.00,1
+M,65-69,3,16,Risso,Richard,J,3851-03NN7,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,51:19.00,1
+M,65-69,4,14,HALSTED,LANCE,E,3859-03GEE,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,57:24.00,1
+M,65-69,5,12,Beeman,Chris,,3851-06PUG,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:06:19.00,1
+M,65-69,5,12,Jimenez,Jerry,R,3853-08BFH,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,42:09.00,1
+M,65-69,6,10,FERO,MICHAEL,J,385S-ZURFR,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,34:53.00,1
+M,65-69,10,2,FERO,MICHAEL,J,385S-ZURFR,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:08:44.00,1
+M,65-69,5,12,SCHWARTZ,MARK,,385A-03GDY,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:00:08.00,1
+M,65-69,7,8,HICKEN,STEPHEN,,3856-NWPW7,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,39:23.00,1
+M,65-69,7,8,COOMBS,CRAIG,,385E-03KM5,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:00:51.00,1
+M,65-69,8,6,PISTOR,LEE,,3853-0AYH4,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,45:34.00,1
+M,65-69,9,4,ADAMS,SCOTT,,3857-03FA9,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:06:48.00,1
+M,70-74,1,22,GUADAGNI,PETER,,3858-03GFZ,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,49:45.00,1
+M,70-74,1,22,GUADAGNI,PETER,,3858-03GFZ,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,25:29.00,1
+M,70-74,1,22,GUADAGNI,PETER,,3858-03GFZ,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:23:11.00,1
+M,70-74,1,22,GUADAGNI,PETER,,3858-03GFZ,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,25:03.00,1
+M,70-74,1,22,GUADAGNI,PETER,,3858-03GFZ,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,42:13.00,1
+M,70-74,2,18,CITRON,JEFFREY,,385G-03RPY,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,55:06.00,1
+M,70-74,2,18,CITRON,JEFFREY,,385G-03RPY,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,28:30.00,1
+M,70-74,2,18,CITRON,JEFFREY,,385G-03RPY,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,29:15.00,1
+M,70-74,2,18,CITRON,JEFFREY,,385G-03RPY,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,51:46.00,1
+M,70-74,3,16,SMALL,STEPHEN,A,3851-03GV2,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:02:31.00,1
+M,70-74,3,16,SMALL,STEPHEN,A,3851-03GV2,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,31:20.00,1
+M,70-74,3,16,SMALL,STEPHEN,A,3851-03GV2,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,30:26.00,1
+M,70-74,3,16,SMALL,STEPHEN,A,3851-03GV2,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,52:04.00,1
+M,70-74,2,18,Anderson,Robert,L,385M-05SKS,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:58:35.00,1
+M,70-74,4,14,Anderson,Robert,L,385M-05SKS,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,31:52.00,1
+M,70-74,5,12,Anderson,Robert,L,385M-05SKS,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,58:42.00,1
+M,70-74,4,14,STOCK,PAUL,G,385M-0427G,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:10:30.00,1
+M,70-74,4,14,MCCULLOUGH,JOHN,R,385P-08FFE,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,34:40.00,1
+M,70-74,4,14,Dalton,Michael,J,385H-09BY6,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,55:00.00,1
+M,70-74,5,12,BAUER,DAVID,,385G-03G7N,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:13:23.00,1
+M,70-74,5,12,KOPAKOWSKI,ED,,3856-DZGKE,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,41:24.00,1
+M,70-74,5,12,Kinnier,Thomas,A,385Z-0679N,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,38:20.00,1
+M,70-74,6,10,SCHELEGLE,EDWARD,S,385H-V6DZ8,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:16:53.00,1
+M,75-79,1,22,WILSON,JOEL,R,385P-03EYR,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,48:04.00,1
+M,75-79,1,22,WILSON,JOEL,R,385P-03EYR,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,24:41.00,1
+M,75-79,1,22,WILSON,JOEL,R,385P-03EYR,Lake Del Valle,Lake Del Valle 10K,2025-06-14,2:59:32.00,1
+M,75-79,1,22,WILSON,JOEL,R,385P-03EYR,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,25:58.00,1
+M,75-79,1,22,WILSON,JOEL,R,385P-03EYR,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,43:39.00,1
+M,75-79,2,18,JESTER,MAL,,385T-03GG4,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:07:02.00,1
+M,75-79,2,18,BENJAMIN,DAVID,,3855-03FHD,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,33:35.00,1
+M,75-79,2,18,Stanbridge,Allan,,385G-FTHC0,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,34:44.00,1
+M,75-79,3,16,MCPHERSON,ANDREW,M,385J-03GXT,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,34:52.00,1
+M,75-79,4,14,WYGANT,BILL,E,385D-03KMN,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,47:58.00,1
+M,80-84,1,22,BURNS,RICHARD,,385G-BURNS,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:00:18.00,1
+M,80-84,1,22,BURNS,RICHARD,,385G-BURNS,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,30:59.00,1
+M,80-84,1,22,Williamson,Leonard,M,3850-06J0T,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,41:30.00,1
+M,80-84,1,22,Williamson,Leonard,M,3850-06J0T,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:09:25.00,1
+M,85-89,1,22,LARAMIE,MIKE,,3854-79XB8,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,50:57.00,1
+M,85-89,2,18,LARAMIE,MIKE,,3854-79XB8,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,44:35.00,1
+M,85-89,1,22,Brott,Ralph,,385B-03F57,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,37:40.00,1
+W,25-29,1,22,DECLERCK,HANA,,385T-6P5SN,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,52:18.00,2
+W,25-29,1,22,DECLERCK,HANA,,385T-6P5SN,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:33:07.00,2
+W,30-34,1,22,QUEIROLO,JOVEL,,385A-0A3SB,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,50:53.00,2
+W,35-39,1,22,CHI,YVONNE,,385Y-510DR,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,1:02:52.00,2
+W,35-39,1,22,Virskaia,Maria,,385A-86D8R,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:06:19.00,2
+W,40-44,1,22,Vanjari,Snehal,,385D-UCYUH,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,53:45.00,2
+W,50-54,1,22,Edelmann,Friederike,,3852-T7UET,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,50:09.00,2
+W,50-54,1,22,Forde,Samantha,E,385W-03FGM,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,29:57.00,2
+W,55-59,1,22,KRUIDERING,MARIEKE,,3856-GJ81P,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,35:56.00,2
+W,55-59,2,18,GIRARD,ISABELLE,,385S-6EHA5,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,36:11.00,2
+W,60-64,1,22,Darden,Brenda,,385B-09J7Y,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:50:23.00,2
+W,60-64,1,22,Darden,Brenda,,385B-09J7Y,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,32:09.00,2
+W,60-64,2,18,Darden,Brenda,,385B-09J7Y,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,56:20.00,2
+W,60-64,1,22,Riley,Jayne,E,385C-07ZZP,Lake Berryessa,Lake Berryessa 2 Mile,2025-06-07,50:51.00,2
+W,60-64,1,22,Riley,Jayne,E,385C-07ZZP,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,25:59.00,2
+W,60-64,2,18,MCCORMICK,ANN,L,385B-077ZD,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,37:24.00,2
+W,60-64,3,16,MCCORMICK,ANN,L,385B-077ZD,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,37:00.00,2
+W,60-64,1,22,Bennett,Carol,A,3856-063BR,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,55:46.00,2
+W,60-64,2,18,KOGUT,HOLLY,E,385X-5PTYM,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,32:40.00,2
+W,60-64,2,18,Phillips,Catherine,H,3858-0B12R,Lake Del Valle,Lake Del Valle 5K,2025-06-14,2:10:12.00,2
+W,65-69,1,22,Jansen,Mary-Kaye,,385V-06665,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,32:40.00,2
+W,65-69,1,22,Jansen,Mary-Kaye,,385V-06665,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,54:28.00,2
+W,65-69,2,18,Terndrup,Virginia,M,385G-09NK2,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:05:53.00,2
+W,70-74,1,22,TEETER,DIANA,E,385A-07Z2R,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,36:44.00,2
+M,35-39,1,22,GLUBOKOVSKIKH,STANISLAV,,3858-U2YX3,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,32:02.00,2
+M,35-39,1,22,GLUBOKOVSKIKH,STANISLAV,,3858-U2YX3,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,54:16.00,2
+M,45-49,1,22,Arai,Tatsuya,,385B-5E8XC,Lake Del Valle,Lake Del Valle 5K,2025-06-14,1:33:42.00,2
+M,45-49,1,22,Arai,Tatsuya,,385B-5E8XC,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,26:33.00,2
+M,45-49,1,22,Arai,Tatsuya,,385B-5E8XC,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,46:11.00,2
+M,45-49,1,22,BAGGALEY,BRIAN,,3856-03X8U,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,34:05.00,2
+M,45-49,3,16,BAGGALEY,BRIAN,,3856-03X8U,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,38:13.00,2
+M,45-49,2,18,Martinez,Joe,,3853-NK8GC,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,37:27.00,2
+M,60-64,1,22,ANDERSON,ALLAN,E,385E-03ZD2,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,25:30.00,2
+M,60-64,1,22,ANDERSON,ALLAN,E,385E-03ZD2,Lake Del Valle,Lake Del Valle 1.5K,2025-06-15,26:49.00,2
+M,60-64,1,22,ANDERSON,ALLAN,E,385E-03ZD2,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,45:40.00,2
+M,75-79,1,22,Crockett,Robert,J,385G-0A1FK,Lake Del Valle,Lake Del Valle 2.5K,2025-06-15,1:06:12.00,2
+M,80-84,1,22,PERKINS,DONALD,,385D-05V6H,Lake Berryessa,Lake Berryessa 1 Mile,2025-06-07,35:21.00,2
