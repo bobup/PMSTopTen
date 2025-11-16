@@ -53,12 +53,17 @@ my $UsageString = <<bup
 Usage:  
 	$appProgName year
 			[-tPROPERTYFILE]
+			[-gGenSubDir]
 where:
 	year - the year to process, e.g. 2016.  
 	-tPROPERTYFILE - the FULL PATH NAME of the property.txt file.  The default is 
 		appDirName/Code/properties.txt, where
 		'appDirName' is the directory holding this script, and
 		'properties.txt' is the name of the properties files for this script.
+	-gGenSubDir - if supplied the string 'GenSubDir' will be used as the name of a subdirectory of the 
+		generatedDirName directory (into which all generated files are placed.)  The use of this
+		argument allows one to create a full AGSOTY generation without overwriting a previous one.
+	NOTE; any other arguments are IGNORED with no error
 bup
 ;
 

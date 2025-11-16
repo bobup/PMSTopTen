@@ -1,0 +1,20 @@
+"2026PacMasters:  Points and place for every swimmer who swam an OW event."
+Generated on Fri Nov 14 2025 EST 12:22:23 PM EST
+"(AGSOTY only considers Category 1 swims for points but considers ALL finished swims as a PMS swim.)"
+#
+"NOTE: all data follows the line below beginning with Gender"
+ALSO: comments in this section must NOT contain a comma.
+VERSION: 2
+numSwimsToConsider=5
+Gender,Age Group,Place,Points,Last Name,First Name,Middle,Regnum,Meet Name,Event Name,Event Date,Duration,Category
+F,25-29,1,22,HARRISON,MATTI,J,3859-S1BGB,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-07,22:10.00,1
+F,25-29,2,18,BLANKLEY,STEPHANIE,A,385E-REH1A,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-07,23:18.00,1
+F,25-29,3,16,TUCKER,CARSON,,3856-19T3X,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-07,26:08.00,1
+F,25-29,4,14,CONNELLY,CAROLINE,A,385R-XW5M2,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-07,27:10.00,1
+F,25-29,5,12,MARTIN,SONIA,M,385P-UWDPF,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-07,27:28.00,1
+M,25-29,1,22,WAKELAND,CLARK,,385S-T9EJ8,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-07,20:20.00,1
+M,25-29,2,18,ROBERTS,WILL,,385N-G2T68,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-07,21:41.00,1
+M,25-29,3,16,JACOBSEN,CARTER,O,385V-3D6RV,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-07,22:20.00,1
+M,25-29,4,14,ANDREW,MARK,W,385H-8N4WX,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-07,24:01.00,1
+M,30-34,1,22,BERNSTEIN,JOBY,,385A-09DD7,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-07,20:13.00,1
+M,30-34,2,18,COSGAREA,ANDREW,D,385J-0AYE4,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-07,20:53.00,1

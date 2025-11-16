@@ -116,6 +116,13 @@ my %DuplicateNamesCorrected = ();
 #	$MultiAgeGroups{$swimmerId-combined-place} = place for this swimmer if we combine points for both age groups.
 my %MultiAgeGroups = ();
 
+
+# we'll use this array to record all non-binary swimmers for later logging
+my @nonBinarySwimmers = ();
+sub GetNonBinarySwimmersRef() {
+	return \@nonBinarySwimmers;
+}
+
 sub GetMultiAgeGroupsRef() {
 	return \%MultiAgeGroups;
 }
@@ -607,6 +614,9 @@ sub AddNewEventIfNecessary($$$) {
 	my ($distance, $units, $stroke, $eventName) = @_;
 # handle old case (temp)
 if( !defined $units ) {
+	# I don't think this should ever be exercised but just in case....  (25sep2025)
+	PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::AddNewEventIfNecessary(): Passed an undefined 'units': " .
+		"distance='$distance', stroke='$stroke', eventName='$eventName'", 1 );
 	$eventName = $distance;
 	$units = "xxx";
 	$stroke = $distance;
@@ -615,6 +625,7 @@ if( !defined $units ) {
 	if( !defined $eventName ) {
 		$eventName = "$distance $units $stroke";
 	}
+	$eventName = MySqlEscape( $eventName );		# be careful of characters that confuse sql query
 	my $eventId = 0;
 	my $resultHash;
 	
@@ -667,7 +678,13 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 	my $resultHash;
 	my $ageGroup1 = "";
 	my $ageGroup2 = "";
-	
+
+	# 15nov2025: added the following only to catch mis-match gender and gender 'N', but in the
+	# future we might want to catch mis-match on other data.
+	my($correctedFirstName, $correctedMiddleInitial, 
+		$correctedLastName, $correctedRegNum, $correctedTeam, $correctedDOB, $correctedGender,
+		$resultMissingDataType, $resultErrorNote, $resultErrorRegnum, $rsidnId);
+
 	my $debugLastName = "xxxxx";
 	
 	# make sure the gender is either M or F
@@ -785,10 +802,21 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 		}
 		# Carry on...add this swimmer to our db (even if it's a possible duplicate since we can't
 		# know for sure)
+		
+		# first, look up this swimmer in our RSIDN and correct any data:
+		($correctedFirstName, $correctedMiddleInitial, 
+			$correctedLastName, $correctedRegNum, $correctedTeam, $correctedDOB, $correctedGender,
+			$resultMissingDataType, $resultErrorNote, $resultErrorRegnum, $rsidnId) = 
+				PMS_MySqlSupport::LookUpSwimmerInRSIDN( $firstName, $middleInitial, $lastName, $regNum, 
+					$PMSConstants::INVALID_DOB, $gender, $team, $age, 0 );
+		
+		# we should confirm that returned data matches our passed data and complain/note it if necessary
+		
+		
 		($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
 			"INSERT INTO Swimmer " .
 				"(FirstName,MiddleInitial,LastName,Gender,RegNum,Age1,Age2,AgeGroup1,RegisteredTeamInitials) " .
-				"VALUES (\"$firstName\",\"$middleInitial\",\"$lastName\",\"$gender\",\"$regNum\"," .
+				"VALUES (\"$firstName\",\"$middleInitial\",\"$lastName\",\"$correctedGender\",\"$regNum\"," .
 				"\"$age\",\"$age\",\"$ageGroup\",\"$team\")") ;
 				
 		# get the SwimmerId of the swimmer we just entered into our db
@@ -796,7 +824,7 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
     	die "Can't determine SwimmerId of newly inserted Swimmer" if( !defined( $swimmerId ) );
 	}
 	
-	return $swimmerId;
+	return ($swimmerId, $correctedGender);
 	
 } # end of AddNewSwimmerIfNecessary()
 
@@ -985,7 +1013,7 @@ sub AddNewMeetIfNecessary($$$$$$$$$$) {
 
 
 
-####!!!! Note: the following was copied from GetResults.pl. We need to put this in one place!
+####! Note: the following was copied from GetResults.pl. We need to put this in one place!
 #				$meetTitle = CleanMeetTitle( $meetTitle );
 # CleanMeetTitle - badly named!  clean the passed string, removing HTML escaped strings with their equivalence.
 #
@@ -1335,13 +1363,10 @@ sub AgeGroupsClose($$) {
 #  MySqlEscape( $string )
 # MySqlEscape - escape imbedded quotes in the passed string making the returned
 #	string acceptable as a value in a SQL INSERT statement
+# 25sep2025: modified to just use the PMS_MySqlSupport.pm version.
 sub MySqlEscape( $ ) {
 	my $string = $_[0];
-	$string =~ s/"/\\"/g;
-
-#	$string =~ s/\\/\\/g;   --- what was this supposed to do?  possibly:  s/\\/\\\\/g    ???  If so, 
-###			it must be above the previous substitution.
-
+	$string = PMS_MySqlSupport::MySqlEscape( $string );
 	return $string;
 } # end of MySqlEscape()
 
@@ -2137,6 +2162,71 @@ sub DumpErrorsWithSwimmerNames() {
 } # end of DumpErrorsWithSwimmerNames()
 
 
+# LogNonBinarySwimmers - construct a log string showing all non-binary swimmers who did not get 
+#	"recognition" yet showed up in
+#	at least one result (and perhaps would have earned points).
+#
+# NOTE: This is designed to only work with Combined Age Groups ($GENERATE_COMBINED_AGE_GROUPS == 1 and 
+#	$GENERATE_SPLIT_AGE_GROUPS == 0)
+#
+sub LogNonBinarySwimmers() {
+	my $gender = "N";		# the USMS assigned gender for a non-binary swimmer
+	my $countSwimmers = 0;
+	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
+	my $logLines = "";
+
+	foreach my $ageGroup( @PMSConstants::AGEGROUPS_MASTERS ) {
+		my $query = "SELECT Points.SwimmerId,SUM(Points.TotalPoints) as TotalPoints," .
+			"FirstName,MiddleInitial,LastName,AgeGroup " .
+			"FROM Points JOIN Swimmer " .
+			"WHERE Points.swimmerid = Swimmer.swimmerid " .
+			"AND " .
+				"((Points.AgeGroup='$ageGroup' AND Swimmer.AgeGroup1='$ageGroup' AND Swimmer.AgeGroup2='') " .
+				"OR " .
+				"(Swimmer.AgeGroup2='$ageGroup' AND Points.AgeGroup LIKE '%:$ageGroup')) " .
+			"AND Swimmer.Gender='$gender' " .
+			"GROUP BY Swimmer.SwimmerId,Points.AgeGroup ORDER BY TotalPoints DESC,LastName ASC,RegNum ASC";
+
+		(my $sth, my $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+		while( defined(my $resultHash = $sth->fetchrow_hashref) ) {
+			$countSwimmers++;
+			my $firstName = $resultHash->{'FirstName'};
+			my $middleInitial = $resultHash->{'MiddleInitial'};	
+			my $lastName = $resultHash->{'LastName'};
+			my $swimmerId = $resultHash->{'SwimmerId'};
+			my $totalPoints = $resultHash->{'TotalPoints'};
+			my $ageGroupSelected = $resultHash->{'AgeGroup'};
+			
+			# construct one line per swimmer
+			$logLines .= "\t$firstName $middleInitial $lastName (swimmerId $swimmerId) in the age " .
+			"group $ageGroupSelected would have earned a total of $totalPoints points.\n";
+			
+
+		} # end of while(...
+	}
+	
+	$logLines = "There were $countSwimmers non binary swimmers.\n" . $logLines;
+	push( @nonBinarySwimmers, $logLines );
+
+} # end of LogNonBinarySwimmers()
+
+# DumpNonBinarySwimmers - dump all non-binary swimmers who did not get "recognition" yet showed up in
+#	at least one result (and perhaps would have earned points).
+sub DumpNonBinarySwimmers() {
+	my $logLinesRef = GetNonBinarySwimmersRef();
+
+	PMSLogging::PrintLog( "", "", "** Begin DumpNonBinarySwimmers", 1 );
+
+	PMSLogging::PrintLog( "", "", $logLinesRef->[0], 1 );
+	PMSLogging::PrintLog( "", "", "** End DumpNonBinarySwimmers", 1 );
+
+
+} # end of DumpNonBinarySwimmers()
+
+
+
+
+
 # DumpStatsFor2GroupSwimmers - generate a HTML file giving stats for every swimmer who is in two
 #		different age groups during this season.
 #
@@ -2733,7 +2823,7 @@ sub StorePointsForSwimmer($$$$$$$) {
 #	n/a
 #
 # NOTES:
-# The races data file has lines of the form:
+# The races data file has lines of tab-separated fields of the form:
 #	Rocky Mountain Senior Games Swim Meet	(NOT a PAC sanctioned meet)	PAC	SCY	2016-6-11 - 2016-6-12	20160611SrGameY	http://www.usms.org/comp/meets/meet.php?MeetID=20160611SrGameY
 # or
 #	Sonoma Wine Country Games Swim Meet	(IS a PAC sanctioned meet)	PAC	SCY	2016-6-18	20160618SSG-1Y	http://www.usms.org/comp/meets/meet.php?MeetID=20160618SSG-1Y

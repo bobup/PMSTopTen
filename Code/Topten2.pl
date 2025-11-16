@@ -144,8 +144,16 @@ require TT_USMSDirectory;
 my $RESULT_FILES_TO_READ = $TT_Struct::G_RESULT_FILES_TO_READ;
 $RESULT_FILES_TO_READ = $TT_Struct::G_RESULT_FILES_TO_READ;				# avoid warning message
 
+# override what results we process here (or in TT_Struct.pm)
+#$RESULT_FILES_TO_READ = 0b10000;		# generate OW only
+#$RESULT_FILES_TO_READ = 0b100000;		# process fake results only
+
 my $generateOW 				= ($RESULT_FILES_TO_READ & 0b10000);
 my $generateEPostal			= ($RESULT_FILES_TO_READ & 0b1000000);	# set to non-zero if we are supposed to generate ePostal points, 0 if not.
+my $generateFakeResults		= ($RESULT_FILES_TO_READ & 0b100000);
+
+
+
 
 
 # Do we compute the points for each swimmer using the data in the database, or do we just use
@@ -224,7 +232,9 @@ my $UsageString = <<bup
 Usage:  
 	$appProgName year
 			[-tPROPERTYFILE]
-			[-sSCORING]
+			[-gGenSubDir]
+			[-lLogFile]
+			[-e[+]]
 where:
 	year - the year to process, e.g. 2016.  
 	-tPROPERTYFILE - the FULL PATH NAME of the property.txt file.  The default is 
@@ -436,6 +446,7 @@ PMSLogging::DumpNote( "", "", "Log file created on $generationTimeDate". 1 );
 PMSLogging::DumpNote( "", "", "  ...Year being analyzed: $yearBeingProcessed", 1 );
 PMSLogging::DumpNote( "", "",  "  ...with the app dir name '$appDirName'", 1 );
 PMSLogging::DumpNote( "", "",  "  ...and app root of '$appRootDir'", 1 );
+PMSLogging::DumpNote( "", "",  "  ...and GeneratedFiles directory of '$generatedDirName'", 1 );
 
 # We initialize a structure that is used to track exactly what result files we process.
 # We do this so that our results make it clear some results were not processed if
@@ -803,6 +814,8 @@ if( $GENERATE_FULL_AGSOTY ) {
 		ComputePlaceForAllSwimmers();
 	}
 	
+	# construct a log of all non-binary swimmers:
+	TT_MySqlSupport::LogNonBinarySwimmers();
 	
 	###
 	### initialize National Qualifying Times (if we need them) and then rank our swimmers
@@ -934,6 +947,10 @@ if(0) {
 # getting points they don't deserve (thus taking away points from swimmers who deserve them.)
 TT_MySqlSupport::DumpErrorsWithSwimmerNames();
 
+# 10Nov2025: Log a non-binary (USMS registered with gender = "N") swimmers since we don't, at this point
+# give them any points ("recognition")
+TT_MySqlSupport::DumpNonBinarySwimmers();
+
 # log all the different aliases for swim strokes that we saw
 #PMSUtil::DumpStrokes();
 	
@@ -1040,9 +1057,11 @@ sub PMSProcessResults($$) {
 					} # end debug
 					my ($currentGender, $currentAgeGroup, $currentEventId);
 					$currentGender = $row[0];
-					if( ($currentGender ne "Women") && ($currentGender ne "Men") ) {
+					
+					#if( ($currentGender ne "Women") && ($currentGender ne "Men") ) {
+					if( ! PMSUtil::IsValidGender( $currentGender ) ) {
 						PMSLogging::DumpNote( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: " .
-							"Illegal line IGNORED:\n   $rowAsString" );
+							"Illegal gender ('$currentGender'): line IGNORED:\n   $rowAsString" );
 						next;		# not a result line
 					}
 					$numResultLines++;
@@ -1187,7 +1206,7 @@ sub PMSProcessResults($$) {
 					}
 					
 					# add this swimmer to our DB if necessary
-					my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
+					my ($swimmerId, $correctedGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
 						$firstName, $middleInitial, $lastName,
 						$gender, $regNum, $age, $currentAgeGroup, $team );
 					
@@ -1401,7 +1420,7 @@ sub USMSProcessResults($$) {
 					# own db (the RSIDN file).  In this case we will NOT add this swimmer to our db.
 					if( $regNum ne "" ) {
 						$numPMSResultLines++;
-						my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, $firstName, $middleInitial, $lastName,
+						my ($swimmerId, $correctedGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, $firstName, $middleInitial, $lastName,
 							$gender, $regNum, $age, $ageGroup, $team );
 						TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $ageGroup, $gender, $place, $points, $swimmerId, 
 							$eventId, $org, $course, $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID, $time,
@@ -1742,7 +1761,7 @@ sub USMSProcessRecordRow( $$$$$$ ) {
 		"eventName='$eventName'\n";
 	}
 	# add this swimmer to our DB if necessary
-	my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $simpleFileName, $lineNum, $firstName, $middleInitial, $lastName,
+	my ($swimmerId, $correctedGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $simpleFileName, $lineNum, $firstName, $middleInitial, $lastName,
 		$gender, $regNum, 0, $ageGroup, $teamInitials );
 	TT_MySqlSupport::AddNewRecordSplash( $simpleFileName, $lineNum, $course, $org, $eventId, $gender,
 		$ageGroup, 1, $swimmerId, 0, 50, $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID, $date, $time );
@@ -1918,7 +1937,7 @@ sub PMSProcessRecords($) {
 						"eventName='$eventName'\n";
 					}
 					# add this swimmer to our DB if necessary
-					my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, $firstName, $middleInitial, $lastName,
+					my ($swimmerId, $correctedGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, $firstName, $middleInitial, $lastName,
 						$gender, $regNum, 0, $ageGroup, $teamInitials );
 					TT_MySqlSupport::AddNewRecordSplash( $fileName, $lineNum, $course, $org, $eventId, $gender,
 						$ageGroup, 1, $swimmerId, 0, 25, $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID, $date, $time );
@@ -1995,9 +2014,21 @@ sub PMSProcessOpenWater($) {
 
 	my $course = "OW";
 	my $org = "PAC";
-	$missingResults{"$org-$course"} = 0;
+	my $org_course = "$org-$course";
+	$missingResults{$org_course} = 0;
+
+	if( !defined( $simpleFileName ) ) {
+		$simpleFileName = "{no OW results file}";
+	}
+	my $fileName = "$sourceDataDir/" .  $simpleFileName;	
+	# does this file exist?
+	if( ! ( -e -f -r $fileName ) ) {
+		# can't find/open this file - just skip it with a warning:
+		PMSLogging::DumpNote( "", "", "!! Topten::PMSProcessOpenWater(): UNABLE TO PROCESS $org_course (file " .
+			"does not exist or is not readable) - INGORE THIS FILE:\n   '$fileName'", 1 );
+		return;
+	}		
 	
-	my $fileName = "$sourceDataDir/" .  $simpleFileName;
 	PMSLogging::DumpNote( "", "", "****************************************", 1 );
 	# does this file exist?
 	if( ! ( -e -f -r $fileName ) ) {
@@ -2125,11 +2156,11 @@ sub PMSProcessOpenWater($) {
 						$eventName =~ m,^(\D+)([\d./]+)\s*(\D+)$,;
 						my $distance = $2;		# e.g. "1.3"
 						my $eventCourse = $3;		# e.g. "Mile"
-						$eventCourse = PMSUtil::CanonicalOWCourse( $eventCourse );
 						my $stroke = $1;		# e.g. "Lake Berryessa "
+						$eventCourse = PMSUtil::CanonicalOWCourse( $eventCourse );
 						$stroke =~ s/\s*$//;		# e.g. "Lake Berryessa"
 						my $eventId = TT_MySqlSupport::AddNewEventIfNecessary( $distance, $eventCourse,
-							$stroke, $eventName );
+							TT_MySqlSupport::MySqlEscape( $stroke ), $eventName );
 							
 						if( $debugRegNum eq $regNum ) {
 							print "PMSProcessOpenWater(): Line #$lineNum: gender=$gender, ageGroup=$ageGroup, " .
@@ -2162,7 +2193,7 @@ sub PMSProcessOpenWater($) {
 							
 						# add this swimmer to our DB if necessary
 						# (NOTE: we assume the passed name and regnum are valid)
-						my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
+						my ($swimmerId, $correctedGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
 							$firstName, $middleInitial, $lastName,
 							$gender, $regNum, 0, $ageGroup, $team );
 						# add this meet to our DB if necessary
@@ -2213,7 +2244,7 @@ sub PMSProcessOpenWater($) {
 # ProcessFakeSplashes - 
 #
 # Example "result line":
-# we have rows with the following columns (2016):
+# we have rows with the following columns in CSV format (2016):
 # REQUIRED:
 #	1: Last Name
 #	2: First Name
@@ -2230,9 +2261,9 @@ sub PMSProcessOpenWater($) {
 #
 # OPTIONAL:
 #	13: MeetLink (link to meet description - use "(none)" if none) [default:  "(none)"]
-# 	14: Gender  (Women or Men)  [default: Gender from RSIDN file]
-# 	15: Age Group (e.g. '45-49')  [default: younger age group seen for this swimmer]
-# 	16: Age (e.g. 'F23' or 'M28')  [not used]
+# 	14: Gender  (Women or Men)  [default: Gender from RSIDN file][NOT optional if we have to create this swimmer]
+# 	15: Age Group (e.g. '45-49')  [default: younger age group seen for this swimmer. NOT optional if we have to create this swimmer]
+# 	16: Age (e.g. 'F23' or 'M28')  [not used][Used and NOT optional if we have to create this swimmer]
 # 	17: Club (e.g. 'USF')  [not used]
 #	18: Date (e.g. '07-23-2016')  [default:  $PMSConstants::DEFAULT_MISSING_DATE]
 #
@@ -2245,15 +2276,21 @@ sub PMSProcessOpenWater($) {
 #	"fake meet" but that's not necessary as we could use this to give a swimmer a splash in a real
 #	swim meet (maybe they really swam and placed but for some reason it didn't show up in the
 #	results).
+#	
+#	Below we have an option which depends on the value of "RequireExistingSwimmer".
+#	IF RequireExistingSwimmer is true (!=0):
 #	For simplicity we will NOT add a new swimmer just to give them a fake splash.  If a swimmer
 #	does not exist (has no real splashes) by the time this routine is called, and that swimmer 
 #	is supposed to be given a fake splash they will be ignored.  If a swimmer doesn't have any
 #	real swims will a fake swim be useful to them?   
+#	IF RequireExistingSwimmer if false (==0)
+#	Add the swimmer with this splash.
 #
 sub ProcessFakeSplashes($) {
 	my $simpleFileName = $_[0];
 	my $debugRegNum = "xxxxx";
 	my $debug = 0;
+	my $RequireExistingSwimmer = 0;
 	PMSLogging::PrintLog( "", "", "" );
 
 
@@ -2274,8 +2311,15 @@ sub ProcessFakeSplashes($) {
 			my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
 			my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
 			my $length = scalar(@row);
+			if( $debug ) {
+				PMSLogging::DumpNote( "", "", "Topten::ProcessFakeSplashes(): length=$length.", 0 );
+			}
 			if( $length > 0 ) {
 				$lineNum++;
+				if( $debug > 10 ) {
+					PMSLogging::DumpNote( "", "", "Topten::ProcessFakeSplashes(): process line $lineNum. Line='" .
+					"$rowAsString'\n    row[0]='$row[0]', row[1]='$row[1]', row[2]='$row[2]'", 1 );
+				}
 				# we've got a new row of of something (may be all spaces or a heading or something else) BUT
 				# we know it's not an end-of-file
 				if( $row[0] =~ m/\s*#/ ) {
@@ -2285,13 +2329,13 @@ sub ProcessFakeSplashes($) {
 				if( (defined($row[0])) && (defined($row[1])) && (defined($row[2])) ) {
 					# we've got a new row of of something (may be heading or data - anything else won't define
 					# row[2])
-					if( $debug ) {
+					if( $debug > 10 ) {
 						PMSLogging::PrintLog( $rowAsString, $lineNum, 
-							"  Topten::ProcessFakeSplashes($simpleFileName): ");
+							"  Topten::ProcessFakeSplashes($simpleFileName): ", 1);
 						for( my $i=0; $i < scalar(@row); $i++ ) {
-							PMSLogging::PrintLogNoNL( "", "", "    col $i: '$row[$i]', ");
+							PMSLogging::PrintLogNoNL( "", "", "    col $i: '$row[$i]', ", 1);
 						}
-						PMSLogging::PrintLog( "", "", "" );
+						PMSLogging::PrintLog( "", "", "", 1 );
 					}
 					# some of the following fields are optional so we be setting the corresponding
 					# variables to undefined.
@@ -2312,35 +2356,46 @@ sub ProcessFakeSplashes($) {
 							"lastName='$lastName'";
 					}
 					
-					# WE DO NOT add this swimmer to our DB if necessary - if they are not in our DB
-					# we are ignoring this row!
-					# (NOTE: we assume the passed name and regnum are valid)
-					# get ready to use our database:
-					my $dbh = PMS_MySqlSupport::GetMySqlHandle();
-					# Get the USMS Swimmer id, e.g. regnum 384x-abcde gives us 'abcde'
-					my $regNumRt = PMSUtil::GetUSMSSwimmerIdFromRegNum( $regNum );
-					my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
-						"SELECT SwimmerId,FirstName,MiddleInitial,LastName,Gender,AgeGroup1,AgeGroup2,RegisteredTeamInitials " .
-						"FROM Swimmer WHERE RegNum LIKE \"38%-$regNumRt\"", "" );
-					my $resultHash = $sth->fetchrow_hashref;
-					if( ! defined($resultHash) ) {
-						# this swimmer isn't known to us so don't give them the fake splash
-						PMSLogging::PrintLog( $rowAsString, $lineNum, 
-							"  Topten::ProcessFakeSplashes($simpleFileName): " .
-							"$firstName $middleInitial $lastName ($regNum) has no real splashes so they " .
-							"are not being given any fake splashes.");
-						next;
+					my ($swimmerId, $correctedGender);
+					$date = $PMSConstants::DEFAULT_MISSING_DATE if( (!defined $date) || ("" eq $date) );
+					$meetLink = "(none)" if( (!defined $meetLink) || ("" eq $meetLink) );
+					if( $RequireExistingSwimmer ) {
+						# WE DO NOT add this swimmer to our DB if necessary - if they are not in our DB
+						# we are ignoring this row!
+						# (NOTE: we assume the passed name and regnum are valid)
+						# get ready to use our database:
+						my $dbh = PMS_MySqlSupport::GetMySqlHandle();
+						# Get the USMS Swimmer id, e.g. regnum 384x-abcde gives us 'abcde'
+						my $regNumRt = PMSUtil::GetUSMSSwimmerIdFromRegNum( $regNum );
+						my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
+							"SELECT SwimmerId,FirstName,MiddleInitial,LastName,Gender,AgeGroup1,AgeGroup2,RegisteredTeamInitials " .
+							"FROM Swimmer WHERE RegNum LIKE \"38%-$regNumRt\"", "" );
+						my $resultHash = $sth->fetchrow_hashref;
+						if( ! defined($resultHash) ) {
+							# this swimmer isn't known to us so don't give them the fake splash
+							PMSLogging::PrintLog( $rowAsString, $lineNum, 
+								"  Topten::ProcessFakeSplashes($simpleFileName): " .
+								"$firstName $middleInitial $lastName ($regNum) has no real splashes so they " .
+								"are not being given any fake splashes.");
+							next;
+						} else {
+							$swimmerId = $resultHash->{'SwimmerId'};
+							$ageGroup = $resultHash->{'AgeGroup1'} if( (!defined $ageGroup) || ("" eq $ageGroup) );
+							$gender = $resultHash->{'Gender'} if( (!defined $gender) || ("" eq $gender) );
+						}
+					} else {
+						# this swimmer doesn't have to already exist
+						($swimmerId, $correctedGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
+							$firstName, $middleInitial, $lastName,
+							$gender, $regNum, $age, $ageGroup, $club );
 					}
 
 					# We've decided that this is a row containing a result that we need to use
 					$numResultLines++;
 					
-					my $swimmerId = $resultHash->{'SwimmerId'};
-					$ageGroup = $resultHash->{'AgeGroup1'} if( (!defined $ageGroup) || ("" eq $ageGroup) );
-					$gender = $resultHash->{'Gender'} if( (!defined $gender) || ("" eq $gender) );
-					$date = $PMSConstants::DEFAULT_MISSING_DATE if( (!defined $date) || ("" eq $date) );
-					$meetLink = "(none)" if( (!defined $meetLink) || ("" eq $meetLink) );
-
+					if( $debug ) {
+						PMSLogging::DumpNote( "", "", "Topten::ProcessFakeSplashes(): We've got a fake result, #$numResultLines.", 0 );
+					}
 					### NOTE: WE ASSUME THIS MEET EXISTS IN OUR DB (if nothing else it was created as 
 					###		a "fake" meet.)
 
@@ -2364,12 +2419,12 @@ sub ProcessFakeSplashes($) {
 				}
 			} # end of if( $length...
 			else {
-					# ReadSheetRow() returned a 0 length row - end of file
-					TT_SheetSupport::CloseSheet( \%sheetHandle );
-					PMSLogging::DumpNote( "", "", "*  Topten::ProcessFakeSplashes($simpleFileName): " .
-						"Done with '$simpleFileName' " .
-						"- $lineNum lines read, $numResultLines lines stored." );
-					last;
+				# ReadSheetRow() returned a 0 length row - end of file
+				TT_SheetSupport::CloseSheet( \%sheetHandle );
+				PMSLogging::DumpNote( "", "", "*  Topten::ProcessFakeSplashes($simpleFileName): " .
+					"Done with '$simpleFileName' " .
+					"- $lineNum lines read, $numResultLines lines stored." );
+				last;
 			}
 		} # end of while
 	
@@ -2516,7 +2571,7 @@ sub PMSProcessEPostal( $$ ) {
 							my $age = PMSUtil::trim( $row[6] );
 							my $team = $row[5];
 							my $dob = $row[8];   # m/d/y or empty string - not used here!!
-							my $distanceOrTime = $row[9];
+							my $distanceOrTime = $row[9];		# dddd or HH:MM:SS.th
 							my $natRecord = $row[10];
 							if( $place <= $slowestEPostalPlace ) {
 								# we have a row representing a PMS swimmer who placed for points
@@ -2581,7 +2636,7 @@ sub PMSProcessEPostal( $$ ) {
 								my $points = $placeToPointsRef->[$place];
 					
 								# add this swimmer to our DB if necessary
-								my $swimmerId = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
+								my ($swimmerId, $correctedGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
 									$firstName, $middleInitial, $lastName,
 									$newGender, $USMSRegNum, $age, $newAgeGrp, $team );
 
@@ -2597,6 +2652,8 @@ sub PMSProcessEPostal( $$ ) {
 										"File: '$simpleFileName', line $lineNum" );
 									$durationType = 1;  # "distance" is really a time
 								} else {
+									# this is a distance - remove any commas
+									$distanceOrTime =~ s/,//g;
 									$durationType = 2;  # "distance" is really a distance
 								}
 					
@@ -2622,12 +2679,12 @@ sub PMSProcessEPostal( $$ ) {
 								}
 								
 								PMSLogging::DumpNote( "", $lineNum, "PMS swimmer got $points points" . $record . ": $firstName $middleInitial $lastName " .
-									"($newGender/$age, dob=$dob, reg#=$USMSRegNum, place=$place)" );
+									"($newGender/$age, dob=$dob, reg#=$USMSRegNum, distanceOrTime=$distanceOrTime, place=$place)" );
 									
 							} # end of '...we have a row representing a PMS swimmer who placed for points'
 							else {
 								PMSLogging::DumpNote( "", $lineNum, "PMS swimmer with no points: $firstName $middleInitial $lastName " .
-									"($newGender/$age, dob=$dob, reg#=$USMSRegNum, place=$place)" );
+									"($newGender/$age, dob=$dob, reg#=$USMSRegNum, distanceOrTime=$distanceOrTime, place=$place)" );
 							}
 						} # end of '...this is a result for a PMS swimmer...'
 					} # end of '...we have a result line...'
@@ -2671,7 +2728,8 @@ sub ComputePointsForAllSwimmers() {
 	my( $sth, $rv );
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	my $countSwimmers = 0;
-	my $debugSwimmerId = "0";
+	my $debugSwimmerId = "xxxxx";
+	my $debug = 0;
 	
 	PMSLogging::PrintLog( "", "", "\n** Begin ComputePointsForAllSwimmers", 1 );
 	
@@ -2689,13 +2747,18 @@ sub ComputePointsForAllSwimmers() {
 		$ageGroup1 = $resultHash->{'AgeGroup1'};
 		$ageGroup2 = $resultHash->{'AgeGroup2'};
 		
+		if( $debug ) {
+			PMSLogging::DumpNote( "", "", "Topten::ComputePointsForAllSwimmers(): Swimmer #$countSwimmers; swimmerId=$swimmerId; " .
+			"firstName=$firstName, lastName=$lastName.", 1 );
+		}
+		
 		if( ($countSwimmers % 500) == 0) {
 			print "  ...$countSwimmers...\n";
 		}
 		
 		if( $swimmerId eq $debugSwimmerId ) {
 			print "--->ComputePointsForAllSwimmers(): Processing $firstName $middleInitial $lastName." .
-				"agegroup1='$ageGroup1', agegroup2='$ageGroup2'\n";
+				"agegroup1='$ageGroup1', agegroup2='$ageGroup2', gender='$gender'\n";
 		}
 		
 		if( $GENERATE_COMBINED_AGE_GROUPS ) {
@@ -2911,7 +2974,11 @@ sub InsertSOTY( $$$$ ) {
 ###################################################################################
 
 
-
+# ComputePlaceForAllSwimmers -
+#
+# if $_[0] is passed (defined) then this routine actually computes the place for a team
+#	whose name is given by $_[0].
+#
 sub ComputePlaceForAllSwimmers() {
 	my $teamName = $_[0];			# optional
 	my( $firstName, $middleInitial, $lastName, $swimmerId, $totalPoints );
@@ -2935,6 +3002,9 @@ sub ComputePlaceForAllSwimmers() {
 		# that a swimmer whose age group changes during a season will accumulate points in two 
 		# age groups, and have a place in those two age groups:
 		foreach my $gender ( ('M', 'F') ) {
+### 10nov2025 NOTE:
+			# NOTE that this code doesn't handle the case where a swimmer is neither M nor F (e.g. they are "N")
+			# Not fixing this (yet) since we're not using SAG (Separate Age Groups) logic.  See CAG below.
 			foreach my $ageGroup( @PMSConstants::AGEGROUPS_MASTERS ) {
 				my $order = 0;		# order of swimmer in results (1st place rank = 1st place order)
 				my $rank = 0;		# the swimmer's placing - two swimmers can have the same rank if tied.
@@ -2981,7 +3051,9 @@ sub ComputePlaceForAllSwimmers() {
 		PMSLogging::PrintLog( "", "", "** END ComputePlaceForAllSwimmers (FinalPlaceSAG-$teamName) ($countSwimmers swimmers)", 1 );
 	} # end of 	if( $GENERATE_SPLIT_AGE_GROUPS ....
 	
-	
+### 10nov2025 NOTE:
+	# this code will only handle genders M and F.
+	# If we will allow points ("recognition" using USMS terms) for other genders then we need to handle them here or separately.
 	if( $GENERATE_COMBINED_AGE_GROUPS ) {
 		PMSLogging::PrintLog( "", "", "** Begin ComputePlaceForAllSwimmers (FinalPlaceCAG-$teamName)", 1 );
 		# Compute the place for each swimmer, where we combine split age groups.  This means
@@ -3873,6 +3945,7 @@ sub PrintResultsHTML($$$$$) {
 	my($num, $numWithPoints) = TT_MySqlSupport::GetNumberOfSwimmers();
 	PMSStruct::GetMacrosRef()->{"NumberOfCompetingSwimmers"} = $num;
 	PMSStruct::GetMacrosRef()->{"NumberOfSwimmersEarnedPoints"} = $numWithPoints;
+	PMSStruct::GetMacrosRef()->{"LogOfNonBinarySwimmers"} = ConvertLogStringForSoty( TT_MySqlSupport::GetNonBinarySwimmersRef()->[0] );
 	PMSTemplate::ProcessHTMLTemplate( $templateSOTY, $sotyGeneratedHTMLFileHandle );
 	
 	PMSLogging::PrintLog( "", "", "** End PrintResultsHTML ($finalPlaceTableName-$generatedHTMLFileSubDirExt)", 1 );
@@ -3880,6 +3953,21 @@ sub PrintResultsHTML($$$$$) {
 } # end of PrintResultsHTML()
 
 
+
+
+# 	PMSStruct::GetMacrosRef()->{"LogOfNonBinarySwimmers"} = ConvertLogStringForSoty( TT_MySqlSupport::LogNonBinarySwimmers() );
+# ConvertLogStringForSoty - convert a simple multi-line log string into something for an HTML page (See
+#	the AGSOTY-soty.html template)
+#
+sub ConvertLogStringForSoty( $ ) {
+	my $simpleLog = $_[0];
+
+	$simpleLog =~ s/\t/<div style="margin-left: 40px;">/g;
+	$simpleLog =~ s/\n/<\/div>/g;
+	$simpleLog =~ s/^/<div  style="margin-left: 20px;">/;
+
+	return $simpleLog;
+} # end of ConvertLogStringForSoty()
 
 
 # GetPlaceSOTYOrderedSwimmersQuery - construct a SQL query to generate a list of swimmers in order
@@ -5272,7 +5360,9 @@ sub GetNumberOfCompetitorsForGenderAgeGroup( $$$$ ) {
 	
 	if( ($response->{'status'} != 200) || (length( $content ) < 500) ) {
 		PMSLogging::DumpError( "", "", "Topten::GetNumberOfCompetitorsForGenderAgeGroup(): " .
-			"Failed to get valid content from '$url'", 1 );
+			"Failed to get valid content from url:\n    '$url':\n" .
+			Dumper( $hashRef ), 1 );
+			
 	}
 	# count the number of lines that contain 'swim.php?s='
 	my $count = split( /swim.php/, $content )-1;

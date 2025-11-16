@@ -1,7 +1,7 @@
-## properties-2025.txt
+## properties-2026.txt
 ### This is the property file used by the Topten program.
 
-# Copyright (c) 2016-2025 Bob Upshaw.  This software is covered under the Open Source MIT License 
+# Copyright (c) 2016-2026 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
 # UNLESS OTHERWISE STATED:
 # All file names are relative to the SourceData directory, which is a subdirectory
@@ -16,6 +16,21 @@ RacesDataFile	races.txt
 # email address from the web page. See the necessary javascript that turns this into a working 
 # mailto link.
 AGSOTYPointsEmail	<a href="" data-part1="agsoty" data-part2="pacificmasters" data-part3="org" data-subject="Pacific%20Masters%20AGSOTY%20Points"></a>
+
+# Here is the javascript necessary to make the above work:
+# /* This code is the original work of George Martsoukos (2022). 
+# ** See https://webdesign.tutsplus.com/protect-html-email-links--cms-41203t */
+# 
+# const links = document.querySelectorAll("[data-part1][data-part2][data-part3]");
+# for (const link of links) {
+#   const attrs = link.dataset;
+#   link.setAttribute(
+# 	"href",
+# 	"mailto:${attrs.part1}@${attrs.part2}.${attrs.part3}?subject=${attrs.subject}"
+#   );
+#   link.textContent = "${attrs.part1}@${attrs.part2}.${attrs.part3}";
+# }
+
 
 # FakeMeetDataFile is a special, hand-crafted file representing a "fake" swim meet.
 # The FakeMeetDataFile has lines of 7 tab-separated fields of the form:
@@ -79,20 +94,6 @@ FakeMeetDataFile
 #FakeSplashDataFile FakeSplashes.csv
 
 
-# Here is the javascript necessary to make the above work:
-# /* This code is the original work of George Martsoukos (2022). 
-# ** See https://webdesign.tutsplus.com/protect-html-email-links--cms-41203t */
-# 
-# const links = document.querySelectorAll("[data-part1][data-part2][data-part3]");
-# for (const link of links) {
-#   const attrs = link.dataset;
-#   link.setAttribute(
-# 	"href",
-# 	"mailto:${attrs.part1}@${attrs.part2}.${attrs.part3}?subject=${attrs.subject}"
-#   );
-#   link.textContent = "${attrs.part1}@${attrs.part2}.${attrs.part3}";
-# }
-
 
 # scoring rules: number of points for 1st, 2nd, 3rd, etc...
 # 2019 and older
@@ -128,9 +129,14 @@ USMSRecordsFiles \
 						USMSRecords-W-SCM-{YearBeingProcessed}.csv:USMS-SCM@W;	\
 						USMSRecords-W-LCM-{YearBeingProcessed}.csv:USMS-LCM@W;
 
+
 PMSOpenWaterResultFile \
 						{YearBeingProcessed}PacMastersOWPlacesForEachSwimmer.csv
 
+>skip
+						PACTOP10SCY-{YearBeingProcessed}-gender.csv:PAC-SCY;	\
+		2026PacMastersOWPlacesForEachSwimmer-gender.csv
+>endskip
 
 
 
@@ -162,6 +168,7 @@ PMSOpenWaterResultFile \
 #		Meet Begin Date - (yyyy-mm-dd)@@@
 #		Meet End Date - (yyyy-mm-dd)@@@ 
 #		Meet is sanctioned by PMS - (yes=1, no=0)
+>skip
 USMSEpostals \
 						epostal-1hr-{YearBeingProcessed}.csv; \
 							USMS@@@ \
@@ -193,6 +200,9 @@ USMSEpostals \
 							{YearBeingProcessed}-05-15@@@ \
 							{YearBeingProcessed}-09-15@@@ \
 							0;
+>endskip
+
+
 >skip
 							
 							

@@ -40,6 +40,7 @@ our $G_RESULT_FILES_TO_READ = 	0b1111111;		# process all result files including 
 #$G_RESULT_FILES_TO_READ = 	0b001110;			# USMS Top Ten result files, USMS records, and PMS records only
 #$G_RESULT_FILES_TO_READ = 	0b110000;			# fake splashes + OW only
 #$G_RESULT_FILES_TO_READ = 	0b1000000;			# process  ePostal only
+#$G_RESULT_FILES_TO_READ = 	0b0100000;			# process  fake results only
 #$G_RESULT_FILES_TO_READ = 	0b0111111;			# process all result files except ePostal (not default, as of 30Mar2022)
 
 

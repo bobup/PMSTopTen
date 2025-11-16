@@ -15,6 +15,9 @@ First Chance Long Course Invitational	(NOT a PAC sanctioned meet)	PAC	LCM	2025-1
 The Olympic Club 1500 meter meet	(IS a PAC sanctioned meet)	PAC	SCM	2025-1-25	20250125OC1500S	https://www.usms.org/comp/meets/meet.php?MeetID=20250125OC1500S
 Palm Spring s Masters SCY Meet 	(NOT a PAC sanctioned meet)	PAC	SCY	2025-1-26	20250126PSSCYY	https://www.usms.org/comp/meets/meet.php?MeetID=20250126PSSCYY
 RESCHEDULED: Rowdy Gaines Masters Classic 16	(NOT a PAC sanctioned meet)	PAC	SCM	2025-1-31 - 2025-2-2	20241011ROWDYS	https://www.usms.org/comp/meets/meet.php?MeetID=20241011ROWDYS
+2025 Pacific Masters Swimming Kerry O'Brien Short Course Meters Championships	(IS a PAC sanctioned meet)	PAC	SCM	2025-10-3 - 2025-10-5	20251003PMSCMS	https://www.usms.org/comp/meets/meet.php?MeetID=20251003PMSCMS
+Mission Viejo Nadadores Masters Short Course Meters Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2025-10-5	20251005MVNOCTS	https://www.usms.org/comp/meets/meet.php?MeetID=20251005MVNOCTS
+Huntsman World Senior Games	(NOT a PAC sanctioned meet)	PAC	SCM	2025-10-8 - 2025-10-10	2025100825huntS	https://www.usms.org/comp/meets/meet.php?MeetID=2025100825huntS
 February Flurry Meet & Swim Clinic	(NOT a PAC sanctioned meet)	PAC	SCM	2025-2-21 - 2025-2-23	20250221FLURRYS	https://www.usms.org/comp/meets/meet.php?MeetID=20250221FLURRYS
 2025 Splash & Dash Sprint Pentathlon	(IS a PAC sanctioned meet)	PAC	SCY	2025-2-22	20250222AASDY	https://www.usms.org/comp/meets/meet.php?MeetID=20250222AASDY
 The City Mile	(IS a PAC sanctioned meet)	PAC	SCY	2025-2-23	20250223CCCMY	https://www.usms.org/comp/meets/meet.php?MeetID=20250223CCCMY
@@ -46,6 +49,7 @@ COMSA Championships Meet	(NOT a PAC sanctioned meet)	PAC	SCY	2025-4-4 - 2025-4-6
 Kenyon Noble May Classic 2025	(NOT a PAC sanctioned meet)	PAC	LCM	2025-5-16 - 2025-5-18	20250516004L	https://www.usms.org/comp/meets/meet.php?MeetID=20250516004L
 2025 COMA NW Zone LCM Championship Meet	(NOT a PAC sanctioned meet)	PAC	LCM	2025-5-17 - 2025-5-18	20250517COMALCL	https://www.usms.org/comp/meets/meet.php?MeetID=20250517COMALCL
 SPMS SCY Championship Meet 	(NOT a PAC sanctioned meet)	PAC	SCY	2025-5-3 - 2025-5-4	20250503RPSCYCY	https://www.usms.org/comp/meets/meet.php?MeetID=20250503RPSCYCY
+ IGLA+ 2025 Championship	(NOT a PAC sanctioned meet)	PAC	SCM	2025-5-31 - 2025-6-5	20250531IGLA25S	https://www.usms.org/comp/meets/meet.php?MeetID=20250531IGLA25S
 YMCA National Masters Meet	(NOT a PAC sanctioned meet)	PAC	SCY	2025-5-8 - 2025-5-11	20250508YNATSY	https://www.usms.org/comp/meets/meet.php?MeetID=20250508YNATSY
 Cyrus Blakney Memorial A-May-Zing Meet	(NOT a PAC sanctioned meet)	PAC	LCM	2025-5-9 - 2025-5-10	20250509zing25L	https://www.usms.org/comp/meets/meet.php?MeetID=20250509zing25L
 2025 Quicksilver Masters Fast and Free LCM Meet	(IS a PAC sanctioned meet)	PAC	LCM	2025-6-1	20250601QSSFNFL	https://www.usms.org/comp/meets/meet.php?MeetID=20250601QSSFNFL
@@ -57,5 +61,13 @@ SB Masters Semana Nautica LCM 	(NOT a PAC sanctioned meet)	PAC	LCM	2025-6-21	202
 Mission Viejo Nadadores Masters LCM Swim Meet	(NOT a PAC sanctioned meet)	PAC	LCM	2025-6-8	20250608MVNJUNL	https://www.usms.org/comp/meets/meet.php?MeetID=20250608MVNJUNL
 Pacific Masters Swimming Long Course Championship	(IS a PAC sanctioned meet)	PAC	LCM	2025-7-11 - 2025-7-13	20250711PMLCML	https://www.usms.org/comp/meets/meet.php?MeetID=20250711PMLCML
 2025 South Central Summer Championships	(NOT a PAC sanctioned meet)	PAC	LCM	2025-7-11 - 2025-7-13	20250711StlcznL	https://www.usms.org/comp/meets/meet.php?MeetID=20250711StlcznL
+2025 JT LCM Mini Meet	(NOT a PAC sanctioned meet)	PAC	LCM	2025-7-13	202507132025JTL	https://www.usms.org/comp/meets/meet.php?MeetID=202507132025JTL
 2025 San Diego Long Course Championships	(NOT a PAC sanctioned meet)	PAC	LCM	2025-7-13	20250713SIChmpL	https://www.usms.org/comp/meets/meet.php?MeetID=20250713SIChmpL
+2025 PC Novato CA/NV Speedo Sectionals 	(NOT a PAC sanctioned meet)	PAC	LCM	2025-7-17 - 2025-7-20	20250720usa725L	https://www.usms.org/comp/meets/meet.php?MeetID=20250720usa725L
 FAST Swimming Masters LCM Swim Meet	(NOT a PAC sanctioned meet)	PAC	LCM	2025-7-20	20250720FSTMSTL	https://www.usms.org/comp/meets/meet.php?MeetID=20250720FSTMSTL
+Rose Bowl Masters LCM Swim Meet 	(NOT a PAC sanctioned meet)	PAC	LCM	2025-7-26 - 2025-7-27	20250726RBMJULL	https://www.usms.org/comp/meets/meet.php?MeetID=20250726RBMJULL
+2025 Southwest Zone Summer Swimming Championship Meet	(NOT a PAC sanctioned meet)	PAC	LCM	2025-8-15 - 2025-8-17	20250815SWZSPCL	https://www.usms.org/comp/meets/meet.php?MeetID=20250815SWZSPCL
+2025 End of Summer Spectacular LCM Swim Meet	(NOT a PAC sanctioned meet)	PAC	LCM	2025-8-23	20250823AvonL	https://www.usms.org/comp/meets/meet.php?MeetID=20250823AvonL
+2025 GACC Summer Sunshine SCM Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2025-8-23	20250823GACCSMS	https://www.usms.org/comp/meets/meet.php?MeetID=20250823GACCSMS
+2025 U.S. Masters Swimming Summer National Championship	(NOT a PAC sanctioned meet)	PAC	LCM	2025-8-6 - 2025-8-10	20250806SMRNATL	https://www.usms.org/comp/meets/meet.php?MeetID=20250806SMRNATL
+World Aquatics Championships - Singapore 2025	(NOT a PAC sanctioned meet)	PAC	LCM	2025-8-7 - 2025-8-14	20250814WC2025L	https://www.usms.org/comp/meets/meet.php?MeetID=20250814WC2025L
