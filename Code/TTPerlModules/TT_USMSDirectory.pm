@@ -36,14 +36,13 @@ require PMS_MySqlSupport;
 # SIDE-EFFECTS:
 #	The Meet and USMSDirectory tables are updated with the information gleened from USMS.
 #
-
+my $GetUSMSDirectoryInfo_count = 0;
 my $debug;
 sub GetUSMSDirectoryInfo( $ ) {
 	my $swimmerId = $_[0];
 	my $resultHash;
 	my( $firstName, $middleInitial, $lastName, $regNum ) = ("?", "?", "?", "?");
 	my $usmsSwimmerId;			# the right-most 5 digits of the USMS registration number for the swimmer.
-	my $query;
 	my %listOfMeetsForThisSwimmer;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	$debug = 0;
@@ -54,15 +53,25 @@ sub GetUSMSDirectoryInfo( $ ) {
 		(PMSStruct::GetMacrosRef()->{"COMPUTE_POINTS"} == 0) ) {
 		return;
 	}
-
-	# initialize our HTTP class:
-	my $tinyHttp = HTTP::Tiny->new();
-	my $httpResponse;
 	
+	# keep track of the number of times this routine was called:
+	$GetUSMSDirectoryInfo_count++;
+
+	# rotate agents
+	my @agents = (
+		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.10 Safari/605.1.1',
+		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.3',
+		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.3',
+		'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.3',
+		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Edg/134.0.0.',
+		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 OPR/117.0.0.',
+	);
+
 	# get some details about the swimmer we're working with:
-	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
-		"SELECT FirstName,MiddleInitial,LastName,RegNum " .
-		"FROM Swimmer WHERE SwimmerId = \"$swimmerId\"" );
+	my $query = "SELECT FirstName,MiddleInitial,LastName,RegNum " .
+		"FROM Swimmer WHERE SwimmerId = \"$swimmerId\"";
+
+	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
 	if( defined($resultHash = $sth->fetchrow_hashref) ) {
 		# got swimmer details...get to work on their meets
 		$firstName = $resultHash->{'FirstName'};
@@ -78,11 +87,46 @@ sub GetUSMSDirectoryInfo( $ ) {
 
 		PMSLogging::PrintLogNoNL( "", "", "Topten::GetUSMSDirectoryInfo(): GET from '$link' for " .
 			"'$firstName $middleInitial $lastName' ...", 1 ) if( $debug > 1 );
-		$httpResponse = $tinyHttp->get( $link );
+
+		my $httpResponse;
+		for( my $loopCounter = 10; $loopCounter < 100; $loopCounter+=10 ) {
+			# initialize our HTTP class and then fetch the list of events for this swimmer:
+			my $agent = $agents[ rand @agents ];
+			my $tinyHttp = HTTP::Tiny->new(
+				default_headers => {
+					'User-Agent' => $agent
+				}
+			);
+			$httpResponse = $tinyHttp->get( $link );
+			if( !$httpResponse->{success} ) {
+				# are we being throttled? 
+				if( ($httpResponse->{status} == 403) ||
+					($httpResponse->{status} == 500) ||
+					0 ) {
+					# yes! do a random back-off and try again
+					my $snooze = $loopCounter + int(rand( 100 ));
+					PMSLogging::PrintLog( "", "", "TT_USMSDirectory::GetUSMSDirectoryInfo(): " .
+						"Sleep $snooze seconds for swimmer #" .
+						"$GetUSMSDirectoryInfo_count, loop=$loopCounter out of 100 by 10", 1 ) if( $debug >=0 );
+					sleep($snooze);
+				} else {
+					# failure - display message and give up on this one
+					PMSLogging::PrintLog( "", "", "FAILED!! with query='$query'", 1 ) if( $debug > 1 );
+					TT_Logging::HandleHTTPFailure( $link, "?", "?", $httpResponse, 
+						"From TT_USMSDirectory::GetUSMSDirectoryInfo() with query='$query'" );
+					return;
+				}
+			} else {
+				# http request successful
+				last;
+			}
+		} # end of for(...
+		# did we do the whole loop and never successfully get a http response?
 		if( !$httpResponse->{success} ) {
-			# failure - display message and give up on this one
 			PMSLogging::PrintLog( "", "", "FAILED!!", 1 ) if( $debug > 1 );
-			TT_Logging::HandleHTTPFailure( $link, "?", "?", $httpResponse );
+			TT_Logging::HandleHTTPFailure( $link, "?", "?", $httpResponse, 
+				"From TT_USMSDirectory::GetUSMSDirectoryInfo() - gave up " .
+				"with count=$GetUSMSDirectoryInfo_count!" );
 			return;
 		}
 
@@ -108,7 +152,7 @@ sub GetUSMSDirectoryInfo( $ ) {
 			} elsif( $state eq "LookingForMeet" ) {
 				if( $line =~ m/<a href="meet.php\?MeetID/ ) {
 					# we found a meet for this swimmer...record it in our database if not already there
-					AddMeetForSwimmer( $swimmerId, $usmsSwimmerId, $line, $course, $tinyHttp, \%listOfMeetsForThisSwimmer );
+					AddMeetForSwimmer( $swimmerId, $usmsSwimmerId, $line, $course, \%listOfMeetsForThisSwimmer );
 				}
 			}
 		} # end of foreach my $line ( @lines...
@@ -123,7 +167,7 @@ sub GetUSMSDirectoryInfo( $ ) {
 					
 					
 					
-# 	AddMeetForSwimmer( $swimmerId, $usmsSwimmerId, $line, $course, $tinyHttp, $listOfMeetsForThisSwimmerRef );
+#	AddMeetForSwimmer( $swimmerId, $usmsSwimmerId, $line, $course, \%listOfMeetsForThisSwimmer );
 # AddMeetForSwimmer - Add the following meet to our database and associate it with the passed swimmer.
 #
 # PASSED:
@@ -132,7 +176,6 @@ sub GetUSMSDirectoryInfo( $ ) {
 #	$line - the HTML line taken from the swimmer's USMS page containing details of a meet (date
 #		and meetId).
 #	$course - SCY, SCM, LCM
-#	$tinyHttp - the HTTP class that we use to get more info about the meet
 #	$listOfMeetsForThisSwimmerRef - reference to a hash that we populate as we analyze meets
 #		for this swimmer.  We use this to make sure we don't bother analyzing the same meet
 #		more than once for a swimmer, since this analysis is expensive.
@@ -146,7 +189,7 @@ sub GetUSMSDirectoryInfo( $ ) {
 #	is associated with the swimmer in the USMSDirectory table as a "hidden meet".
 #
 sub AddMeetForSwimmer() {
-	my($swimmerId, $usmsSwimmerId, $line, $course, $tinyHttp, $listOfMeetsForThisSwimmerRef) = @_;
+	my($swimmerId, $usmsSwimmerId, $line, $course, $listOfMeetsForThisSwimmerRef) = @_;
 	my $yearBeingProcessed = PMSStruct::GetMacrosRef()->{"YearBeingProcessed"};
 
 	# get the date and the USMSMeetId
@@ -171,7 +214,7 @@ sub AddMeetForSwimmer() {
 		# details of this meet.
 		if( $meetId ) {
 			PMSLogging::PrintLog( "", "", "    - We added this meet to our Meet table, and now need to update details.", 1 ) if( $debug > 1 );
-			PopulateDetailsOfHiddenMeet( $meetId, $USMSMeetId, $course, $tinyHttp );
+			PopulateDetailsOfHiddenMeet( $meetId, $USMSMeetId, $course );
 		}
 	} else {
 		PMSLogging::PrintLog( "", "", "...this is OUTSIDE the season we're processing!", 1 ) if( $debug > 1 );
@@ -282,24 +325,41 @@ sub AddHiddenMeetIfNecessary() {
 #	$meetId - the internal meet id for this meet (it's already in our Meet table)
 #	$USMSMeetId - the USMS meet id (we use that to find its web page)
 #	$meetCourse - SCY, SCM, LCM
-#	$tinyHttp - the HTTP class that we use to get the meet's web page
 #
 # RETURNED:
 #	n/a
 #
-sub PopulateDetailsOfHiddenMeet( $$$$ ) {
-	my ($meetId, $USMSMeetId, $meetCourse, $tinyHttp) = @_;
+sub PopulateDetailsOfHiddenMeet( $$$ ) {
+	my ($meetId, $USMSMeetId, $meetCourse) = @_;
 	my $meetLink = "https://www.usms.org/comp/meets/meet.php?MeetID=$USMSMeetId";	
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	
 	PMSLogging::PrintLogNoNL( "", "", "        -[Topten::PopulateDetailsOfHiddenMeet():] GET from '$meetLink' " .
 		"to get details for meet MeetId=$meetId, course=$meetCourse ...", 1 ) if( $debug > 1 );
 
+	# initialize our HTTP class:
+	# rotate agents
+	my @agents = (
+		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.10 Safari/605.1.1',
+		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.3',
+		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.3',
+		'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.3',
+		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Edg/134.0.0.',
+		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 OPR/117.0.0.',
+	);
+	my $agent = $agents[ rand @agents ];
+	my $tinyHttp = HTTP::Tiny->new(
+		default_headers => {
+        	'User-Agent' => $agent
+    	}
+	);
+
 	my $httpResponse = $tinyHttp->get( $meetLink );
 	if( !$httpResponse->{success} ) {
 		# failure - display message and give up on this one
 		PMSLogging::PrintLog( "", "", "FAILED!!", 1 ) if( $debug > 1 );
-		TT_Logging::HandleHTTPFailure( $meetLink, "?", "?", $httpResponse );
+		TT_Logging::HandleHTTPFailure( $meetLink, "?", "?", $httpResponse, 
+			"From TT_USMSDirectory::PopulateDetailsOfHiddenMeet()" );
 		return;
 	}
 

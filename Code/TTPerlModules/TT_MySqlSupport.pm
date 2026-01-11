@@ -216,9 +216,22 @@ sub InitializeTopTenDB() {
     				#		is really a distance. Note that the default is 1.
     				# --- Place : 1 - N
     				# --- Points: 1 - N Depends on Place
-    				# --- UsePoints: 1 or 0. 1 if the points for this splash are to be used to compute the
-    				#		swimmer's AGSOTY points, 0 if not. (example: a cat2 OW swim, or more than max swims
-    				#		for a particular org/course.)
+    				# --- UsePoints: >0 means "use these points", <= 0 means "don't use these points". 
+					#		1 - the "NORMAL" case where the points for this splash are valid and are to be used to
+					#			compute the swimmer's AGSOTY points.
+					#	    2 - a slightly "UNUSUAL" case where the $eventGender is M and the $swimmerGender is N
+					#			in which case the points for this splash are valid and are to be used to compute
+					#			the swimmer's AGSOTY points.
+					#		0 - Don't use these points, e.g. a cat2 OW swim, or more than max swims
+    				#			for a particular org/course. Note that this only applies to splashes which
+    				#			would otherwise have a UsePoints > 0 (i.e. not to splashes described below.)
+					#		-1 - the two genders don't match, e.g.:
+					#			$eventGender = M and $SwimmerGender = F, or
+					#			$eventGender = F and $SwimmerGender = M
+					#		-2 - an N can't be recognized when swimming in a F event:
+					#			$eventGender = F and $SwimmerGender = N
+					#		-3 - something is wrong!
+					#			$eventGender and/or $SwimmerGender are illegal genders (probably bad data somewhere)
     				# --- Reason: NULL if UsePoints is 1, a string if 0. The reason we don't use these points.
 		    		($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
     		    		"CREATE TABLE Splash (SplashId INT AUTO_INCREMENT PRIMARY KEY, " .
@@ -237,7 +250,7 @@ sub InitializeTopTenDB() {
 		    			"Place Int, " .
 		    			"Points Int, " .
 		    			"UsePoints INT DEFAULT 1, " .
-		    			"Reason Varchar(64)" .
+		    			"Reason Varchar(256) DEFAULT \"\" " .
 		    			")" );
 
 
@@ -377,7 +390,13 @@ sub InitializeTopTenDB() {
     				# --- AgeGroup - the age group the swimmer was in when earning these points.
     				#		Can be of the form "18-25:25-29" if we combine age groups for 
     				#		a swimmer who swims the season in two age groups.
-    				# --- TotalPoints - the points they earned in this org, course, age group(s)
+    				# 
+    				# --- TotalPoints - the points they earned in this org, course, age group(s) applied
+    				#		to AGSOTY. Does not count denied points or points denied due to rules
+    				#		limiting points, like too many swims for a org/course, or cat2 OW.
+    				# --- TotalPointsDenied - points that would have been awarded to a swimmer but were
+    				#		denied, usually due to gender issues. Does NOT include points denied due to
+    				#		rules limiting points, like too many swims for a org/course, or cat2 OW.
     				# --- ResultsCounted - the number of results that were counted to get TotalPoints.
     				#		Subject to limits (e.g. SCY is 8)
     				# --- ResultsAnalyzed - the number of results that were available for this swimmer
@@ -389,6 +408,7 @@ sub InitializeTopTenDB() {
     		    		"Org Varchar(5), " .
 		    			"AgeGroup Varchar(15), " .
 		    			"TotalPoints INT DEFAULT 0, " .
+		    			"TotalPointsDenied INT DEFAULT 0, " .
 		    			"ResultsCounted INT DEFAULT 0, " .
 		    			"ResultsAnalyzed INT DEFAULT 0 " .
 		    			")" );
@@ -471,13 +491,14 @@ sub InitializeTopTenDB() {
     			
 ### NumSwimmers
     			} elsif( $tableName eq "NumSwimmers" ) {
-    				# --- Gender - one of M or F
+    				# --- Gender - one of M or F .  Represents the gender of an event (not a swimmer, which
+    				#		is usually the same but not always.)
 				  	# --- AgeGroup - their age group.
 				  	# --- SplitAgeGroupTag - one of "split" or "combined".  "split" means that this is the number of swimmers
 				  	#		who competed and accumulated points in two different age groups, and this is the older of the age groups.
 				  	#		"combined" means that this is the number of swimmers who competed in two different age groups but
 				  	#		accumulated their points in the older age group (this age group)
-				  	# --- NumSwimmers - number of swimmers who earned points in this gender
+				  	# --- NumSwimmers - number of swimmers who earned points in events in this gender
 				  	#		and age group.
 		    		($sth,$rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
 		    			"CREATE TABLE NumSwimmers (NumSwimmersId INT AUTO_INCREMENT PRIMARY KEY, " .
@@ -661,34 +682,43 @@ if( !defined $units ) {
 # AddNewSwimmerIfNecessary - look up the passed swimmer in the Swimmer table.  If not found
 #	then add the swimmer.  If found update the ageGroup2 field if necessary.
 #	In all cases return the SwimmerId.
-#
 # We look up the swimmer by reg num.
+#
+# PASSED:
+#	$fileName - used for logging. can be a simple name
+#	$eventGender - the gender of the event, which is usually the gender of the swimmer, but not
+#		necessarily.
+#
+# RETURNED:
+#	$swimmerId -
+#	$swimmerGender - the gender of the swimmer.
 #
 # If the swimmer is found then do the following checks:
 #	- first, middle, and last names match
-#	- gender in db match passed gender
+#	- gender in db ($swimmerGender) matches the passed gender of the event ($eventGender)
 #	- ageGroup1 or ageGroup2 in db matches passed $ageGroup or is one age group away.
 #	- team matches
 #
 # hack:
 sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
-	my($fileName, $lineNum, $firstName, $middleInitial, $lastName, $gender, $regNum, $age, 
+	my($fileName, $lineNum, $firstName, $middleInitial, $lastName, $eventGender, $regNum, $age, 
 		$ageGroup, $team) = @_;
 	my $swimmerId = 0;
 	my $resultHash;
 	my $ageGroup1 = "";
 	my $ageGroup2 = "";
+	my $debug = 0;
 
 	# 15nov2025: added the following only to catch mis-match gender and gender 'N', but in the
 	# future we might want to catch mis-match on other data.
 	my($correctedFirstName, $correctedMiddleInitial, 
-		$correctedLastName, $correctedRegNum, $correctedTeam, $correctedDOB, $correctedGender,
+		$correctedLastName, $correctedRegNum, $correctedTeam, $correctedDOB, $swimmerGender,
 		$resultMissingDataType, $resultErrorNote, $resultErrorRegnum, $rsidnId);
 
 	my $debugLastName = "xxxxx";
 	
-	# make sure the gender is either M or F
-	$gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $gender );
+	# make sure the event gender is either M or F
+	$eventGender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $eventGender );
 	
 	# get ready to use our database:
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
@@ -701,13 +731,13 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
 		"SELECT SwimmerId,FirstName,MiddleInitial,LastName,Gender,AgeGroup1,AgeGroup2,RegisteredTeamInitials " .
 		"FROM Swimmer WHERE RegNum LIKE \"38%-$regNumRt\"", 
-		$debugLastName eq $lastName ? "Looking For > $firstName $lastName":"" );
+		lc($debugLastName) eq lc($lastName) ? "AddNewSwimmerIfNecessary(): Looking For > $firstName $lastName":"" );
 	$resultHash = $sth->fetchrow_hashref;
-	if( $debugLastName eq $lastName ) {
+	if( lc($debugLastName) eq lc($lastName) ) {
 		if( defined($resultHash) ) {
-			PMSLogging::PrintLog( "", "", "$debugLastName found with $regNumRt\n", 1 );
+			PMSLogging::PrintLog( "", "", "AddNewSwimmerIfNecessary(): $debugLastName found in Swimmer table with $regNumRt\n", 1 );
 		} else {
-			PMSLogging::PrintLog( "", "", "$debugLastName NOT found with $regNumRt\n", 1 );
+			PMSLogging::PrintLog( "", "", "AddNewSwimmerIfNecessary(): $debugLastName NOT found in Swimmer table with $regNumRt\n", 1 );
 		}
 	}
 	if( defined($resultHash) ) {
@@ -717,6 +747,7 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 		# first, the age groups for this swimmer is a special case...they can be in 2 age groups for the year
 		$ageGroup1 = $resultHash->{'AgeGroup1'};
 		$ageGroup2 = $resultHash->{'AgeGroup2'};	# can be empty string
+		$swimmerGender = $resultHash->{'Gender'};
 		if( $ageGroup ne $ageGroup1 ) {
 			# the passed ageGroup is not the same as the first age group we saw for this swimmer -
 			# Do they have a second age group in the DB, and, if so, is it the same as the passed age group?
@@ -738,7 +769,7 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 						"UPDATE Swimmer SET AgeGroup2 = '$ageGroup' " .
 						"WHERE SwimmerId = $swimmerId" );
 					$total2AgeGroups++;
-					$MultiAgeGroups{$swimmerId} = "$ageGroup1:$ageGroup:$gender";
+					$MultiAgeGroups{$swimmerId} = "$ageGroup1:$ageGroup:$eventGender";
 				} else {
 					# the second age group for this swimmer isn't right - display error
 					# and don't add it to the db:
@@ -763,10 +794,13 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 			"LastName in results (\"$lastName\") != db (Swimmer table) (\"$resultHash->{'LastName'}\") for regNum $regNum. " .
 			"(non-fatal)\n" )
 			if( lc($lastName) ne lc($resultHash->{'LastName'}) );
-		PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::AddNewSwimmerIfNecessary(): ('$fileName', $lineNum): " .
-			"Gender in results ($gender) != db (Swimmer table) ($resultHash->{'Gender'}) for regNum $regNum. " .
-			"(non-fatal)\n" )
-			if( lc($gender) ne lc($resultHash->{'Gender'}) );
+			
+		if( $debug ) {
+			PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::AddNewSwimmerIfNecessary(): ('$fileName', $lineNum): " .
+				"Gender in results ($eventGender) != db (Swimmer table: swimmerGender = $swimmerGender) for regNum $regNum. " .
+				"(non-fatal)\n" )
+				if( lc($eventGender) ne lc($swimmerGender) );
+		}
 			
 		PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::AddNewSwimmerIfNecessary(): ('$fileName', $lineNum): " .
 			"Team in results ($team) != db (Swimmer table) ($resultHash->{'RegisteredTeamInitials'}) for regNum $regNum. " .
@@ -805,10 +839,15 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 		
 		# first, look up this swimmer in our RSIDN and correct any data:
 		($correctedFirstName, $correctedMiddleInitial, 
-			$correctedLastName, $correctedRegNum, $correctedTeam, $correctedDOB, $correctedGender,
+			$correctedLastName, $correctedRegNum, $correctedTeam, $correctedDOB, $swimmerGender,
 			$resultMissingDataType, $resultErrorNote, $resultErrorRegnum, $rsidnId) = 
 				PMS_MySqlSupport::LookUpSwimmerInRSIDN( $firstName, $middleInitial, $lastName, $regNum, 
-					$PMSConstants::INVALID_DOB, $gender, $team, $age, 0 );
+					$PMSConstants::INVALID_DOB, $eventGender, $team, $age, 0 );
+		if( lc($debugLastName) eq lc($lastName) ) {
+			print "AddNewSwimmerIfNecessary(): Fetched from RSIND: correctedFirstName='$correctedFirstName', " .
+				"correctedLastName='$correctedLastName', swimmerGender='$swimmerGender'\n";
+		}
+		
 		
 		# we should confirm that returned data matches our passed data and complain/note it if necessary
 		
@@ -816,7 +855,7 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 		($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
 			"INSERT INTO Swimmer " .
 				"(FirstName,MiddleInitial,LastName,Gender,RegNum,Age1,Age2,AgeGroup1,RegisteredTeamInitials) " .
-				"VALUES (\"$firstName\",\"$middleInitial\",\"$lastName\",\"$correctedGender\",\"$regNum\"," .
+				"VALUES (\"$firstName\",\"$middleInitial\",\"$lastName\",\"$swimmerGender\",\"$regNum\"," .
 				"\"$age\",\"$age\",\"$ageGroup\",\"$team\")") ;
 				
 		# get the SwimmerId of the swimmer we just entered into our db
@@ -824,7 +863,7 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
     	die "Can't determine SwimmerId of newly inserted Swimmer" if( !defined( $swimmerId ) );
 	}
 	
-	return ($swimmerId, $correctedGender);
+	return ($swimmerId, $swimmerGender);
 	
 } # end of AddNewSwimmerIfNecessary()
 
@@ -839,22 +878,23 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 #	$fileName - the file containing the result this splash represents.  Used for messages only.
 #	$lineNum - the line number in the file.  Used for messages only.
 #	$ageGroup - age group of the swimmer who made the splash.
-#	$gender - gender of the swimmer who made the splash.
+#	$swimmerGender - gender of the swimmer who made the splash.
 #	$place - the place the swimmer took with this splash.
-#	$points - the number of points the swimmer got from this splash
+#	$points - the number of points the swimmer got from this splash. 0 is legal, and means that
+#		this swimmer was disqualified from receiving points.
 #	$swimmerId - the swimmer
 #	$eventId - the event the swimmer was swimming in (e.g. 50 M free), or -1 if ePostal
 #	$org - PAC or USMS
 #	$course - SCY, LCM, SCM, OW, ePostal
 #	$meetId - the meet the swimmer was swimming in.  Could be $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID
-#	$time - the duration of the swim
+#	$time - the duration or length of the swim, depending on the value of $durationType (below) 
 #	$date - the date of the swim.  Of the form yyyy-mm-dd.  Could be $PMSConstants::DEFAULT_MISSING_DATE.
 #	$durationType (optional, but must be supplied if $category is supplied) - 1 (or missing) if the passed 
 #		$time is a time, 2 if it's really a distance
 #	$category (optional) - if supplied must be 1 or 2. If not supplied then default to 1.
 #
 sub AddNewSplash {
-	my ($fileName, $lineNum, $ageGroup, $gender, $place, $points, $swimmerId, $eventId, $org, 
+	my ($fileName, $lineNum, $ageGroup, $swimmerGender, $place, $points, $swimmerId, $eventId, $org, 
 		$course, $meetId, $time, $date, $durationType, $category) = @_;
 	if( !defined $category ) {
 		$category = 1;
@@ -876,13 +916,13 @@ sub AddNewSplash {
 			"is invalid (not fatal): '$course'", 1 );
 	}
 	
-	# make sure the gender is either M or F
-	$gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $gender );
+	# make sure the swimmerGender is either M or F or N
+	$swimmerGender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $swimmerGender );
 	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, 
 		"INSERT INTO Splash " .
 			"(Course, Org, EventId, Gender, AgeGroup, Category, Date, MeetId, SwimmerId, Duration, " .
 			"Place, Points, DurationType) " .
-			"VALUES (\"$course\",\"$org\",\"$eventId\",\"$gender\",\"$ageGroup\",\"$category\"," .
+			"VALUES (\"$course\",\"$org\",\"$eventId\",\"$swimmerGender\",\"$ageGroup\",\"$category\"," .
 			"\"$date\",\"$meetId\",\"$swimmerId\",\"$time\"," .
 			"\"$place\", \"$points\", \"$durationType\")") ;
 			
@@ -895,7 +935,7 @@ sub AddNewSplash {
 # AddNewMeetIfNecessary - Add an entry in the Meet table representing the passed swim meet
 #
 # PASSED:
-#	$fileName - (not used - available for messages)
+#	$fileName - (not used - available for messages) can be simple name
 #	$lineNum - (not used - available for messages)
 #	$USMSMeetId - The uniquie USMS meet id (e.g. "20160618SSG-1Y").  Can be empty string.
 #	$meetTitle - 
@@ -1118,7 +1158,7 @@ sub LookUpRecord( $$$$$ ) {
 
 
 
-# my ( $resultsAnalyzed, $totalPoints, $resultsCounted ) = 
+# my ( $resultsAnalyzed, $totalPoints, $totalPointsDenied, $resultsCounted ) = 
 #		TT_MySqlSupport::GetSwimmersSwimDetails2( $swimmerId, $org, $course, $ageGroup, $resultRef );
 #
 # GetSwimmersSwimDetails2 - Get the details on all swims (point earning or not) performed by this swimmer
@@ -1141,6 +1181,7 @@ sub LookUpRecord( $$$$$ ) {
 #		an array containing $resultsAnalyzed elements (each element is a hash.)
 #	$totalPoints - The total number of points we'll consider towards their AGSOTY total.  Using the
 #		example above, it's the total number of points earned by the best 8 times.
+#	$totalPointsDenied - points that would go towards AGSOTY except denied due to gender issues.
 #	$resultsCounted - The number of splashes we'll actually use to compute $totalPoints.  Using the
 #		example above, this value will be 8.
 #
@@ -1150,8 +1191,8 @@ sub LookUpRecord( $$$$$ ) {
 sub GetSwimmersSwimDetails2($$$$) {
 	my ($swimmerId, $org, $course, $ageGroup, $resultRef) = @_;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
-	my @arrOfResultHashRef = ();
-	my( $totalPoints, $resultsCounted, $resultsAnalyzed ) = (0,0,0);
+#	my @arrOfResultHashRef = ();
+	my( $totalPoints, $totalPointsDenied, $resultsCounted, $resultsAnalyzed ) = (0,0,0,0);
 	my $debugSwimmerId = "0";
 
 	my $ageGroupQuery = "";
@@ -1193,9 +1234,11 @@ sub GetSwimmersSwimDetails2($$$$) {
 			$reason = "";
 		}
 		
-		if( $usePoints ) {
+		if( $usePoints > 0 ) {
 			$resultsCounted++;
 			$totalPoints += $points;
+		} elsif( $usePoints < 0 ) {
+			$totalPointsDenied += $points;
 		} else {
 			$points = 0;
 		}
@@ -1216,7 +1259,7 @@ sub GetSwimmersSwimDetails2($$$$) {
 		}
 		
 	} # end of while()...
-	return ( $resultsAnalyzed, $totalPoints, $resultsCounted );
+	return ( $resultsAnalyzed, $totalPoints, $totalPointsDenied, $resultsCounted );
 } # end of GetSwimmersSwimDetails2()
 
 
@@ -1310,21 +1353,28 @@ sub GetSplashesForMeet( $ ) {
 #
 # RETURNED:
 #	$num - number of PMS swimmers we saw
-#	$numWithPoints - number of PMS swimmers we saw that earned points.
+#	$numWithPoints - number of PMS swimmers we saw that earned points applied towards AGSOTY.
+#	$numWithDeniedPoints - number of PMS swimmers we saw that had points denied. Some may
+#		overlap with swimmers who earned points applied towards AGSOTY. Denied points occur
+#		due to gender issues. See the Points table.
 #
 sub GetNumberOfSwimmers() {
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	my $query1 = "Select Count(*) as count from Swimmer";
 	my $query2 = "Select Count(Distinct SwimmerId) as count from Points " .
 		"Where TotalPoints > 0";
-	my ($num, $numWithPoints);
+	my $query3 = "Select Count(Distinct SwimmerId) as count from Points " .
+		"Where TotalPointsDenied > 0";
+	my ($num, $numWithPoints, $numWithDeniedPoints);
 
 	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query1, "" );
 	$num = $sth->fetchrow_hashref->{'count'};
 	($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query2, "" );
 	$numWithPoints = $sth->fetchrow_hashref->{'count'};
+	($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query3, "" );
+	$numWithDeniedPoints = $sth->fetchrow_hashref->{'count'};
 
-	return ($num, $numWithPoints);
+	return ($num, $numWithPoints, $numWithDeniedPoints);
 } # end of GetNumberOfSwimmers()
 
 
@@ -2175,35 +2225,33 @@ sub LogNonBinarySwimmers() {
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	my $logLines = "";
 
-	foreach my $ageGroup( @PMSConstants::AGEGROUPS_MASTERS ) {
-		my $query = "SELECT Points.SwimmerId,SUM(Points.TotalPoints) as TotalPoints," .
-			"FirstName,MiddleInitial,LastName,AgeGroup " .
-			"FROM Points JOIN Swimmer " .
-			"WHERE Points.swimmerid = Swimmer.swimmerid " .
-			"AND " .
-				"((Points.AgeGroup='$ageGroup' AND Swimmer.AgeGroup1='$ageGroup' AND Swimmer.AgeGroup2='') " .
-				"OR " .
-				"(Swimmer.AgeGroup2='$ageGroup' AND Points.AgeGroup LIKE '%:$ageGroup')) " .
-			"AND Swimmer.Gender='$gender' " .
-			"GROUP BY Swimmer.SwimmerId,Points.AgeGroup ORDER BY TotalPoints DESC,LastName ASC,RegNum ASC";
-
-		(my $sth, my $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
-		while( defined(my $resultHash = $sth->fetchrow_hashref) ) {
-			$countSwimmers++;
-			my $firstName = $resultHash->{'FirstName'};
-			my $middleInitial = $resultHash->{'MiddleInitial'};	
-			my $lastName = $resultHash->{'LastName'};
-			my $swimmerId = $resultHash->{'SwimmerId'};
-			my $totalPoints = $resultHash->{'TotalPoints'};
-			my $ageGroupSelected = $resultHash->{'AgeGroup'};
-			
-			# construct one line per swimmer
-			$logLines .= "\t$firstName $middleInitial $lastName (swimmerId $swimmerId) in the age " .
-			"group $ageGroupSelected would have earned a total of $totalPoints points.\n";
-			
-
-		} # end of while(...
-	}
+	my $query = "SELECT SwimmerId, FirstName, MiddleInitial, LastName " .
+		"FROM Swimmer " .
+		"WHERE Swimmer.Gender = '$gender' " .
+		"ORDER by LastName ASC";
+	(my $sth, my $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+	while( defined(my $resultHash = $sth->fetchrow_hashref) ) {
+		$countSwimmers++;
+		my $firstName = $resultHash->{'FirstName'};
+		my $middleInitial = $resultHash->{'MiddleInitial'};	
+		my $lastName = $resultHash->{'LastName'};
+		my $swimmerId = $resultHash->{'SwimmerId'};
+		
+		my $query2 = "SELECT TotalPoints, TotalPointsDenied FROM Points " .
+			"WHERE SwimmerId=$swimmerId";
+		(my $sth2, my $rv2) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query2 );
+		my ($totalPoints, $totalPointsDenied) = (0,0);
+		while( defined( my $resultHash2 = $sth2->fetchrow_hashref ) ) {
+			$totalPoints += $resultHash2->{'TotalPoints'};
+			$totalPointsDenied += $resultHash2->{'TotalPointsDenied'};
+		}
+		my $grandTotalPoints = $totalPoints + $totalPointsDenied;
+		# construct one line per swimmer
+		$logLines .= "\t$firstName $middleInitial $lastName (swimmerId $swimmerId) " .
+			"\"earned\" a total of $grandTotalPoints of which $totalPointsDenied points were " .
+			"denied, leaving $totalPoints points applied to AGSOTY.\n";
+		
+	} # end of while(...
 	
 	$logLines = "There were $countSwimmers non binary swimmers.\n" . $logLines;
 	push( @nonBinarySwimmers, $logLines );
@@ -2223,9 +2271,76 @@ sub DumpNonBinarySwimmers() {
 
 } # end of DumpNonBinarySwimmers()
 
+my $logLines = "";
+my $countSwimmers = -1;
+#
+# DumpDeniedPoints - generate a string for the logs describing all points denied to
+#	all swimmers who were denied points for something other than rules limiting points.
+#
+# PASSED:
+#	N/A
+#
+# RETURNED:
+#	$logLines - a string for the logs.
+#	$countSwimmers - the number of swimmers denied points
+#
+# NOTES:
+#	This routine can be called multiple times, but it only computes its result once. If
+#	called again it returns the result initially calculated.
+#
+sub DumpDeniedPoints() {
+
+	if( $countSwimmers >= 0 ) {
+		return( $logLines, $countSwimmers );
+	}
+	$countSwimmers = 0;
+	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
+
+	# get a list of all swimmers who were denied points
+	my $query;
+	$query = "SELECT Points.SwimmerId, SUM(TotalPoints) AS TotalPoints, " .
+		"SUM(TotalPointsDenied) AS TotalPointsDenied, FirstName, MiddleInitial, LastName " .
+		"FROM Points JOIN Swimmer " .
+		"WHERE (TotalPointsDenied > 0)  AND (Points.SwimmerId = Swimmer.SwimmerId) " .
+		"GROUP BY Points.SwimmerId ORDER BY Points.SwimmerId";
+
+	# for each of those swimmers get the details of their denied points
+	(my $sth, my $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query,"deniedpoints: " );
+	while( defined(my $resultHash = $sth->fetchrow_hashref) ) {
+		$countSwimmers++;
+		my $firstName = $resultHash->{'FirstName'};
+		my $middleInitial = $resultHash->{'MiddleInitial'};	
+		my $lastName = $resultHash->{'LastName'};
+		my $swimmerId = $resultHash->{'SwimmerId'};
+		my $totalAgsotyPoints = $resultHash->{'TotalPoints'};
+		my $totalPointsDenied = $resultHash->{'TotalPointsDenied'};
+		my $totalAgsotyPlusDeniedPoints = $totalAgsotyPoints + $totalPointsDenied;
+		$logLines .= "\t$firstName $middleInitial $lastName (swimmerId $swimmerId) " .
+			"\"earned\" a total of $totalAgsotyPlusDeniedPoints points of which $totalPointsDenied " .
+			"points were denied, leaving $totalAgsotyPoints applied to AGSOTY:\n";
+		# get the details for this swimmer:
+		my $query2 = "SELECT Points, UsePoints, Reason " .
+			"FROM Splash " .
+			"WHERE UsePoints < 0  " .
+			"AND Splash.SwimmerId = $swimmerId";
+		(my $sth2, my $rv2) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query2 );
+		while( defined( my $resultHash2 = $sth2->fetchrow_hashref ) ) {
+			my $points = $resultHash2->{'Points'};
+			my $usePoints = $resultHash2->{'UsePoints'};
+			my $reason = $resultHash2->{'Reason'};
+			$logLines .= "\t\t$points points denied because '$reason'\n";
+		}
+	}
+	
+	return( $logLines, $countSwimmers );
+} # end of DumpDeniedPoints()
 
 
 
+
+
+
+# not really used anymore...
 
 # DumpStatsFor2GroupSwimmers - generate a HTML file giving stats for every swimmer who is in two
 #		different age groups during this season.
@@ -2235,7 +2350,7 @@ sub DumpNonBinarySwimmers() {
 #
 # NOTE:  POINTS AND PLACE MUST HAVE BEEN ALREADY COMPUTED!!
 #
-sub DumpStatsFor2GroupSwimmers( $ ) {
+sub DumpStatsFor2GroupSwimmers_NOTUSED( $ ) {
 	my( $fullFileName, $generationDate ) = @_;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	# html colors we're using:
@@ -2336,6 +2451,7 @@ BUp1
 		my $ageGroup1 = $resultHash->{'AgeGroup1'};
 		my $ageGroup2 = $resultHash->{'AgeGroup2'};
 		
+		
 		# get all the points for this swimmer in all org and course, for only $ageGroup1
 		($points1, $numResults1, $totalResultsAnalyzed1) = 
 			GetPointsForSwimmer( $swimmerId, $ageGroup1 );
@@ -2403,11 +2519,13 @@ BUp2
 	close $fileHandle;
 
 	PMSLogging::PrintLog( "", "", "** End DumpStatsFor2GroupSwimmers", 1 );
-} # end of DumpStatsFor2GroupSwimmers()
+} # end of DumpStatsFor2GroupSwimmers_NOTUSED()
 
 
 
-
+#
+# NOT USED???
+#
 #		($points, $numResults, $totalResultsAnalyzed) = GetPointsForSwimmer( $swimmerId, $ageGroup );
 # GetPointsForSwimmer - return the points and other stats for the passed swimmer when in the passed
 #	age group.
@@ -2424,7 +2542,8 @@ BUp2
 #		returned $points.
 #
 # NOTE:  POINTS MUST HAVE BEEN ALREADY COMPUTED!!
-sub GetPointsForSwimmer( $$ ) {
+#
+sub GetPointsForSwimmer_NOTUSED( $$ ) {
 	my( $swimmerId, $ageGroup ) = @_;
 	my( $points, $numResults, $totalResultsAnalyzed ) = (0,0,0);
 	my $query = "SELECT SUM(TotalPoints) AS Points," .
@@ -2446,7 +2565,7 @@ sub GetPointsForSwimmer( $$ ) {
 	}
 	return( $points, $numResults, $totalResultsAnalyzed );
 
-} # end of GetPointsForSwimmer()
+} # end of GetPointsForSwimmer_NOTUSED()
 
 
 
@@ -2493,7 +2612,9 @@ sub GetPlaceForSwimmer( $$ ) {
 #		various limits (e.g. no more than 8 SCY top 10 events, using the highest scores, and
 #		never award points for the same event/course - if more than one always use the highest
 #		points earned.)
-#	$totalResultsCounted - the total number of results we used to award points
+#	$totalPointsDenied - the total number of points denied to this swimmer, usually for reasons
+#		of gender mismatch.
+#	$totalResultsCounted - the total number of results we used to award points used for AGSOTY
 #	$totalResultsAnalyzed - the total number of results we considered but not necessarily 
 # 		used (because they may have more than the limit)
 #
@@ -2502,7 +2623,8 @@ sub ComputePointsForSwimmer( $$$ ) {
 	my $query;
 	my $ageGroupQuery = "";
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
-	my $totalPoints = 0;			# the total number of points this swimmer earned
+	my $totalPoints = 0;			# the total number of valid points this swimmer earned towards AGSOTY
+	my $totalPointsDenied = 0;		# total number of earned points that were denied.
 	my $totalResultsCounted = 0;	# the total number of results we used to award points
 	my $totalResultsAnalyzed = 0;	# the total number of results we considered but not necessarily 
 									# used (because they may have more than the limit)
@@ -2528,17 +2650,19 @@ sub ComputePointsForSwimmer( $$$ ) {
 		foreach my $course( @PMSConstants::arrOfCourse ) {
 			my $countOfResults = 0;		# used to check for limits (e.g. <= 8 SCY results)
 			my $subTotalPoints = 0;		# of points in this org/course (and age group)
+			my $subTotalPointsDenied = 0;		# of points in this org/course (and age group) that were denied
 			my $subTotalResultsCounted = 0;	# of results in this org/course (and age group) used for points
 			my $subTotalResultsAnalyzed = 0;# of results in this org/course (and age group) analyzed
 			my %hashOfEvents = ();		# used to remove duplicates
 			# $hashOfEvents{eventId-$course} = points : the swimmer swam in event # 'eventId' 
 			# and course $course and earned 'points' points.  E.g. event "100 M free" LCM, 
 			# earning 8 points.  Note they can also earn points in event "100 M free" SCM.
-			$query = "SELECT EventId, Points, Category, MeetId FROM Splash " .
+			$query = "SELECT EventId, Points, UsePoints, Category, MeetId FROM Splash " .
 				"WHERE Splash.SwimmerId = $swimmerId " .
 				"AND Splash.Org = '$org' " .
 				"AND Splash.Course = '$course' " .
 				"AND Splash.Points > 0  " .
+				"AND Splash.UsePoints != 0 " .		# both valid and denied points
 				$ageGroupQuery .
 				"ORDER BY Points DESC";
 			my($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
@@ -2551,13 +2675,20 @@ sub ComputePointsForSwimmer( $$$ ) {
 				my $eventId = $resultHash->{'EventId'};
 				my $category = $resultHash->{'Category'};
 				my $meetId = $resultHash->{'MeetId'};
+				my $usePoints = $resultHash->{'UsePoints'};
 				if( $swimmerId eq $debugSwimmerId ) {
 					print "...begin processing result #$subTotalResultsAnalyzed for $org and $course\n";
 					print "...eventId=$eventId, course=$course, points=$points, cat=$category, meetId=$meetId\n";
 				}
+				# handle denied points:
+				if( $usePoints < 0 ) {
+					$subTotalPointsDenied += $points;
+					next;		# since these points were denied they have no other effect on stats for this swimmer.
+				}
+				# handle valid points
 				if( $points == 0 ) {
 					# the place for this swim didn't earn any points so move on...
-					DontUseThesePoints( $swimmerId, $org, $course, $eventId, $meetId, "(zero points)", 1 );
+					SetPurposeOfThesePoints( "", "", $swimmerId, $org, $course, $eventId, $meetId, 0, "(zero points)", 1 );
 					$countOfResults++;
 					next;
 					}
@@ -2572,18 +2703,20 @@ sub ComputePointsForSwimmer( $$$ ) {
 							"Found points for the same event twice: event $eventId, course $course, " .
 							"age group $ageGroup, swimmerId $swimmerId", 1 );
 						# we'll ignore these POINTS
-						DontUseThesePoints( $swimmerId, $org, $course, $eventId, $meetId, "(Dup event-course in single age group)", 1 );
+						SetPurposeOfThesePoints( "", "", $swimmerId, $org, $course, $eventId, $meetId, 0, 
+							"(Dup event-course in single age group)", 1 );
 						next;
 					}
 					# they earned points in this event before, and since our query returned the
 					# higher points first we know that these points shouldn't be counted because
 					# they are less than (or equal) to what we've already counted for this event
 					# and course.
-					DontUseThesePoints( $swimmerId, $org, $course, $eventId, $meetId,
-						"(Dup event-course, 2 age groups)", $swimmerId eq $debugSwimmerId );
+					SetPurposeOfThesePoints( "", "", $swimmerId, $org, $course, $eventId, $meetId,
+						0, "(Dup event-course, 2 age groups)", $swimmerId eq $debugSwimmerId );
 				} elsif( ($course eq "OW") && ($category == 2) ) {
 					# we don't count cat 2 OW swims
-					DontUseThesePoints( $swimmerId, $org, $course, $eventId, $meetId, "(Cat 2)", $swimmerId eq $debugSwimmerId );
+					SetPurposeOfThesePoints( "", "", $swimmerId, $org, $course, $eventId, $meetId, 0, 
+						"(Cat 2)", $swimmerId eq $debugSwimmerId );
 				} else {
 					# we have not seen points for this event and course
 					# remember these previous points:
@@ -2604,7 +2737,7 @@ sub ComputePointsForSwimmer( $$$ ) {
 						} else {
 							# else they don't get points for this OW swim because they've hit the max
 							# set this splash as non-point earning:
-							DontUseThesePoints( $swimmerId, $org, $course, $eventId, $meetId,
+							SetPurposeOfThesePoints( "", "", $swimmerId, $org, $course, $eventId, $meetId, 0,
 								"(Max OW scored swims)", $swimmerId eq $debugSwimmerId );							
 						}
 					} elsif( ($course eq 'SCY Records') || 
@@ -2633,39 +2766,42 @@ sub ComputePointsForSwimmer( $$$ ) {
 									"$subTotalPoints.\n";
 							}
 						} else {
-							DontUseThesePoints( $swimmerId, $org, $course, $eventId, $meetId, "(Max scored swims)",
-								$swimmerId eq $debugSwimmerId );							
+							SetPurposeOfThesePoints( "", "", $swimmerId, $org, $course, $eventId, $meetId, 0,
+								"(Max scored swims)", $swimmerId eq $debugSwimmerId );							
 						}
 					}
 				}
 			} # end of while()...
-			if( $displaySwimmersWithZeroPoints || ($subTotalPoints > 0) ) {
-				StorePointsForSwimmer( $swimmerId, $ageGroup, $course, $org, $subTotalPoints,
+			if( $displaySwimmersWithZeroPoints || ($subTotalPoints > 0) || ($subTotalPointsDenied > 0) ) {
+				StorePointsForSwimmer( $swimmerId, $ageGroup, $course, $org, $subTotalPoints, $subTotalPointsDenied,
 					$subTotalResultsCounted, $subTotalResultsAnalyzed );
 				$totalPoints += $subTotalPoints;			# the total number of points this swimmer earned
+				$totalPointsDenied += $subTotalPointsDenied;
 			}
-		$totalResultsCounted += $subTotalResultsCounted;
-		$totalResultsAnalyzed += $subTotalResultsAnalyzed;
-		if( $swimmerId eq $debugSwimmerId ) {
-			print "...End of this org: $org, course: $course: subTotalResultsCounted=$subTotalResultsCounted, " .
-				"totalResultsCounted=$totalResultsCounted, subTotalResultsAnalyzed=$subTotalResultsAnalyzed, " .
-				"totalResultsAnalyzed=$totalResultsAnalyzed\n......totalPoints=$totalPoints\n";
-		}
+			$totalResultsCounted += $subTotalResultsCounted;
+			$totalResultsAnalyzed += $subTotalResultsAnalyzed;
+			if( $swimmerId eq $debugSwimmerId ) {
+				print "...End of this org: $org, course: $course: subTotalResultsCounted=$subTotalResultsCounted, " .
+					"totalResultsCounted=$totalResultsCounted, subTotalResultsAnalyzed=$subTotalResultsAnalyzed, " .
+					"totalResultsAnalyzed=$totalResultsAnalyzed\n......totalPoints=$totalPoints\n";
+			}
 		} # end of foreach my $course
 		
 	} # end of foreach my $org
 
-	return( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed );	
+	return( $totalPoints, $totalPointsDenied, $totalResultsCounted, $totalResultsAnalyzed );	
 
 } # end of ComputePointsForSwimmer()
 
 
-
-#		DontUseThesePoints( $swimmerId, $org, $course, $eventId, "(Max scored swims)" );
-# DontUseThesePoints - mark the splash for the passed $org and $course and $eventId as a non-scoring
-#		swim. We'll still remember the points that would have been earned.
+#		SetPurposeOfThesePoints( $swimmerId, $org, $course, $eventId, "(Max scored swims)" );
+# SetPurposeOfThesePoints - The passed swimmer "earned" some points, but they may not be awarded
+#	to them. The caller of this routine is dictating whether or not these points get to be used
+#	for AGSOTY points, and why.
 #
 # PASSED:
+#	$fileName - used for logging. Empty string ok.
+#	$lineNum - used for logging. Empty string ok.
 #	$swimmerId -
 #	$org -
 #	$course -
@@ -2674,7 +2810,8 @@ sub ComputePointsForSwimmer( $$$ ) {
 #		for the same swimmer within the same org (e.g. PMS), with the same course (e.g. 200 free), and
 #		with the same eventId (since they are the same event). So we need to know EXACTLY which splash to
 #		not count!
-#	$reason - the reason this splash is not a scoring swim.
+#	$usePoints - see the definition of of UsePoints in the Splash table for possible values. 
+#	$reason - the reason this splash is or is not a scoring swim.
 #	$logToStdout - (optional) set to true if Notes are to be logged to stdout in addition to the
 #		log file, false otherwise.  Default is 0.
 #
@@ -2683,58 +2820,71 @@ sub ComputePointsForSwimmer( $$$ ) {
 #
 # NOTES:
 #	The entry for this swim in the Splash table will be updated with the passed reason, setting
-#		the UsePoints column to 0.
+#		the UsePoints column to the passed $usePoints.
+#	Note that if $usePoints is < 0 then this is an error and will be logged as such.
+#	Note that the default value for UsePoints for every splash is 0 (points are used for AGSOTY) so
+#		this routine is not called for most splashes. Only those where the points are "special".
 #
-sub DontUseThesePoints( $$$$$ ) {
-	my( $swimmerId, $org, $course, $eventId, $meetId, $reason, $logToStdout ) = @_;
+sub SetPurposeOfThesePoints( $$$$$$$$$ ) {
+	my( $fileName, $lineNum, $swimmerId, $org, $course, $eventId, $meetId, $usePoints, $reason, $logToStdout ) = @_;
 	my $debugSwimmerId = "0";
 	if( ! defined( $logToStdout ) ) {
 		$logToStdout = 0;
 	}
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
-	my $query = "SELECT SplashId, UsePoints FROM Splash WHERE " .
+	my $query = "SELECT SplashId, UsePoints, Reason FROM Splash WHERE " .
 		"SwimmerId=$swimmerId AND Org='$org' AND Course='$course' AND EventId='$eventId' AND MeetId='$meetId'";
 		
 	my ($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
 	if( $status ne "" ) {
-		PMSLogging::DumpError( "", "", "TT_MySqlSupport::DontUseThesePoints(): Failed to get splash " .
+		PMSLogging::DumpError( $fileName, $lineNum, "TT_MySqlSupport::SetPurposeOfThesePoints(): Failed to get splash " .
 			"to update: : status='$status', org=$org, course=$course, eventId=$eventId, meetId=$meetId, passed reason='$reason'.", 1);
 	} elsif( defined(my $resultHash = $sth->fetchrow_hashref) ) {
 		my $splashId = $resultHash->{"SplashId"};
-		my $usePoints = $resultHash->{"UsePoints"};
-		if( $usePoints == 0 ) {
-			# this is odd....report it but ignore it.
-			PMSLogging::DumpWarning( "", "", "TT_MySqlSupport::DontUseThesePoints(): UsePoints already set " .
-				"to 0: swimmerId=$swimmerId, org=$org, eventId=$eventId, course=$course, meetId=$meetId, passed reason='$reason'.", 1);
+		my $currentUsePoints = $resultHash->{"UsePoints"};
+		my $currentReason = $resultHash->{"Reason"};
+				
+		if( $currentUsePoints != 1 ) {
+			# this is odd since it implies that UsePoints has already been set for this row....report it but ignore it.
+			PMSLogging::DumpWarning( $fileName, $lineNum, "TT_MySqlSupport::SetPurposeOfThesePoints(): UsePoints already set " .
+				"to $currentUsePoints for swimmerId=$swimmerId, org=$org, eventId=$eventId, course=$course,\n" .
+				"   meetId=$meetId, current reason='$currentReason' when being asked to set UsePoints='$usePoints' and " .
+				"passed reason='$reason'", 1);
 		} else {
-			PMSLogging::DumpNote( "", "", "TT_MySqlSupport::DontUseThesePoints(): SwimmerId=$swimmerId, eventId=$eventId, " .
-				"course=$course, meetId=$meetId, passed reason='$reason'.", $logToStdout );
+			my $str = "TT_MySqlSupport::SetPurposeOfThesePoints(): Set UsePoints='$usePoints' for " .
+				"SwimmerId=$swimmerId, eventId=$eventId, " .
+				"course=$course, meetId=$meetId,\n   passed reason='$reason'.";
+			if( $usePoints < 0 ) {
+				PMSLogging::DumpError( $fileName, $lineNum, $str, $logToStdout );
+			} elsif( $usePoints == 2 ) {
+				# a slightly "UNUSUAL" case where the $eventGender is M and the $swimmerGender is N
+				PMSLogging::DumpNote( $fileName, $lineNum, $str, $logToStdout );
+			}
 		}
-		$query = "UPDATE Splash SET UsePoints = 0, Reason = '$reason' WHERE SplashId=$splashId";
+		$query = "UPDATE Splash SET UsePoints = $usePoints, Reason = '$reason' WHERE SplashId=$splashId";
 		($sth, $rv, $status) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
 		
 		if( $swimmerId eq $debugSwimmerId ) {
-			print "DontUseThesePoints(): query='$query', status='$status'\n";
+			print "SetPurposeOfThesePoints(): query='$query', status='$status'\n";
 		}
 		
 		if( $status ne "" ) {
-			PMSLogging::DumpError( "", "", "TT_MySqlSupport::DontUseThesePoints(): Failed to UPDATE " .
+			PMSLogging::DumpError( "", "", "TT_MySqlSupport::SetPurposeOfThesePoints(): Failed to UPDATE " .
 				"Splash: status='$status', swimmerId=$swimmerId, org=$org, course=$course, eventId=$eventId, " .
 				"meetId=$meetId, passed reason='$reason'.", 1);
 		}
 	} else {
-		PMSLogging::DumpError( "", "", "TT_MySqlSupport::DontUseThesePoints(): Failed to get splash " .
+		PMSLogging::DumpError( "", "", "TT_MySqlSupport::SetPurposeOfThesePoints(): Failed to get splash " .
 			"to update: empty result: org=$org, course=$course, eventId=$eventId, meetId=$meetId, passed reason='$reason'.", 1);
 	}
-
-} # end of DontUseThesePoints()
-
+} # end of SetPurposeOfThesePoints()
 
 
 
 
-# 	StorePointsForSwimmer( $swimmerId, $ageGroup, $course, $org, $subTotalPoints,
-#				$subTotalResultsCounted, $subTotalResultsAnalyzed );
+
+#				StorePointsForSwimmer( $swimmerId, $ageGroup, $course, $org, $subTotalPoints, $subTotalPointsDenied
+#					$subTotalResultsCounted, $subTotalResultsAnalyzed );
 # StorePointsForSwimmer - update the passed swimmer's points for the passed course (SCM, etc)
 #	and org (PMS or USMS) and ageGroup
 #
@@ -2749,6 +2899,7 @@ sub DontUseThesePoints( $$$$$ ) {
 #	$course - SCY, LCM, SCM
 #	$org - PMS or USMS
 #	$numPoints - the number of points
+#	$totalPointsDenied -
 #	$resultsCounted - the number of results used to accumulated those points
 #	$resultsAnalyzed - the number of results analyzed for points.  It's possible not all
 #		were actually counted (part of $resultsCounted) if limits were reached (e.g. no more
@@ -2758,7 +2909,7 @@ sub DontUseThesePoints( $$$$$ ) {
 #	n/a
 #
 sub StorePointsForSwimmer($$$$$$$) {
-	my( $swimmerId, $ageGroup, $course, $org, $numPoints, $resultsCounted, $resultsAnalyzed ) = @_;
+	my( $swimmerId, $ageGroup, $course, $org, $numPoints, $totalPointsDenied, $resultsCounted, $resultsAnalyzed ) = @_;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	my $ageGroup1 = $ageGroup;
 	my $ageGroup2 = $ageGroup;
@@ -2802,15 +2953,13 @@ sub StorePointsForSwimmer($$$$$$$) {
 
 	# update this swimmer by adding their points for the appropriate age group
 	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
-		"INSERT INTO Points (SwimmerId,Course,Org,AgeGroup,TotalPoints,ResultsCounted,ResultsAnalyzed) " .
-		"VALUES (\"$swimmerId\",\"$course\",\"$org\",\"$ageGroup\",\"$numPoints\"," .
+		"INSERT INTO Points (SwimmerId,Course,Org,AgeGroup,TotalPoints,TotalPointsDenied,ResultsCounted,ResultsAnalyzed) " .
+		"VALUES (\"$swimmerId\",\"$course\",\"$org\",\"$ageGroup\",\"$numPoints\",\"$totalPointsDenied\"," .
 		"'$resultsCounted','$resultsAnalyzed')" );
 	# get the PointsId for the points we just entered just to make sure there were no errors
     my $pointsId = $dbh->last_insert_id(undef, undef, "Points", "PointsId");
     die "Failed to insert points for swimmerId=$swimmerId in StorePointsForSwimmer()" if( !defined( $pointsId ) );
 } # end of StorePointsForSwimmer()
-
-
 
 
 # 	TT_MySqlSupport::ReadSwimMeetData( $racesDataFile );
@@ -3179,6 +3328,10 @@ sub UpdateFetchStats( $$$$ ) {
 	}
 } # end of UpdateFetchStats()
 				
+
+
+
+
 			
 
 1;  # end of module

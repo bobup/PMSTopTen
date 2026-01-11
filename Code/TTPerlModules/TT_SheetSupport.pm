@@ -13,7 +13,7 @@ use strict;
 use sigtrap;
 use warnings;
 
-my $debug = 1;	# set >0 to turn on debugging
+my $debug = 0;	# set >0 to turn on debugging
 
 # OpenSheetFile - open an excel (.xlsx or .csv) file for reading
 #
@@ -63,6 +63,7 @@ sub OpenSheetFile($) {
 #        open my $fh, "<:encoding(utf8)", "$fileName" or die "TT_SheetSupport::OpenSheetFile(): " .
         open my $fh, "<:encoding(iso-8859-1)", "$fileName" or die "TT_SheetSupport::OpenSheetFile(): " .
          	"ABORT: Can't open '$fileName': $!";
+		
 		PMSLogging::PrintLog( "", "", "  TT_SheetSupport::OpenSheetFile(): file $fileName: Number of sheets:  1 (it's a " .
         	( $separator eq "," ? "comma-separated" : "tab-separated" ) . " .$ext file).", 1 ) if( $debug >= 1);
 		$ssHandle{"fileRef"} = $fh;

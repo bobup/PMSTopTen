@@ -53,7 +53,7 @@ our %hashOfInvalidRegNums = ();		# {$regnum:$fullName} = count of number of time
 	# invalid regnum.
 	# {$regNum:$fullName:OrgCourse} = "$currentAgeGroup,$org:$course"
 
-our %numInGroup;			# $numInGroup{gender:ageGroup} = number of swimmers in this gender/age group
+our %numInGroup;			# $numInGroup{gender:ageGroup} = number of swimmers in this event's gender/age group
 
 # fetchStats - mirriors the table of the same name (field names of the FetchStats table must be
 #	match exactly the key names in this hash table)  IF YOU ADD A FIELD HERE YOU PROBABLY SHOULD

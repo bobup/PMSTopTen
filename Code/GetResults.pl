@@ -68,10 +68,19 @@ my $appDirName;     # directory containing the application we're running
 my $appRootDir;		# directory containing the appDirName directory
 my $sourceData;		# full path of directory containing the "source data" which we process to create the generated files
 
+my $doSleep;
+my $longSleep;
+my $shortSleep;
+
+
 BEGIN {
 	# set this to adjust debug printing:
 	$debug = 0;
 	
+	# http problems...
+	$longSleep = 60;		# seconds
+	$shortSleep = 1;
+	$doSleep = 1;			# 0 = don't do any sleep
 	
 	# Get the name of the program we're running:
 	$appProgName = basename( $0 );
@@ -111,12 +120,35 @@ my $RESULT_FILES_TO_READ = $TT_Struct::G_RESULT_FILES_TO_READ;
 $RESULT_FILES_TO_READ = $TT_Struct::G_RESULT_FILES_TO_READ;		# avoid warning message
 	
 # simplify access and testing of $G_RESULT_FILES_TO_READ
-my $generatePMSTopTen		= ($RESULT_FILES_TO_READ & 0b1);			# set to non-zero if we are supposed to generate PMS Top Ten points, 0 if not.
-my $generateUSMSTopTen		= ($RESULT_FILES_TO_READ & 0b10);			# set to non-zero if we are supposed to generate USMS Top Ten points, 0 if not.
-my $generatePMSRecords		= ($RESULT_FILES_TO_READ & 0b100);		# set to non-zero if we are supposed to generate PMS Records points, 0 if not.
-my $generateUSMSRecords		= ($RESULT_FILES_TO_READ & 0b1000);		# set to non-zero if we are supposed to generate USMS Records points, 0 if not.
-my $generatePMSOW			= ($RESULT_FILES_TO_READ & 0b10000);		# set to non-zero if we are supposed to generate PMS OW points, 0 if not.
-my $generateEPostal			= ($RESULT_FILES_TO_READ & 0b1000000);	# set to non-zero if we are supposed to generate ePostal points, 0 if not.
+my $generatePMSTopTen		= ($RESULT_FILES_TO_READ & 0b1);			# set to non-zero if we are supposed 
+	# to generate PMS Top Ten points, 0 if not.
+my $generateUSMSTopTen		= ($RESULT_FILES_TO_READ & 0b10);			# set to non-zero if we are supposed 
+	# to generate USMS Top Ten points, 0 if not.
+my $generatePMSRecords		= ($RESULT_FILES_TO_READ & 0b100);		# set to non-zero if we are supposed to 
+	# generate PMS Records points, 0 if not.
+my $generateUSMSRecords		= ($RESULT_FILES_TO_READ & 0b1000);		# set to non-zero if we are supposed to 
+	# generate USMS Records points, 0 if not.
+my $generatePMSOW			= ($RESULT_FILES_TO_READ & 0b10000);		# set to non-zero if we are supposed 
+	# to generate PMS OW points, 0 if not.
+my $generateEPostal			= ($RESULT_FILES_TO_READ & 0b1000000);	# set to non-zero if we are supposed to 
+	# generate ePostal points, 0 if not.
+
+
+# Below is a short-cut used to disable parts of this program. Set a variable to 0 to cause
+# the corresponding part of GetResults.pl to not execute. Comment out the setting of the variable
+# (leaving it with the value assigned above) and that corresponding piece of code will execute.
+# Skip over the whole block of assignments and all of GetResults.pl will execute.
+# For example to turn off fetching results for PMS Top Ten processing enable the block below and do this:
+#	$generatePMSTopTen = 0;
+if( 0 ) {
+$generatePMSTopTen = 0;
+$generateUSMSTopTen = 0;
+$generatePMSRecords = 0;
+$generateUSMSRecords = 0;
+$generatePMSOW = 0;
+$generateEPostal = 0;
+}
+
 
 ####################
 # Usage string
@@ -377,7 +409,7 @@ if( $generateEPostal ) {
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET PMS Top Ten POINTS
 ####
-if( ($RESULT_FILES_TO_READ & 0b1) != 0 ) {
+if( $generatePMSTopTen != 0 ) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	foreach my $simpleFileName ( sort keys %PMSResultFiles ) {
 		my $org_course = $PMSResultFiles{$simpleFileName};
@@ -404,7 +436,7 @@ if( ($RESULT_FILES_TO_READ & 0b1) != 0 ) {
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET USMS Top Ten POINTS
 ####
-if( ($RESULT_FILES_TO_READ & 0b10) != 0 ) {
+if( $generateUSMSTopTen != 0 ) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	foreach my $simpleFileName ( sort keys %USMSResultFiles ) {
 		my $org_course = $USMSResultFiles{$simpleFileName};
@@ -429,7 +461,7 @@ if( ($RESULT_FILES_TO_READ & 0b10) != 0 ) {
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET PMS Records
 ####
-if( ($RESULT_FILES_TO_READ & 0b100) != 0 ) {
+if( $generatePMSRecords != 0 ) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	my $previousYear = $yearBeingProcessed-1;
 	foreach my $simpleFileName ( sort keys %PMSRecordsFiles ) {
@@ -456,7 +488,7 @@ if( ($RESULT_FILES_TO_READ & 0b100) != 0 ) {
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET USMS Records
 ####
-if( ($RESULT_FILES_TO_READ & 0b1000) != 0 ) {
+if( $generateUSMSRecords != 0 ) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	GetUSMSRecords( "http://www.usms.org/comp/recordexport.php", \%USMSRecordsFiles, $yearBeingProcessed );
 } # end of generate USMS records
@@ -466,7 +498,7 @@ if( ($RESULT_FILES_TO_READ & 0b1000) != 0 ) {
 ####
 #### GET ALL RESULT FILES THAT WE PROCESS TO GET PMS OW results
 ####
-if( ($RESULT_FILES_TO_READ & 0b10000) != 0 ) {
+if( $generatePMSOW != 0 ) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	my ($numResultLines, $numEvents) = 
 		GetPMSOWResults( "https://data.pacificmasters.org/points/OWPoints/$PMSOpenWaterResultFile",
@@ -502,11 +534,16 @@ if( $generateEPostal ) {
 } # end of generate ePostal results
 
 
+PMSLogging::PrintLog( "", "", "\n*********", 1 );
+PMSLogging::PrintLog( "", "", "Done with result files. Generate swim meet data.", 1 );
+
 
 ####
 #### DONE WITH RESULT FILES - GENERATE SWIM MEET DATA
 ####
+#print "Dump of SwimMeets hash:\n";
 #print Dumper %SwimMeets;
+#print "End of Dump\n";
 GetSwimMeetDetails();
 my $racesFileName = "$sourceDataDir/races.txt";
 open( my $racesFileHandle, ">$racesFileName" ) || die "Can't open $racesFileName: $!\nAbort.\n";
@@ -540,7 +577,9 @@ if( $generatePMSTopTen && $generateUSMSTopTen && $generatePMSRecords && $generat
 	PMSLogging::PrintLog( "", "", "$appProgName: WARNING: Not all results were analyzed due to configuration.", 1);
 }
 
-PMSLogging::PrintLog( "", "", "Done with $appProgName!", 1);
+my $completionTimeDate = strftime( "%a %b %d %G - %X", localtime() );
+
+PMSLogging::PrintLog( "", "", "Done with $appProgName on $completionTimeDate!", 1);
 
 # end of main
 
@@ -579,7 +618,7 @@ sub GetSwimMeetDetails() {
 		my $httpResponse = $tinyHttp->get( $link );
 		if( !$httpResponse->{success} ) {
 			# failure - display message and give up on this one
-			TT_Logging::HandleHTTPFailure( $link, "?", "?", $httpResponse );
+			TT_Logging::HandleHTTPFailure( $link, "?", "?", $httpResponse, "From GetSwimMeetDetails()" );
 		} else {
 			my @lines = split('\n', $httpResponse->{content});
 			my $lineNum = 0;
@@ -684,7 +723,7 @@ sub GetPMSTopTenResults( $$$$$ ) {
 		open( $diffResultsFD, ">$diffResultsFileName" ) || (die "Can't open $diffResultsFileName: $!\nAbort.\n");
 	}
 
-my $httpResponseRef = $tinyHttp->get( $linkToResults, \%options );
+	my $httpResponseRef = $tinyHttp->get( $linkToResults, \%options );
 	# we get here under TWO conditions:
 	#	- the entire response has been processed by data_callback routine and all is good, or
 	#	- none (or some?) of the response has been processed and we got an error.
@@ -698,7 +737,7 @@ my $httpResponseRef = $tinyHttp->get( $linkToResults, \%options );
 	if( !$httpResponseRef->{success} ) {
 		# failure - display message and give up on this one
 		PMSLogging::PrintLog( "", "", "FAILED!!", 1 );
-		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef );
+		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef, "From GetPMSTopTenResults() #1" );
 	} else {
 		# all of the human-readable results have been parsed with no errors
 		if( $callbackState{"numDifferentResults"} ) {
@@ -745,7 +784,7 @@ my $httpResponseRef = $tinyHttp->get( $linkToResults, \%options );
 			if( !$httpResponseRef->{success} ) {
 				# failure - display message and give up on this one
 				PMSLogging::PrintLog( "", "", "FAILED to download '$linkToResults'!!", 1 );
-				TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef );
+				TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef, "From GetPMSTopTenResults() #2" );
 			} else {
 				# the excel file was downloaded with no errors
 			}
@@ -834,7 +873,7 @@ sub ParseFileDownloadHttpResponse( $$$$$$ ) {
 		# failure - display message and give up on this one
 		PMSLogging::PrintLog( "", "", "ParseFileDownloadHttpResponse() FAILED!! (during " .
 			"callback #$numCallbackCalls)", 1 );
-		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef );
+		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef, "From ParseFileDownloadHttpResponse()" );
 	} else {
 		# write out this chunk of bytes to the destination file.
 		my $length = syswrite( $fileHandle, $content );
@@ -885,7 +924,7 @@ sub ParsePMSTopTenHttpResponse( $$$$$$$ ) {
 		# failure - display message and give up on this one
 		PMSLogging::PrintLog( "", "", "ParsePMSTopTenHttpResponse() FAILED!! (during " .
 			"callback #$numCallbackCalls)", 1 );
-		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef );
+		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef, "From ParsePMSTopTenHttpResponse()" );
 	} else {
 		# begin/continue our state machine, processing each line in the human-readable results:
 		if( $content !~ m/\n$/ ) {
@@ -985,7 +1024,7 @@ sub ParsePMSTopTenHttpResponse( $$$$$$$ ) {
 					$link =~ s/".*$//;
 					$meetTitle =~ s/^.*">//;
 					$meetTitle =~ s,</a.*$,,;
-					$meetTitle = CleanMeetTitle( $meetTitle );
+					$meetTitle = CleanStringOfHTMLEscapeChars( $meetTitle );
 					if( ($meetTitle ne "") && ($link ne "") && (! defined( $SwimMeets{$meetTitle} ) ) ) {
 						# we haven't seen this meet before - record it
 						$link = $baseURL . $link;
@@ -1061,8 +1100,8 @@ sub GetUSMSTopTenResults( $$$$$ ) {
 		} );
 
 	# fetch the human-readable results
-	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetUSMSTopTenResults(): Get the results for " .
-		"$org $course,\n    linkToResults='$linkToResults'...", 1 );
+	PMSLogging::PrintLog( "", "", "GetResults::GetUSMSTopTenResults(): Get the results for " .
+		"$org $course,\n    HTTP::Tiny->get($linkToResults)", 1 );
 		
 	my $httpResponse = $tinyHttp->get( $linkToResults, \%options );
 	# we get here under TWO conditions:
@@ -1073,8 +1112,8 @@ sub GetUSMSTopTenResults( $$$$$ ) {
 	my $success = $httpResponse->{success};
 	if( !$success ) {
 		# failure - display message and give up on this one
-		PMSLogging::PrintLog( "", "", "FAILED!!" );
-		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponse );
+		PMSLogging::PrintLog( "", "", "GetUSMSTopTenResults(): FAILED!!" );
+		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponse, "From GetUSMSTopTenResults() #1" );
 		# WEIRD SITUATION:  on some machines (e.g. Mac) the response->{success} flag is not true, which
 		# should normally cause us to give up on this download.  But experimentation shows that we get
 		# the data anyway so we're going to fudge on this and, if it appears we got data anyway, continue
@@ -1141,7 +1180,7 @@ sub GetUSMSTopTenResults( $$$$$ ) {
 			if( !$httpResponseRef->{success} ) {
 				# failure - display message and give up on this one
 				PMSLogging::PrintLog( "", "", "FAILED to download '$linkToResults'!!", 1 );
-				TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef, "(From GetUSMSTopTenResults())" );
+				TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef, "(From GetUSMSTopTenResults() #2)" );
 			} else {
 				# the excel file was downloaded with no errors
 			}
@@ -1180,13 +1219,17 @@ sub ParseUSMSTopTenHttpResponse( $$$$$$$ ) {
 	$callbackStateRef->{"numCallbackCalls"} = $numCallbackCalls;
 	my $partialLastLine = 0;		# set to 1 if the content we are passed ends with a partial line
 
+	if( $debug ) {
+		PMSLogging::PrintLog( "", "", "ParseUSMSTopTenHttpResponse() called with " .
+			"callback #$numCallbackCalls", 1 );
+	}
 	# before doing anything make sure we didn't get an error
 	if( ((defined $httpResponseRef->{success}) && !$httpResponseRef->{'success'}) ||
 		($httpResponseRef->{'status'} !~ /^2/) ) {
 		# failure - display message and give up on this one
 		PMSLogging::PrintLog( "", "", "ParseUSMSTopTenHttpResponse() FAILED!! (during " .
 			"callback #$numCallbackCalls)", 1 );
-		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef );
+		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef, "From ParseUSMSTopTenHttpResponse()" );
 	} else {
 		# begin/continue our state machine, processing each line in the human-readable results:
 		if( $content !~ m/\n$/ ) {
@@ -1199,7 +1242,7 @@ sub ParseUSMSTopTenHttpResponse( $$$$$$$ ) {
 			# the previous chunk had a partial line, so we'll prepend it to the first line of
 			# the current chunk
 			$lines[0] = $leftoverLine . $lines[0];
-			if( $debug ) {
+			if( $debug > 2 ) {
 				print "ParseUSMSTopTenHttpResponse(): process previously saved partial line (" .
 					length($leftoverLine) . " chars).  New first line: '" . $lines[0] . "'\n";
 			}
@@ -1211,14 +1254,14 @@ sub ParseUSMSTopTenHttpResponse( $$$$$$$ ) {
 			# the last line doesn't end with a '\n' so it's a partial line
 			$callbackStateRef->{"leftoverLine"} = $lastLine;
 			$#lines = $lastIndex-1;
-			if( $debug ) {
+			if( $debug > 2 ) {
 				print "ParseUSMSTopTenHttpResponse(): found a partial line (" . length($lastLine) . 
 					" chars) - saving it for next chunk: '" . $lastLine . "'\n";
 			}
 		} else {
 			# no partial line...
 			$callbackStateRef->{"leftoverLine"} = "";
-			if( $debug ) {
+			if( $debug > 2 ) {
 				print "ParseUSMSTopTenHttpResponse(): No partial line\n";
 			}
 		}
@@ -1226,9 +1269,14 @@ sub ParseUSMSTopTenHttpResponse( $$$$$$$ ) {
 		# now we have an array of 0 or more lines to parse...
 		foreach my $line ( @lines ) {
 			$numLines++;
-			#print "line $numLines: $line\n";
 			if( ($numLines % 200) == 0 ) {
-				PMSLogging::PrintLogNoNL( "", "", "$numLines...", 1 );
+				if( $debug ) {
+					if( $numLines == 200 ) {
+						PMSLogging::PrintLogNoNL( "", "", "ParseUSMSTopTenHttpResponse(): $numLines", 1 );
+					} else {
+						PMSLogging::PrintLogNoNL( "", "", "...$numLines", 1 );
+					}
+				}
 			}
 			if( $state eq "LookingForExcelButton" ) {
 				# we're still looking for the button to push to retrieve the CSV file.  Did we find it?
@@ -1237,7 +1285,7 @@ sub ParseUSMSTopTenHttpResponse( $$$$$$$ ) {
 					$line =~ s/^.*\|//;
 					$line =~ s/^.<a href="//;
 					$line =~ s/">CSV File.*$//;
-					${$callbackStateRef->{"excelLinkRef"}} = CleanMeetTitle($line);
+					${$callbackStateRef->{"excelLinkRef"}} = CleanStringOfHTMLEscapeChars($line);
 					$state = "LookingForResultLine";
 				}
 				next
@@ -1250,8 +1298,15 @@ sub ParseUSMSTopTenHttpResponse( $$$$$$$ ) {
 					$line =~ s/">.*$//;
 					my $swimLink = "$baseURL$line";
 					# now get the meet details:
-					my($meetTitle,$link) = ProcessUSMSSwimDetails( $swimLink );
-					$meetTitle = CleanMeetTitle( $meetTitle );
+
+					if( $debug ) {
+						PMSLogging::PrintLog( "", "", "GetResults::ParseUSMSTopTenHttpResponse(): " .
+							"call ProcessUSMSSwimDetails( $swimLink)" );
+					}
+
+					my($meetTitle,$link) = ProcessUSMSSwimDetails( $swimLink, "Called from ParseUSMSTopTenHttpResponse( " .
+						"numCallbackCalls=$numCallbackCalls, numLines=$numLines" );
+					$meetTitle = CleanStringOfHTMLEscapeChars( $meetTitle );
 					if( ($meetTitle ne "") && ($link ne "") && (! defined( $SwimMeets{$meetTitle} ) ) ) {
 						# we haven't seen this meet before - record it
 						$link = $baseURL . "/comp/meets/" . $link;
@@ -1267,6 +1322,11 @@ sub ParseUSMSTopTenHttpResponse( $$$$$$$ ) {
 	} # end of # begin/continue our state machine...
 	$callbackStateRef->{"state"} = $state;
 	$callbackStateRef->{"numLines"} = $numLines;
+	
+	if( $debug ) {
+		PMSLogging::PrintLog( "", "", "ParseUSMSTopTenHttpResponse() RETURNing with " .
+			"callback #$numCallbackCalls", 1 );
+	}
 } # end of ParseUSMSTopTenHttpResponse()
 
 
@@ -1275,17 +1335,35 @@ sub ParseUSMSTopTenHttpResponse( $$$$$$$ ) {
 # ProcessUSMSSwimDetails - look at a single swim result and get details on the meet at which the result was generated.
 #
 # PASSED:
-#	$swimLink - a URL to a page giving the details of a swim
+#	$swimLink - a URL to a page giving the details of a swim. These details should contain the Meet
+#		title and a link to the meet.
+#	$debugStr - a string supplied by the caller so we can trace backwards if there is an error.
 #
 # RETURNED:
 #	$meetTitle - the title of the meet where the swim ocurred.
-#	$link - a link to the meet
+#	$link - a link to the meet which we use to get the sanction.
+#
+# NOTES:
+#	This routine will be called for every line in a USMS Top 10 LMSC file.  There will be ~1000 such lines, depending
+#	on many swimmers in the LMSC make USMS top 10.
 #
 sub ProcessUSMSSwimDetails($) {
+	CORE::state $staticCounter = 0;
 	my $swimLink = $_[0];
-	my ($meetTitle,$link) = ("", "");
+	my $debugStr = $_[1];
+	my ($meetTitle,$link) = ("bogus meet title", "bogus meet link");
 	my $lineNum = 0;
 
+	# rotate agents
+	my @agents = (
+		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.10 Safari/605.1.1',
+		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.3',
+		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.3',
+		'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.3',
+		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Edg/134.0.0.',
+		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 OPR/117.0.0.',
+	);
+	my $agent = $agents[ rand @agents ];
 	my %callbackState = (
 		"numCallbackCalls"		=> 	0,
 		"numLines"				=>	0,
@@ -1293,34 +1371,62 @@ sub ProcessUSMSSwimDetails($) {
 		"link"					=>	"",
 		"leftoverLine"			=>	""
 		);
+
 	my %options = (
 		"data_callback"	=>	sub {
 			ParseUSMSSwimDetails( \%callbackState, $swimLink, $_[0], $_[1] );
 		} );
 	my %attributes = (
-		"timeout"		=>	600
-		);
+		"timeout"		=>	600,
+		"agent"			=>	$agent,
+		);		
 	my $tinyHttp2 = HTTP::Tiny->new( %attributes );
 
 	# fetch the human-readable swim details
-	my $httpResponse = $tinyHttp2->get( $swimLink, \%options );
-	$meetTitle = $callbackState{'meetTitle'};
-	$link = $callbackState{'link'};
-	# we get here under TWO conditions:
-	#	- the entire response has been processed by data_callback routine and all is good, or
-	#	- none (or some?) of the response has been processed and we got an error.
-	# This means the httpResponse is either "OK" or some error, so, if it's an error, we'll handle
-	# it here:
-	if( !$httpResponse->{success} ) {
-		# failure - display message and give up on this one
-		PMSLogging::PrintLog( "", "", "FAILED!!" );
-		TT_Logging::HandleHTTPFailure( $swimLink, "USMS", "?", $httpResponse, "From ProcessUSMSSwimDetails()" );
-	} elsif( ($meetTitle eq "") || ($link eq "") ) {
-		PMSLogging::PrintLog( "", "", "GetResults::ProcessUSMSSwimDetails(): Unable to find " .
-			"Meet info in '$swimLink'; link='$link', meetTitle='$meetTitle', " .
-			"callbacks=$callbackState{'numCallbackCalls'}, " .
-			"numLines=callbacks=$callbackState{'numLines'}", 1 );
+	$staticCounter++;
+	if( $debug > 2 ) {
+		PMSLogging::PrintLog( "", "", "GetResults::ProcessUSMSSwimDetails(): HTTP::Tiny->get('$swimLink'), $staticCounter", 1 );
 	}
+	if( ($staticCounter % 100) == 0 ) {
+		if( $debug > 2 ) {
+			PMSLogging::PrintLog( "", "", "GetResults::ProcessUSMSSwimDetails(): staticCounter=$staticCounter", 1 );
+		}
+		sleep( $longSleep ) if( $doSleep );
+	} else {
+		sleep( $shortSleep ) if( $doSleep );
+	}
+	
+	if(1) {
+		my $httpResponse = $tinyHttp2->get( $swimLink, \%options );
+		$meetTitle = $callbackState{'meetTitle'};
+		$link = $callbackState{'link'};
+		my $numCallbacks=$callbackState{'numCallbackCalls'};
+		# we get here under TWO conditions:
+		#	- the entire response has been processed by data_callback routine and all is good, or
+		#	- none (or some?) of the response has been processed and we got an error.
+		# This means the httpResponse is either "OK" or some error, so, if it's an error, we'll handle
+		# it here:
+		if( !$httpResponse->{success} ) {
+			# failure - display message and give up on this one
+			PMSLogging::PrintLog( "", "", "FAILED!!" );
+			TT_Logging::HandleHTTPFailure( $swimLink, "USMS", "?", $httpResponse, "From ProcessUSMSSwimDetails() " .
+				"when $debugStr. Callback 'ParseUSMSSwimDetails' failed when its numCallBacks=$numCallbacks." );
+		} elsif( ($meetTitle eq "") || ($link eq "") ) {
+			PMSLogging::PrintLog( "", "", "GetResults::ProcessUSMSSwimDetails(): Unable to find " .
+				"Meet info in '$swimLink'; link='$link', meetTitle='$meetTitle', " .
+				"callbacks=$callbackState{'numCallbackCalls'}, " .
+				"numLines=callbacks=$callbackState{'numLines'}", 1 );
+		}
+	} else {
+		# no callback
+		my $httpResponse = $tinyHttp2->get( $swimLink );
+		my $content = $httpResponse->{'content'};
+		$content = substr( $content, 0, 100 );
+		PMSLogging::PrintLog( "", "", "GetResults::ProcessUSMSSwimDetails(): no callback; success=" .
+			"$httpResponse->{success}, url=$httpResponse->{url}, status=$httpResponse->{status},\n" .
+			"    content-'$content'", 1 );
+	}
+
 	return ($meetTitle,$link);
 } # end of ProcessUSMSSwimDetails()
 
@@ -1362,7 +1468,7 @@ sub ParseUSMSSwimDetails( $$$$ ) {
 				# the previous chunk had a partial line, so we'll prepend it to the first line of
 				# the current chunk
 				$lines[0] = $leftoverLine . $lines[0];
-				if( $debug ) {
+				if( $debug > 2 ) {
 					print "ParseUSMSSwimDetails(): process previously saved partial line (" .
 						length($leftoverLine) . " chars).  New first line: '" . $lines[0] . "'\n";
 				}
@@ -1374,7 +1480,7 @@ sub ParseUSMSSwimDetails( $$$$ ) {
 				# the last line doesn't end with a '\n' so it's a partial line
 				$callbackStateRef->{"leftoverLine"} = $lastLine;
 				$#lines = $lastIndex-1;
-				if( $debug ) {
+				if( $debug > 2 ) {
 					print "ParseUSMSSwimDetails(): found a partial line (" . length($lastLine) . 
 						" chars) - saving it for next chunk: '" . $lastLine . "'\n";
 				}
@@ -1471,7 +1577,7 @@ sub GetPMSRecords_old( $$$$$$ ) {
 	if( !$httpResponse->{success} ) {
 		# failure - display message and give up on this one
 		PMSLogging::PrintLog( "", "", "FAILED!!", 1 );
-		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponse );
+		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponse, "From GetPMSRecords()" );
 	} else {
 		if( $callbackState{'numDifferentRecords'} ) {
 			PMSLogging::PrintLog( "", "", "($callbackState{'numLines'} lines, " .
@@ -1848,16 +1954,16 @@ return (1,1);
 } # end of GetPMSOWResults()
 
 
-#				$meetTitle = CleanMeetTitle( $meetTitle );
-# CleanMeetTitle - badly named!  clean the passed string, removing HTML escaped strings with their equivalence.
+#				$meetTitle = CleanStringOfHTMLEscapeChars( $meetTitle );
+# CleanStringOfHTMLEscapeChars - badly named!  clean the passed string, removing HTML escaped strings with their equivalence.
 #
-sub CleanMeetTitle( $ ) {
+sub CleanStringOfHTMLEscapeChars( $ ) {
 	my $meetTitle = $_[0];
 	$meetTitle =~ s/&amp;/&/g;
 	$meetTitle =~ s/“/"/g;
 	$meetTitle =~ s/”/"/g;
 	return $meetTitle;
-} # end of CleanMeetTitle()
+} # end of CleanStringOfHTMLEscapeChars()
 
 
 #################################################################################################

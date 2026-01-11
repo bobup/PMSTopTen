@@ -6,13 +6,12 @@
 #
 # PASSED:
 #	$1 - the season, e.g. 2017
+#	$2 - if non-empty, send stdout to stdout AND a tmp file (otherwise just the tmp file)
 #
 #
 # Copyright (c) 2017 Bob Upshaw.  This software is covered under the Open Source MIT License 
 
 
-TMPFILE=/tmp/FetchTopten-$1.$$
-TMPFILE2=/tmp/FetchTopten_2-$1.$$
 EMAIL_NOTICE=bobup@acm.org
 SCRIPT_NAME="`hostname`::$0"		# used for messages
 
@@ -20,6 +19,14 @@ SCRIPT_NAME="`hostname`::$0"		# used for messages
 # programs to run relative to this directory:
 script_dir=$(dirname $0)
 pushd $script_dir/.. >/dev/null; FULLPATHCODE=`pwd -P`; popd >/dev/null
+# get the path to the GeneratedFiles directory:
+GENFILESDIR="$FULLPATHCODE/../GeneratedFiles/Generated-$1"
+# tmp files we'll need:
+TMPFILE="$GENFILESDIR/FetchTopten-STDOUT-$1.$$"
+TMPFILE2="$GENFILESDIR/FetchTopten_2-$1.$$"
+
+# remove old log files
+rm -f $GENFILESDIR/FetchTopten*
 
 if [ ."$1" = . ]  ; then 
 	echo "$SCRIPT_NAME: Missing season - ABORT!"
@@ -29,7 +36,11 @@ fi
 cd "$FULLPATHCODE"
 # get the latest results for the specified season
 echo $SCRIPT_NAME:  Get the latest results for $1
-./GetResults.pl $1 > $TMPFILE
+if [ ."$2" = . ] ; then
+	./GetResults.pl $1 > $TMPFILE
+else
+	./GetResults.pl $1 | tee $TMPFILE
+fi
 if grep -q "Results have changed" < $TMPFILE ; then
 	# looks like we've got some changes!
 	echo "Found some changes:"
@@ -59,4 +70,6 @@ fi
 # done
 echo $SCRIPT_NAME is done\!
 echo "TMPFILE='$TMPFILE' and TMPFILE2='$TMPFILE2' not removed"
+echo "STDOUT sent to '$TMPFILE', summary sent to '$TMPFILE2'"
+
 #rm -f $TMPFILE $TMPFILE2

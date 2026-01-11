@@ -18,6 +18,10 @@ RESCHEDULED: Rowdy Gaines Masters Classic 16	(NOT a PAC sanctioned meet)	PAC	SCM
 2025 Pacific Masters Swimming Kerry O'Brien Short Course Meters Championships	(IS a PAC sanctioned meet)	PAC	SCM	2025-10-3 - 2025-10-5	20251003PMSCMS	https://www.usms.org/comp/meets/meet.php?MeetID=20251003PMSCMS
 Mission Viejo Nadadores Masters Short Course Meters Meet	(NOT a PAC sanctioned meet)	PAC	SCM	2025-10-5	20251005MVNOCTS	https://www.usms.org/comp/meets/meet.php?MeetID=20251005MVNOCTS
 Huntsman World Senior Games	(NOT a PAC sanctioned meet)	PAC	SCM	2025-10-8 - 2025-10-10	2025100825huntS	https://www.usms.org/comp/meets/meet.php?MeetID=2025100825huntS
+Arizona Masters Short Course Meters State Championship	(NOT a PAC sanctioned meet)	PAC	SCM	2025-11-1 - 2025-11-2	20251101ScmS	https://www.usms.org/comp/meets/meet.php?MeetID=20251101ScmS
+Short Course Meters Challenge	(NOT a PAC sanctioned meet)	PAC	SCM	2025-12-13	20251213MNSCMS	https://www.usms.org/comp/meets/meet.php?MeetID=20251213MNSCMS
+2025 Colonies Zone and New England LMSC SCM Championship	(NOT a PAC sanctioned meet)	PAC	SCM	2025-12-5 - 2025-12-7	202512052025chS	https://www.usms.org/comp/meets/meet.php?MeetID=202512052025chS
+2025 SPMS SCM Championships	(NOT a PAC sanctioned meet)	PAC	SCM	2025-12-5 - 2025-12-7	20251205LBGDECS	https://www.usms.org/comp/meets/meet.php?MeetID=20251205LBGDECS
 February Flurry Meet & Swim Clinic	(NOT a PAC sanctioned meet)	PAC	SCM	2025-2-21 - 2025-2-23	20250221FLURRYS	https://www.usms.org/comp/meets/meet.php?MeetID=20250221FLURRYS
 2025 Splash & Dash Sprint Pentathlon	(IS a PAC sanctioned meet)	PAC	SCY	2025-2-22	20250222AASDY	https://www.usms.org/comp/meets/meet.php?MeetID=20250222AASDY
 The City Mile	(IS a PAC sanctioned meet)	PAC	SCY	2025-2-23	20250223CCCMY	https://www.usms.org/comp/meets/meet.php?MeetID=20250223CCCMY

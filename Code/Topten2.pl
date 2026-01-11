@@ -69,8 +69,10 @@ use Data::Dumper;
 my $appProgName;	# name of this program
 my $appDirName;     # directory containing the application we're running
 my $appRootDir;		# directory containing the appDirName directory
+my $debug = 0;
 
 BEGIN {
+	
 	# Get the name of the program we're running:
 	$appProgName = basename( $0 );
 	die( "Can't determine the name of the program being run - did you use/require 'File::Basename' and its prerequisites?")
@@ -144,17 +146,44 @@ require TT_USMSDirectory;
 my $RESULT_FILES_TO_READ = $TT_Struct::G_RESULT_FILES_TO_READ;
 $RESULT_FILES_TO_READ = $TT_Struct::G_RESULT_FILES_TO_READ;				# avoid warning message
 
+# here are the results we'll process based on the above bit map:
+my $processPMSTopTen		= $RESULT_FILES_TO_READ & 0b1;
+my $processUSMSTopTen		= $RESULT_FILES_TO_READ & 0b10;
+my $processPMSRecords		= $RESULT_FILES_TO_READ & 0b100;
+my $processUSMSRecords		= $RESULT_FILES_TO_READ & 0b1000;
+my $processPMSOW			= $RESULT_FILES_TO_READ & 0b10000;
+my $processFakeData			= $RESULT_FILES_TO_READ & 0b100000;
+my $processEPostal			= $RESULT_FILES_TO_READ & 0b1000000;
+
 # override what results we process here (or in TT_Struct.pm)
-#$RESULT_FILES_TO_READ = 0b10000;		# generate OW only
-#$RESULT_FILES_TO_READ = 0b100000;		# process fake results only
-
-my $generateOW 				= ($RESULT_FILES_TO_READ & 0b10000);
-my $generateEPostal			= ($RESULT_FILES_TO_READ & 0b1000000);	# set to non-zero if we are supposed to generate ePostal points, 0 if not.
-my $generateFakeResults		= ($RESULT_FILES_TO_READ & 0b100000);
 
 
+# Below is a short-cut used to disable parts of this program. Set a variable to 0 to cause
+# the corresponding part of Topten.pl to not execute. Comment out the setting of the variable
+# (leaving it with the value assigned above) and that corresponding piece of code will execute.
+# Skip over the whole block of assignments and all of Topten.pl will execute.
+# For example to turn off PMS Top Ten processing enable the block below and do this (don't 
+# include comment symbol):
+#	$processPMSTopTen = 0;
+if( 0 ) {
+$processPMSTopTen = 0;
+$processUSMSTopTen = 0;
+$processPMSRecords = 0;
+$processUSMSRecords = 0;
+#$processPMSOW	 = 0;
+$processFakeData	 = 0;
+$processEPostal	 = 0;
+}
 
-
+# Once we override what we want above re-set our bitmap:
+$RESULT_FILES_TO_READ = 
+	$processPMSTopTen	|
+	$processUSMSTopTen	|
+	$processPMSRecords	|
+	$processUSMSRecords |
+	$processPMSOW		|
+	$processFakeData	|	
+	$processEPostal;
 
 # Do we compute the points for each swimmer using the data in the database, or do we just use
 # what already exists?  If $RESULT_FILES_TO_READ is non-zero then we have to
@@ -302,13 +331,20 @@ sub PMSProcessEPostal( $$ );
 
 
 # the date of executation, in the form 24Mar16
-my $dateString = strftime( "%d%b%g", localtime() );
+my $dateString = strftime( "%d%b%y", localtime() );
+
 # ... and in the form March 24, 2016
-my $generationDate = strftime( "%B %e, %G", localtime() );
+my $generationDate = strftime( "%B %e, %Y", localtime() );
 PMSStruct::GetMacrosRef()->{"GenerationDate"} = $generationDate;
+
 # ... and in the form Tue Mar 27 2018 - 09:34:17 PM EST
-my $generationTimeDate = strftime( "%a %b %d %G - %r %Z", localtime() );
+my $generationTimeDate = strftime( "%a %b %d %Y - %r %Z", localtime() );
 PMSStruct::GetMacrosRef()->{"GenerationTimeDate"} = $generationTimeDate;
+
+# ... and just the year of generation in the form   2025
+my $generationYear = strftime( "%Y", localtime() );
+PMSStruct::GetMacrosRef()->{"GenerationYear"} = $generationYear;
+
 # ... and in MySql format (yyyy-mm-dd):
 my $mysqlDate = strftime( "%F", localtime() );
 PMSStruct::GetMacrosRef()->{"MySqlDate"} = $mysqlDate;
@@ -357,7 +393,7 @@ my $genSubDir = "";
 ############################################################################################################
 
 # get the arguments:
-my $yearBeingProcessed ="";
+my $yearBeingProcessed ="";		# the year of results we're processing (not the date of actual processing)
 my $topTenLog = "";
 
 my $arg;
@@ -442,7 +478,7 @@ if( $topTenLog eq "" ) {
 if( my $tmp = PMSLogging::InitLogging( $topTenLog )) { die $tmp; }
 
 PMSLogging::DumpNote( "", "", "Starting $appProgName...", 1 );
-PMSLogging::DumpNote( "", "", "Log file created on $generationTimeDate". 1 );
+PMSLogging::DumpNote( "", "", "Log file created on $generationTimeDate", 1 );
 PMSLogging::DumpNote( "", "", "  ...Year being analyzed: $yearBeingProcessed", 1 );
 PMSLogging::DumpNote( "", "",  "  ...with the app dir name '$appDirName'", 1 );
 PMSLogging::DumpNote( "", "",  "  ...and app root of '$appRootDir'", 1 );
@@ -486,7 +522,7 @@ my @ePostalScoringRules;
 # the slowest place for an ePostal that earns POINTS
 my $slowestEPostalPlace;
 
-if( $generateEPostal ) {
+if( $processEPostal ) {
 	# get the scoring rules for ePostals:
 	@ePostalScoringRules = split( /,\s*/, PMSStruct::GetMacrosRef()->{"ePostalScoringRules"} );
 
@@ -606,7 +642,9 @@ if( $RESULT_FILES_TO_READ != 0 ) {
 		PMSLogging::PrintLog( "", "", "We have a FakeMeetDataFile to process ($fakeMeetDataFile)", 1 );
 		TT_MySqlSupport::ReadSwimMeetData( $PMSSwimmerData . PMSStruct::GetMacrosRef()->{"FakeMeetDataFile"} );
 	} else {
-		PMSLogging::PrintLog( "", "", "FakeMeetDataFile is either not defined or is empty, so no fake meets", 1 );
+		if( $debug ) {
+			PMSLogging::PrintLog( "", "", "FakeMeetDataFile is either not defined or is empty, so no fake meets", 1 );
+		}
 	}
 } else {
 	# since we didn't drop any of our DB tables we need these special cases to handle the situation
@@ -630,14 +668,32 @@ if( $RESULT_FILES_TO_READ != 0 ) {
 }
 
 # the input result files that we process:
-my %PMSResultFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"PMSResultFiles"};
-my %USMSResultFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"USMSResultFiles"};
-my %PMSRecordsFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"PMSRecordsFiles"};
-my %USMSRecordsFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"USMSRecordsFiles"};
-my $PMSOpenWaterResultFile = PMSStruct::GetMacrosRef()->{"PMSOpenWaterResultFile"};
-my $FakeSplashDataFile = PMSStruct::GetMacrosRef()->{"FakeSplashDataFile"};
+my %PMSResultFiles;
+if( defined( PMSStruct::GetMacrosRef()->{"PMSResultFiles"} ) ) {
+	%PMSResultFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"PMSResultFiles"};
+}
+my %USMSResultFiles;
+if( defined( PMSStruct::GetMacrosRef()->{"USMSResultFiles"} ) ) {
+	 %USMSResultFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"USMSResultFiles"};
+}
+my %PMSRecordsFiles;
+if( defined( PMSStruct::GetMacrosRef()->{"PMSRecordsFiles"} ) ) {
+	%PMSRecordsFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"PMSRecordsFiles"};
+}
+my %USMSRecordsFiles;
+if( defined( PMSStruct::GetMacrosRef()->{"USMSRecordsFiles"} ) ) {
+	%USMSRecordsFiles = split /[;:]/, PMSStruct::GetMacrosRef()->{"USMSRecordsFiles"};
+}
+my $PMSOpenWaterResultFile;
+if( defined( PMSStruct::GetMacrosRef()->{"PMSOpenWaterResultFile"} ) ) {
+	$PMSOpenWaterResultFile = PMSStruct::GetMacrosRef()->{"PMSOpenWaterResultFile"};
+}
+my $FakeSplashDataFile;
+if( defined( PMSStruct::GetMacrosRef()->{"FakeSplashDataFile"} ) ) {
+	$FakeSplashDataFile = PMSStruct::GetMacrosRef()->{"FakeSplashDataFile"};
+}
 my %USMSEpostalsFiles;
-if( $generateEPostal && defined( PMSStruct::GetMacrosRef()->{"USMSEpostals"} ) ) {
+if( $processEPostal && defined( PMSStruct::GetMacrosRef()->{"USMSEpostals"} ) ) {
 	%USMSEpostalsFiles = split /[;]/, PMSStruct::GetMacrosRef()->{"USMSEpostals"};
 }
 
@@ -739,42 +795,42 @@ my $virtualGeneratedHTMLFileHandle;		# defined when needed
 ################ PROCESSING #########################
 #####################################################
 
-if( ($RESULT_FILES_TO_READ & 0b1) != 0 ) {
+if( $processPMSTopTen != 0 ) {
 	###
 	### Process PMS Top Ten results
 	###
 	PMSProcessResults( \%PMSResultFiles, \@PMSTopTenScoringRules );
 }
 
-if( ($RESULT_FILES_TO_READ & 0b10) != 0 ) {
+if( $processUSMSTopTen != 0 ) {
 	###
 	### Process USMS Top Ten results
 	###
 	USMSProcessResults( \%USMSResultFiles, \@USMSTopTenScoringRules );
 }
 
-if( ($RESULT_FILES_TO_READ & 0b100) != 0 ) {
+if( $processPMSRecords != 0 ) {
 	###
 	### Process PMS records
 	###
 	PMSProcessRecords( \%PMSRecordsFiles );
 }
 	
-if( ($RESULT_FILES_TO_READ & 0b1000) != 0 ) {
+if( $processUSMSRecords != 0 ) {
 	###
 	### Process USMS records
 	###
 	USMSProcessRecords( \%USMSRecordsFiles );
 }
 	
-if( $generateOW ) {
+if( $processPMSOW ) {
 	###
 	### Process PMS Open Water points
 	###
 	PMSProcessOpenWater( $PMSOpenWaterResultFile );
 }
 
-if( ($RESULT_FILES_TO_READ & 0b100000) != 0 ) {
+if( $processFakeData != 0 ) {
 	###
 	### Process 'fake data'
 	###
@@ -783,12 +839,14 @@ if( ($RESULT_FILES_TO_READ & 0b100000) != 0 ) {
 		PMSLogging::PrintLog( "", "", "We have a FakeSplashDataFile to process ($FakeSplashDataFile)", 1 );
 		ProcessFakeSplashes( $FakeSplashDataFile );
 	} else {
-		PMSLogging::PrintLog( "", "", "" );
-		PMSLogging::PrintLog( "", "", "FakeSplashDataFile is either not defined or is empty, so no fake splashes", 1 );
+		if( $debug ) {
+			PMSLogging::PrintLog( "", "", "" );
+			PMSLogging::PrintLog( "", "", "FakeSplashDataFile is either not defined or is empty, so no fake splashes", 1 );
+		}
 	}
 }
 
-if( ($RESULT_FILES_TO_READ & 0b1000000) != 0 ) {
+if( $processEPostal != 0 ) {
 	###
 	### Process ePostal points
 	###
@@ -929,13 +987,13 @@ if( $GENERATE_TEAM_AGSOTY ) {
 	} # end of foreach my $teamInitials...
 } # end of if( $GENERATE_TEAM_AGSOTY...
 
-if(0) {
+#if(0) {
 	# generate an HTML file giving details of all the swimmers who have split age groups during
 	# this season.
-	if( $WRITE_HTML_FILES ) {
-		TT_MySqlSupport::DumpStatsFor2GroupSwimmers( "$generatedHTMLFileDir/cag.html", $generationDate );
-	}
-}
+#	if( $WRITE_HTML_FILES ) {
+#		TT_MySqlSupport::DumpStatsFor2GroupSwimmers( "$generatedHTMLFileDir/cag.html", $generationDate );
+#	}
+#}
 
 ###
 ### Done!
@@ -947,15 +1005,22 @@ if(0) {
 # getting points they don't deserve (thus taking away points from swimmers who deserve them.)
 TT_MySqlSupport::DumpErrorsWithSwimmerNames();
 
+
+
 # 10Nov2025: Log a non-binary (USMS registered with gender = "N") swimmers since we don't, at this point
 # give them any points ("recognition")
 TT_MySqlSupport::DumpNonBinarySwimmers();
+
+(my $logLines, my $countSwimmers) = TT_MySqlSupport::DumpDeniedPoints();
+	PMSLogging::PrintLog( "", "", "** Begin Dump of Swimmers Who Were Denied Points", 1 );
+	PMSLogging::PrintLog( "", "", "A total of $countSwimmers swimmers were denied points.\n$logLines", 1 );
+	PMSLogging::PrintLog( "", "", "** End Dump of Swimmers Who Were Denied Points", 1 );
 
 # log all the different aliases for swim strokes that we saw
 #PMSUtil::DumpStrokes();
 	
 my $logLinesOnly = PMSLogging::GetLogOnlyLines();
-my $completionTimeDate = strftime( "%a %b %d %G - %X", localtime() );
+my $completionTimeDate = strftime( "%a %b %d %G - %r %Z", localtime() );
 
 PMSLogging::PrintLog( "", "", "\nDone with $appProgName at $completionTimeDate.\n  See the $logLinesOnly lines (beginning with '+') logged ONLY to the log file.", 1 );
 exit(0);
@@ -1000,6 +1065,10 @@ sub PMSProcessResults($$) {
 	my $debug = 0;
 	my $debugMeetTitle = "xxxxxxxxx";
 
+	if( !%{$resultFilesRef} ) {
+		# no result files to process
+		return;
+	}
 	foreach $simpleFileName ( sort keys %{$resultFilesRef} ) {
 		# open the top N file
 		my $fileName = "$sourceDataDir/" . $simpleFileName;
@@ -1055,19 +1124,18 @@ sub PMSProcessResults($$) {
 						}
 						print "\n";
 					} # end debug
-					my ($currentGender, $currentAgeGroup, $currentEventId);
-					$currentGender = $row[0];
+					my ($eventGender, $currentAgeGroup, $currentEventId);
+					$eventGender = $row[0];
 					
-					#if( ($currentGender ne "Women") && ($currentGender ne "Men") ) {
-					if( ! PMSUtil::IsValidGender( $currentGender ) ) {
+					if( ! PMSUtil::IsValidGender( $eventGender ) ) {
 						PMSLogging::DumpNote( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: " .
-							"Illegal gender ('$currentGender'): line IGNORED:\n   $rowAsString" );
+							"Illegal gender ('$eventGender'): line IGNORED:\n   $rowAsString" );
 						next;		# not a result line
 					}
 					$numResultLines++;
 					#
 					# we have a row with the following columns (2016):
-					# 0: Sex  (Women or Men)
+					# 0: Sex  (Women or Men) OF THE EVENT
 					# 1: Age Group (e.g. '45-49')
 					# 2: Distance (e.g. '100')
 					# 3: Stroke (e.g. 'Freestyle')
@@ -1187,12 +1255,9 @@ sub PMSProcessResults($$) {
 						}
 						next;	# don't give points to this swimmer
 						}
-					$gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $currentGender );	# single letter
+					$eventGender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $eventGender );	# single letter
 					$age = $row[7];
 					$age =~ s/^.//;		# remove leading gender from age
-					#print "PMSProcessResults(): Line #$lineNum: place: $place, time=$time, name=$fullName " .
-					#	"['$firstName' '$middleInitial' '$lastName'] " .
-					#	", genderage=$genderAge ['$gender',$age], team=$team, regNum=$regNum\n";
 					# perform some sanity checks:
 					if( ! ValidateAge( $age, $currentAgeGroup ) ) {
 						PMSLogging::DumpError( "", "", "Topten::PMSProcessResults(): Line $lineNum of $simpleFileName: Age error: " .
@@ -1206,9 +1271,9 @@ sub PMSProcessResults($$) {
 					}
 					
 					# add this swimmer to our DB if necessary
-					my ($swimmerId, $correctedGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
+					my ($swimmerId, $swimmerGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
 						$firstName, $middleInitial, $lastName,
-						$gender, $regNum, $age, $currentAgeGroup, $team );
+						$eventGender, $regNum, $age, $currentAgeGroup, $team );
 					
 					# add this meet to our DB if necessary
 					
@@ -1222,8 +1287,18 @@ sub PMSProcessResults($$) {
 					my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, "", $meetTitle,
 						"(none yet)", $org, $course, $date, $date, 1 );
 					
-					TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $currentAgeGroup, $currentGender, 
+					TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $currentAgeGroup, $swimmerGender, 
 						$place, $points, $swimmerId, $currentEventId, $org, $course, $meetId, $time, $date );
+
+					# here is where we decide whether or not this swimmer really gets to keep their points based
+					# on the gender of the swimmer and the gender of the event.
+					my $misGender = PMSUtil::CompareEventGenderWithSwimmerGender( $eventGender, $swimmerGender );
+					if( $misGender < 0 ) {
+						TT_MySqlSupport::SetPurposeOfThesePoints( $simpleFileName, $lineNum, $swimmerId, $org, $course, $currentEventId, $meetId, 
+							$misGender, "In $simpleFileName, line $lineNum: The registered gender of $firstName " .
+							"$middleInitial $lastName ($swimmerGender) is not consistent with the " .
+							"gender of the event ($eventGender).", 1 );
+					}
 				} else # end of if( $length...
 				{
 					# TT_SheetSupport::ReadSheetRow() returned a 0 length row - end of file
@@ -1278,6 +1353,11 @@ sub USMSProcessResults($$) {
 	my $debugLastName = "xxxxxxxx";
 	my $simpleFileName;
 	my $debug = 0;
+
+	if( !%{$resultFilesRef} ) {
+		# no result files to process
+		return;
+	}
 
 	foreach $simpleFileName ( sort keys %{$resultFilesRef} ) {
 		# open the top N file
@@ -1339,7 +1419,7 @@ sub USMSProcessResults($$) {
 					#
 					# we have a row with the following columns (2016):
 					# 0: Place  (e.g. 1, 2, ...)
-					# 1: Gender/Age Group (e.g. 'W45-49' or 'M45-49')
+					# 1: Gender/Age Group (e.g. 'W45-49' or 'M45-49') this is the event gender!
 					# 2: Event (e.g. '500 Free')
 					# 3: Name (e.g. 'Allison A Arnold')
 					# 4: Age (e.g. '23')
@@ -1348,7 +1428,7 @@ sub USMSProcessResults($$) {
 					# 7: Time (e.g. '1:38.41Y')
 					#
 					# found a top N line - extract all the data
-					my ($time, $firstName, $middleInitial, $lastName, $gender, $age, $team, $regNum, 
+					my ($time, $firstName, $middleInitial, $lastName, $eventGender, $age, $team, $regNum, 
 						$ageGroup, $eventName, $fullName, $LMSC, $units);
 					
 					my $genderAgeGroup = $row[1];
@@ -1370,9 +1450,9 @@ sub USMSProcessResults($$) {
 						$units = "Meter";
 					}
 					
-					# break the $genderAgeGroup into gender and ageGroup:
+					# break the $genderAgeGroup into eventGender and ageGroup:
 					$genderAgeGroup =~ m/^(.)(.+)$/;
-					$gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $1 );	# M or F
+					$eventGender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $1 );	# M or F
 					$ageGroup = $2;
 					# modify the eventName to include the course
 					$eventName =~ s/ / $units /;
@@ -1399,7 +1479,7 @@ sub USMSProcessResults($$) {
 	
 					if(0) {
 					print "USMSProcessResults():  Line #$lineNum: place: $place, time=$time, name=$fullName ['$firstName' '$middleInitial' '$lastName']" .
-						", gender='$gender', age=$age, ageGroup = '$ageGroup', team=$team, regNum=$regNum, " .
+						", eventGender='$eventGender', age=$age, ageGroup = '$ageGroup', team=$team, regNum=$regNum, " .
 						"eventName='$eventName'\n";
 					}
 					# perform some sanity checks:
@@ -1420,11 +1500,21 @@ sub USMSProcessResults($$) {
 					# own db (the RSIDN file).  In this case we will NOT add this swimmer to our db.
 					if( $regNum ne "" ) {
 						$numPMSResultLines++;
-						my ($swimmerId, $correctedGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, $firstName, $middleInitial, $lastName,
-							$gender, $regNum, $age, $ageGroup, $team );
-						TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $ageGroup, $gender, $place, $points, $swimmerId, 
+						my ($swimmerId, $swimmerGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, $firstName, $middleInitial, $lastName,
+							$eventGender, $regNum, $age, $ageGroup, $team );
+						TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $ageGroup, $swimmerGender, $place, $points, $swimmerId, 
 							$eventId, $org, $course, $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID, $time,
 							$PMSConstants::DEFAULT_MISSING_DATE );
+
+						# here is where we decide whether or not this swimmer really gets to keep their points based
+						# on the gender of the swimmer and the gender of the event.
+						my $misGender = PMSUtil::CompareEventGenderWithSwimmerGender( $eventGender, $swimmerGender );
+						if( $misGender < 0 ) {
+							TT_MySqlSupport::SetPurposeOfThesePoints( $simpleFileName, $lineNum, $swimmerId, $org, $course, $eventId, $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID, 
+								$misGender, "In $simpleFileName, line $lineNum: The registered gender of $firstName " .
+								"$middleInitial $lastName ($swimmerGender) is not consistent with the " .
+								"gender of the event ($eventGender).", 1 );
+						}
 					}
 				} else # end of if( $length...
 				{
@@ -1486,7 +1576,12 @@ sub USMSProcessRecords($) {
 	# get our year
 	my $simpleFileName;
 	my $debug = 0;
-	
+
+	if( !%{$resultFilesRef} ) {
+		# no result files to process
+		return;
+	}
+
 	foreach $simpleFileName ( sort keys %{$resultFilesRef} ) {
 		# open the record file
 		my $fileName = "$sourceDataDir/" .  $simpleFileName;
@@ -1551,7 +1646,7 @@ sub USMSProcessRecords($) {
 							"Illegal line IGNORED:\n   $rowAsString" );
 							next;		# not a result line
 						}
-						# as of this writing there are NO blank lines!
+						# as of this writing there are NO blank lines!  does this matter? it seems to work with blank lines...
 						$numResultLines++;
 						# prepare for the possibility that the following line is a tie with this one:
 						$previousGenderAgeGroup = $genderAgeGroup;
@@ -1585,8 +1680,8 @@ sub USMSProcessRecords($) {
 							USMSProcessRecordRow( \@row, $rowAsString, $simpleFileName, $lineNum, $org, $course );
 						} else {
 							# assume blank or header line for now...
-							PMSLogging::DumpWarning( "", "", "Topten::USMSProcessRecords(): Line $lineNum of $simpleFileName: " .
-								"ILLEGAL line (one or all of the first three columns are missing) ignored:\n   $rowAsString" );
+							#PMSLogging::DumpWarning( "", "", "Topten::USMSProcessRecords(): Line $lineNum of $simpleFileName: " .
+							#	"ILLEGAL line (one or all of the first three columns are missing) ignored:\n   $rowAsString" );
 						}
 						
 					}
@@ -1643,10 +1738,10 @@ sub USMSProcessRecordRow( $$$$$$ ) {
 	# 4: Time (e.g. '1:38.41L' where 'L' is either 'L', 'S', or 'Y')
 
 	my $eventId;
-	my ($time, $firstName, $middleInitial, $lastName, $gender, $regNum, 
+	my ($time, $firstName, $middleInitial, $lastName, $recordGender, $regNum, 
 		$ageGroup, $fullName, $date);
-	$gender = $rowRef->[0];			# W50-54
-	$ageGroup = $gender;		# W50-54
+	$recordGender = $rowRef->[0];			# W50-54
+	$ageGroup = $recordGender;		# W50-54
 	my $eventName = $rowRef->[1];
 	$fullName = $rowRef->[2];
 	$date = $rowRef->[3];			# 05-18-14
@@ -1655,8 +1750,8 @@ sub USMSProcessRecordRow( $$$$$$ ) {
 #	$time = TT_Util::GenerateCanonicalDurationForDB( $time, $simpleFileName, $lineNum );
 	$time = PMSUtil::GenerateCanonicalDurationForDB_v2( $time, 0, "", "", 
 		"File: '$simpleFileName', line $lineNum" );
-	$gender =~ s/^(.).*$/$1/;	# W
-	$gender = PMSUtil::GenerateCanonicalGender( $simpleFileName, $lineNum, $gender );	# M or F
+	$recordGender =~ s/^(.).*$/$1/;	# W
+	$recordGender = PMSUtil::GenerateCanonicalGender( $simpleFileName, $lineNum, $recordGender );	# M or F
 	$ageGroup =~ s/^.//;		# 50-54
 
 	# convert the date to the conanical form 'yyyy-mm-dd'
@@ -1744,11 +1839,11 @@ sub USMSProcessRecordRow( $$$$$$ ) {
 	#	,,Laura B Val,08-13-07,1:02.02L
 	# In what world does this make sense???  Whatever - we'll catch it and NOT give Laura (or anyone else) points
 	# for setting the same record two or more times with the same time.  (Jeez....)
-	my $splashId = TT_MySqlSupport::LookUpRecord( $course, $org, $eventId, $gender, $ageGroup );
+	my $splashId = TT_MySqlSupport::LookUpRecord( $course, $org, $eventId, $recordGender, $ageGroup );
 	if( $splashId ) {
 		# this is a duplicate record...
 		PMSLogging::DumpNote( "", "", "Topten::USMSProcessRecordRow(): '$fullName' has duplicate $org $course " .
-			"for event id $eventId ($gender $ageGroup). - IGNORING duplicates!" );
+			"for event id $eventId ($recordGender $ageGroup). - IGNORING duplicates!" );
 		return;
 	}
 
@@ -1757,15 +1852,24 @@ sub USMSProcessRecordRow( $$$$$$ ) {
 	# found a pms swimmer setting a usms record:
 	if(0) {
 	print "USMSProcessRecordRow(): Line #$lineNum: time=$time, name=$fullName ['$firstName' '$middleInitial' '$lastName']" .
-		", gender='$gender', ageGroup = '$ageGroup', regNum=$regNum, " .
+		", recordGender='$recordGender', ageGroup = '$ageGroup', regNum=$regNum, " .
 		"eventName='$eventName'\n";
 	}
 	# add this swimmer to our DB if necessary
-	my ($swimmerId, $correctedGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $simpleFileName, $lineNum, $firstName, $middleInitial, $lastName,
-		$gender, $regNum, 0, $ageGroup, $teamInitials );
-	TT_MySqlSupport::AddNewRecordSplash( $simpleFileName, $lineNum, $course, $org, $eventId, $gender,
+	my ($swimmerId, $swimmerGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $simpleFileName, $lineNum, $firstName, $middleInitial, $lastName,
+		$recordGender, $regNum, 0, $ageGroup, $teamInitials );
+	TT_MySqlSupport::AddNewRecordSplash( $simpleFileName, $lineNum, $course, $org, $eventId, $recordGender,
 		$ageGroup, 1, $swimmerId, 0, 50, $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID, $date, $time );
-						
+
+	# here is where we decide whether or not this swimmer really gets to keep their points based
+	# on the gender of the swimmer and the gender of the event.
+	my $misGender = PMSUtil::CompareEventGenderWithSwimmerGender( $recordGender, $swimmerGender );
+	if( $misGender < 0 ) {
+		TT_MySqlSupport::SetPurposeOfThesePoints( $simpleFileName, $lineNum, $swimmerId, $org, $course, $eventId, $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID, 
+			$misGender, "In $simpleFileName, line $lineNum: The registered gender of $firstName " .
+			"$middleInitial $lastName ($swimmerGender) is not consistent with the " .
+			"gender of the record ($recordGender).", 1 );
+	}
 } # end of USMSProcessRecordRow()
 						
 						
@@ -1798,7 +1902,12 @@ sub PMSProcessRecords($) {
 	my $resultFilesRef = $_[0];
 	my $simpleFileName;
 	my $debug = 0;
-	
+
+	if( !%{$resultFilesRef} ) {
+		# no result files to process
+		return;
+	}
+
 	foreach $simpleFileName ( sort keys %{$resultFilesRef} ) {
 		# open the record file
 		my $fileName = "$sourceDataDir/" .  $simpleFileName;
@@ -1840,11 +1949,13 @@ sub PMSProcessRecords($) {
 			my $emptyDateSeen = 0;
 			while( 1 ) {
 				my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
-				my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
+				my $rowAsString = PMSUtil::trim( PMSUtil::ConvertArrayIntoString( \@row ) );
 				my $length = scalar(@row);
 				if( $length ) {
-					# we've got a new row of of something (may be all spaces or a heading or something else)
 					$lineNum++;
+					next if( (length($rowAsString) == 0) || 
+						( substr( $rowAsString, 0, 1 ) eq ',' ) );		#first field is empty - assume empty row
+					# we've got a new row of of something (may be all spaces or a heading or something else)
 					if( $debug ) {
 						print "$simpleFileName: line $lineNum: ";
 						for( my $i=0; $i < scalar(@row); $i++ ) {
@@ -1852,7 +1963,7 @@ sub PMSProcessRecords($) {
 						}
 						print "\n";
 					}
-					my $gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $row[0] );	# M or F
+					my $recordGender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $row[0] );	# M or F
 					if( $row[0] !~ m/^\w$/ ) {
 						PMSLogging::DumpNote( "", "", "Topten::PMSProcessRecords(): Line $lineNum of $simpleFileName: " .
 							"Illegal line IGNORED:\n   $rowAsString" );
@@ -1860,7 +1971,7 @@ sub PMSProcessRecords($) {
 					}
 					#
 					# we have a row with the following columns (2016):
-					# 0: Gender  ('F' or 'M')
+					# 0: recordGender  ('F' or 'M')
 					# 1: Age Group (e.g. '45-49')
 					# 2: Distance (e.g. '100')
 					# 3: Stroke (e.g. 'Freestyle')
@@ -1933,15 +2044,25 @@ sub PMSProcessRecords($) {
 					
 					if(0) {
 					print "Topten::PMSProcessRecords(): Line #$lineNum: time=$time($row[6]), name=$fullName ['$firstName' '$middleInitial' '$lastName']" .
-						", gender='$gender', ageGroup = '$ageGroup', regNum=$regNum, " .
+						", recordGender='$recordGender', ageGroup = '$ageGroup', regNum=$regNum, " .
 						"eventName='$eventName'\n";
 					}
 					# add this swimmer to our DB if necessary
-					my ($swimmerId, $correctedGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, $firstName, $middleInitial, $lastName,
-						$gender, $regNum, 0, $ageGroup, $teamInitials );
-					TT_MySqlSupport::AddNewRecordSplash( $fileName, $lineNum, $course, $org, $eventId, $gender,
+					my ($swimmerId, $swimmerGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
+						$firstName, $middleInitial, $lastName,
+						$recordGender, $regNum, 0, $ageGroup, $teamInitials );
+					TT_MySqlSupport::AddNewRecordSplash( $fileName, $lineNum, $course, $org, $eventId, $swimmerGender,
 						$ageGroup, 1, $swimmerId, 0, 25, $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID, $date, $time );
 			
+					# here is where we decide whether or not this swimmer really gets to keep their points based
+					# on the gender of the swimmer and the gender of the record.
+					my $misGender = PMSUtil::CompareEventGenderWithSwimmerGender( $recordGender, $swimmerGender );
+					if( $misGender < 0 ) {
+						TT_MySqlSupport::SetPurposeOfThesePoints( $fileName, $lineNum, $swimmerId, $org, $course, $eventId, $TT_MySqlSupport::DEFAULT_MISSING_MEET_ID, 
+							$misGender, "In $simpleFileName, line $lineNum: The registered gender of $firstName " .
+							"$middleInitial $lastName ($swimmerGender) is not consistent with the " .
+							"gender of the record ($recordGender).", 1 );
+					}
 				} else # end of if( $length...
 				{
 					# ReadSheetRow() returned a 0 length row - end of file
@@ -2005,13 +2126,18 @@ sub PMSProcessRecords($) {
 #			in more than "numSwimsToConsider" events we will only 
 #			process the top "numSwimsToConsider" point-earning swims.
 #
+#	As of Dec, 2025: we are clarifying "gender": it's the "event gender", which is usually the gender of the
+#	swimmer, but not if there is an error (e.g. a male swimming in a female event, should never happen!), or
+#	if the gender of the swimmer is "N" who swam in a male event (in which case the gender is "N").
+#
 sub PMSProcessOpenWater($) {
 	my $simpleFileName = $_[0];
-	my $debugRegNum = "xxxxxx";
 	my $debug = 0;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	PMSLogging::PrintLog( "", "", "" );
 
+	my $debugRegNum = "xxxxxx";
+	my $debugLastName = "xxxxx";
 	my $course = "OW";
 	my $org = "PAC";
 	my $org_course = "$org-$course";
@@ -2059,6 +2185,8 @@ sub PMSProcessOpenWater($) {
 				my $length = scalar(@row);
 				if( $length > 0 ) {
 					$lineNum++;
+					# ignore blank lines
+					next if( length( $rowAsString ) == 0 );
 					if( ($debug>1) && defined($row[0]) ) {
 						PMSLogging::PrintLog( "", "", "  Topten::PMSProcessOpenWater(): state='$state', Line $lineNum: " .
 							"$simpleFileName: ");
@@ -2094,16 +2222,16 @@ sub PMSProcessOpenWater($) {
 							# finally, we're about to get data rows...
 							$state = "LookingForData";
 							if( $debug ) {
-								PMSLogging::PrintLog( "", "", "  Topten::PMSProcessOpenWater(): Found Gender..." .
+								PMSLogging::PrintLog( "", "", "  Topten::PMSProcessOpenWater(): Found the word 'Gender'..." .
 									"Skipping line $lineNum - data to follow");
 							}
 						}
 					} elsif( $state eq "LookingForData" ) {
-						# we have another data line...
-						my $gender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $row[0] );	# M or F
-						if( $row[0] !~ m/^\w$/ ) {
+						my $eventGender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $row[0] );	# M or F
+						if( !(PMSUtil::IsValidGender( $eventGender ) && PMSUtil::IsBinaryGender( $eventGender ) ) ) {
+							# it's not a valid eventGender or not a binary eventGender
 							PMSLogging::PrintLog( "", "", "Topten::PMSProcessOpenWater(): Line $lineNum of $simpleFileName: " .
-								"Illegal line (bad gender) found in '$fileName':" .
+								"Illegal line (bad eventGender) found in '$fileName':" .
 								"\n    $rowAsString", 1 );
 							next;		# not a result line
 						}
@@ -2112,7 +2240,7 @@ sub PMSProcessOpenWater($) {
 						
 						#
 						# we have a row with the following columns (2016):
-						# 0: Gender	
+						# 0: eventGender	
 						# 1: Age Group	
 						# 2: Place	
 						# 3: Points	
@@ -2163,7 +2291,7 @@ sub PMSProcessOpenWater($) {
 							TT_MySqlSupport::MySqlEscape( $stroke ), $eventName );
 							
 						if( $debugRegNum eq $regNum ) {
-							print "PMSProcessOpenWater(): Line #$lineNum: gender=$gender, ageGroup=$ageGroup, " .
+							print "PMSProcessOpenWater(): Line #$lineNum: eventGender=$eventGender, ageGroup=$ageGroup, " .
 								"regNum='$regNum', firstName=$firstName, middleInitial='$middleInitial'\n" .
 								"    lastName='$lastName', meetDate='$eventDate', eventName='$eventName', " .
 								"eventId='$eventId'\n" ;
@@ -2193,11 +2321,15 @@ sub PMSProcessOpenWater($) {
 							
 						# add this swimmer to our DB if necessary
 						# (NOTE: we assume the passed name and regnum are valid)
-						my ($swimmerId, $correctedGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
+						my ($swimmerId, $swimmerGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
 							$firstName, $middleInitial, $lastName,
-							$gender, $regNum, 0, $ageGroup, $team );
+							$eventGender, $regNum, 0, $ageGroup, $team );
+
+						if( lc($debugLastName) eq lc($lastName) ) {
+							print "lastname=$lastName, swimmerId=$swimmerId, swimmerGender=$swimmerGender\n";
+						}
+							
 						# add this meet to our DB if necessary
-		
 						# filename, linenum, meetitle, meetlink, meetorg, meetcourse, meetbegindate, meetenddate, 
 						# ... meetispms (1 or 0)
 						# NOTE:  we are supplying the event name for the meet name since each OW event is counted as
@@ -2210,14 +2342,25 @@ sub PMSProcessOpenWater($) {
 							print "eventName='$eventName', meetId='$meetId', eventId='$eventId', swimmerId='$swimmerId'\n";
 						}
 
-
-
 						# compute the number of Top10 points they get from all of their OW places:
 						# the points they get for SOTY is the same as the OW points they were awarded.
-						TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $ageGroup, $gender, $place, 
+						TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $ageGroup, $swimmerGender, $place, 
 							$points, $swimmerId, $eventId, $org, $course, $meetId, $duration, $eventDate, 1, $category );
-	
-	
+
+						# here is where we decide whether or not this swimmer really gets to keep their points based
+						# on the gender of the swimmer and the gender of the record.
+						my $misGender = PMSUtil::CompareEventGenderWithSwimmerGender( $eventGender, $swimmerGender );
+						
+						if( lc($debugLastName) eq lc($lastName) ) {
+							print "eventGender=$eventGender, swimmerGender=$swimmerGender, misGender=$misGender\n";
+						}
+
+						if( $misGender < 0 ) {
+							TT_MySqlSupport::SetPurposeOfThesePoints( $fileName, $lineNum, $swimmerId, $org, $course, $eventId, $meetId, 
+								$misGender, "In $simpleFileName, line $lineNum: The registered gender of $firstName " .
+								"$middleInitial $lastName ($swimmerGender) is not consistent with the " .
+								"gender of the OW event ($eventGender).", 1 );
+						}
 					} # end of if( (defined($row[0])))...
 				} else # end of if( $length...
 					{
@@ -2356,7 +2499,7 @@ sub ProcessFakeSplashes($) {
 							"lastName='$lastName'";
 					}
 					
-					my ($swimmerId, $correctedGender);
+					my ($swimmerId, $swimmerGender);
 					$date = $PMSConstants::DEFAULT_MISSING_DATE if( (!defined $date) || ("" eq $date) );
 					$meetLink = "(none)" if( (!defined $meetLink) || ("" eq $meetLink) );
 					if( $RequireExistingSwimmer ) {
@@ -2385,7 +2528,7 @@ sub ProcessFakeSplashes($) {
 						}
 					} else {
 						# this swimmer doesn't have to already exist
-						($swimmerId, $correctedGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
+						($swimmerId, $swimmerGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
 							$firstName, $middleInitial, $lastName,
 							$gender, $regNum, $age, $ageGroup, $club );
 					}
@@ -2451,6 +2594,11 @@ sub PMSProcessEPostal( $$ ) {
 	my $simpleFileName;
 	my $debug = 0;
 
+	if( !%{$USMSEpostalsFilesRef} ) {
+		# no result files to process
+		return;
+	}
+
 	foreach $simpleFileName ( sort keys %{$USMSEpostalsFilesRef} ) {
 		PMSLogging::PrintLog( "", "", "" );
 		my $fileName = "$sourceDataDir/" . $simpleFileName;
@@ -2499,6 +2647,10 @@ sub PMSProcessEPostal( $$ ) {
 		my $eventId = TT_MySqlSupport::AddNewEventIfNecessary( $d, $units,
 			"Free", $meetTitle );
 
+		# add this meet to our DB if necessary
+		my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $simpleFileName, 0, "", $meetTitle,
+			$meetLink, $org, $course, $beginDate, $endDate, $isPMS );
+								
 		# get to work
 		PMSLogging::DumpNote( "", "", "** Topten::PMSProcessEPostal(): Begin processing $simpleFileName ('$meetTitle') ePostal:\n" .
 			"   '$fileName'", 1 );
@@ -2537,9 +2689,9 @@ sub PMSProcessEPostal( $$ ) {
 					if( $rowAsString =~ m/^[\s,]*$/ ) {
 						next;
 					}
-					# do we have a result line? If so, the first column must give the gender and age group.
+					# do we have a result line? If so, the first column must give the gender and age group OF THE EVENT.
 					# We'll use the (fairly) relaxed rules used by AGSOTY processing:
-					my ($genAgegrp, $newGender, $newAgeGrp) = PMSProcess2SingleFile::GenderAgeGrpRow( \@row, $lineNum, $row[0] );
+					my ($genAgegrp, $eventGender, $newAgeGrp) = PMSProcess2SingleFile::GenderAgeGrpRow( \@row, $lineNum, $row[0] );
 	        		if( $genAgegrp == 3 ) {
 						# we have a result line
 						$numResultLines++;
@@ -2587,7 +2739,7 @@ sub PMSProcessEPostal( $$ ) {
 								# start analysis of data.
 								# get name and team from our PMS db (if we can):
 								($RSIDNFirstName, $RSIDNMiddleInitial, $RSIDNLastName,$RSIDNTeam) = 
-									GetSwimmerDetailsFromPMS_DB(  $fileName, $lineNum, $USMSRegNum, "non-fatal" );
+									GetSwimmerDetailsFromPMS_DB(  $simpleFileName, $lineNum, $USMSRegNum, "non-fatal" );
 								# if we found them in the RSIDN file then we're using the data we found.  Otherwise,
 								# we use what we got from the result file.
 								# NOTE:  if this swimmer's first name is an empty string this means we couldn't find their reg number in our
@@ -2604,10 +2756,10 @@ sub PMSProcessEPostal( $$ ) {
 									my $count = $TT_Struct::hashOfInvalidRegNums{"$USMSRegNum:$fullName"};
 									if( !defined $count ) {
 										$count = 0;
-										PMSLogging::DumpWarning( "", "", "Topten::PMSProcessEPostal(): Line $lineNum of $simpleFileName: " .
-											"\n   Couldn't find USMSRegNum " .
+										PMSLogging::DumpWarning( $lineNum, $simpleFileName, "Topten::PMSProcessEPostal(): " .
+											"   Couldn't find USMSRegNum " .
 											"($USMSRegNum) in RSIDN_$yearBeingProcessed.  NOTE: this error for this USMSRegNum will " .
-											"not be repeated.\n(NOTE that we're actually looking for the LMSC code and swimmer id, not full regnum)\n" .
+											"not be repeated.\n  (NOTE that we're actually looking for the LMSC code and swimmer id, not full regnum)\n" .
 											"  This is FATAL - This ePostal result will be " .
 											"IGNORED since we can't confirm that this swimmer is a PAC swimmer.  Result line:" .
 											"\n     $rowAsString" );
@@ -2627,78 +2779,103 @@ sub PMSProcessEPostal( $$ ) {
 								# but I'm not going to bother.
 								if( $age ne "" ) {
 									if( ! ValidateAge( $age, $newAgeGrp ) ) {
-										PMSLogging::DumpError( "", "", "Topten::PMSProcessEPostal(): Line $lineNum of $simpleFileName: Age error: " .
-											"('$fileName') Age is $age but line is for agegroup '$newAgeGrp'", 1 );
+										PMSLogging::DumpError( $lineNum, $simpleFileName, "Topten::PMSProcessEPostal(): Age error: " .
+											"('simpleFileName') Age is $age but line is for agegroup '$newAgeGrp'", 1 );
 									}
 								}
 					
+								# add this swimmer to our DB if necessary
+								# Note that $swimmerGender is the gender of the swimmer.
+								my ($swimmerId, $swimmerGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $simpleFileName, $lineNum, 
+									$firstName, $middleInitial, $lastName,
+									$eventGender, $USMSRegNum, $age, $newAgeGrp, $team );
 								#compute the points they get for this swim:
 								my $points = $placeToPointsRef->[$place];
-					
-								# add this swimmer to our DB if necessary
-								my ($swimmerId, $correctedGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $fileName, $lineNum, 
-									$firstName, $middleInitial, $lastName,
-									$newGender, $USMSRegNum, $age, $newAgeGrp, $team );
+								# but...do they get to keep those points? This is decided below
 
-								# add this meet to our DB if necessary
-								my $meetId = TT_MySqlSupport::AddNewMeetIfNecessary( $fileName, $lineNum, "", $meetTitle,
-									$meetLink, $org, $course, $beginDate, $endDate, $isPMS );
-								
 								# Convert the $distanceOrTime to an integer for storage into the DB.
 								my $durationType;
 								if( $distanceOrTime =~ /[:.]/ ) {
 									# This is a time since it contains a : or . --- convert to hundredths of a second:
 									$distanceOrTime = PMSUtil::GenerateCanonicalDurationForDB_v2( $distanceOrTime, 0, "", "", 
 										"File: '$simpleFileName', line $lineNum" );
-									$durationType = 1;  # "distance" is really a time
+									$durationType = 1;  # "$distanceOrTime" is really a time
 								} else {
 									# this is a distance - remove any commas
 									$distanceOrTime =~ s/,//g;
-									$durationType = 2;  # "distance" is really a distance
+									$durationType = 2;  # "$distanceOrTime" is really a distance
 								}
 					
-								TT_MySqlSupport::AddNewSplash( $fileName, $lineNum, $newAgeGrp, $newGender, 
+								TT_MySqlSupport::AddNewSplash( $simpleFileName, $lineNum, $newAgeGrp, $swimmerGender, 
 									$place, $points, $swimmerId, $eventId, $org, $course, $meetId, $distanceOrTime, $beginDate,
 									$durationType );
 
+								# here is where we decide whether or not this swimmer really gets to keep their points based
+								# on the gender of the swimmer and the gender of the event.
+								my $misGender = PMSUtil::CompareEventGenderWithSwimmerGender( $eventGender, $swimmerGender );
+								if( $misGender < 0 ) {
+									TT_MySqlSupport::SetPurposeOfThesePoints( $simpleFileName, $lineNum, $swimmerId, $org, $course, $eventId, $meetId, 
+										$misGender, "In $simpleFileName, line $lineNum: The registered gender of $firstName " .
+										"$middleInitial $lastName ($swimmerGender) is not consistent with the " .
+										"gender of the event ($eventGender).", 1 );
+									$numPMSScoringResults--;		# this swimmer didn't score points
+								} elsif( $debug ) {
+									# this swimmer gets credit for this swim
+									PMSLogging::DumpNote( $simpleFileName, $lineNum, "Topten::PMSProcessEPostal(): $firstName $middleInitial " .
+										"$lastName was awarded $points points since their gender was $swimmerGender and the\n" .
+										"    event was a '$eventGender' event." );
+								}
+								
 								my $record = "";
+								# don't even bother looking for a record if they do not get recognition for this swim
 								if( $natRecord ) {
 									if( $place == 1 ) {
 										# this swimmer earned a national record doing this ePostal. Add this as a separate
-										# splash: (25 points)
-										TT_MySqlSupport::AddNewRecordSplash( $fileName, $lineNum, $courseRecord, $org, $eventId, $newGender,
-											$newAgeGrp, 1, $swimmerId, 0, 25, $meetId, $beginDate, $distanceOrTime, $durationType );
-										$record = "(PLUS A RECORD worth 25 points)"
+										# splash: (25 points). Do they actually get the extra points?
+										if( $misGender < 0 ) {
+											PMSLogging::DumpNote( $simpleFileName, $lineNum, "Topten::PMSProcessEPostal(): ... AND NOT ONLY " .
+												"THAT! They would have earned more points for a national record, but that too " .
+												"is denied." );
+										} else {
+											# YES!
+											TT_MySqlSupport::AddNewRecordSplash( $simpleFileName, $lineNum, $courseRecord, $org, $eventId, $eventGender,
+												$newAgeGrp, 1, $swimmerId, 0, 25, $meetId, $beginDate, $distanceOrTime, $durationType );
+											$record = "(PLUS A RECORD worth 25 points)"
+										}
 									} else {
 										# huh??? this swimmer didn't take first place in their gender/age group, but still set a record?
 										# That can't be...
-										PMSLogging::DumpError( "", "", "Topten::PMSProcessEPostal(): Line $lineNum of $simpleFileName:\n" .
-										"    This swimmer got a record, but they did not take FIRST place! We will ignore the record.\n" .
-										"    These results need to be fixed!!", 1 );
+										PMSLogging::DumpError( $simpleFileName, $lineNum, "Topten::PMSProcessEPostal(): " .
+											"This swimmer got a record, but they did not take FIRST place! We will ignore the record.\n" .
+											"    These results need to be fixed!!", 1 );
 									}
 								}
-								
-								PMSLogging::DumpNote( "", $lineNum, "PMS swimmer got $points points" . $record . ": $firstName $middleInitial $lastName " .
-									"($newGender/$age, dob=$dob, reg#=$USMSRegNum, distanceOrTime=$distanceOrTime, place=$place)" );
-									
+								if( $misGender > 0 ) {
+									PMSLogging::DumpNote( $simpleFileName, $lineNum, "Topten::PMSProcessEPostal(): PMS swimmer got $points points" . 
+										$record . ": $firstName $middleInitial $lastName " .
+										"($eventGender/$age, dob=$dob, reg#=$USMSRegNum, distanceOrTime=$distanceOrTime, place=$place)" );
+								}
 							} # end of '...we have a row representing a PMS swimmer who placed for points'
 							else {
-								PMSLogging::DumpNote( "", $lineNum, "PMS swimmer with no points: $firstName $middleInitial $lastName " .
-									"($newGender/$age, dob=$dob, reg#=$USMSRegNum, distanceOrTime=$distanceOrTime, place=$place)" );
+								PMSLogging::DumpNote( $simpleFileName, $lineNum, "Topten::PMSProcessEPostal(): PMS swimmer with no points: " .
+									"$firstName $middleInitial $lastName " .
+									"($eventGender/$age, dob=$dob, reg#=$USMSRegNum, distanceOrTime=$distanceOrTime, place=$place)" );
 							}
 						} # end of '...this is a result for a PMS swimmer...'
 					} # end of '...we have a result line...'
 					else {
 						# not a result line... what is it?
-						PMSLogging::PrintLog( "", "", "Non-result line: '$rowAsString'", 1);
+						if( $debug ) {
+							PMSLogging::PrintLog( $simpleFileName, $lineNum, "Topten::PMSProcessEPostal(): Non-result line: '$rowAsString'", 1);
+						}
 					}
 				} else # end of if( $length...
 				{ # end of file
 					# TT_SheetSupport::ReadSheetRow() returned a 0 length row - end of file
 					TT_SheetSupport::CloseSheet( \%sheetHandle );
 					my $msg = "* Topten::PMSProcessEPostal(): Done with '$simpleFileName' - $lineNum lines read, of which " .
-						"$numResultLines were result lines.\n    There were $numPMSResultLines PMS result lines, " .
-						"of which $numPMSScoringResults scored points.";
+						"$numResultLines were PMS result lines.\n    " .
+						"Out of all the PMS result lines $numPMSScoringResults scored points.";
 					PMSLogging::PrintLog( "", "", $msg, 1 );
 					last;
 				}
@@ -2723,13 +2900,12 @@ sub PMSProcessEPostal( $$ ) {
 #
 
 sub ComputePointsForAllSwimmers() { 
-	my( $firstName, $middleInitial, $lastName, $gender, $swimmerId, $ageGroup1, $ageGroup2 );
-	my( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed );
+	my( $firstName, $middleInitial, $lastName, $swimmerGender, $swimmerId, $ageGroup1, $ageGroup2 );
+	my( $totalPoints, $totalPointsDenied, $totalResultsCounted, $totalResultsAnalyzed );
 	my( $sth, $rv );
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	my $countSwimmers = 0;
 	my $debugSwimmerId = "xxxxx";
-	my $debug = 0;
 	
 	PMSLogging::PrintLog( "", "", "\n** Begin ComputePointsForAllSwimmers", 1 );
 	
@@ -2742,7 +2918,7 @@ sub ComputePointsForAllSwimmers() {
 		$firstName = $resultHash->{'FirstName'};
 		$middleInitial = $resultHash->{'MiddleInitial'};
 		$lastName = $resultHash->{'LastName'};
-		$gender = $resultHash->{'Gender'};
+		$swimmerGender = $resultHash->{'Gender'};
 		$swimmerId = $resultHash->{'SwimmerId'};
 		$ageGroup1 = $resultHash->{'AgeGroup1'};
 		$ageGroup2 = $resultHash->{'AgeGroup2'};
@@ -2758,37 +2934,43 @@ sub ComputePointsForAllSwimmers() {
 		
 		if( $swimmerId eq $debugSwimmerId ) {
 			print "--->ComputePointsForAllSwimmers(): Processing $firstName $middleInitial $lastName." .
-				"agegroup1='$ageGroup1', agegroup2='$ageGroup2', gender='$gender'\n";
+				"agegroup1='$ageGroup1', agegroup2='$ageGroup2', gender='$swimmerGender'\n";
 		}
 		
+		# (29dec2025) we only have two event genders, but 3 swimmer genders. Map a swimmer gender into a event gender:
+		my $eventGender = $swimmerGender;
+		$eventGender = "M" if( $eventGender eq "N" );
 		if( $GENERATE_COMBINED_AGE_GROUPS ) {
 			# swimmers in two age groups have their age groups "merged":
 			if( $ageGroup2 ne "" ) {
-				( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed ) = 
+				( $totalPoints, $totalPointsDenied, $totalResultsCounted, $totalResultsAnalyzed ) = 
 					TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, "$ageGroup1:$ageGroup2", $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
-				$TT_Struct::numInGroup{"$gender:$ageGroup2%combined"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+				$TT_Struct::numInGroup{"$eventGender:$ageGroup2%combined"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
 				if( $swimmerId eq $debugSwimmerId ) {
 					print "Combined age groups: ageGroup1:ageGroup2: totalPoints=$totalPoints, totalResultsCounted: " .
 						"$totalResultsCounted, totalResultsAnalyzed=$totalResultsAnalyzed\n";
 				}
 			} else {
-				( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed ) = 
+				( $totalPoints, $totalPointsDenied, $totalResultsCounted, $totalResultsAnalyzed ) = 
 					TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, $ageGroup1, $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
-				$TT_Struct::numInGroup{"$gender:$ageGroup1%combined"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+				$TT_Struct::numInGroup{"$eventGender:$ageGroup1%combined"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
 				if( $swimmerId eq $debugSwimmerId ) {
 					print "Combined age groups: ageGroup1: totalPoints=$totalPoints, totalResultsCounted: " .
 						"$totalResultsCounted, totalResultsAnalyzed=$totalResultsAnalyzed\n";
 				}
 			}
+			# debug
+			#print "ComputePointsForAllSwimmers(): Swimmerid $swimmerId: $firstName $lastName: totalPoints=$totalPoints, " .
+			#	"totalPointsDenied=$totalPointsDenied, totalResultsCounted=$totalResultsCounted, totalResultsAnalyzed=$totalResultsAnalyzed\n";
 		} else {
 			# compute points for each age group separately:
-			( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed ) = 
+			( $totalPoints, $totalPointsDenied, $totalResultsCounted, $totalResultsAnalyzed ) = 
 				TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, $ageGroup1, $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
-			$TT_Struct::numInGroup{"$gender:$ageGroup1%split"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+			$TT_Struct::numInGroup{"$eventGender:$ageGroup1%split"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
 			if( $ageGroup2 ne "" ) {
-				( $totalPoints, $totalResultsCounted, $totalResultsAnalyzed ) = 
+				( $totalPoints, $totalPointsDenied, $totalResultsCounted, $totalResultsAnalyzed ) = 
 					TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, $ageGroup2, $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
-				$TT_Struct::numInGroup{"$gender:$ageGroup2%split"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+				$TT_Struct::numInGroup{"$eventGender:$ageGroup2%split"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
 			}
 		}
 		
@@ -2801,15 +2983,15 @@ sub ComputePointsForAllSwimmers() {
 	# load the 'numInGroup' data into our database
 	foreach my $key (keys %TT_Struct::numInGroup) {
 		$key =~ m/^(.):(.*)%(.*)$/;
-		my $gender = $1;
+		my $eventGender = $1;
 		my $ageGroup = $2;
 		my $splitAgeGroupTag = $3;
 		my $query = "INSERT INTO NumSwimmers (Gender,AgeGroup,SplitAgeGroupTag,NumSwimmers) " .
-			"VALUES ('$gender','$ageGroup','$splitAgeGroupTag','$TT_Struct::numInGroup{$key}')";
+			"VALUES ('$eventGender','$ageGroup','$splitAgeGroupTag','$TT_Struct::numInGroup{$key}')";
 		my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
 		# get the NumSwimmersId for the place we just entered just to make sure there were no errors
 	    my $NumSwimmersId = $dbh->last_insert_id(undef, undef, "NumSwimmers", "NumSwimmersId");
-	    die "Failed to insert data into NumSwimmers for gender=$gender, ageGroup='$ageGroup' " .
+	    die "Failed to insert data into NumSwimmers for gender=$eventGender, ageGroup='$ageGroup' " .
 	    	" in ComputePointsForAllSwimmers()" if( !defined( $NumSwimmersId ) );
 	}
 	
@@ -2829,10 +3011,18 @@ sub GetNumSwimmersInGenderAgeGroup($$) {
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	$genAgeGroup =~ m/^(.):(.*)$/;
 	my $gender = $1;
+	
+	# 26dec2026: made adjustments to handle the newly instigated gender "N"
+	my $genderQuery = "Gender='F' ";
+	if( $gender eq 'M' ) {
+		$genderQuery = "(Gender='M' OR Gender='N') ";
+	}
+	
+	
 	my $ageGroup = $2;
 	my $numSwimmers = 0;
 	my $query = "SELECT NumSwimmers FROM NumSwimmers WHERE " .
-		"Gender='$gender' AND AgeGroup='$ageGroup' AND SplitAgeGroupTag='$splitAgeGroupTag'";
+		"$genderQuery AND AgeGroup='$ageGroup' AND SplitAgeGroupTag='$splitAgeGroupTag'";
 	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query, "" );
  	if( defined(my $resultHash = $sth->fetchrow_hashref) ) {
  		$numSwimmers = $resultHash->{'NumSwimmers'};
@@ -2855,7 +3045,7 @@ sub GetNumSwimmersInGenderAgeGroup($$) {
 #	$sth - statement handle from which the hash of results can be accessed.
 #
 # NOTES:
-#	We will NOT include swimmers who don't meet the minimum number of PMS meets ($minMeetsForConsideration).
+#	NOT TRUE: 	We will NOT include swimmers who don't meet the minimum number of PMS meets ($minMeetsForConsideration).
 #
 #
 sub ComputeTopPoints($$) {
@@ -2864,6 +3054,12 @@ sub ComputeTopPoints($$) {
 	my( $sth, $rv );
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	my $query;
+	
+	# 26dec2026: made adjustments to handle the newly instigated gender "N"
+	my $genderQuery = "Gender='F' ";
+	if( $gender eq 'M' ) {
+		$genderQuery = "(Gender='M' OR Gender='N') ";
+	}
 	
 	# we only care about the top $TT_Struct::NumHighPoints point getters for each gender, so there
 	# is no reason to fetch the points for ALL swimmers!  We'll get a few more than $TT_Struct::NumHighPoints
@@ -2875,6 +3071,7 @@ sub ComputeTopPoints($$) {
 
 	if( $splitAgeGroups ) {
 		# pre 2018
+		# NOTE: THIS IS NOT REPAIRED TO HANDLE THE "N" GENDER
 		$query = "SELECT Points.SwimmerId,Points.AgeGroup,SUM(Points.TotalPoints) as TotalPoints," .
 			"FirstName,MiddleInitial,LastName FROM Points JOIN Swimmer " .
 			"WHERE Points.swimmerid = Swimmer.swimmerid " .
@@ -2889,10 +3086,11 @@ sub ComputeTopPoints($$) {
 			"(IF(Swimmer.AgeGroup2='',Swimmer.AgeGroup1,Swimmer.AgeGroup2)) as AgeGroup, " .
 			"SUM(Points.TotalPoints) as TotalPoints,FirstName,MiddleInitial,LastName  " .
 			"FROM (FinalPlaceCAG JOIN Swimmer) JOIN Points WHERE " .
-			"Swimmer.SwimmerId=FinalPlaceCAG.SwimmerId AND Points.SwimmerId=Swimmer.SwimmerId " .
+			"TotalPoints > 0 " .
+			"AND Swimmer.SwimmerId=FinalPlaceCAG.SwimmerId AND Points.SwimmerId=Swimmer.SwimmerId " .
 			"AND Points.AgeGroup=FinalPlaceCAG.AgeGroup " .
 			"AND Points.AgeGroup=(IF(Swimmer.AgeGroup2='',Swimmer.AgeGroup1,CONCAT(Swimmer.AgeGroup1,':',Swimmer.AgeGroup2))) " .
-			"AND Gender='$gender' " .
+			"AND $genderQuery " .
 			"GROUP BY Swimmer.SwimmerId,FinalPlaceCAG.AgeGroup,Points.AgeGroup " .
 			"ORDER BY TotalPoints DESC,Swimmer.LastName " .
 			"LIMIT $limit";
@@ -2974,10 +3172,11 @@ sub InsertSOTY( $$$$ ) {
 ###################################################################################
 
 
-# ComputePlaceForAllSwimmers -
+# ComputePlaceForAllSwimmers - compute the place for each swimmer in their gender/age group.
 #
-# if $_[0] is passed (defined) then this routine actually computes the place for a team
-#	whose name is given by $_[0].
+# PASSED:
+#	$teamName - if defined then this routine actually computes the place for a team
+#	whose name is given by $teamName. Otherwise it computes the place for all swimmers.
 #
 sub ComputePlaceForAllSwimmers() {
 	my $teamName = $_[0];			# optional
@@ -2995,14 +3194,14 @@ sub ComputePlaceForAllSwimmers() {
 		$teamName = "(All PAC Swimmers)";
 	}
 
-
+	### NOTE: This code for split age groups was not updated to handle the "N" gender. (Dec, 2025)
 	if( $GENERATE_SPLIT_AGE_GROUPS ) {
 		PMSLogging::PrintLog( "", "", "** Begin ComputePlaceForAllSwimmers (FinalPlaceSAG-$teamName)", 1 );
 		# Compute the place for each swimmer, where we DO NOT combine split age groups.  This means
 		# that a swimmer whose age group changes during a season will accumulate points in two 
 		# age groups, and have a place in those two age groups:
 		foreach my $gender ( ('M', 'F') ) {
-### 10nov2025 NOTE:
+			### 10nov2025 NOTE:
 			# NOTE that this code doesn't handle the case where a swimmer is neither M nor F (e.g. they are "N")
 			# Not fixing this (yet) since we're not using SAG (Separate Age Groups) logic.  See CAG below.
 			foreach my $ageGroup( @PMSConstants::AGEGROUPS_MASTERS ) {
@@ -3051,9 +3250,7 @@ sub ComputePlaceForAllSwimmers() {
 		PMSLogging::PrintLog( "", "", "** END ComputePlaceForAllSwimmers (FinalPlaceSAG-$teamName) ($countSwimmers swimmers)", 1 );
 	} # end of 	if( $GENERATE_SPLIT_AGE_GROUPS ....
 	
-### 10nov2025 NOTE:
-	# this code will only handle genders M and F.
-	# If we will allow points ("recognition" using USMS terms) for other genders then we need to handle them here or separately.
+	### NOTE: Dec, 2025: Updated to handle the "N" gender.
 	if( $GENERATE_COMBINED_AGE_GROUPS ) {
 		PMSLogging::PrintLog( "", "", "** Begin ComputePlaceForAllSwimmers (FinalPlaceCAG-$teamName)", 1 );
 		# Compute the place for each swimmer, where we combine split age groups.  This means
@@ -3062,6 +3259,10 @@ sub ComputePlaceForAllSwimmers() {
 		# oldest age group:
 		$countSwimmers = 0;
 		foreach my $gender ( ('M', 'F') ) {
+			my $genderQuery = "Swimmer.Gender='F' ";
+			if( $gender eq 'M' ) {
+				$genderQuery = "(Swimmer.Gender='M' OR Swimmer.Gender='N') ";
+			}
 			foreach my $ageGroup( @PMSConstants::AGEGROUPS_MASTERS ) {
 				my $order = 0;		# order of swimmer in results (1st place rank = 1st place order)
 				my $rank = 0;		# the swimmer's placing - two swimmers can have the same rank if tied.
@@ -3074,11 +3275,22 @@ sub ComputePlaceForAllSwimmers() {
 						"((Points.AgeGroup='$ageGroup' AND Swimmer.AgeGroup1='$ageGroup' AND Swimmer.AgeGroup2='') " .
 						"OR " .
 						"(Swimmer.AgeGroup2='$ageGroup' AND Points.AgeGroup LIKE '%:$ageGroup')) " .
-					"AND Swimmer.Gender='$gender' " .
+		#			"AND Swimmer.Gender='$gender' " .
+					"AND $genderQuery " .
 					$teamQuery .
 					"GROUP BY Swimmer.SwimmerId,Points.AgeGroup ORDER BY TotalPoints DESC,LastName ASC,RegNum ASC";
+					
 				($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
-				while( defined(my $resultHash = $sth->fetchrow_hashref) ) {
+				my $resultHash = $sth->fetchrow_hashref;
+
+				# debug
+				if(0) {
+				if( defined( $resultHash ) ) {
+					print "ComputePlaceForAllSwimmers(): gender=$gender, agegroup=$ageGroup, query='$query'\n";
+				}
+				}
+
+				while( defined( $resultHash ) ) {
 					$countSwimmers++;
 					$firstName = $resultHash->{'FirstName'};
 					$middleInitial = $resultHash->{'MiddleInitial'};	
@@ -3103,12 +3315,15 @@ sub ComputePlaceForAllSwimmers() {
 					$previousPoints = $totalPoints;
 					$query = "INSERT INTO FinalPlaceCAG (SwimmerId,AgeGroup,ListOrder,sRank) " .
 						"VALUES ('$swimmerId','$ageGroupSelected','$order','$rank')";
-					my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+					my ($sth2, $rv2) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
 	
 					# get the FinalPlaceCAGId for the place we just entered just to make sure there were no errors
 				    my $finalPlaceCAGId = $dbh->last_insert_id(undef, undef, "FinalPlaceCAG", "FinalPlaceCAGId");
 				    die "Failed to insert place into FinalPlaceCAG for swimmerId=$swimmerId in ComputePlaceForAllSwimmers()" 
 				    	if( !defined( $finalPlaceCAGId ) );
+				    # get the next row of the result
+				    $resultHash = $sth->fetchrow_hashref;
+
 				} # end of while()
 			} # end of foreach my $ageGroup...
 		} # end of foreach my $gender...
@@ -3151,7 +3366,7 @@ sub GetPointsForMeet( $$$ ) {
 	# we handle OW and other meets differently.  Reason: an OW "meet" is also an event, 
 	# and it's the only "meet" that can have earned the swimmer points but for which the
 	# swimmer gets none of them for AGSOTY. In other types of meets the swimmer may not
-	# get credit for all their points, but they get credit for at least some of them.
+	# get credit for all their points, but they probably get credit for at least some of them.
 	# See the rules.
 	
 	if( $course eq "OW" ) {
@@ -3162,16 +3377,17 @@ sub GetPointsForMeet( $$$ ) {
 		$resultHash = $sth->fetchrow_hashref;
 		$points = $resultHash->{'Points'};
 		$usePoints = $resultHash->{'UsePoints'};
-		if( $usePoints == 0 ) {
+		if( $usePoints <= 0 ) {
 			# oops... sorry - no credit for these points!
 			$points = 0;
 			$reason = $resultHash->{"Reason"};
 		}
 	} else {
-		# Get the total number of points this user got from this meet:
-		$query = "SELECT SUM(Points) AS Points from Splash WHERE " .
+		# Get the total number of points this user got from this non-open water meet:
+		$query = "SELECT SUM(Points) AS Points " .
+			"FROM Splash WHERE " .
 			"Splash.MeetId = $meetId " .
-			"AND Splash.UsePoints = 1 " .
+			"AND Splash.UsePoints > 0 " .
 			"AND Splash.SwimmerId = $swimmerId";
 		($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
 		$resultHash = $sth->fetchrow_hashref;
@@ -3184,6 +3400,11 @@ sub GetPointsForMeet( $$$ ) {
 	}
 
 	return ($points, $reason);
+
+# notes...for debugging...
+#	my $fullReasons = "";
+#			"GROUP_CONCAT(Reason SEPARATOR ';') AS FullReasons " .
+#		$fullReasons = $resultHash->{'FullReasons'};
 
 } # end of GetPointsForMeet()
 
@@ -3304,8 +3525,8 @@ sub PrintResultsHTML($$$$$) {
 	my $templateSOTY = "$templateDir/AGSOTY-soty.html";
 	my $query;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
-	
-	my $debugLastName = lc("xxxxxxxx");
+
+	my $debugLastName = lc("xxxxxxxxx");
 	my $debugSwimmerId = "0";
 
 	my $category = 1;		# we only consider Cat 1 swims
@@ -3356,8 +3577,9 @@ sub PrintResultsHTML($$$$$) {
 	# or are we combining the two age groups, thus the swimmer is placed in the older age group?
 	# We use the name of the FinalPlace table to tell us what to do:
 	$query = GetPlaceOrderedSwimmersQuery( $splitAgeGroups );
-#	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query, "GetPlaceOrderedSwimmersQuery: " );
-	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query, 
+		$debug?"PrintResultsHTML(): GetPlaceOrderedSwimmersQuery() gave us this query: ":"" );
+
 	# we've got the list of swimmers ...
 	my $previousGenderAgegroup = "";
 	my $previousGender = "";
@@ -3370,10 +3592,23 @@ sub PrintResultsHTML($$$$$) {
 			my $team = $resultHash->{'RegisteredTeamInitials'};
 			my $ageGroup = $resultHash->{'AgeGroup'};			# of the form 18-24 or 18-24:25-29
 			my $rank = $resultHash->{'sRank'};					# rank of swimmer in their gender/agegroup
-			my $points = $resultHash->{'Points'};
+			my $points = $resultHash->{'Points'};				# points for AGSOTY (no denied points)
 			my $listOrder = $resultHash->{'ListOrder'};
 			my $ageGroupCAG = $resultHash->{'AgeGroupCAG'};		# of the form 18-24
-			my $gender = $resultHash->{'Gender'};
+			my $swimmerGender = $resultHash->{'Gender'};
+
+			# Skip swimmers with zero points UNLESS we display such swimmers:
+			next if( ($points == 0) && (! $DISPLAY_SWIMMERS_WITH_ZERO_POINTS) );
+
+			# Interesting situation: IF we have a swimmer with gender 'N' AND they have non-zero
+			# points (points not denied) then that must mean they competed in a male event. 
+			# (Otherwise if they competed ONLY in female events all of their points would have been denied.)
+			# In this case we're going to pretend they are "M" for the purposes of determining their
+			# place in male events.
+			my $gender = $swimmerGender;
+			$gender = 'M' if( $gender eq 'N' );
+			
+			# this swimmer is going to be in the AGSOTY results
 			my $swimmerId = $resultHash->{'SwimmerId'};
 			my $regNum = $resultHash->{'RegNum'};
 			my $sector = $resultHash->{'Sector'};
@@ -3394,7 +3629,7 @@ sub PrintResultsHTML($$$$$) {
 				print "\nPrintResultsHTML(): found swimmerId $swimmerId: ageGroup=$ageGroup, ageGroupCAG=$ageGroupCAG, " .
 					"$previousGenderAgegroup, $thisGenderAgegroup\n";
 			}
-			
+						
 			# are we starting a new gender and/or age group?
 			if( $previousGenderAgegroup ne $thisGenderAgegroup ) {
 				# YES - new gender/age group.  BUT FIRST, close the previous gender/age group
@@ -3553,10 +3788,8 @@ sub PrintResultsHTML($$$$$) {
 				#	- an OW event then we'll either get the points earned in that event or we'll get
 				#		0 in the case where UsePoints = 0.
 				#	- a pool meet, in which case we'll get a sum of points earned at that meet counting
-				#		only those events for which UsePoints = 1.
+				#		only those events for which UsePoints > 0.
 				my ($points, $reason) = GetPointsForMeet( $swimmerId, $meetId, $course );
-
-
 				my $swimmersMeetDetailsLink = $meetTitle;		# assume no link to meet details
 				if( $meetLink ne "" ) {
 					# we have meet details - create a link to them
@@ -3616,7 +3849,7 @@ sub PrintResultsHTML($$$$$) {
 
 					my @details = ();
 					my $detailsRef = \@details;
-					my ($detailsNum, $totalPoints, $resultsCounted) = 
+					my ($detailsNum, $totalPoints, $totalPointsDenied, $resultsCounted) = 
 						TT_MySqlSupport::GetSwimmersSwimDetails2( $swimmerId, $org, $course, $ageGroup, $detailsRef );
 					
 					if( lc($lastName) eq $debugLastName) {
@@ -3674,6 +3907,8 @@ sub PrintResultsHTML($$$$$) {
 					# cat 2 swims and cat 1 swims over the max that count, and all 0 point swims, we have to be
 					# more careful here.
 					for( my $i = 1; $i <= $detailsNum; $i++ ) {
+						my $usePoints = $detailsRef->[$i]{'UsePoints'};
+						next if( $usePoints < 0 );	# ignore this splash - no recognition
 						# We've got details on one splash that earned points for this swimmer in this
 						# org and course. Make sure this is a splash we need to consider:
 						PMSStruct::GetMacrosRef()->{"Reason"} = $detailsRef->[$i]{'Reason'};	# only used for OW <--NOT TRUE!!!
@@ -3942,10 +4177,21 @@ sub PrintResultsHTML($$$$$) {
 	}
 	
 	PMSStruct::GetMacrosRef()->{"ListOfMeets"} = $meetList;
-	my($num, $numWithPoints) = TT_MySqlSupport::GetNumberOfSwimmers();
+	my($num, $numWithPoints, $numDeniedPoints) = TT_MySqlSupport::GetNumberOfSwimmers();
+	PMSStruct::GetMacrosRef()->{"NumberOfSwimmersDeniedPoints"} = $numDeniedPoints;
 	PMSStruct::GetMacrosRef()->{"NumberOfCompetingSwimmers"} = $num;
 	PMSStruct::GetMacrosRef()->{"NumberOfSwimmersEarnedPoints"} = $numWithPoints;
 	PMSStruct::GetMacrosRef()->{"LogOfNonBinarySwimmers"} = ConvertLogStringForSoty( TT_MySqlSupport::GetNonBinarySwimmersRef()->[0] );
+	(my $logLines, my $countSwimmers) = TT_MySqlSupport::DumpDeniedPoints();
+	PMSStruct::GetMacrosRef()->{"CountOfDeniedSwimmers"} = $countSwimmers;		# not used? same as NumberOfSwimmersDeniedPoints above
+	# convert a log string into some HTML:
+	$logLines =~ s,^\t,<ul>\n<li>,;
+	$logLines =~ s,AGSOTY:\n\t\t,AGSOTY:</li>xxx<ul><li>,g;				# xxx to be replaced with \n below
+	$logLines =~ s,'\n\t\t,'</li>xxx<li>,g;
+	$logLines =~ s,'\n\t,'</li></ul>xxx<li>,g;
+	$logLines =~ s,'\n$,'</li>\n</ul>,;
+	$logLines =~ s/xxx/\n/g;
+	PMSStruct::GetMacrosRef()->{"DeniedSwimmersDetails"} = $logLines;
 	PMSTemplate::ProcessHTMLTemplate( $templateSOTY, $sotyGeneratedHTMLFileHandle );
 	
 	PMSLogging::PrintLog( "", "", "** End PrintResultsHTML ($finalPlaceTableName-$generatedHTMLFileSubDirExt)", 1 );
@@ -4124,7 +4370,8 @@ sub GetPlaceOrderedSwimmersQuery {
 			"SELECT FirstName,MiddleInitial,LastName,RegisteredTeamInitials," .
 				"(IF(Swimmer.AgeGroup2='',Swimmer.AgeGroup1,Swimmer.AgeGroup2)) as AgeGroupCAG, " .
 				"sRank,ListOrder,SUM(TotalPoints) AS Points,FinalPlaceCAG.AgeGroup AS AgeGroup, " .
-				"Swimmer.Gender as Gender,Swimmer.SwimmerId as SwimmerId, Swimmer.RegNum as RegNum," .
+				"(IF(Swimmer.Gender='N','M',Swimmer.Gender)) as Gender, " .
+				"Swimmer.SwimmerId as SwimmerId, Swimmer.RegNum as RegNum," .
 				"Sector,SectorReason " .
 				"FROM (FinalPlaceCAG JOIN Swimmer) JOIN Points 
 				WHERE Swimmer.SwimmerId=FinalPlaceCAG.SwimmerId " .
@@ -4162,6 +4409,7 @@ sub PrintFullExcelResults($$$$) {
 	my $query;
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	my ($sth, $rv);
+	my $totalPointsDenied;
 
 	PMSLogging::PrintLog( "", "", "\n** Begin PrintFullExcelResults (" . 
 		($splitAgeGroups == 1 ? "Split Age Groups" : "Combine Age Groups") . ")", 1 );
@@ -4522,7 +4770,7 @@ sub PrintFullExcelResults($$$$) {
 					if( $missingResults{"$org-$course"} ) {
 						$pointsForThisOrgCourse = "-";
 					} else {
-						( $detailsNum, $pointsForThisOrgCourse, $resultsCounted ) = 
+						( $detailsNum, $pointsForThisOrgCourse, $totalPointsDenied, $resultsCounted ) = 
 							TT_MySqlSupport::GetSwimmersSwimDetails2( $swimmerId, $org, $course, $ageGroup );
 					}
 					$worksheet->write( $row, $column++, $pointsForThisOrgCourse, $$pointsDataFormatRef );
@@ -4549,7 +4797,8 @@ sub PrintFullExcelResults($$$$) {
 	my $row2 = $row+$meetCount;
 	$worksheet->merge_range( "A$row:M$row2", $meetList, $format );
 	
-	my($num, $numWithPoints) = TT_MySqlSupport::GetNumberOfSwimmers();
+	my($num, $numWithPoints, $numDeniedPoints) = TT_MySqlSupport::GetNumberOfSwimmers();
+	# we don't use $numDeniedPoints in this spreadsheet
 	$row = $row2+1;
 	$worksheet->merge_range( "A$row:M$row", "Number of Competing Swimmers:  $num", $format );
 	$row++;
@@ -5096,7 +5345,6 @@ sub GetSwimmerMeetDetails( $ ) {
 	my $countPMSHidden = 0;		# the number of PMS sanctioned POOL meets USMS says this swimmer has swum in but we didn't
 								# detect when processing results.
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
-	my $debug = 0;
 	my $resultHash;
 	my ($sth, $rv);
 	my $query;
@@ -5202,6 +5450,7 @@ sub ValidateAge($$) {
 #
 # PASSED:
 #	$fileName - the file we're currently processing (used in error messages) (not used)
+#		Can be a simple name.
 #	$lineNum - the line being processed (used in error messages) (not used)
 #	$regNum - the key used to look up the swimmer
 #	$fatalMsg - the error message we'll use if error (used in error messages) (not used)
