@@ -166,11 +166,11 @@ my $processEPostal			= $RESULT_FILES_TO_READ & 0b1000000;
 # include comment symbol):
 #	$processPMSTopTen = 0;
 if( 0 ) {
-$processPMSTopTen = 0;
+$processPMSTopTen = 1;
 $processUSMSTopTen = 0;
 $processPMSRecords = 0;
 $processUSMSRecords = 0;
-#$processPMSOW	 = 0;
+$processPMSOW	 = 0;
 $processFakeData	 = 0;
 $processEPostal	 = 0;
 }
@@ -1022,7 +1022,10 @@ TT_MySqlSupport::DumpNonBinarySwimmers();
 my $logLinesOnly = PMSLogging::GetLogOnlyLines();
 my $completionTimeDate = strftime( "%a %b %d %G - %r %Z", localtime() );
 
-PMSLogging::PrintLog( "", "", "\nDone with $appProgName at $completionTimeDate.\n  See the $logLinesOnly lines (beginning with '+') logged ONLY to the log file.", 1 );
+PMSLogging::PrintLog( "", "", "\nDone with $appProgName:\n" .
+	"    Began on $generationTimeDate.\n" .
+	"    Completed on $completionTimeDate.\n" .
+	"    See the $logLinesOnly lines (beginning with '+') logged ONLY to the log file.", 1 );
 exit(0);
 
 
@@ -1851,10 +1854,17 @@ sub USMSProcessRecordRow( $$$$$$ ) {
 	
 	# found a pms swimmer setting a usms record:
 	if(0) {
-	print "USMSProcessRecordRow(): Line #$lineNum: time=$time, name=$fullName ['$firstName' '$middleInitial' '$lastName']" .
-		", recordGender='$recordGender', ageGroup = '$ageGroup', regNum=$regNum, " .
-		"eventName='$eventName'\n";
+		if( $debug ) {
+			if( $fullName eq "Laura B Val" ) {
+				if( $date =~ m/^2026.*$/ ) {
+					print "USMSProcessRecordRow(): Line #$lineNum: time=$time, name=$fullName ['$firstName' '$middleInitial' '$lastName']" .
+						", recordGender='$recordGender', ageGroup = '$ageGroup', regNum=$regNum, " .
+						"eventName='$eventName'\n";
+				}
+			}
+		}
 	}
+
 	# add this swimmer to our DB if necessary
 	my ($swimmerId, $swimmerGender) = TT_MySqlSupport::AddNewSwimmerIfNecessary( $simpleFileName, $lineNum, $firstName, $middleInitial, $lastName,
 		$recordGender, $regNum, 0, $ageGroup, $teamInitials );
@@ -2164,7 +2174,7 @@ sub PMSProcessOpenWater($) {
 	} else {
 		# get to work
 		PMSLogging::DumpNote( "", "", "** Topten::PMSProcessOpenWater(): Begin processing $org $course:\n   '$fileName'", 1 );
-		my %sheetHandle = TT_SheetSupport::OpenSheetFile($fileName);
+		my %sheetHandle = TT_SheetSupport::OpenSheetFile($fileName, "csv");
 
 		if( $sheetHandle{"fileRef"} == 0 ) {
 			# couldn't open the file even though it exists - empty?
@@ -2388,6 +2398,7 @@ sub PMSProcessOpenWater($) {
 #
 # Example "result line":
 # we have rows with the following columns in CSV format (2016):
+# 2026: see updates below.
 # REQUIRED:
 #	1: Last Name
 #	2: First Name
@@ -2411,7 +2422,8 @@ sub PMSProcessOpenWater($) {
 #	18: Date (e.g. '07-23-2016')  [default:  $PMSConstants::DEFAULT_MISSING_DATE]
 #
 # PASSED:
-#	$FakeSplashDataFile - the simple file name of the file holding the fake splashes 
+#	$FakeSplashDataFile - the simple file name of the file holding the fake splashes. It's assumed 
+#		to live in the directory whose full path name is given by $PMSSwimmerData.
 #
 # NOTES:  This "hack" allows us to supply a file containing swimmers who we will "pretend" swam
 #	a specific event at a specific meet.  This file is usually accompanied by a "FakeMeetDataFile"
@@ -2422,12 +2434,18 @@ sub PMSProcessOpenWater($) {
 #	
 #	Below we have an option which depends on the value of "RequireExistingSwimmer".
 #	IF RequireExistingSwimmer is true (!=0):
-#	For simplicity we will NOT add a new swimmer just to give them a fake splash.  If a swimmer
-#	does not exist (has no real splashes) by the time this routine is called, and that swimmer 
-#	is supposed to be given a fake splash they will be ignored.  If a swimmer doesn't have any
-#	real swims will a fake swim be useful to them?   
+#		For simplicity we will NOT add a new swimmer just to give them a fake splash.  If a swimmer
+#		does not exist (has no real splashes) by the time this routine is called, and that swimmer 
+#		is supposed to be given a fake splash they will be ignored.  If a swimmer doesn't have any
+#		real swims will a fake swim be useful to them?   
 #	IF RequireExistingSwimmer if false (==0)
-#	Add the swimmer with this splash.
+#		Add the swimmer with this splash.
+#
+#	May, 2026: Updates:
+#		- We will ignore all rows where:
+#			- the first character of the first column is a '#'
+#			- the first column is empty
+#			- the first three columns are undefined (legacy)
 #
 sub ProcessFakeSplashes($) {
 	my $simpleFileName = $_[0];
@@ -2444,8 +2462,12 @@ sub ProcessFakeSplashes($) {
 	
 	my $fileName = $PMSSwimmerData .  $simpleFileName;
 	# does this file exist?
-		
-		# get to work
+	if( ! ( -e -f -r $fileName ) ) {
+		# can't find/open this file - just skip it with a warning:
+		PMSLogging::DumpWarning( "", "", "!! Topten::ProcessFakeSplashes(): UNABLE TO PROCESS fake splashes file (file " .
+			"does not exist or is not readable) - INGORE THIS FILE:\n   '$fileName'", 1 );
+	} else {
+		# the file exists - get to work
 		PMSLogging::DumpNote( "", "", "** Topten::ProcessFakeSplashes(): Begin processing:\n   '$fileName'", 1 );
 		my %sheetHandle = TT_SheetSupport::OpenSheetFile($fileName);
 		my $lineNum = 0;
@@ -2454,19 +2476,30 @@ sub ProcessFakeSplashes($) {
 			my @row = TT_SheetSupport::ReadSheetRow(\%sheetHandle);
 			my $rowAsString = PMSUtil::ConvertArrayIntoString( \@row );
 			my $length = scalar(@row);
-			if( $debug ) {
-				PMSLogging::DumpNote( "", "", "Topten::ProcessFakeSplashes(): length=$length.", 0 );
+			if( $debug > 12 ) {
+				PMSLogging::DumpNote( "", "", "Topten::ProcessFakeSplashes(): length of row: $length.", 0 );
 			}
 			if( $length > 0 ) {
 				$lineNum++;
+				# we have a row, but do we use it?
 				if( $debug > 10 ) {
 					PMSLogging::DumpNote( "", "", "Topten::ProcessFakeSplashes(): process line $lineNum. Line='" .
 					"$rowAsString'\n    row[0]='$row[0]', row[1]='$row[1]', row[2]='$row[2]'", 1 );
 				}
 				# we've got a new row of of something (may be all spaces or a heading or something else) BUT
 				# we know it's not an end-of-file
-				if( $row[0] =~ m/\s*#/ ) {
+				if( $row[0] =~ m/^\s*#/ ) {
 					# found a comment...
+					if( $debug > 10 ) {
+						PMSLogging::DumpNote( "", "", "Topten::ProcessFakeSplashes(): skip comment line #$lineNum.", 1 );
+					}
+					next;
+				}
+				if( length( $row[0] ) == 0 ) {
+					# assume empty row...
+					if( $debug > 10 ) {
+						PMSLogging::DumpNote( "", "", "Topten::ProcessFakeSplashes(): skip empty line #$lineNum.", 1 );
+					}
 					next;
 				}
 				if( (defined($row[0])) && (defined($row[1])) && (defined($row[2])) ) {
@@ -2537,7 +2570,8 @@ sub ProcessFakeSplashes($) {
 					$numResultLines++;
 					
 					if( $debug ) {
-						PMSLogging::DumpNote( "", "", "Topten::ProcessFakeSplashes(): We've got a fake result, #$numResultLines.", 0 );
+						PMSLogging::DumpNote( "", "", "Topten::ProcessFakeSplashes(): We've got a fake splash " .
+							" #$numResultLines on line $lineNum", 0 );
 					}
 					### NOTE: WE ASSUME THIS MEET EXISTS IN OUR DB (if nothing else it was created as 
 					###		a "fake" meet.)
@@ -2566,11 +2600,11 @@ sub ProcessFakeSplashes($) {
 				TT_SheetSupport::CloseSheet( \%sheetHandle );
 				PMSLogging::DumpNote( "", "", "*  Topten::ProcessFakeSplashes($simpleFileName): " .
 					"Done with '$simpleFileName' " .
-					"- $lineNum lines read, $numResultLines lines stored." );
+					"- $lineNum lines read, $numResultLines fake splashes recorded.", 1 );
 				last;
 			}
 		} # end of while
-	
+	} # end of the file exists...
 	
 } # end of ProcessFakeSplashes()
 
@@ -2873,9 +2907,10 @@ sub PMSProcessEPostal( $$ ) {
 				{ # end of file
 					# TT_SheetSupport::ReadSheetRow() returned a 0 length row - end of file
 					TT_SheetSupport::CloseSheet( \%sheetHandle );
-					my $msg = "* Topten::PMSProcessEPostal(): Done with '$simpleFileName' - $lineNum lines read, of which " .
-						"$numResultLines were PMS result lines.\n    " .
-						"Out of all the PMS result lines $numPMSScoringResults scored points.";
+					my $msg = "* Topten::PMSProcessEPostal(): Done with '$simpleFileName' - $lineNum lines read,\n" .
+						"    of which $numResultLines were valid result lines,\n" .
+						"    and of those $numPMSResultLines were PMS result lines,\n" .
+						"    and of those $numPMSScoringResults scored points.";
 					PMSLogging::PrintLog( "", "", $msg, 1 );
 					last;
 				}
@@ -2905,7 +2940,9 @@ sub ComputePointsForAllSwimmers() {
 	my( $sth, $rv );
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	my $countSwimmers = 0;
-	my $debugSwimmerId = "xxxxx";
+
+	my $debug = 0;
+	my $debugSwimmerId = "0";
 	
 	PMSLogging::PrintLog( "", "", "\n** Begin ComputePointsForAllSwimmers", 1 );
 	
@@ -2924,8 +2961,11 @@ sub ComputePointsForAllSwimmers() {
 		$ageGroup2 = $resultHash->{'AgeGroup2'};
 		
 		if( $debug ) {
-			PMSLogging::DumpNote( "", "", "Topten::ComputePointsForAllSwimmers(): Swimmer #$countSwimmers; swimmerId=$swimmerId; " .
-			"firstName=$firstName, lastName=$lastName.", 1 );
+			if( $firstName eq "Laura" && $lastName eq "Val" ) {
+				$debugSwimmerId = $swimmerId;
+				PMSLogging::DumpNote( "", "", "Topten::ComputePointsForAllSwimmers(): Swimmer #$countSwimmers; swimmerId=$swimmerId; " .
+					"firstName=$firstName, lastName=$lastName, agegroup1=$ageGroup1, agegroup2=$ageGroup2.", 1 );
+			}
 		}
 		
 		if( ($countSwimmers % 500) == 0) {
@@ -2945,10 +2985,12 @@ sub ComputePointsForAllSwimmers() {
 			if( $ageGroup2 ne "" ) {
 				( $totalPoints, $totalPointsDenied, $totalResultsCounted, $totalResultsAnalyzed ) = 
 					TT_MySqlSupport::ComputePointsForSwimmer( $swimmerId, "$ageGroup1:$ageGroup2", $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
-				$TT_Struct::numInGroup{"$eventGender:$ageGroup2%combined"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
+					my $olderAgeGroup = TT_Util::GetOlderAgeGroup( $ageGroup1, $ageGroup2 );
+					# NOTE: the above is unnecessary since, by rule, ageGroup2 must be older than ageGroup1. We'll leave it here anyway... (1aug2026)
+					$TT_Struct::numInGroup{"$eventGender:$olderAgeGroup%combined"}++ if( ($totalPoints > 0) || $DISPLAY_SWIMMERS_WITH_ZERO_POINTS );
 				if( $swimmerId eq $debugSwimmerId ) {
-					print "Combined age groups: ageGroup1:ageGroup2: totalPoints=$totalPoints, totalResultsCounted: " .
-						"$totalResultsCounted, totalResultsAnalyzed=$totalResultsAnalyzed\n";
+					print "Combined age groups: $ageGroup1:$ageGroup2: totalPoints=$totalPoints, totalResultsCounted: " .
+						"$totalResultsCounted, totalResultsAnalyzed=$totalResultsAnalyzed, olderAgeGroup=$olderAgeGroup\n";
 				}
 			} else {
 				( $totalPoints, $totalPointsDenied, $totalResultsCounted, $totalResultsAnalyzed ) = 
@@ -2988,7 +3030,7 @@ sub ComputePointsForAllSwimmers() {
 		my $splitAgeGroupTag = $3;
 		my $query = "INSERT INTO NumSwimmers (Gender,AgeGroup,SplitAgeGroupTag,NumSwimmers) " .
 			"VALUES ('$eventGender','$ageGroup','$splitAgeGroupTag','$TT_Struct::numInGroup{$key}')";
-		my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+		my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query, $debug );
 		# get the NumSwimmersId for the place we just entered just to make sure there were no errors
 	    my $NumSwimmersId = $dbh->last_insert_id(undef, undef, "NumSwimmers", "NumSwimmersId");
 	    die "Failed to insert data into NumSwimmers for gender=$eventGender, ageGroup='$ageGroup' " .
@@ -3011,6 +3053,7 @@ sub GetNumSwimmersInGenderAgeGroup($$) {
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	$genAgeGroup =~ m/^(.):(.*)$/;
 	my $gender = $1;
+	my $debug = 0;
 	
 	# 26dec2026: made adjustments to handle the newly instigated gender "N"
 	my $genderQuery = "Gender='F' ";
@@ -3023,7 +3066,7 @@ sub GetNumSwimmersInGenderAgeGroup($$) {
 	my $numSwimmers = 0;
 	my $query = "SELECT NumSwimmers FROM NumSwimmers WHERE " .
 		"$genderQuery AND AgeGroup='$ageGroup' AND SplitAgeGroupTag='$splitAgeGroupTag'";
-	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query, "" );
+	my ($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query, $debug );
  	if( defined(my $resultHash = $sth->fetchrow_hashref) ) {
  		$numSwimmers = $resultHash->{'NumSwimmers'};
  	}
@@ -3185,7 +3228,9 @@ sub ComputePlaceForAllSwimmers() {
 	my $dbh = PMS_MySqlSupport::GetMySqlHandle();
 	my $countSwimmers = 0;
 	my $query;
+	my $debug = 0;
 	my $debugSwimmerId = "0";
+
 
 	my $teamQuery = "";
 	if( defined $teamName ) {
@@ -3275,12 +3320,12 @@ sub ComputePlaceForAllSwimmers() {
 						"((Points.AgeGroup='$ageGroup' AND Swimmer.AgeGroup1='$ageGroup' AND Swimmer.AgeGroup2='') " .
 						"OR " .
 						"(Swimmer.AgeGroup2='$ageGroup' AND Points.AgeGroup LIKE '%:$ageGroup')) " .
-		#			"AND Swimmer.Gender='$gender' " .
 					"AND $genderQuery " .
 					$teamQuery .
 					"GROUP BY Swimmer.SwimmerId,Points.AgeGroup ORDER BY TotalPoints DESC,LastName ASC,RegNum ASC";
 					
-				($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query );
+				($sth, $rv) = PMS_MySqlSupport::PrepareAndExecute( $dbh, $query, "" );  #"ComputePlaceForAllSwimmers(): " .
+					#"gender=$gender, ageGroup=$ageGroup" );
 				my $resultHash = $sth->fetchrow_hashref;
 
 				# debug
@@ -3528,6 +3573,7 @@ sub PrintResultsHTML($$$$$) {
 
 	my $debugLastName = lc("xxxxxxxxx");
 	my $debugSwimmerId = "0";
+	my $debug = 0;
 
 	my $category = 1;		# we only consider Cat 1 swims
 	my $personBackgroundColor = "WHITE";		# background color for each row (computed below)
@@ -3571,7 +3617,7 @@ sub PrintResultsHTML($$$$$) {
 
 	# Since we have already computed the points and places for every swimmer we are going to 
 	# print them out in order of gender and age group, ordered highest to lowest points 
-	# (lowest to highest place) for each gender / age group:
+	# (place 1 -> n) for each gender / age group:
 	# The query we use to get the place for every swimmer depends on what rule we're following:
 	# are we considering a swimmer with a split age group as two swimmers (one in each age group)
 	# or are we combining the two age groups, thus the swimmer is placed in the older age group?
@@ -3818,6 +3864,17 @@ sub PrintResultsHTML($$$$$) {
 				my $meetLink = $resultHash->{'MeetLink'};
 				my $meetIsPMS = $resultHash->{'MeetIsPMS'};
 				my $sanction = $meetIsPMS ? "PAC" : "Non PAC";
+				if( (!defined( $meetLink )) || (!defined( $meetTitle )) ) {
+					if( !defined( $meetLink ) ) {
+						$meetLink = "(unknown link)";
+					}
+					if( !defined( $meetTitle ) ) {
+						$meetTitle = "(unknown title)";
+					}
+					PMSLogging::DumpError( "", "", "PrintResultsHTML: undefined meetlink or meetTitle. " .
+						"meetLink='$meetLink', meetId=$meetId, " .
+						"meetTitle='$meetTitle',\n    query was: '$query'", 1 );
+				}
 				$swimmersMeetDetails .= "<tr>\n" .
 					"  <td><a href='$meetLink'>$meetTitle</a></td>\n" .
 					"  <td>$sanction</td>\n" .
@@ -4351,6 +4408,8 @@ sub GetPlaceOrderedSwimmersQuery {
 	}
 	if( $splitAgeGroups ) {
 		# keep split age groups
+		# NOTE: not modified to handle 3 swimmer genders, nor modified to allow age groups to be in reverse order
+		#	(e.g. "25-29:18-24")
 		$query =
 			"SELECT FirstName,MiddleInitial,LastName,RegisteredTeamInitials,FinalPlaceSAG.AgeGroup as AgeGroup, " .
 				"sRank,ListOrder,SUM(TotalPoints) as Points,FinalPlaceSAG.AgeGroup AS AgeGroupCAG, " .
@@ -4366,6 +4425,33 @@ sub GetPlaceOrderedSwimmersQuery {
 				$limitPart;
 	} else {
 		# combine age groups
+		# 31jul2026: modified to allow AgeGroup1 to be OLDER or YOUNGER than AgeGroup2. AgeGroup1 is always
+		#	present, AgeGroup2 is optional.
+		$query = <<~"BUp_CAG";
+			SELECT FirstName,MiddleInitial,LastName,RegisteredTeamInitials,
+				CASE
+					WHEN Swimmer.AgeGroup2 IS NULL OR Swimmer.AgeGroup2 = '' THEN Swimmer.AgeGroup1
+					WHEN CAST(SUBSTRING_INDEX(Swimmer.AgeGroup1, '-', 1) AS UNSIGNED) >=
+						 CAST(SUBSTRING_INDEX(Swimmer.AgeGroup2, '-', 1) AS UNSIGNED)
+					THEN Swimmer.AgeGroup1
+					ELSE Swimmer.AgeGroup2
+				END AS AgeGroupCAG, 
+				sRank,ListOrder,SUM(TotalPoints) AS Points,FinalPlaceCAG.AgeGroup AS AgeGroup, 
+				(IF(Swimmer.Gender='N','M',Swimmer.Gender)) as Gender, 
+				Swimmer.SwimmerId as SwimmerId, Swimmer.RegNum as RegNum,
+				Sector,SectorReason 
+				FROM (FinalPlaceCAG JOIN Swimmer) JOIN Points 
+				WHERE Swimmer.SwimmerId=FinalPlaceCAG.SwimmerId 
+				$genderPart 
+				AND Points.SwimmerId=Swimmer.SwimmerId 
+				AND Points.AgeGroup=FinalPlaceCAG.AgeGroup 
+				AND Points.AgeGroup=(IF(Swimmer.AgeGroup2='',Swimmer.AgeGroup1,CONCAT(Swimmer.AgeGroup1,':',Swimmer.AgeGroup2))) 
+				GROUP BY Swimmer.SwimmerId,FinalPlaceCAG.AgeGroup,FinalPlaceCAG.sRank,FinalPlaceCAG.ListOrder 
+				ORDER BY Gender ASC,AgeGroupCAG ASC,ListOrder ASC 
+				$limitPart
+			BUp_CAG
+		
+		if(0) {
 		$query =
 			"SELECT FirstName,MiddleInitial,LastName,RegisteredTeamInitials," .
 				"(IF(Swimmer.AgeGroup2='',Swimmer.AgeGroup1,Swimmer.AgeGroup2)) as AgeGroupCAG, " .
@@ -4382,6 +4468,7 @@ sub GetPlaceOrderedSwimmersQuery {
 				"GROUP BY Swimmer.SwimmerId,FinalPlaceCAG.AgeGroup,FinalPlaceCAG.sRank,FinalPlaceCAG.ListOrder " .
 				"ORDER BY Gender ASC,AgeGroupCAG ASC,ListOrder ASC " .
 				$limitPart;
+		}
 	}
 	return $query;
 } # end of GetPlaceOrderedSwimmersQuery()

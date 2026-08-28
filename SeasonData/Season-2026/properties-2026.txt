@@ -11,6 +11,12 @@
 # the results to be processed:
 RacesDataFile	races.txt
 
+# A special NOTE is displayed near the top of the page if desired. Here is the text of the note:
+#SpecialNote NOTE: There are problems with the results for the Women's 3000 ePostal event. Once they ar\
+#	e resolved their points will be included in AGSOTY.
+# If there is no special NOTE then define the SpecialNote as an empty string:
+SpecialNote
+
 # The AGSOTYPointsEmail is the FULL mailto link to use when the user wants to email a question/problem
 # to a human. Note the strange format - it's designed to make it very hard for a bot to gather the
 # email address from the web page. See the necessary javascript that turns this into a working 
@@ -91,7 +97,7 @@ FakeMeetDataFile
 #	a real meet can be used if that makes sense.
 # If there are no fake swims this value isn't supplied.
 # This is a simple file name, and relative to PMSSwimmerData/. 
-#FakeSplashDataFile FakeSplashes.csv
+FakeSplashDataFile FakeSplashes.csv
 
 
 
@@ -137,7 +143,9 @@ USMSRecordsFiles \
 
 
 PMSOpenWaterResultFile \
-						{YearBeingProcessed}PacMastersOWPlacesForEachSwimmer.csv
+						{YearBeingProcessed}PacMastersOWPlacesForEachSwimmer.txt
+# 7jul2026: modified OW and Top Ten (this file) to use .txt instead of .csv
+#						{YearBeingProcessed}PacMastersOWPlacesForEachSwimmer.csv
 
 
 

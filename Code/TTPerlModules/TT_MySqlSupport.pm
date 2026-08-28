@@ -64,6 +64,7 @@ my @ttTableListNotDropped = (
 
 
 # We'll use this hash to keep track of all swimmer's full names that we can't find in the RSIDN table.
+# These swimmers WILL NOT get points for those events where this problem occurred.
 #	$UnableToFindInRSIDN{"$fullName"} = # times the swimmer with full name
 #		$fullName was seen in the results.
 #	$UnableToFindInRSIDN{"$fullName":OrgCourse} = a list of 1 or more "$org:$course" strings which
@@ -72,6 +73,7 @@ my %UnableToFindInRSIDN = ();
 
 
 # We'll use this hash to keep track of all swimmer's full names that we can't find in the RSIDN table BUT
+# These swimmer WILL get points for those events where this problem occurred.
 #	were able to find them  EXACTLY ONCE in RSIDN if we ignored their middle initial.
 #	(See GetDetailsFromFullName(), Update Nov 2022)
 #	$UnableToFindMIInRSIDN{"$fullName"} = # times the swimmer with full name
@@ -388,9 +390,10 @@ sub InitializeTopTenDB() {
     				# ---   (SCY, SCM, LCM, OW, SCY Records, SCM Records, LCM Records)
     				# --- Org - the organization which awarded the points (PAC, USMS)
     				# --- AgeGroup - the age group the swimmer was in when earning these points.
-    				#		Can be of the form "18-25:25-29" if we combine age groups for 
-    				#		a swimmer who swims the season in two age groups.
-    				# 
+    				#		Can be of the form "18-24:25-29" if we combine age groups for 
+    				#		a swimmer who swims the season in two age groups. In that case it is
+    				# 		required that the FIRST age group is YOUNGER than the second. e.g.
+    				#		"25-29:18-24" is invalid.
     				# --- TotalPoints - the points they earned in this org, course, age group(s) applied
     				#		to AGSOTY. Does not count denied points or points denied due to rules
     				#		limiting points, like too many swims for a org/course, or cat2 OW.
@@ -438,7 +441,9 @@ sub InitializeTopTenDB() {
     				# --- AgeGroup - the age group the swimmer was in when earning these points.
     				#		Can be of the form "18-25" for swimmers who do not have split age groups,
     				#		or "18-25:25-29" if we combine age groups for 
-    				#		a swimmer who swims the season in two age groups.
+    				#		a swimmer who swims the season in two age groups. In that case it is
+    				# 		required that the FIRST age group is YOUNGER than the second. e.g.
+    				#		"25-29:18-24" is invalid.
     				# --- ListOrder - the order this swimmer appears in the reslts.  Would normally be the
     				#		same as sRank (below) but there can be ties, so it doesn't have to be the same.
     				#		This allows us to list the names in a deterministic order even if there 
@@ -463,7 +468,9 @@ sub InitializeTopTenDB() {
 				  	# --- Age1 - their age at their first recorded top N of the season
 				  	# --- Age2 - their age at their last recorded top N of the season
 				  	# --- AgeGroup1 - their age group during first event we found them in.
-				  	# --- AgeGroup2 - "", or a second age group we found them in.
+				  	# --- AgeGroup2 - "", or a second age group we found them in. In that case it is
+    				# 		required that AgeGroup1 be YOUNGER than the second. e.g. if
+    				#		AgeGroup1 is "25-29" then it is invalid for AgeGroup2 to be 18-24".
 				  	# --- RegisteredTeamInitials:  (what if more than one?  Use the first one found)
 				  	# --- Sector: one of NULL, A, B, C, or D.  See the RankSectors package for the meaning of a Sector.
 				  	#		If NULL the sector for this swimmer was not computed.
@@ -688,6 +695,10 @@ if( !defined $units ) {
 #	$fileName - used for logging. can be a simple name
 #	$eventGender - the gender of the event, which is usually the gender of the swimmer, but not
 #		necessarily.
+#	...
+#	$age - age of the swimmer.
+#	$ageGroup - age group of the swimmer. If empty then we'll compute it based on their age.
+#	....
 #
 # RETURNED:
 #	$swimmerId -
@@ -709,13 +720,18 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 	my $ageGroup2 = "";
 	my $debug = 0;
 
+	if( $ageGroup =~ m/^\s*$/ ) {
+		# compute their agegroup:
+		$ageGroup = PMSUtil::ComputeAgeGroup( $age );
+	}
+
+
 	# 15nov2025: added the following only to catch mis-match gender and gender 'N', but in the
 	# future we might want to catch mis-match on other data.
 	my($correctedFirstName, $correctedMiddleInitial, 
 		$correctedLastName, $correctedRegNum, $correctedTeam, $correctedDOB, $swimmerGender,
 		$resultMissingDataType, $resultErrorNote, $resultErrorRegnum, $rsidnId);
-
-	my $debugLastName = "xxxxx";
+	my $debugLastName = "xxxxxxx";
 	
 	# make sure the event gender is either M or F
 	$eventGender = PMSUtil::GenerateCanonicalGender( $fileName, $lineNum, $eventGender );
@@ -764,9 +780,19 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 				# age group above or below the current one in the db, and if it is, make it their second
 				# age group in the db.
 				if( AgeGroupsClose( $ageGroup, $ageGroup1 ) ) {
-					# update this swimmer by adding their ageGroup2
+					# update this swimmer by adding their ageGroup2. At the same time we will make sure that
+					# ageGroup2 is OLDER than ageGroup1 (e.g. we want 18-24:25-29, NOT 25-29:18-24)
+					my $olderAgeGroup = TT_Util::GetOlderAgeGroup( $ageGroup, $ageGroup1);
+					my ($newAgeGroup1, $newAgeGroup2);
+					if( $olderAgeGroup eq $ageGroup ) {
+						$newAgeGroup1 = $ageGroup1;
+						$newAgeGroup2 = $olderAgeGroup;
+					} else {
+						$newAgeGroup1 = $ageGroup;
+						$newAgeGroup2 = $olderAgeGroup;
+					}
 					my ($sth2, $rv2) = PMS_MySqlSupport::PrepareAndExecute( $dbh,
-						"UPDATE Swimmer SET AgeGroup2 = '$ageGroup' " .
+						"UPDATE Swimmer SET AgeGroup1 = '$newAgeGroup1', AgeGroup2 = '$newAgeGroup2' " .
 						"WHERE SwimmerId = $swimmerId" );
 					$total2AgeGroups++;
 					$MultiAgeGroups{$swimmerId} = "$ageGroup1:$ageGroup:$eventGender";
@@ -856,7 +882,7 @@ sub AddNewSwimmerIfNecessary( $$$$$$$$$$ ){
 			"INSERT INTO Swimmer " .
 				"(FirstName,MiddleInitial,LastName,Gender,RegNum,Age1,Age2,AgeGroup1,RegisteredTeamInitials) " .
 				"VALUES (\"$firstName\",\"$middleInitial\",\"$lastName\",\"$swimmerGender\",\"$regNum\"," .
-				"\"$age\",\"$age\",\"$ageGroup\",\"$team\")") ;
+				"\"$age\",\"$age\",\"$ageGroup\",\"$team\")", $debug) ;
 				
 		# get the SwimmerId of the swimmer we just entered into our db
     	$swimmerId = $dbh->last_insert_id(undef, undef, "Swimmer", "SwimmerId");
@@ -2138,7 +2164,8 @@ sub DumpErrorsWithSwimmerNames() {
 		# BUT we did find if we ignored their middle initial in the RSIND file.
 		PMSLogging::PrintLog( "", "", "\nTT_MySqlSupport::DumpErrorsWithSwimmerNames(): The following $size " .
 			"swimmers appeared by name in results but a slightly different name in our RSIDN_$yearBeingProcessed table.\n" .
-			"    Once we ignored their middle initial in the RSIND file we found them and their reg number:" );
+			"    Once we ignored their middle initial in the RSIND file we found them and their reg number.\n" .
+			"    They got points:" );
 		foreach my $key (keys %UnableToFindMIInRSIDN) {
 			next if( $key =~ m/OrgCourse/ );
 			PMSLogging::PrintLog( "", "", "    '$key' (appeared in " . $UnableToFindMIInRSIDN{$key} . 
@@ -2179,9 +2206,10 @@ sub DumpErrorsWithSwimmerNames() {
 		# dump out the names of all swimmers that we didn't find in the RSIDN table but handled as a warning only
 		PMSLogging::PrintLog( "", "", "\nTT_MySqlSupport::DumpErrorsWithSwimmerNames(): The following $size " .
 			"swimmers were not in our RSIDN_$yearBeingProcessed table\n" .
-			"but this is only a WARNING " .
+			"    but this is only a WARNING " .
 			"since we don't know if they are supposed to be PAC swimmers.\n" .
-			"They did NOT get points:" );
+			"    This usually happend with USMS records, since USMS doesn't publish the swimmer's reg number.\n" .
+			"    They did NOT get points:" );
 		foreach my $key (keys %UnableToFindInRSIDN_WARNING) {
 			next if( $key =~ m/OrgCourse/ );
 			PMSLogging::PrintLog( "", "", "    '$key' (appeared in " . $UnableToFindInRSIDN_WARNING{$key} . 
@@ -2200,14 +2228,18 @@ sub DumpErrorsWithSwimmerNames() {
 			"but were used to identify " .
 			"a swimmer in the PMS Top Ten results.\n" .
 			"This is FATAL - the swimmer DID NOT get any points." );
+		my $numTotalResults = 0;
 		foreach my $key (keys %TT_Struct::hashOfInvalidRegNums) {
 			next if( $key =~ m/OrgCourse/ );
-			PMSLogging::PrintLog( "", "", "    '$key' (appeared in " . $TT_Struct::hashOfInvalidRegNums{$key} . 
+			my $numResults = $TT_Struct::hashOfInvalidRegNums{$key};
+			PMSLogging::PrintLog( "", "", "    '$key' (appeared in " . $numResults . 
 				" results [" . $TT_Struct::hashOfInvalidRegNums{"$key:OrgCourse"} . "])" );
+			$numTotalResults += $numResults;
 		}
+		PMSLogging::PrintLog( "", "", "Total number of affected results:  $numTotalResults\n" );
 	}
 	
-	PMSLogging::PrintLog( "", "", "** End DumpErrorsWithSwimmerNames", 1 );
+	PMSLogging::PrintLog( "", "", "\n** End DumpErrorsWithSwimmerNames", 1 );
 	
 } # end of DumpErrorsWithSwimmerNames()
 

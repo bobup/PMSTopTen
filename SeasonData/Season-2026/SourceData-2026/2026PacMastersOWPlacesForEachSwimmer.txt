@@ -1,0 +1,1025 @@
+"2026PacMasters:  Points and place for every swimmer who swam an OW event."
+Generated on Wed Aug 26 2026 EDT 05:50:05 PM EDT
+"(AGSOTY only considers Category 1 swims for points but considers ALL finished swims as a PMS swim.)"
+#
+"NOTE: all data follows the line below beginning with Gender"
+ALSO: comments in this section must NOT contain a comma.
+VERSION: 2
+numSwimsToConsider=5
+Gender,Age Group,Place,Points,Last Name,First Name,Middle,Regnum,Meet Name,Event Name,Event Date,Duration,Category
+F,18-24,1,22,Syrkin,Alexandra,S,3865-8CJH4,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,22:37.00,1
+F,18-24,1,22,Syrkin,Alexandra,S,3865-8CJH4,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,38:16.00,1
+F,18-24,1,22,Jacobs,Zoe,Y,386P-PP0N3,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,46:56.00,1
+F,18-24,1,22,Tobey,Paiten,L,386X-5MB74,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:06:09.52,1
+F,18-24,1,22,Kos,Sara,Y,386S-A2E2U,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,22:00.00,1
+F,18-24,2,18,Lawrence,Kendall,E,386W-PR88B,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,48:06.00,1
+F,18-24,2,18,Palmer,Ella,A,3864-0FPV4,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:07:54.22,1
+F,18-24,2,18,Dolan,Stephanie,L,3867-FYEZ4,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,53:43.00,1
+F,18-24,2,18,Gonzalez,Ruby,C,386A-WP4KG,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,27:28.00,1
+F,18-24,2,18,Appl,Emmie,,386P-WJXTJ,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,23:54.00,1
+F,18-24,6,10,Mccreary,Simone,A,386V-FPC2P,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:17:35.56,1
+F,18-24,7,8,Mccreary,Simone,A,386V-FPC2P,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,56:42.00,1
+F,18-24,3,16,Lei,Carrie,N,386G-TJTPB,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,33:32.00,1
+F,18-24,3,16,Douglas,Christy,A,386C-J1W42,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,49:12.00,1
+F,18-24,3,16,Sanchez,Ruby,A,386D-SHKTV,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:10:47.58,1
+F,18-24,6,10,Tweet,Haelie,J,386Y-ZZ8CB,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,55:06.00,1
+F,18-24,9,4,Tweet,Haelie,J,386Y-ZZ8CB,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:20:37.17,1
+F,18-24,4,14,Jacobs,Audrey,,3866-M8ENG,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,52:30.00,1
+F,18-24,4,14,Llamas-Cruz,Alexandra,,386V-R03AU,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:12:12.50,1
+F,18-24,5,12,Halverson,Madelyn,M,3864-TWZEK,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,54:52.00,1
+F,18-24,5,12,Matson,Isabella,C,386E-33626,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:14:03.37,1
+F,18-24,7,8,Gawlick,Megan,E,386F-4CP64,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:18:40.85,1
+F,18-24,8,6,Feldman,Clara,B,386Z-J9M1A,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:20:21.54,1
+F,18-24,10,2,Smith,Caitlin,Q,3865-01D6D,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:20:47.87,1
+F,25-29,1,22,Blankley,Stephanie,A,386K-REH1A,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,22:57.00,1
+F,25-29,1,22,Blankley,Stephanie,A,386K-REH1A,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:03:09.72,1
+F,25-29,2,18,Blankley,Stephanie,A,386K-REH1A,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,37:28.00,1
+F,25-29,3,16,Blankley,Stephanie,A,386K-REH1A,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,22:31.00,1
+F,25-29,4,14,Blankley,Stephanie,A,386K-REH1A,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,43:55.00,1
+F,25-29,1,22,Crow,Vivian,A,386H-09ZR6,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:25:13.00,1
+F,25-29,2,18,Crow,Vivian,A,386H-09ZR6,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:08:49.00,1
+F,25-29,7,8,Crow,Vivian,A,386H-09ZR6,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,48:15.00,1
+F,25-29,1,22,Malloy,Maggie,L,386N-CCHN4,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,37:23.00,1
+F,25-29,3,16,Malloy,Maggie,L,386N-CCHN4,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,43:20.00,1
+F,25-29,1,22,DeLano,Casey,J,3868-MY2CA,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,22:26.00,1
+F,25-29,4,14,DeLano,Casey,J,3868-MY2CA,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,38:20.00,1
+F,25-29,2,18,Harrison,Matti,J,386S-S1BGB,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,22:27.00,1
+F,25-29,3,16,Harrison,Matti,J,386S-S1BGB,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,37:37.00,1
+F,25-29,2,18,Sherman,Julia,,386U-E2YPT,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:05.00,1
+F,25-29,8,6,Sherman,Julia,,386U-E2YPT,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,53:49.00,1
+F,25-29,1,22,Orbach-Mandel,Hannah,,386Z-SYRSD,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,41:42.00,1
+F,25-29,2,18,Dahlke,Miki,S,386B-ZDR36,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,42:44.00,1
+F,25-29,2,18,Eggart,Ashley,,3860-Y305U,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:40:17.00,1
+F,25-29,3,16,Otto,Clare,M,386K-SKPD5,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:33.00,1
+F,25-29,3,16,Mahaffey,Hannah,K,386S-94XE9,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:08:49.53,1
+F,25-29,4,14,Zheng,Ada,,386B-AZK5Z,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,31:36.00,1
+F,25-29,4,14,Eberle,Hailey,I,386K-FYPWR,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:10:11.22,1
+F,25-29,4,14,Shanahan,Brenda,M,3868-1665S,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,27:03.00,1
+F,25-29,5,12,Teng,Cathy,,386U-GA9YA,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,45:00.00,1
+F,25-29,5,12,Vance,Hailey,C,386K-0AZ4K,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:11:05.15,1
+F,25-29,5,12,Robins,Alejandra,G,386M-A8U6C,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,40:58.00,1
+F,25-29,5,12,Cruz,Ricki,A,386N-3TXV5,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,31:13.00,1
+F,25-29,5,12,Siegel,Lauren,C,3862-PM3R2,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,34:06.00,1
+F,25-29,12,0,Siegel,Lauren,C,3862-PM3R2,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:38:17.69,1
+F,25-29,6,10,Schmitz,Bonnie,C,386N-DHU4E,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,47:02.00,1
+F,25-29,6,10,Lip,Hana,A,3863-RMU7Y,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:19:53.53,1
+F,25-29,6,10,Arteaga,Daniela,,386V-ZDS14,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,35:55.00,1
+F,25-29,6,10,Mi,Jessica,Z,386B-JVTC6,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,43:29.00,1
+F,25-29,6,10,Finestone,Julia,,3863-XPJ2V,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,35:14.00,1
+F,25-29,7,8,Farr,Heidi,E,386K-794H2,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,37:06.00,1
+F,25-29,7,8,Neustaetter,Jenna,,3860-UM3NB,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:19:56.89,1
+F,25-29,8,6,Hart,Reagan,,3864-XPNK7,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:28:53.55,1
+F,25-29,9,4,Ramadan,Samantha,,386R-1EB9T,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,54:46.00,1
+F,25-29,9,4,Lewis,Alisha,N,386J-AV72F,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:30:37.52,1
+F,25-29,10,2,Schoepp,Sara,,386F-TWUW1,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:31:44.63,1
+F,25-29,10,2,Vasicsek,Reka,,3862-0FT2S,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:00:45.00,1
+F,30-34,1,22,Rudebusch,Jane,A,386B-6TDKH,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,30:20.00,1
+F,30-34,1,22,Rudebusch,Jane,A,386B-6TDKH,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,54:01.00,1
+F,30-34,1,22,Arnold,Allison,A,386H-09827,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,40:23.00,1
+F,30-34,1,22,Arnold,Allison,A,386H-09827,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,20:42.00,1
+F,30-34,1,22,Morris,Morgan,A,386X-FA5C8,Lake Del Valle,Lake Del Valle 10K,2026-06-20,2:41:25.00,1
+F,30-34,5,12,Morris,Morgan,A,386X-FA5C8,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,25:39.00,1
+F,30-34,7,8,Morris,Morgan,A,386X-FA5C8,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,50:28.00,1
+F,30-34,2,18,Lee,Felicia,,386V-0AG6V,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,42:52.00,1
+F,30-34,2,18,Lee,Felicia,,386V-0AG6V,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,22:35.00,1
+F,30-34,3,16,Andrew,Virginia,B,386H-21JXF,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,45:34.00,1
+F,30-34,3,16,Andrew,Virginia,B,386H-21JXF,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,23:28.00,1
+F,30-34,2,18,Kroetz,Briggitte,C,386R-0AA2G,Lake Del Valle,Lake Del Valle 10K,2026-06-20,3:06:30.00,1
+F,30-34,6,10,Kroetz,Briggitte,C,386R-0AA2G,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,48:55.00,1
+F,30-34,1,22,Scheidl,Maya,,386Y-4GSU4,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:18:39.00,1
+F,30-34,1,22,Luders,Micaela,D,386V-C0VSB,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:02:38.89,1
+F,30-34,2,18,Sborov,Alexandra,E,386E-VHXCJ,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:29:48.00,1
+F,30-34,2,18,Oberholzer,Veronica,,386E-PN9CE,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,34:04.00,1
+F,30-34,2,18,DeRousseau,Karissa,,386H-07MUZ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:08:45.14,1
+F,30-34,3,16,Sanzi,Allie,,3868-0AGDD,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:39:14.00,1
+F,30-34,3,16,O'Hearn,Hannah,,3863-0B0A4,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:13:24.96,1
+F,30-34,4,14,Cantoni,Cathleen,J,386S-0AK49,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:17:52.00,1
+F,30-34,4,14,Ladd,Catherine,V,386D-0AWGU,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,23:28.00,1
+F,30-34,4,14,Bindert,Kaitlin,R,386C-P4ZX5,Lake Del Valle,Lake Del Valle 5K,2026-06-20,2:27:41.00,1
+F,30-34,4,14,Pedote,Elyssa,,386W-0A9T3,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,46:11.00,1
+F,30-34,5,12,Twenge,Erika,J,3866-4K41F,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:19:41.75,1
+F,30-34,7,8,Erickson,Katie,,386P-KFR0P,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,26:52.00,1
+F,30-34,9,4,Erickson,Katie,,386P-KFR0P,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,51:32.00,1
+F,30-34,5,12,Kaminski,Paulina,M,386D-G6KYX,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,47:38.00,1
+F,30-34,6,10,Long,Belden,M,3868-586RS,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,26:31.00,1
+F,30-34,11,0,Long,Belden,M,3868-586RS,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,53:26.00,1
+F,30-34,6,10,Anderson,Elizabeth,,386D-UFG5P,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:20:55.94,1
+F,30-34,7,8,Chase,Taylor,D,386H-NARY0,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:22:43.69,1
+F,30-34,8,6,Mendive,Melena,,3864-07RXE,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:26:53.45,1
+F,30-34,8,6,Lange,Kelsey,,386X-0AJNM,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,28:22.00,1
+F,30-34,12,0,Lange,Kelsey,,386X-0AJNM,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,54:28.00,1
+F,30-34,8,6,Orr,Bonnie,C,3866-09DGG,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,50:49.00,1
+F,30-34,9,4,Petersen-Buckley,Charlotte,C,386Z-7NY3T,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:28:42.57,1
+F,30-34,9,4,Straus,Allison,L,386Y-F3HTN,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:27.00,1
+F,30-34,10,2,Tuhy Mahar,Kaelyn,R,386C-HRK86,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:30:15.06,1
+F,30-34,10,2,Neves,Juliana Mae,B,3861-63UCF,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,31:49.00,1
+F,30-34,10,2,Keiser,Jordan,M,3868-UYVB9,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,53:11.00,1
+F,35-39,1,22,Curran,Hannah,,3863-09CDV,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,44:45.00,1
+F,35-39,1,22,Curran,Hannah,,3863-09CDV,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,23:23.00,1
+F,35-39,2,18,Macabales,Dana,E,3861-07EHT,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,28:38.00,1
+F,35-39,2,18,Macabales,Dana,E,3861-07EHT,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,48:31.00,1
+F,35-39,1,22,Johnson,Christine,,3867-JK7EW,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:53:54.00,1
+F,35-39,6,10,Johnson,Christine,,3867-JK7EW,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:06:37.00,1
+F,35-39,3,16,McBride,Beth,,386K-4YVNP,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,28:57.00,1
+F,35-39,5,12,McBride,Beth,,386K-4YVNP,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,58:46.00,1
+F,35-39,1,22,Graeven,Rainey,H,386W-06ECC,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:14:15.58,1
+F,35-39,1,22,Skoda,Anette,,386P-0717A,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,43:22.00,1
+F,35-39,1,22,DiBartolomeo,Renae,,3867-MYFJH,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,26:11.00,1
+F,35-39,2,18,De Barros,Carolina,,386C-AG1HY,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,50:08.00,1
+F,35-39,2,18,Devoto,Cecily,,3868-7J53Z,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:16:08.15,1
+F,35-39,2,18,Kamai,Elizabeth,M,386C-09SW6,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,26:49.00,1
+F,35-39,2,18,Kendall,Marisa,L,3861-09KW0,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:55:18.00,1
+F,35-39,3,16,Tucker,Emily,,386T-9XG1J,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,34:43.00,1
+F,35-39,3,16,Stoykovych,Lydia,,386A-071X8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:18:16.79,1
+F,35-39,3,16,Smullen,Insley,M,386N-PCEYP,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,48:45.00,1
+F,35-39,3,16,Ngo,Jennifer,,3865-J8JX3,Lake Del Valle,Lake Del Valle 5K,2026-06-20,2:22:43.00,1
+F,35-39,3,16,Allik,Lauren,,3868-CUFFJ,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,53:59.00,1
+F,35-39,4,14,Viswanathan,Prabha,,386H-RTS3J,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,1:04:57.00,1
+F,35-39,4,14,Baddorf,Alicia,K,386J-2TJRF,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:27.00,1
+F,35-39,4,14,Nguyen,Caitlin,A,386F-VX7A1,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,54:08.00,1
+F,35-39,7,8,Hannigan,Edie,,386T-07TXP,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:08:58.00,1
+F,35-39,8,6,Hannigan,Edie,,386T-07TXP,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,37:37.00,1
+F,35-39,4,14,Cosgrove,Kristine,C,386E-09JWZ,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,56:55.00,1
+F,35-39,4,14,Thomas,Alexandra,,386N-07PCW,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:18:35.07,1
+F,35-39,5,12,Phong,Rachel,Y,386Z-TN5US,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,33:23.00,1
+F,35-39,5,12,Sharma,Shannon,,3869-0AXGK,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,1:12:46.00,1
+F,35-39,5,12,Davies,Gwen,,386Z-1U5W6,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:19:14.62,1
+F,35-39,6,10,Murillo-Dull,Cati,,3864-0AVZF,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,35:05.00,1
+F,35-39,6,10,Odena,Amy,R,3866-BVYSD,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:22:05.47,1
+F,35-39,7,8,Belick,Marielle,,386M-0B77C,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:23:47.33,1
+F,35-39,7,8,Galasso,Marisa,,3866-YZSGF,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,35:26.00,1
+F,35-39,8,6,Wei,Casey,,3862-4VBAK,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:23:59.69,1
+F,35-39,8,6,Trikannad,Namita,,3861-0AHA0,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:19:28.00,1
+F,35-39,14,0,Trikannad,Namita,,3861-0AHA0,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,2:07:34.42,1
+F,35-39,9,4,Prieto,Ali,H,386E-07UMX,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:31:10.59,1
+F,35-39,9,4,Barry,Hazel,,386W-EK73V,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,40:27.00,1
+F,35-39,10,2,Katsin,Hillary,H,386N-NYAWV,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,42:25.00,1
+F,35-39,10,2,Eskenazi,Virginie,,386N-KH9KT,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:34:54.07,1
+F,40-44,1,22,Rueda,Marcela,,3862-03YSX,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:41:39.00,1
+F,40-44,1,22,Rueda,Marcela,,3862-03YSX,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,30:04.00,1
+F,40-44,1,22,Rueda,Marcela,,3862-03YSX,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,51:01.00,1
+F,40-44,6,10,Rueda,Marcela,,3862-03YSX,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,56:18.00,1
+F,40-44,10,2,Rueda,Marcela,,3862-03YSX,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:47.00,1
+F,40-44,1,22,Marcus,Golda,L,3869-1MM4V,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,45:00.00,1
+F,40-44,2,18,Marcus,Golda,L,3869-1MM4V,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,24:01.00,1
+F,40-44,2,18,Moore,Stephanie,S,3866-0490X,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,47:04.00,1
+F,40-44,3,16,Moore,Stephanie,S,3866-0490X,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,24:32.00,1
+F,40-44,2,18,Mangiaracino,Allison,N,386V-TYZ68,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,36:34.00,1
+F,40-44,4,14,Mangiaracino,Allison,N,386V-TYZ68,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,1:02:13.00,1
+F,40-44,11,0,Mangiaracino,Allison,N,386V-TYZ68,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:10:58.00,1
+F,40-44,11,0,Mangiaracino,Allison,N,386V-TYZ68,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:42:59.31,1
+F,40-44,17,0,Mangiaracino,Allison,N,386V-TYZ68,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,39:20.00,1
+F,40-44,3,16,Valle,Paige,,3866-0912X,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,51:07.00,1
+F,40-44,5,12,Valle,Paige,,3866-0912X,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,26:39.00,1
+F,40-44,2,18,Curley O'Brien,Molly,J,3869-03VHF,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:19:54.32,1
+F,40-44,6,10,Curley O'Brien,Molly,J,3869-03VHF,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:26.00,1
+F,40-44,2,18,Pock,Keri,M,386A-03T45,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,52:19.00,1
+F,40-44,8,6,Pock,Keri,M,386A-03T45,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,58:15.00,1
+F,40-44,1,22,Marek,Gina,M,386K-03X3B,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,24:00.00,1
+F,40-44,1,22,Herson,Julie,,386V-JD576,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:08:44.15,1
+F,40-44,5,12,Fame,Ryann,M,3861-49RX8,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,52:21.00,1
+F,40-44,7,8,Fame,Ryann,M,3861-49RX8,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:44.00,1
+F,40-44,2,18,Burke,Jessica,P,386D-HPH75,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:50:07.00,1
+F,40-44,3,16,Demeter,Nikolett,,386X-797SB,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:21:24.32,1
+F,40-44,3,16,Llach,Leah,,3867-UZVYC,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,55:12.00,1
+F,40-44,3,16,Jackson,Rebecca,,3860-0A69U,Lake Del Valle,Lake Del Valle 5K,2026-06-20,2:21:59.00,1
+F,40-44,4,14,Schiano,Chelsea,,386E-E9TJF,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,51:46.00,1
+F,40-44,4,14,Parish,Laurie,A,386Y-GGTMK,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:22:06.83,1
+F,40-44,4,14,Hazlett,Geraldine,,386D-DHBWY,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,25:31.00,1
+F,40-44,5,12,Tzou,Harriet,,3865-XPM3U,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:23:57.50,1
+F,40-44,6,10,Woodworth,Kathryn,E,386F-VTDRK,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:31:28.98,1
+F,40-44,7,8,Johnson,Kathryn,B,386G-C7ETX,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:31:58.01,1
+F,40-44,7,8,Weldon-Linne,Leksi,,386P-6PGZD,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,56:23.00,1
+F,40-44,8,6,Thomas,Mary,,3868-03Y4G,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:35:39.18,1
+F,40-44,8,6,Geren,Jacquelyn,,386P-05PYW,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,28:19.00,1
+F,40-44,9,4,Lamb,Allison,,3865-09SGJ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:37:02.81,1
+F,40-44,9,4,Gentry,Susan,P,386J-09VS8,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,28:32.00,1
+F,40-44,9,4,Kosanke,Lindsey,N,386J-U84GZ,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:00:57.00,1
+F,40-44,10,2,Sokol,Joanna,,3860-871FV,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:42:06.97,1
+F,40-44,10,2,Michalosky,Cortney,,3860-H4RX7,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:07:55.00,1
+F,40-44,12,0,Michalosky,Cortney,,3860-H4RX7,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:43:32.66,1
+F,45-49,1,22,Profumo,Tesla,E,386A-068K7,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,43:29.00,1
+F,45-49,1,22,Profumo,Tesla,E,386A-068K7,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,23:18.00,1
+F,45-49,1,22,Profumo,Tesla,E,386A-068K7,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,22:33.00,1
+F,45-49,1,22,Profumo,Tesla,E,386A-068K7,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,37:59.00,1
+F,45-49,1,22,Profumo,Tesla,E,386A-068K7,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:03:37.16,1
+F,45-49,1,22,Groskopf,Sarah,L,3868-03KAH,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:34:02.00,1
+F,45-49,2,18,Groskopf,Sarah,L,3868-03KAH,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,26:59.00,1
+F,45-49,2,18,Groskopf,Sarah,L,3868-03KAH,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,46:21.00,1
+F,45-49,2,18,Hahnel,Carrie,,3861-GXNY5,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,49:06.00,1
+F,45-49,2,18,Hahnel,Carrie,,3861-GXNY5,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,25:58.00,1
+F,45-49,5,12,Keough,Emily,J,386V-9389P,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,55:40.00,1
+F,45-49,7,8,Keough,Emily,J,386V-9389P,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,30:17.00,1
+F,45-49,12,0,Keough,Emily,J,386V-9389P,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:22:11.00,1
+F,45-49,6,10,Rezaee,Lily,,386R-06Y7E,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,56:54.00,1
+F,45-49,6,10,Rezaee,Lily,,386R-06Y7E,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:53.00,1
+F,45-49,2,18,Metzger,Sarabeth,E,386J-002DY,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:06:07.40,1
+F,45-49,3,16,Cumming,Margaret,E,386M-07E5Y,Lake Del Valle,Lake Del Valle 5K,2026-06-20,2:10:58.00,1
+F,45-49,10,2,Cumming,Margaret,E,386M-07E5Y,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:09:19.00,1
+F,45-49,16,0,Cumming,Margaret,E,386M-07E5Y,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,38:08.00,1
+F,45-49,24,0,Cumming,Margaret,E,386M-07E5Y,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:43:42.61,1
+F,45-49,2,18,Stankov-Hodge,Marina,J,386U-J73C8,Lake Del Valle,Lake Del Valle 5K,2026-06-20,2:08:53.00,1
+F,45-49,26,0,Stankov-Hodge,Marina,J,386U-J73C8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:50:31.95,1
+F,45-49,3,16,Heil,Leah,S,386P-06VRG,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,50:59.00,1
+F,45-49,3,16,Tollini,Jackie,,386M-HB1KD,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:06:10.72,1
+F,45-49,3,16,Fields,Rachael,C,3861-03JCW,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,31:48.00,1
+F,45-49,18,0,Fields,Rachael,C,3861-03JCW,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:30:48.52,1
+F,45-49,3,16,Anderson,Annie,,3869-KT074,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:02.00,1
+F,45-49,4,14,Maita,Katie,,386J-TRBTF,Lake Del Valle,Lake Del Valle 5K,2026-06-20,2:21:57.00,1
+F,45-49,4,14,Clendenin,Ashley,,386M-068TR,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:11:54.14,1
+F,45-49,4,14,Johnston,Jessica,A,386P-3NRHX,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,34:18.00,1
+F,45-49,4,14,Hicks,Clare,M,386J-03XY7,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:36.00,1
+F,45-49,4,14,Duby,Kristin,A,3867-01N6R,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,51:09.00,1
+F,45-49,5,12,Nehrebecki,Helene,,386A-06JFA,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,28:10.00,1
+F,45-49,5,12,Davis,Robin,K,3867-95YD0,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:13:10.67,1
+F,45-49,6,10,Gonzalez,Christine,E,386G-03WX8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:14:36.45,1
+F,45-49,7,8,Andrikopoulos,Missy,D,3861-03R3D,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:16:33.54,1
+F,45-49,7,8,Elliott,Deborah,,386B-1KXB8,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:00:57.00,1
+F,45-49,8,6,Sherman-Presser,Kala,,386C-09AEP,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:19:21.61,1
+F,45-49,8,6,Lee,Jez,,386V-72PWB,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,31:26.00,1
+F,45-49,8,6,Shimonishi,Tae,,386S-4UYP9,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:01:14.00,1
+F,45-49,17,0,Shimonishi,Tae,,386S-4UYP9,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:26:58.25,1
+F,45-49,9,4,Fox,Michelle,K,3865-3VRH3,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,31:49.00,1
+F,45-49,9,4,Bushman,Sari,A,386T-03EYD,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:20:21.07,1
+F,45-49,9,4,Prichard,Amie,D,386Y-0016V,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:02:56.00,1
+F,45-49,10,2,Ferre,Jennifer,,386R-05WNV,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,32:51.00,1
+F,45-49,10,2,Mannering,Irene,,386V-7ER50,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:21:08.57,1
+F,50-54,1,22,Pledger,Abby,B,386T-03X25,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,47:56.00,1
+F,50-54,1,22,Pledger,Abby,B,386T-03X25,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,24:18.00,1
+F,50-54,2,18,Pledger,Abby,B,386T-03X25,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:05:40.31,1
+F,50-54,1,22,Wolford,Shannon,D,3866-03R86,Lake Del Valle,Lake Del Valle 10K,2026-06-20,3:04:27.00,1
+F,50-54,2,18,Wolford,Shannon,D,3866-03R86,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,49:10.00,1
+F,50-54,2,18,Wolford,Shannon,D,3866-03R86,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,24:40.00,1
+F,50-54,2,18,Smith,Carrie,L,3869-03PVX,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:35:03.00,1
+F,50-54,3,16,Smith,Carrie,L,3869-03PVX,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,51:42.00,1
+F,50-54,3,16,Smith,Carrie,L,3869-03PVX,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:01.00,1
+F,50-54,1,22,Singh,Jo,,3862-4PWA1,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,32:20.00,1
+F,50-54,5,12,Singh,Jo,,3862-4PWA1,Lake Del Valle,Lake Del Valle 5K,2026-06-20,2:09:16.00,1
+F,50-54,7,8,Singh,Jo,,3862-4PWA1,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,31:40.00,1
+F,50-54,9,4,Singh,Jo,,3862-4PWA1,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:31:42.79,1
+F,50-54,10,2,Singh,Jo,,3862-4PWA1,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:03:03.00,1
+F,50-54,4,14,Lipski,Danielle,M,386R-049GR,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:54.00,1
+F,50-54,4,14,Lipski,Danielle,M,386R-049GR,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:20:22.67,1
+F,50-54,6,10,Lipski,Danielle,M,386R-049GR,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,56:01.00,1
+F,50-54,2,18,Roppel,Cornelia,,386J-XKS78,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,40:35.00,1
+F,50-54,3,16,Roppel,Cornelia,,386J-XKS78,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,1:09:16.00,1
+F,50-54,14,0,Roppel,Cornelia,,386J-XKS78,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:18:44.00,1
+F,50-54,5,12,Wilson,Christi,A,386C-06YGJ,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,54:23.00,1
+F,50-54,6,10,Wilson,Christi,A,386C-06YGJ,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:08.00,1
+F,50-54,6,10,Wilson,Christi,A,386C-06YGJ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:22:17.13,1
+F,50-54,1,22,George,Heidi,S,3867-03KD2,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,55:50.73,1
+F,50-54,1,22,Croteau,Dominique,,386E-09XTG,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,52:52.00,1
+F,50-54,1,22,Needham,Suzanne,H,3868-09P6F,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:25:45.00,1
+F,50-54,5,12,Deasy,Michelle,,386Y-03JTH,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:07.00,1
+F,50-54,7,8,Deasy,Michelle,,386Y-03JTH,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,56:02.00,1
+F,50-54,4,14,Sidran,Jeanine,,386C-8B2JV,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:52:06.00,1
+F,50-54,8,6,Sidran,Jeanine,,386C-8B2JV,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:00:01.00,1
+F,50-54,2,18,Perez,Agnes,T,386A-04290,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,1:08:29.00,1
+F,50-54,14,0,Perez,Agnes,T,386A-04290,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,40:50.00,1
+F,50-54,3,16,Bracco Comfort,Katie,M,386B-03US8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:10:52.40,1
+F,50-54,3,16,Shah,Shradha,P,386K-029BN,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,45:06.00,1
+F,50-54,3,16,Davis,Taylor,H,386Z-739B3,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:51:10.00,1
+F,50-54,4,14,Bolich,Kimberly,A,386F-BS9XB,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,1:22:30.00,1
+F,50-54,18,0,Bolich,Kimberly,A,386F-BS9XB,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,47:19.00,1
+F,50-54,4,14,Miller,Pamela,E,386S-091DJ,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,48:56.00,1
+F,50-54,4,14,Wright,Erica,L,386R-04122,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,54:23.00,1
+F,50-54,5,12,Leverty,Courtney,,386M-03KDY,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:20:37.35,1
+F,50-54,7,8,Rose,Sarah,M,386P-03KBA,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:22:54.03,1
+F,50-54,8,6,Gliebe,Erika,,386K-0A91M,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:28:48.64,1
+F,50-54,8,6,Connolly,Ann,E,386N-AWGMM,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,31:47.00,1
+F,50-54,9,4,Darling,Colleen,M,386T-03WVE,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:00:42.00,1
+F,50-54,10,2,Darling,Colleen,M,386T-03WVE,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,32:42.00,1
+F,50-54,9,4,Gillet,Edith,,386U-6D3CU,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,31:53.00,1
+F,50-54,10,2,Lentz,Kari,A,386T-47WYG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:34:23.15,1
+F,55-59,1,22,Hertzer,Cynthia,J,386U-CHSWM,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,26:55.00,1
+F,55-59,1,22,Hertzer,Cynthia,J,386U-CHSWM,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,44:53.00,1
+F,55-59,2,18,Hertzer,Cynthia,J,386U-CHSWM,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,49:19.00,1
+F,55-59,2,18,Hertzer,Cynthia,J,386U-CHSWM,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,26:51.00,1
+F,55-59,2,18,Hertzer,Cynthia,J,386U-CHSWM,Lake Del Valle,Lake Del Valle 10K,2026-06-20,3:04:06.00,1
+F,55-59,2,18,Hertzer,Cynthia,J,386U-CHSWM,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:12:31.45,1
+F,55-59,1,22,Prouty,Nancy,G,3865-03HJ7,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,49:04.00,1
+F,55-59,1,22,Prouty,Nancy,G,3865-03HJ7,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,24:37.00,1
+F,55-59,1,22,Prouty,Nancy,G,3865-03HJ7,Lake Del Valle,Lake Del Valle 10K,2026-06-20,2:57:39.00,1
+F,55-59,1,22,Prouty,Nancy,G,3865-03HJ7,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:08:52.13,1
+F,55-59,2,18,Joast,Angelika,,386T-3TNPM,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,30:11.00,1
+F,55-59,2,18,Joast,Angelika,,386T-3TNPM,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,49:56.00,1
+F,55-59,6,10,Joast,Angelika,,386T-3TNPM,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,57:34.00,1
+F,55-59,7,8,Joast,Angelika,,386T-3TNPM,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:07.00,1
+F,55-59,2,18,Brown,Erin,B,386D-02BZ0,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:32:14.00,1
+F,55-59,5,12,Brown,Erin,B,386D-02BZ0,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,53:42.00,1
+F,55-59,5,12,Brown,Erin,B,386D-02BZ0,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,28:14.00,1
+F,55-59,3,16,Ignoffo,Michele,D,3862-03GK4,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,30:26.00,1
+F,55-59,3,16,Ignoffo,Michele,D,3862-03GK4,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,52:01.00,1
+F,55-59,9,4,Ignoffo,Michele,D,3862-03GK4,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,59:56.00,1
+F,55-59,9,4,Ignoffo,Michele,D,3862-03GK4,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,32:49.00,1
+F,55-59,1,22,Sondag,Lynn,S,386C-07P2X,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:30:50.00,1
+F,55-59,4,14,Sondag,Lynn,S,386C-07P2X,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:15:45.22,1
+F,55-59,4,14,Ask,Julie,A,386N-03M9U,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,53:25.00,1
+F,55-59,5,12,Ask,Julie,A,386N-03M9U,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:16:12.79,1
+F,55-59,6,10,Ask,Julie,A,386N-03M9U,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,28:17.00,1
+F,55-59,3,16,Cook,Angela,,386G-078X1,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,51:11.00,1
+F,55-59,6,10,Cook,Angela,,386G-078X1,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:16:41.03,1
+F,55-59,3,16,de la Torre,Yasuko,,386D-03JJY,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:40:21.00,1
+F,55-59,10,2,de la Torre,Yasuko,,386D-03JJY,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:24:20.28,1
+F,55-59,3,16,Sorensen,Susan,,386Z-06KZ8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:15:40.89,1
+F,55-59,3,16,Ferguson,Michelle,R,386R-005NC,Lake Del Valle,Lake Del Valle 10K,2026-06-20,3:09:06.00,1
+F,55-59,3,16,Garforth,Emma,,386T-06SFT,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,26:56.00,1
+F,55-59,4,14,Lowe,Tonia,,386F-06HM5,Lake Del Valle,Lake Del Valle 10K,2026-06-20,3:15:27.00,1
+F,55-59,4,14,Sullivan,Cameron,,386D-03GV8,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:58:28.00,1
+F,55-59,4,14,Armstrong,Dana,,3862-04200,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:51.00,1
+F,55-59,8,6,Bertain,Lisa,S,386E-075C9,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,59:29.00,1
+F,55-59,8,6,Bertain,Lisa,S,386E-075C9,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,31:47.00,1
+F,55-59,7,8,Keller,Sabina,,386U-0A2VW,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,58:37.00,1
+F,55-59,11,0,Keller,Sabina,,386U-0A2VW,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:26:23.96,1
+F,55-59,7,8,Kooy,Elizabeth,A,386U-02VBX,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:19:35.11,1
+F,55-59,8,6,Ozer,Emily,J,386G-ZU66H,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:22:06.92,1
+F,55-59,9,4,Sullivan,Karen,R,3865-EG7V8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:22:14.99,1
+F,55-59,10,2,Lewis,Aki,S,3864-06WFB,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,33:21.00,1
+F,55-59,10,2,Juson,Justine,,3860-0B27C,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:03:51.00,1
+F,60-64,1,22,Hazen,Lisa,,3866-03M46,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:19:40.00,1
+F,60-64,1,22,Hazen,Lisa,,3866-03M46,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,23:44.00,1
+F,60-64,1,22,Hazen,Lisa,,3866-03M46,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,40:02.00,1
+F,60-64,1,22,Hazen,Lisa,,3866-03M46,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:06:05.31,1
+F,60-64,2,18,Hazen,Lisa,,3866-03M46,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,46:53.00,1
+F,60-64,2,18,Hazen,Lisa,,3866-03M46,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,24:59.00,1
+F,60-64,1,22,Elsbach,Kimberly,D,3863-D0NUT,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,45:09.00,1
+F,60-64,1,22,Elsbach,Kimberly,D,3863-D0NUT,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,24:07.00,1
+F,60-64,2,18,Elsbach,Kimberly,D,3863-D0NUT,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:20:50.00,1
+F,60-64,2,18,Elsbach,Kimberly,D,3863-D0NUT,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,24:46.00,1
+F,60-64,3,16,Elsbach,Kimberly,D,3863-D0NUT,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,40:16.00,1
+F,60-64,3,16,Elsbach,Kimberly,D,3863-D0NUT,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:09:22.53,1
+F,60-64,2,18,Couch,Stephanie,D,3862-03UKW,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,40:08.00,1
+F,60-64,2,18,Couch,Stephanie,D,3862-03UKW,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:08:43.36,1
+F,60-64,3,16,Couch,Stephanie,D,3862-03UKW,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,47:28.00,1
+F,60-64,3,16,Couch,Stephanie,D,3862-03UKW,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,25:05.00,1
+F,60-64,3,16,Couch,Stephanie,D,3862-03UKW,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:21:22.00,1
+F,60-64,3,16,Couch,Stephanie,D,3862-03UKW,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,25:04.00,1
+F,60-64,1,22,Diprete,Catheryne,B,386P-004KX,Lake Del Valle,Lake Del Valle 10K,2026-06-20,3:02:27.00,1
+F,60-64,4,14,Diprete,Catheryne,B,386P-004KX,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,48:18.00,1
+F,60-64,4,14,Diprete,Catheryne,B,386P-004KX,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,25:40.00,1
+F,60-64,4,14,Tiedemann,Elizabeth,B,386E-03JC8,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,26:15.00,1
+F,60-64,4,14,Tiedemann,Elizabeth,B,386E-03JC8,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,43:37.00,1
+F,60-64,8,6,Tiedemann,Elizabeth,B,386E-03JC8,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,52:14.00,1
+F,60-64,8,6,Tiedemann,Elizabeth,B,386E-03JC8,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:46.00,1
+F,60-64,5,12,Russell,Jane,E,386T-074TS,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,26:39.00,1
+F,60-64,5,12,Russell,Jane,E,386T-074TS,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,26:43.00,1
+F,60-64,5,12,Russell,Jane,E,386T-074TS,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,46:29.00,1
+F,60-64,6,10,Bulman,Robin,A,386U-07MHY,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,28:41.00,1
+F,60-64,6,10,Bulman,Robin,A,386U-07MHY,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,47:31.00,1
+F,60-64,7,8,Bulman,Robin,A,386U-07MHY,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:45.00,1
+F,60-64,9,4,Bulman,Robin,A,386U-07MHY,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,53:22.00,1
+F,60-64,6,10,Phalen,Jennifer,,386K-JENNY,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:59:56.00,1
+F,60-64,8,6,Phalen,Jennifer,,386K-JENNY,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,32:38.00,1
+F,60-64,8,6,Phalen,Jennifer,,386K-JENNY,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:33:37.01,1
+F,60-64,9,4,Phalen,Jennifer,,386K-JENNY,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,55:21.00,1
+F,60-64,13,0,Phalen,Jennifer,,386K-JENNY,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,33:17.00,1
+F,60-64,17,0,Phalen,Jennifer,,386K-JENNY,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:05:15.00,1
+F,60-64,4,14,Houlihan,Myla,J,386E-03186,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:11:58.64,1
+F,60-64,5,12,Houlihan,Myla,J,386E-03186,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,49:11.00,1
+F,60-64,6,10,Welting,Laureen,K,3866-03J3S,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:19.00,1
+F,60-64,7,8,Welting,Laureen,K,3866-03J3S,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,51:36.00,1
+F,60-64,2,18,Musser,Elizabeth,A,386Y-0401V,Lake Del Valle,Lake Del Valle 10K,2026-06-20,3:13:26.00,1
+F,60-64,11,0,Musser,Elizabeth,A,386Y-0401V,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:32.00,1
+F,60-64,12,0,Musser,Elizabeth,A,386Y-0401V,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,58:56.00,1
+F,60-64,5,12,Cardoza,Ann,M,386Z-03FGT,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:20:06.44,1
+F,60-64,10,2,Cardoza,Ann,M,386Z-03FGT,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,54:38.00,1
+F,60-64,10,2,Cardoza,Ann,M,386Z-03FGT,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:02.00,1
+F,60-64,4,14,Riley,Jayne,E,386N-07ZZP,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:30:04.00,1
+F,60-64,5,12,Maroon,Anne,,386R-BFUH8,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:45:58.00,1
+F,60-64,13,0,Maroon,Anne,,386R-BFUH8,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,59:20.00,1
+F,60-64,6,10,Rhodes,Jackie,B,386S-02W5T,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,51:01.00,1
+F,60-64,6,10,Trusso,Amy,F,386A-07CF0,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:25:26.87,1
+F,60-64,7,8,Taylor,Shelly,M,3869-03MJ8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:31:17.12,1
+F,60-64,7,8,Kirsch,Eva,,3867-T7E7Y,Lake Del Valle,Lake Del Valle 5K,2026-06-20,2:42:43.00,1
+F,60-64,22,0,Kirsch,Eva,,3867-T7E7Y,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:21:39.00,1
+F,60-64,7,8,Dugan,Linda,B,386G-03MPB,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,49:53.00,1
+F,60-64,7,8,Ross,Betsy,B,386B-PUDEZ,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,32:21.00,1
+F,60-64,8,6,Dolan,Carrie,L,3867-A4VUE,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,53:08.00,1
+F,60-64,9,4,Tonge,Jacqueline,,3863-KCYT6,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:33:54.57,1
+F,60-64,9,4,Camarra,Daniela,A,386K-03M5R,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,28:58.00,1
+F,60-64,9,4,Hathaway,Kleigh,,386B-0B91B,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,45:24.00,1
+F,60-64,10,2,Shoen,Katie,,386K-0A947,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:37:05.54,1
+F,60-64,10,2,Krause,Kim,J,386C-03FDB,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,57:48.00,1
+F,60-64,10,2,Beaird,Inger,B,386N-08DES,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,51:18.00,1
+F,65-69,1,22,Walts,Merrie,E,386J-00CPW,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,48:49.00,1
+F,65-69,1,22,Walts,Merrie,E,386J-00CPW,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,26:01.00,1
+F,65-69,1,22,Walts,Merrie,E,386J-00CPW,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,26:25.00,1
+F,65-69,1,22,Walts,Merrie,E,386J-00CPW,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,46:40.00,1
+F,65-69,2,18,Walts,Merrie,E,386J-00CPW,Lake Del Valle,Lake Del Valle 10K,2026-06-20,3:10:14.00,1
+F,65-69,1,22,Clements,Cindy,V,3867-03H7Y,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:30:47.00,1
+F,65-69,2,18,Clements,Cindy,V,3867-03H7Y,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:16:04.17,1
+F,65-69,3,16,Clements,Cindy,V,3867-03H7Y,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,52:47.00,1
+F,65-69,2,18,Focha,Teresa,M,386U-03NDN,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,36:35.00,1
+F,65-69,2,18,Focha,Teresa,M,386U-03NDN,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,1:08:04.00,1
+F,65-69,4,14,Focha,Teresa,M,386U-03NDN,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,36:51.00,1
+F,65-69,8,6,Focha,Teresa,M,386U-03NDN,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:08:53.00,1
+F,65-69,2,18,Carter,Monica,A,3861-ZDAUD,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,52:29.00,1
+F,65-69,2,18,Carter,Monica,A,3861-ZDAUD,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:08.00,1
+F,65-69,3,16,Hickel,Jessie,J,386F-03FVA,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,31:58.00,1
+F,65-69,5,12,Hickel,Jessie,J,386F-03FVA,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:02:41.00,1
+F,65-69,1,22,Mc Namara,Caren,A,386F-03H3H,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:14:19.94,1
+F,65-69,2,18,Bergmann,Susan,M,386S-03G8S,Lake Del Valle,Lake Del Valle 5K,2026-06-20,2:12:02.00,1
+F,65-69,9,4,Bergmann,Susan,M,386S-03G8S,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:12:24.00,1
+F,65-69,1,22,Heim-Bowen,Suzanne,M,3864-03F3T,Lake Del Valle,Lake Del Valle 10K,2026-06-20,2:55:07.00,1
+F,65-69,6,10,Wardlow,Charlene,L,386M-03N96,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:06:19.00,1
+F,65-69,7,8,Wardlow,Charlene,L,386M-03N96,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:43:47.78,1
+F,65-69,6,10,Jay,Julie,M,386S-K9JSA,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,37:28.00,1
+F,65-69,7,8,Jay,Julie,M,386S-K9JSA,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:07:18.00,1
+F,65-69,3,16,Klencke,Barbara,J,386C-03FFX,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:27:01.59,1
+F,65-69,3,16,Dunkle,Julie,,3862-MFN7E,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,49:45.00,1
+F,65-69,4,14,Werby,Vicki,H,386S-TPNGR,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:33:44.80,1
+F,65-69,4,14,Buchanan,Linda,A,3861-03H77,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,56:55.00,1
+F,65-69,5,12,Walden,Karen,,386F-03J30,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:34:38.79,1
+F,65-69,5,12,Mcdonald,Judy,C,3862-05H9B,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,37:08.00,1
+F,65-69,6,10,Lewis,Laurie,J,3861-03YD1,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:39:38.59,1
+F,65-69,7,8,Bentley,Kimberly,,3866-03XGU,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,39:06.00,1
+F,65-69,8,6,Carroll,Leah,A,386K-09H3C,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,41:04.00,1
+F,65-69,10,2,Carroll,Leah,A,386K-09H3C,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:23:43.00,1
+F,65-69,8,6,Martin,Joan,,3860-0AK2R,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:46:28.34,1
+F,65-69,9,4,Carboni,Lisa,,386P-0AMMT,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:57:09.23,1
+F,65-69,9,4,Queirolo Nee,Vivian,,3867-03Y71,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,46:03.00,1
+F,65-69,10,2,Turner,Joan,H,386M-05UVP,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,51:50.00,1
+F,65-69,10,2,Buckley,Kristine,E,386C-03H5H,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:57:15.18,1
+F,70-74,1,22,Quinn,Phyllis,E,386H-03F7Y,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,32:00.00,1
+F,70-74,1,22,Quinn,Phyllis,E,386H-03F7Y,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,54:14.00,1
+F,70-74,2,18,Quinn,Phyllis,E,386H-03F7Y,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,59:52.00,1
+F,70-74,2,18,Quinn,Phyllis,E,386H-03F7Y,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:52:44.00,1
+F,70-74,3,16,Quinn,Phyllis,E,386H-03F7Y,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,32:04.00,1
+F,70-74,1,22,Sommers,Lorraine,,386E-03EXD,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,52:29.00,1
+F,70-74,1,22,Sommers,Lorraine,,386E-03EXD,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,28:54.00,1
+F,70-74,1,22,Sommers,Lorraine,,386E-03EXD,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:17:37.91,1
+F,70-74,3,16,Hart,Robin,D,3869-03SKK,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:51:28.00,1
+F,70-74,4,14,Hart,Robin,D,3869-03SKK,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,51:47.00,1
+F,70-74,4,14,Hart,Robin,D,3869-03SKK,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,2:53:56.46,1
+F,70-74,8,6,Hart,Robin,D,3869-03SKK,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,1:00:51.00,1
+F,70-74,3,16,Banks,Patricia,A,386C-03MGT,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,45:04.00,1
+F,70-74,7,8,Banks,Patricia,A,386C-03MGT,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,45:10.00,1
+F,70-74,1,22,Helmrich,Susan,P,386X-03ND1,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:40:53.00,1
+F,70-74,2,18,Derousseau,Hannah,A,3867-0667B,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,31:56.00,1
+F,70-74,2,18,Benjamin,Marcia,,386U-MEM01,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,32:16.00,1
+F,70-74,2,18,Igel,Victoria,E,386Z-03M7X,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,1:01:38.00,1
+F,70-74,2,18,Aitkens,Susan,,3866-03HXJ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:46:03.35,1
+F,70-74,3,16,Saunders,Lynn,S,386T-092F1,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,2:14:42.56,1
+F,70-74,4,14,Stringer,Nanette,S,386T-008J6,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,33:38.00,1
+F,70-74,5,12,Demitrios,Celeste,,386U-03EYC,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,34:43.00,1
+F,70-74,6,10,Griest,Kelley,L,3862-07VEV,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,42:53.00,1
+F,75-79,2,18,Armento,Valerie,J,3861-03FAW,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:27:08.00,1
+F,75-79,3,16,Armento,Valerie,J,3861-03FAW,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,2:29:55.71,1
+F,75-79,5,12,Armento,Valerie,J,3861-03FAW,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,45:23.00,1
+F,75-79,1,22,Guthrie,Sally,K,3865-028TM,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,32:06.00,1
+F,75-79,1,22,Guthrie,Sally,K,3865-028TM,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,54:42.00,1
+F,75-79,1,22,Lee,Jane,V,386J-03FG7,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,33:36.00,1
+F,75-79,2,18,Lee,Jane,V,386J-03FG7,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,33:33.00,1
+F,75-79,1,22,Jones,Alice,A,386V-03K2X,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:37:14.88,1
+F,75-79,2,18,Jones,Alice,A,386V-03K2X,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,35:33.00,1
+F,75-79,1,22,Dutro,Cynthia,L,3865-03G5A,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:14:45.00,1
+F,75-79,4,14,Dutro,Cynthia,L,3865-03G5A,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,39:59.00,1
+F,75-79,2,18,Scott,Stephanie,I,386T-03K0Y,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,1:02:01.00,1
+F,75-79,3,16,Scott,Stephanie,I,386T-03K0Y,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,36:02.00,1
+F,75-79,3,16,Campbell,Diane,P,386U-03JTN,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,37:56.00,1
+F,75-79,4,14,Campbell,Diane,P,386U-03JTN,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,38:19.00,1
+F,75-79,2,18,Menefee,Carol,J,3866-03XFA,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:56:21.90,1
+F,75-79,6,10,Mckee,Sunny,,386E-03HDA,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,46:10.00,1
+F,75-79,7,8,Jeroslow,Phyllis,I,386F-03U0P,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,46:21.00,1
+M,18-24,1,22,Casaes,Marcus,J,386U-7EMM2,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:48:03.00,1
+M,18-24,2,18,Casaes,Marcus,J,386U-7EMM2,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:44.00,1
+M,18-24,2,18,Pacoe,Dominic,J,386Z-4MS64,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:30:24.10,1
+M,18-24,3,16,Pacoe,Dominic,J,386Z-4MS64,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,32:22.00,1
+M,18-24,1,22,Scornavacca,Mike,A,3867-FKJYK,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,45:54.00,1
+M,18-24,1,22,Veress,Ian,E,386J-K3C8E,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,25:49.00,1
+M,18-24,1,22,Arteaga,Gabriel,,386V-G59Z5,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,27:26.00,1
+M,18-24,1,22,Seifert,Anton,Z,386H-Y8UEM,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:19:48.39,1
+M,18-24,2,18,Chiu,Joseph,C,386T-4CA2X,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,58:08.00,1
+M,18-24,3,16,Unold,Florian,,386P-J3JRP,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:39:26.76,1
+M,18-24,4,14,Gore,Rayan,,386E-HFSNR,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:50:59.31,1
+M,25-29,1,22,Jerome,Bradley,,386Z-8CT02,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,22:04.00,1
+M,25-29,1,22,Jerome,Bradley,,386Z-8CT02,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:00:02.58,1
+M,25-29,2,18,Jerome,Bradley,,386Z-8CT02,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,41:56.00,1
+M,25-29,2,18,Olson,Blake,R,3869-PMY6Z,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,23:11.00,1
+M,25-29,3,16,Olson,Blake,R,3869-PMY6Z,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:07:36.37,1
+M,25-29,4,14,Olson,Blake,R,3869-PMY6Z,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,44:41.00,1
+M,25-29,1,22,Su,Kenneth,,386X-XY34V,Lake Del Valle,Lake Del Valle 10K,2026-06-20,2:46:52.00,1
+M,25-29,4,14,Su,Kenneth,,386X-XY34V,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,30:38.00,1
+M,25-29,7,8,Su,Kenneth,,386X-XY34V,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:05:59.00,1
+M,25-29,1,22,Roberts,Will,E,386D-RDS2W,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,22:21.00,1
+M,25-29,1,22,Roberts,Will,E,386D-RDS2W,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,36:19.00,1
+M,25-29,1,22,Aubin,Christopher,,386Y-976J1,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,41:47.00,1
+M,25-29,2,18,Torre,Daniel,J,386T-A9XYX,Lake Del Valle,Lake Del Valle 10K,2026-06-20,2:48:05.00,1
+M,25-29,2,18,Welsh,Cole,,386X-R6S6R,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,42:41.00,1
+M,25-29,2,18,Mon,Justin,L,386P-W6TAW,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:04:29.16,1
+M,25-29,3,16,Wood,Aaron,M,386D-0B0VZ,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,41:58.00,1
+M,25-29,3,16,Kos,Sean,,386D-3SEKN,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,23:25.00,1
+M,25-29,4,14,Lopez,Samuel,E,3862-0BB3H,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:13:51.87,1
+M,25-29,5,12,Andrew,Mark,W,386D-8N4WX,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,46:17.00,1
+M,25-29,5,12,Chavez,Liam,M,3869-6TU8S,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:30:03.76,1
+M,25-29,6,10,Juliette,Jason,,386G-EZK3R,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,48:26.00,1
+M,30-34,1,22,Ransford,Patrick,J,3869-GTS7Z,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,38:06.00,1
+M,30-34,1,22,Ransford,Patrick,J,3869-GTS7Z,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,20:22.00,1
+M,30-34,1,22,Ransford,Patrick,J,3869-GTS7Z,Lake Del Valle,Lake Del Valle 10K,2026-06-20,2:24:37.00,1
+M,30-34,1,22,Ransford,Patrick,J,3869-GTS7Z,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,20:08.00,1
+M,30-34,1,22,Ransford,Patrick,J,3869-GTS7Z,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,33:25.00,1
+M,30-34,1,22,Bernstein,Joby,,386R-09DD7,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,59:59.54,1
+M,30-34,2,18,Bernstein,Joby,,386R-09DD7,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,40:14.00,1
+M,30-34,2,18,Bernstein,Joby,,386R-09DD7,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,20:42.00,1
+M,30-34,1,22,Korman,Matthew,D,386R-0AYN0,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:17:58.00,1
+M,30-34,3,16,Korman,Matthew,D,386R-0AYN0,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,43:51.00,1
+M,30-34,3,16,Korman,Matthew,D,386R-0AYN0,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,22:30.00,1
+M,30-34,2,18,Goard,Andrew,M,3866-0B5B3,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:07:53.96,1
+M,30-34,4,14,Goard,Andrew,M,3866-0B5B3,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,24:04.00,1
+M,30-34,5,12,Goard,Andrew,M,3866-0B5B3,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,46:09.00,1
+M,30-34,2,18,Bautista,Jair,,386T-TWM70,Lake Del Valle,Lake Del Valle 10K,2026-06-20,3:20:11.00,1
+M,30-34,6,10,Bautista,Jair,,386T-TWM70,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:48.00,1
+M,30-34,6,10,Bautista,Jair,,386T-TWM70,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:18:39.15,1
+M,30-34,8,6,Bautista,Jair,,386T-TWM70,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,52:31.00,1
+M,30-34,3,16,Dorn,Kevin,,386E-1AVAM,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,26:26.00,1
+M,30-34,5,12,Dorn,Kevin,,386E-1AVAM,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,25:30.00,1
+M,30-34,2,18,Chang,Chinhao,,386H-MK862,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,26:01.00,1
+M,30-34,2,18,Summers,Alex,,3864-WDWMC,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,45:21.00,1
+M,30-34,2,18,Runser,Rory,,386T-0AUGB,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:47:42.00,1
+M,30-34,12,0,Runser,Rory,,386T-0AUGB,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,59:49.00,1
+M,30-34,3,16,Kahl,Donner,,386H-PDE87,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:12:51.19,1
+M,30-34,3,16,Bernabe,Eden,A,386B-T9DA6,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:48:44.00,1
+M,30-34,4,14,Kwan,Harrison,J,386E-0938U,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:17:29.75,1
+M,30-34,4,14,Valentine,Matthew,A,386K-0AK7H,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,44:54.00,1
+M,30-34,4,14,Lee,Cameron,P,3867-4W5PC,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,29:38.00,1
+M,30-34,5,12,Fu,Rayshone,,386X-PJ4N5,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:17:54.62,1
+M,30-34,5,12,Goyal,Pulak,,386B-MM1NX,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,35:20.00,1
+M,30-34,7,8,Shaffer,Luke,B,3864-K0GEG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:19:05.03,1
+M,30-34,10,2,Shaffer,Luke,B,3864-K0GEG,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,57:23.00,1
+M,30-34,6,10,Suico,Kyle david,L,3864-6SPV7,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,54:28.00,1
+M,30-34,6,10,Rosenbaum,Philip,,386K-0M1Z4,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,49:26.00,1
+M,30-34,7,8,Rieber,Thomas,,386S-1XUKJ,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,28:06.00,1
+M,30-34,7,8,Tallman,Evan,D,386F-RSS2A,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,50:38.00,1
+M,30-34,8,6,Hewitt,Christopher,H,386X-G59Z3,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:18.00,1
+M,30-34,8,6,Lau,Clifford,,386T-YW6K6,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:24:02.44,1
+M,30-34,9,4,Torres,Emilio,,386U-50WSH,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,56:29.00,1
+M,30-34,9,4,Belick,Michael,B,386R-0CC2H,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:26:09.02,1
+M,30-34,10,2,Sanders,Calvin,,386T-JS32H,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:30:54.36,1
+M,35-39,1,22,Christensen,Jon,,3860-08BTJ,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,41:29.00,1
+M,35-39,1,22,Christensen,Jon,,3860-08BTJ,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,21:31.00,1
+M,35-39,1,22,Christensen,Jon,,3860-08BTJ,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,21:30.00,1
+M,35-39,1,22,Christensen,Jon,,3860-08BTJ,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,36:01.00,1
+M,35-39,2,18,Savulich,Bobby,,386W-JSXSV,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,22:23.00,1
+M,35-39,2,18,Savulich,Bobby,,386W-JSXSV,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,22:24.00,1
+M,35-39,2,18,Savulich,Bobby,,386W-JSXSV,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,37:50.00,1
+M,35-39,4,14,Savulich,Bobby,,386W-JSXSV,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,43:35.00,1
+M,35-39,1,22,Schmidt,Brian,J,386U-MZXJV,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:13:34.00,1
+M,35-39,2,18,Schmidt,Brian,J,386U-MZXJV,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,41:50.00,1
+M,35-39,3,16,Schmidt,Brian,J,386U-MZXJV,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,22:25.00,1
+M,35-39,2,18,Ferguson,Christopher,P,3862-0AYJY,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:03:39.80,1
+M,35-39,6,10,Ferguson,Christopher,P,3862-0AYJY,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,44:17.00,1
+M,35-39,6,10,Ferguson,Christopher,P,3862-0AYJY,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,23:35.00,1
+M,35-39,4,14,Wall,Daniel,D,386D-G7BDN,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,22:25.00,1
+M,35-39,5,12,Wall,Daniel,D,386D-G7BDN,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,43:41.00,1
+M,35-39,1,22,Calhoun,Jack,,386V-06Y9W,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:02:56.07,1
+M,35-39,5,12,Borchard,Adam,C,3860-0AD8J,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,22:41.00,1
+M,35-39,7,8,Borchard,Adam,C,3860-0AD8J,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,44:31.00,1
+M,35-39,4,14,Stampfl,Jack,T,386C-094BA,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:08:09.04,1
+M,35-39,8,6,Stampfl,Jack,T,386C-094BA,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,45:19.00,1
+M,35-39,3,16,Newell,Rob,H,386H-09H84,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,42:15.00,1
+M,35-39,3,16,Leimkuhler,Kyle,T,3867-08408,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:05:48.79,1
+M,35-39,3,16,LaForge,Justin,,3867-GSWS9,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,39:35.00,1
+M,35-39,3,16,Robertson,Sam,M,3869-XMJUN,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,25:06.00,1
+M,35-39,4,14,Price,Gabriel,,386W-V27WP,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,30:27.00,1
+M,35-39,4,14,Arias,Armando,,386V-09VEP,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,1:03:12.00,1
+M,35-39,5,12,Stopenski,Stephen,,386N-EUKY6,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:08:44.88,1
+M,35-39,6,10,McKinnon,Chris,,3862-PRB7Y,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:13:50.50,1
+M,35-39,7,8,Barton,Robert,J,386V-09DNA,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:10.00,1
+M,35-39,7,8,Moser,Ryan,R,386S-07W0U,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:16:20.47,1
+M,35-39,8,6,Horng,Andy,,386G-088D0,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:12.00,1
+M,35-39,8,6,Bickham,Travis,,386X-07ZR6,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:18:08.03,1
+M,35-39,9,4,Schmidt,Ethan,,3861-WY264,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,31:23.00,1
+M,35-39,9,4,Sallee,David,J,386X-RFN1X,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:18:21.18,1
+M,35-39,10,2,Adams,Brendan,,386K-HWF2H,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,33:42.00,1
+M,35-39,12,0,Adams,Brendan,,386K-HWF2H,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:34:14.37,1
+M,35-39,10,2,Harding,Keevan,G,386Z-06JPG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:19:10.25,1
+M,40-44,2,18,Song,Jimmy,,386R-09EU2,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:56.00,1
+M,40-44,2,18,Song,Jimmy,,386R-09EU2,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,28:10.00,1
+M,40-44,2,18,Song,Jimmy,,386R-09EU2,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,47:05.00,1
+M,40-44,7,8,Song,Jimmy,,386R-09EU2,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,54:33.00,1
+M,40-44,1,22,Roos,Andrew,K,3861-04EGM,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,21:12.00,1
+M,40-44,1,22,Roos,Andrew,K,3861-04EGM,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,37:37.00,1
+M,40-44,1,22,Kemp,Nikkolas,E,386U-06DZ0,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,24:23.00,1
+M,40-44,2,18,Kemp,Nikkolas,E,386U-06DZ0,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,46:29.00,1
+M,40-44,2,18,Obrien,Flynn,P,386K-06VYV,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:09:27.39,1
+M,40-44,3,16,Obrien,Flynn,P,386K-06VYV,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,46:56.00,1
+M,40-44,1,22,Garber,Kent,,386F-5X7UP,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:08:01.55,1
+M,40-44,1,22,Romeo,Nick,E,386X-RB0CA,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:52:50.00,1
+M,40-44,1,22,Zachan,Matthew,T,3866-4G58K,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,45:53.00,1
+M,40-44,5,12,Kapustin,Yevgeniy,M,386Y-4NCDU,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,32:57.00,1
+M,40-44,9,4,Kapustin,Yevgeniy,M,386Y-4NCDU,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:00:35.00,1
+M,40-44,10,2,Kapustin,Yevgeniy,M,386Y-4NCDU,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:31:09.56,1
+M,40-44,4,14,Dumont,Joseph,,386G-YB148,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,32:16.00,1
+M,40-44,10,2,Dumont,Joseph,,386G-YB148,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:01:54.00,1
+M,40-44,3,16,Sturgess,Andrew,B,3868-07NBJ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:14:18.86,1
+M,40-44,3,16,Blake,Torrey,W,3866-6XKY3,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,28:54.00,1
+M,40-44,3,16,Mukherjee,Subhankar,,386Z-SUFKW,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,1:03:42.00,1
+M,40-44,3,16,von Pohle,Carignane,,386F-UADCD,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,29:21.00,1
+M,40-44,4,14,Taylor,Russell,P,386X-09RRH,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,47:42.00,1
+M,40-44,11,0,Taylor,Russell,P,386X-09RRH,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,34:15.00,1
+M,40-44,4,14,Bauleke,Robb,F,386M-09X0D,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:16:43.44,1
+M,40-44,4,14,Perrone,Paul,J,3860-0AEG8,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,41:10.00,1
+M,40-44,5,12,Paglio,Daniel,,386M-029R0,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,50:00.00,1
+M,40-44,14,0,Paglio,Daniel,,386M-029R0,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:38:12.12,1
+M,40-44,5,12,McDonald,Gordon,R,386K-9NK0B,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:18:34.07,1
+M,40-44,8,6,Tam,Billy,W,386J-03VU5,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,57:31.00,1
+M,40-44,8,6,Tam,Billy,W,386J-03VU5,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:26:20.30,1
+M,40-44,6,10,Fauchier-Magnan,Nicolas,,386G-4Y163,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,33:00.00,1
+M,40-44,6,10,Lee,Christopher,A,386N-060MU,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,52:13.00,1
+M,40-44,6,10,Fohner,Benjamin,G,386F-ARR57,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:18:39.54,1
+M,40-44,7,8,Su,Felix,,386M-TMUUY,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,34:14.00,1
+M,40-44,7,8,Cox,Gregory,A,386A-09MZV,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:20:10.84,1
+M,40-44,9,4,Begic,Vedad,,3862-094C1,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:29:33.91,1
+M,45-49,1,22,Lemke,Zebron,J,386A-03S8A,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,40:35.00,1
+M,45-49,1,22,Lemke,Zebron,J,386A-03S8A,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,21:34.00,1
+M,45-49,1,22,Lemke,Zebron,J,386A-03S8A,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:10:17.00,1
+M,45-49,1,22,Lemke,Zebron,J,386A-03S8A,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,21:07.00,1
+M,45-49,1,22,Lemke,Zebron,J,386A-03S8A,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,35:13.00,1
+M,45-49,2,18,Baristiran,Omer,,386N-H88WV,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:02.00,1
+M,45-49,2,18,Baristiran,Omer,,386N-H88WV,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,46:27.00,1
+M,45-49,3,16,Baristiran,Omer,,386N-H88WV,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,50:57.00,1
+M,45-49,4,14,Baristiran,Omer,,386N-H88WV,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,26:24.00,1
+M,45-49,2,18,Ferguson,Andrew,G,386P-046YU,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,46:05.00,1
+M,45-49,2,18,Ferguson,Andrew,G,386P-046YU,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:06:38.55,1
+M,45-49,1,22,Leverty,Patrick,R,386N-03V7Z,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:00:22.29,1
+M,45-49,4,14,Bolz,Brian,,386Y-04ZDT,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,54:33.00,1
+M,45-49,9,4,Bolz,Brian,,386Y-04ZDT,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:15:19.79,1
+M,45-49,2,18,Popko,David,A,3862-0836U,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:21:15.00,1
+M,45-49,2,18,Wong,Eric,K,3865-07XWU,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,24:52.00,1
+M,45-49,3,16,Martinez,Joe,,386Y-NK8GC,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,55:17.00,1
+M,45-49,3,16,Foster,Eric,Q,386V-03ZHY,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:08:35.58,1
+M,45-49,3,16,Nonaka,Andy,J,386Z-03G1U,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,25:50.00,1
+M,45-49,3,16,Pomarici,Federico,,386N-09X61,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:25:46.00,1
+M,45-49,4,14,Hancock,Emmit,M,386S-03KDU,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:50:42.00,1
+M,45-49,4,14,McKenna,Dan,K,3866-08BXC,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:08:58.50,1
+M,45-49,4,14,Mustiazza,Oleg,,386J-06M9Y,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,58:37.00,1
+M,45-49,5,12,Ballard,Adam,,3867-03WJE,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:12:07.27,1
+M,45-49,5,12,Wada,Ellison,R,386F-03H75,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,59:05.00,1
+M,45-49,5,12,Franks,Derrick,R,386Y-0667E,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,28:22.00,1
+M,45-49,6,10,Castano-Aguado,Ignacio,,3861-06BZT,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:04:25.00,1
+M,45-49,6,10,Schonder,John,S,386P-07GGR,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,31:28.00,1
+M,45-49,6,10,Gawlick,Craig,,386Y-03ZBN,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:12:40.37,1
+M,45-49,7,8,Nadeau,Marc,A,386B-06YVW,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:06:15.00,1
+M,45-49,7,8,Fouts,Christopher,B,386T-03P2U,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:13:41.86,1
+M,45-49,8,6,Sullivan,Sean,R,386W-08ABH,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:13:47.22,1
+M,45-49,10,2,Henry,Christopher,,386J-SV0E1,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:18:11.25,1
+M,50-54,1,22,Gillis,Trevor,D,386P-03J54,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,41:22.00,1
+M,50-54,1,22,Gillis,Trevor,D,386P-03J54,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,21:45.00,1
+M,50-54,1,22,Gillis,Trevor,D,386P-03J54,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:09:31.00,1
+M,50-54,1,22,Gillis,Trevor,D,386P-03J54,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,21:05.00,1
+M,50-54,1,22,Gillis,Trevor,D,386P-03J54,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,35:03.00,1
+M,50-54,2,18,Rosales-Delmoral,Romer,,386T-TDTNE,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,47:19.00,1
+M,50-54,2,18,Rosales-Delmoral,Romer,,386T-TDTNE,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,25:14.00,1
+M,50-54,2,18,Rosales-Delmoral,Romer,,386T-TDTNE,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,24:35.00,1
+M,50-54,2,18,Rosales-Delmoral,Romer,,386T-TDTNE,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,41:33.00,1
+M,50-54,3,16,Wehmann,Todd,,3864-09V9T,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:28:08.00,1
+M,50-54,3,16,Wehmann,Todd,,3864-09V9T,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,43:56.00,1
+M,50-54,4,14,Wehmann,Todd,,3864-09V9T,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,25:39.00,1
+M,50-54,4,14,Wehmann,Todd,,3864-09V9T,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,26:06.00,1
+M,50-54,5,12,Wehmann,Todd,,3864-09V9T,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,48:42.00,1
+M,50-54,4,14,Hertzer,Keith,,386X-098B3,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,45:30.00,1
+M,50-54,5,12,Hertzer,Keith,,386X-098B3,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:11.00,1
+M,50-54,5,12,Hertzer,Keith,,386X-098B3,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,26:23.00,1
+M,50-54,8,6,Hertzer,Keith,,386X-098B3,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,52:51.00,1
+M,50-54,3,16,Besocke,Daniel,W,3864-06876,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,47:20.00,1
+M,50-54,3,16,Besocke,Daniel,W,3864-06876,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,25:19.00,1
+M,50-54,2,18,Casaes,Raphael,,386E-09PRR,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:25:23.00,1
+M,50-54,4,14,Casaes,Raphael,,386E-09PRR,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,48:27.00,1
+M,50-54,1,22,Calabrese,Jared,M,3868-03UCA,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:08:25.04,1
+M,50-54,2,18,Schindler,Brad,J,3865-069UU,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:15:43.29,1
+M,50-54,6,10,Lehnert,Ahren,E,386D-07TZ7,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:17.00,1
+M,50-54,7,8,Lehnert,Ahren,E,386D-07TZ7,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,30:17.00,1
+M,50-54,3,16,Yu,Aaron,,386W-03K5E,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:16:27.14,1
+M,50-54,6,10,Davidson,Jeremy,S,386B-07F77,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,55:37.00,1
+M,50-54,8,6,Davidson,Jeremy,S,386B-07F77,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,31:34.00,1
+M,50-54,3,16,Wright,Eric,,386U-0AYKV,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,24:39.00,1
+M,50-54,5,12,Johnson,Chad,,3865-TWA72,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,55:02.00,1
+M,50-54,9,4,Johnson,Chad,,3865-TWA72,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,33:16.00,1
+M,50-54,4,14,Dove,Bryan,,3861-7532C,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:34:02.00,1
+M,50-54,4,14,Adorador,Jeff,,386M-09RCG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:16:44.23,1
+M,50-54,5,12,Pitesky,Maurice,,386U-091BX,Lake Del Valle,Lake Del Valle 5K,2026-06-20,2:14:42.00,1
+M,50-54,11,0,Pitesky,Maurice,,386U-091BX,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:12:42.00,1
+M,50-54,7,8,Fine,Spencer,,386M-PU06W,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,30:45.00,1
+M,50-54,9,4,Fine,Spencer,,386M-PU06W,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,56:43.00,1
+M,50-54,5,12,Prost,Adam,H,3867-03R5N,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:20:37.30,1
+M,50-54,6,10,Ying,Tianyu,,386W-03KT2,Lake Del Valle,Lake Del Valle 5K,2026-06-20,2:17:31.00,1
+M,50-54,6,10,Thompson,Mike,W,3860-0ATYC,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,27:40.00,1
+M,50-54,7,8,Bernard,Tom,,386V-FDP4P,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:33:56.29,1
+M,50-54,10,2,Bernard,Tom,,386V-FDP4P,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:01:25.00,1
+M,50-54,6,10,Haik,Florent,,386N-03GPS,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,49:05.00,1
+M,50-54,6,10,Morehouse,Charles,H,386M-03K13,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:26:48.71,1
+M,50-54,7,8,Kneubuhler,Yann,A,386Z-0ASHS,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,51:38.00,1
+M,50-54,8,6,Kaffka,Alex,,386E-FC7M6,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,32:52.00,1
+M,50-54,8,6,Guo,Alex,,386F-0AURM,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:34:51.19,1
+M,50-54,9,4,Hansjeliana,Victor,,386F-WXXBC,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,33:42.00,1
+M,50-54,9,4,Cronan,William,A,386X-8EM1D,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:38:20.88,1
+M,50-54,10,2,Haffner,Dave,,386D-Z6KDD,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,35:25.00,1
+M,50-54,10,2,Brunner,Thomas,A,386R-06XZ5,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,37:34.00,1
+M,50-54,10,2,Maher,John,S,386C-03WPP,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:41:42.68,1
+M,55-59,2,18,Tucker,Justin,,386B-0AYRC,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,51:58.00,1
+M,55-59,2,18,Tucker,Justin,,386B-0AYRC,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,28:04.00,1
+M,55-59,2,18,Tucker,Justin,,386B-0AYRC,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,27:00.00,1
+M,55-59,3,16,Tucker,Justin,,386B-0AYRC,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,45:57.00,1
+M,55-59,1,22,Winsor,Brad,,386J-03J9D,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,23:16.00,1
+M,55-59,1,22,Winsor,Brad,,386J-03J9D,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,39:30.00,1
+M,55-59,1,22,Winsor,Brad,,386J-03J9D,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:02:02.56,1
+M,55-59,1,22,Hauck,Brian,A,3868-03TA9,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,48:57.00,1
+M,55-59,1,22,Hauck,Brian,A,3868-03TA9,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,25:40.00,1
+M,55-59,4,14,Hauck,Brian,A,3868-03TA9,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:13:05.50,1
+M,55-59,1,22,Guarraci,Brian,,3865-05UR2,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:56:25.00,1
+M,55-59,4,14,Guarraci,Brian,,3865-05UR2,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,32:28.00,1
+M,55-59,6,10,Guarraci,Brian,,3865-05UR2,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,55:26.00,1
+M,55-59,15,0,Guarraci,Brian,,3865-05UR2,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:33:09.51,1
+M,55-59,2,18,Fahlen,Mark,T,3866-003TT,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,45:33.00,1
+M,55-59,3,16,Fahlen,Mark,T,3866-003TT,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,27:14.00,1
+M,55-59,3,16,Gonzalez,Ernesto,T,386U-03RJ8,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:03:57.00,1
+M,55-59,5,12,Gonzalez,Ernesto,T,386U-03RJ8,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,33:56.00,1
+M,55-59,4,14,Farmer,Peter,C,3869-03J1U,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,31:29.00,1
+M,55-59,5,12,Farmer,Peter,C,3869-03J1U,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,53:35.00,1
+M,55-59,4,14,Edwards,Jeffrey,D,3866-03KSW,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:08:24.00,1
+M,55-59,6,10,Edwards,Jeffrey,D,3866-03KSW,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,36:45.00,1
+M,55-59,1,22,Ohara,Kazuaki,,3860-03ZTU,Lake Del Valle,Lake Del Valle 10K,2026-06-20,3:16:20.00,1
+M,55-59,2,18,Gage,Kevin,D,386Y-8RSP3,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:09:21.20,1
+M,55-59,3,16,Cousineau,B Paul,,3864-03JAD,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:10:22.56,1
+M,55-59,7,8,Rogers,Mark,,386U-5P580,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,37:49.00,1
+M,55-59,7,8,Rogers,Mark,,386U-5P580,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,1:01:06.00,1
+M,55-59,3,16,Cook,John,M,3869-03M9Z,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,28:26.00,1
+M,55-59,4,14,Green,Joel,A,386W-03FT5,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,48:36.00,1
+M,55-59,5,12,Lee,Jonathan,,3861-6STVJ,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:11:54.00,1
+M,55-59,5,12,Pehrson,James,,3860-03USD,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:13:33.11,1
+M,55-59,6,10,Wetherell,John,T,3860-Y20CE,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:19:00.00,1
+M,55-59,6,10,Low,Don,,3862-0693F,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:19:06.22,1
+M,55-59,7,8,Crowley,Terry,B,386D-065HC,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:19:32.17,1
+M,55-59,8,6,Smith,Brandon,,3861-07S6M,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:20:27.24,1
+M,55-59,8,6,Phinney,Brett,S,3861-XEXVG,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,47:37.00,1
+M,55-59,9,4,Dell,John,,386Z-7DADZ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:21:48.60,1
+M,55-59,10,2,Dyer,Dean,S,3869-03NBF,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:22:07.83,1
+M,60-64,1,22,Lederman,David,,386H-00642,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,41:45.00,1
+M,60-64,1,22,Lederman,David,,386H-00642,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,22:01.00,1
+M,60-64,1,22,Lederman,David,,386H-00642,Lake Del Valle,Lake Del Valle 10K,2026-06-20,2:32:58.00,1
+M,60-64,1,22,Lederman,David,,386H-00642,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,22:26.00,1
+M,60-64,1,22,Lederman,David,,386H-00642,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,37:19.00,1
+M,60-64,1,22,Lederman,David,,386H-00642,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:02:05.50,1
+M,60-64,4,14,Shoemaker,Scot,D,3867-03MYJ,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,45:50.00,1
+M,60-64,5,12,Shoemaker,Scot,D,3867-03MYJ,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,53:40.00,1
+M,60-64,5,12,Shoemaker,Scot,D,3867-03MYJ,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,28:15.00,1
+M,60-64,5,12,Shoemaker,Scot,D,3867-03MYJ,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,27:02.00,1
+M,60-64,7,8,Shoemaker,Scot,D,3867-03MYJ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:18:27.43,1
+M,60-64,2,18,Spitzler,David,,386F-03VJ6,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,44:25.00,1
+M,60-64,2,18,Spitzler,David,,386F-03VJ6,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,23:20.00,1
+M,60-64,3,16,Spitzler,David,,386F-03VJ6,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:06:06.28,1
+M,60-64,1,22,Arris,Todd,E,3863-03H46,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:18:06.00,1
+M,60-64,2,18,Arris,Todd,E,3863-03H46,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:06:00.08,1
+M,60-64,3,16,Deng,Edward,E,386M-03K89,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:37:28.00,1
+M,60-64,6,10,Deng,Edward,E,386M-03K89,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,55:35.00,1
+M,60-64,6,10,Deng,Edward,E,386M-03K89,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:23.00,1
+M,60-64,14,0,Deng,Edward,E,386M-03K89,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:25:07.10,1
+M,60-64,2,18,Boone,Jon,,386W-05VDE,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,26:01.00,1
+M,60-64,2,18,Boone,Jon,,386W-05VDE,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,44:29.00,1
+M,60-64,3,16,Hitchings,Andrew,M,386X-03H4E,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,49:34.00,1
+M,60-64,3,16,Hitchings,Andrew,M,386X-03H4E,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,26:22.00,1
+M,60-64,3,16,Gothberg,Bradley,A,386K-03FXH,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,44:41.00,1
+M,60-64,4,14,Gothberg,Bradley,A,386K-03FXH,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,26:53.00,1
+M,60-64,4,14,Klebahn,Perry,A,3866-03BXP,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,50:22.00,1
+M,60-64,4,14,Klebahn,Perry,A,3866-03BXP,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,26:46.00,1
+M,60-64,4,14,Piatt,Vince,T,386M-06ENC,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:41:32.00,1
+M,60-64,7,8,Piatt,Vince,T,386M-06ENC,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,57:20.00,1
+M,60-64,2,18,Nagel,Roland,J,386S-03FH0,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:31:22.00,1
+M,60-64,3,16,Ross,Duncan,,3865-03JZJ,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,26:21.00,1
+M,60-64,4,14,Pellicano,Dino,,386N-05HRA,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:16:48.34,1
+M,60-64,5,12,Hennessy,Robert,J,386K-03R30,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:41:57.00,1
+M,60-64,15,0,Hennessy,Robert,J,386K-03R30,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:25:29.75,1
+M,60-64,5,12,Hayes,Kevin,,3861-0B4VF,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:17:16.28,1
+M,60-64,5,12,Grace,Mike,,3864-03FDK,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,54:20.00,1
+M,60-64,6,10,Dugan,Bob,J,386H-03MPA,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,28:32.00,1
+M,60-64,6,10,Boegman,John,M,386P-03HSS,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:17:30.55,1
+M,60-64,7,8,Marcus,Jono,,3869-WD4H4,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,32:48.00,1
+M,60-64,11,0,Marcus,Jono,,3869-WD4H4,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:00:48.00,1
+M,60-64,7,8,Heaney,Michael,P,386N-03FXF,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,35:21.00,1
+M,60-64,8,6,Hoover,David,D,386K-03KJ4,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:19:04.35,1
+M,60-64,8,6,Remington,Todd,E,386X-0B134,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,33:48.00,1
+M,60-64,12,0,Remington,Todd,E,386X-0B134,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:03:47.00,1
+M,60-64,8,6,Wu,Long,,386R-03Z6S,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,43:17.00,1
+M,60-64,8,6,Judge,Campbell,,386S-09B0C,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,58:28.00,1
+M,60-64,9,4,Blankley,Stephen,M,386B-05S0P,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,34:43.00,1
+M,60-64,9,4,Anderson,Thorsten,,3863-03GJP,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:19:07.63,1
+M,60-64,9,4,Lynch,Patrice,O,3863-A2ZMY,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,59:50.00,1
+M,60-64,10,2,Devlin,Patrick,A,386G-05V1F,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,36:33.00,1
+M,60-64,10,2,Hradecky,Pete,,386U-04ZHH,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:22:23.27,1
+M,60-64,10,2,Dueregger,Wolfgang,F,386M-03RVR,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,59:54.00,1
+M,65-69,1,22,Carr,Mike,W,386A-03YAS,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:38:02.00,1
+M,65-69,2,18,Carr,Mike,W,386A-03YAS,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,48:46.00,1
+M,65-69,3,16,Carr,Mike,W,386A-03YAS,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,28:52.00,1
+M,65-69,5,12,Carr,Mike,W,386A-03YAS,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,54:35.00,1
+M,65-69,5,12,Carr,Mike,W,386A-03YAS,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:18:06.48,1
+M,65-69,8,6,Carr,Mike,W,386A-03YAS,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:13.00,1
+M,65-69,1,22,Cutting,Steve,,3863-03MEE,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,45:52.00,1
+M,65-69,2,18,Cutting,Steve,,3863-03MEE,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,26:46.00,1
+M,65-69,4,14,Cutting,Steve,,3863-03MEE,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,26:38.00,1
+M,65-69,1,22,Frazier,Mark,,386E-075CS,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:09:09.44,1
+M,65-69,3,16,Frazier,Mark,,386E-075CS,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,25:27.00,1
+M,65-69,4,14,Frazier,Mark,,386E-075CS,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,47:38.00,1
+M,65-69,1,22,Tainty,Chris,J,386D-03JCS,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,43:46.00,1
+M,65-69,1,22,Tainty,Chris,J,386D-03JCS,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,23:12.00,1
+M,65-69,2,18,Richards,Kirk,,386W-0AYKT,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,45:38.00,1
+M,65-69,2,18,Richards,Kirk,,386W-0AYKT,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,24:02.00,1
+M,65-69,2,18,Loftis,Mark,,386R-0770Z,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:12:16.76,1
+M,65-69,3,16,Loftis,Mark,,386R-0770Z,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,47:20.00,1
+M,65-69,1,22,Felts,John,T,386T-03F77,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,26:15.00,1
+M,65-69,6,10,Bales,Paul,,386D-07BJR,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,55:08.00,1
+M,65-69,7,8,Bales,Paul,,386D-07BJR,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,28:46.00,1
+M,65-69,2,18,kalousek,jakub,,386S-KMMYU,Lake Del Valle,Lake Del Valle 5K,2026-06-20,2:56:48.00,1
+M,65-69,3,16,Pratt,Steve,,3863-03FEJ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:16:39.92,1
+M,65-69,3,16,Risso,Richard,J,386G-03NN7,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,48:49.00,1
+M,65-69,4,14,Koehler,Frederick,P,386M-03K8U,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:17:54.71,1
+M,65-69,4,14,Tuteur,Frank,,386A-03KE5,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,43:11.00,1
+M,65-69,5,12,Taylor,Ron,,386S-03MUP,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:31.00,1
+M,65-69,5,12,Karr,Dane,,386G-08CEY,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,43:33.00,1
+M,65-69,6,10,Marshall,Scott,F,386V-03H1D,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:20:46.33,1
+M,65-69,6,10,Sims,Paul,,386Y-03MF6,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,27:55.00,1
+M,65-69,7,8,Mann,Clyde,K,386M-03H8B,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:26:53.63,1
+M,65-69,8,6,Pinto,Harlan,A,3864-080G8,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:03:59.00,1
+M,65-69,10,2,Pinto,Harlan,A,3864-080G8,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,34:43.00,1
+M,65-69,11,0,Pinto,Harlan,A,3864-080G8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:40:47.97,1
+M,65-69,7,8,Schwartz,Mark,,386R-03GDY,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,59:09.00,1
+M,65-69,8,6,Curran,Barry,I,3866-03Z5W,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:29:19.34,1
+M,65-69,9,4,Singer,Robert,,386J-03SSP,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,33:00.00,1
+M,65-69,10,2,Singer,Robert,,386J-03SSP,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:37:09.60,1
+M,65-69,9,4,Hutchinson,John,W,386R-03FXD,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:09:32.00,1
+M,65-69,9,4,Stewart,David,M,386U-03XT9,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:32:52.81,1
+M,65-69,10,2,Carman,Steve,L,386E-1V40J,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:18:37.00,1
+M,70-74,1,22,Citron,Jeffrey,,386E-03RPY,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,57:15.00,1
+M,70-74,1,22,Citron,Jeffrey,,386E-03RPY,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:31.00,1
+M,70-74,1,22,Citron,Jeffrey,,386E-03RPY,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,29:13.00,1
+M,70-74,2,18,Citron,Jeffrey,,386E-03RPY,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,52:26.00,1
+M,70-74,2,18,Citron,Jeffrey,,386E-03RPY,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:22:11.21,1
+M,70-74,1,22,Small,Stephen,A,386G-03GV2,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,51:13.00,1
+M,70-74,2,18,Small,Stephen,A,386G-03GV2,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,57:50.00,1
+M,70-74,2,18,Small,Stephen,A,386G-03GV2,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:43:08.00,1
+M,70-74,3,16,Small,Stephen,A,386G-03GV2,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,30:31.00,1
+M,70-74,3,16,Small,Stephen,A,386G-03GV2,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,30:06.00,1
+M,70-74,5,12,Small,Stephen,A,386G-03GV2,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:29:14.91,1
+M,70-74,1,22,Guadagni,Peter,,386T-03GFZ,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:28:09.00,1
+M,70-74,1,22,Guadagni,Peter,,386T-03GFZ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:10:45.47,1
+M,70-74,2,18,Lindsay,William,A,386Z-09FXB,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,29:20.00,1
+M,70-74,3,16,Lindsay,William,A,386Z-09FXB,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:23:33.65,1
+M,70-74,3,16,Anderson,Robert,L,386A-05SKS,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,52:33.00,1
+M,70-74,4,14,Anderson,Robert,L,386A-05SKS,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,32:01.00,1
+M,70-74,3,16,Woodruff,David,L,386B-03HFT,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:03:28.00,1
+M,70-74,5,12,Woodruff,David,L,386B-03HFT,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,33:28.00,1
+M,70-74,4,14,Stock,Paul,G,386A-0427G,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:03:36.00,1
+M,70-74,6,10,Stock,Paul,G,386A-0427G,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:33:15.14,1
+M,70-74,5,12,Kinnier,Thomas,A,386F-0679N,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:15:26.00,1
+M,70-74,5,12,Kinnier,Thomas,A,386F-0679N,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,1:02:09.00,1
+M,70-74,4,14,Dalton,Michael,J,386D-09BY6,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,1:00:09.00,1
+M,70-74,8,6,Dalton,Michael,J,386D-09BY6,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:48:14.66,1
+M,70-74,2,18,Elson,Tom,,386B-069J6,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:44.00,1
+M,70-74,4,14,Gillespie,Gary,A,3868-7HMK0,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,32:53.00,1
+M,70-74,4,14,Switzer,Stanley,R,386A-03FS2,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:27:49.27,1
+M,70-74,7,8,Cohee,Tim,,386E-KZ4AF,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:34:42.04,1
+M,75-79,1,22,Wilson,Joel,R,3868-03EYR,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,48:10.00,1
+M,75-79,1,22,Wilson,Joel,R,3868-03EYR,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,25:25.00,1
+M,75-79,1,22,Wilson,Joel,R,3868-03EYR,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:24:41.00,1
+M,75-79,1,22,Wilson,Joel,R,3868-03EYR,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,25:42.00,1
+M,75-79,1,22,Wilson,Joel,R,3868-03EYR,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,44:11.00,1
+M,75-79,1,22,Wilson,Joel,R,3868-03EYR,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:11:20.09,1
+M,75-79,2,18,Kight,Chuck,,386R-03EZ0,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:06:26.00,1
+M,75-79,3,16,Kight,Chuck,,386R-03EZ0,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:39:07.79,1
+M,75-79,3,16,Stanbridge,Allan,,386E-FTHC0,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,36:21.00,1
+M,75-79,3,16,Stanbridge,Allan,,386E-FTHC0,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,35:16.00,1
+M,75-79,4,14,Winterrowd,Dan,,386Y-03JZ6,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:10:48.00,1
+M,75-79,4,14,Winterrowd,Dan,,386Y-03JZ6,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:41:57.41,1
+M,75-79,5,12,Kennedy,James,B,386N-03G1M,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:20:10.00,1
+M,75-79,5,12,Kennedy,James,B,386N-03G1M,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,42:59.00,1
+M,75-79,4,14,Anderson,Carl,J,3862-W62KB,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,43:25.00,1
+M,75-79,6,10,Anderson,Carl,J,3862-W62KB,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,1:01:13.00,1
+M,75-79,2,18,Mcpherson,Andrew,M,386C-03GXT,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,35:18.00,1
+M,75-79,2,18,Benjamin,David,,386W-03FHD,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,35:03.00,1
+M,75-79,2,18,Jacobus,Greg,,386T-09JSA,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:36:12.47,1
+M,75-79,3,16,Jester,Mal,,3865-03GG4,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:07:29.00,1
+M,75-79,4,14,Wallace,Steve,A,386W-03NJR,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,40:11.00,1
+M,90-94,1,22,Laramie,Mike,,386X-79XB8,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,44:39.00,1
+M,90-94,1,22,Laramie,Mike,,386X-79XB8,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,45:04.00,1
+F,18-24,1,22,Halverson,Madelyn,M,3864-TWZEK,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:25:25.62,2
+F,30-34,1,22,Polanco-Jimenez,Karina,,3867-9AXYR,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,59:58.00,2
+F,30-34,1,22,Queirolo,Jovel,,386R-0A3SB,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,29:01.00,2
+F,30-34,1,22,Wong,Kathleen,,386A-U2YUC,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,53:17.00,2
+F,35-39,1,22,Chi,Yvonne,,3860-510DR,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:34:04.85,2
+F,35-39,2,18,Norby,Nichole,,3866-4F3B7,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:35:51.89,2
+F,35-39,3,16,Cimpean,Luana,,386V-PNDCS,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:48:24.60,2
+F,35-39,4,14,De Jong,Elisabeth,,386K-55X7D,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:49:38.23,2
+F,35-39,5,12,Son,Hilary,J,386P-FBK6F,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:55:00.52,2
+F,40-44,1,22,Frederick,Tunisia,A,3868-03S55,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:24:31.89,2
+F,40-44,2,18,Caven,Kara,,3865-KMUAP,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:30:36.41,2
+F,45-49,1,22,Hurrey,Suzanne,,386T-0B1H5,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,35:39.00,2
+F,45-49,2,18,Hurrey,Suzanne,,386T-0B1H5,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,1:03:05.00,2
+F,45-49,5,12,Hurrey,Suzanne,,386T-0B1H5,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:44:53.55,2
+F,45-49,1,22,Gabe,Christina,J,386Z-6PNCC,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,55:07.00,2
+F,45-49,2,18,Gabe,Christina,J,386Z-6PNCC,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,38:45.00,2
+F,45-49,1,22,Dorris,Meghan,,386Z-V22M0,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:34:11.75,2
+F,45-49,2,18,Zadny,Jill,A,3868-089CF,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:34:54.50,2
+F,45-49,3,16,Johnston,Jessica,A,386P-3NRHX,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:34:58.20,2
+F,45-49,4,14,Muraki,Miya,,3867-05U76,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:35:30.90,2
+F,45-49,6,10,Holmes,Elizabeth,J,3865-03X81,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,2:08:10.66,2
+F,45-49,7,8,Schrik,Natalie,,386N-0B0B3,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,2:09:54.01,2
+F,45-49,8,6,Siciliano,Jennifer,,386P-Z3KZG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,2:25:15.35,2
+F,50-54,1,22,Morley,Michelle,L,386J-4AMF3,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,34:25.00,2
+F,50-54,1,22,Morley,Michelle,L,386J-4AMF3,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:59:09.00,2
+F,50-54,1,22,Morley,Michelle,L,386J-4AMF3,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,57:06.00,2
+F,50-54,1,22,Aukema,Juliann,,386F-E7KNA,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:19:27.00,2
+F,50-54,1,22,Fierro,Shannon,R,386B-K1513,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:36:34.28,2
+F,50-54,2,18,Bartl,Mirna,,3865-WB5BU,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,39:22.00,2
+F,50-54,2,18,Kurdy,Colleen,,3862-03SD6,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:37:20.59,2
+F,55-59,1,22,Jones,Sara,,386F-041EC,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,55:41.00,2
+F,55-59,1,22,Draeger,Michelle,,386Z-TC5XJ,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,43:31.00,2
+F,55-59,1,22,Costarella,Janine,L,386H-KW33D,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,1:02:53.00,2
+F,55-59,1,22,Kandra,Bea,,386G-0ATY3,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:17:09.08,2
+F,55-59,2,18,Segovia,Francisca,,386X-74Z4B,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:23:46.00,2
+F,55-59,2,18,Anaya,Cyane,,3863-03ZF2,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:17:50.74,2
+F,55-59,3,16,Stockwell,Kimberly,A,3869-8ZB3P,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:19:31.16,2
+F,55-59,4,14,Blish,Catherine,,386T-05AUF,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:24:18.67,2
+F,55-59,5,12,Schlosser,Kara,A,3869-F0VTR,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:24:20.76,2
+F,55-59,6,10,Juson,Justine,,3860-0B27C,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:30:24.59,2
+F,55-59,7,8,Welsh,Diana,G,386C-XPAF6,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:34:09.27,2
+F,60-64,1,22,Darden,Brenda,,386P-09J7Y,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,28:32.00,2
+F,60-64,1,22,Darden,Brenda,,386P-09J7Y,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:51:51.00,2
+F,60-64,1,22,Darden,Brenda,,386P-09J7Y,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,33:29.00,2
+F,60-64,1,22,Darden,Brenda,,386P-09J7Y,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,56:04.00,2
+F,60-64,2,18,Darden,Brenda,,386P-09J7Y,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:06:47.00,2
+F,60-64,2,18,Darden,Brenda,,386P-09J7Y,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:32:21.65,2
+F,60-64,2,18,Honens,Kelly,R,3861-03WE3,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,32:06.00,2
+F,60-64,3,16,Honens,Kelly,R,3861-03WE3,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:33:51.13,2
+F,60-64,2,18,Mccormick,Ann,L,386P-077ZD,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,37:25.00,2
+F,60-64,3,16,Mccormick,Ann,L,386P-077ZD,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,37:55.00,2
+F,60-64,1,22,Maroon,Anne,,386R-BFUH8,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:23:58.10,2
+F,60-64,1,22,Mchale,Carol,S,3869-03P7A,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:02:36.00,2
+F,60-64,3,16,Blatt,Lisa,,386K-0719Z,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:07:16.00,2
+F,60-64,4,14,Roddy,Karen,J,386J-8PHPN,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,49:12.00,2
+F,65-69,1,22,Moore,Olivia,J,3869-03GG8,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,32:50.00,2
+F,65-69,1,22,Wilburn,Diana,,386C-AA3MX,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:37:00.31,2
+F,65-69,2,18,Kirshbaum,Lisa,,386G-N5MCD,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:37:31.82,2
+F,65-69,3,16,Bernhardi,Eileen,,3861-Y7EGV,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,2:04:48.11,2
+M,25-29,1,22,Porter,Ryan,P,386X-MD0AB,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,47:05.00,2
+M,25-29,2,18,Porter,Ryan,P,386X-MD0AB,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,2:08:10.48,2
+M,25-29,1,22,Su,Kenneth,,386X-XY34V,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:26:23.79,2
+M,25-29,1,22,Flanery,Connor,,3862-J4088,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,45:56.00,2
+M,25-29,2,18,Li,Albert,,3864-2TM17,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,47:05.00,2
+M,30-34,1,22,Davis,Cory,J,386H-RNX4V,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:23:00.93,2
+M,35-39,1,22,Zu,Yazhou,,386G-JSEHY,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:31:05.25,2
+M,40-44,1,22,Mangrobang,Jose,C,386K-687A7,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:03:31.00,2
+M,40-44,1,22,Hernandez,Ray,,386D-ZZMF5,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,32:49.00,2
+M,40-44,1,22,Brown,Reece,A,386B-4MGBM,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,39:18.00,2
+M,40-44,1,22,Glubokovskikh,Stanislav,,386T-U2YX3,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,52:03.00,2
+M,40-44,1,22,Sugliano,Roberto,,3862-TDDSG,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:06:40.86,2
+M,40-44,2,18,Johnson,Ryan,C,3866-GY1WC,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:10:19.52,2
+M,40-44,3,16,Aleagha,Mo,,386E-0A0W1,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:27:00.46,2
+M,45-49,1,22,Profumo,Stefano,,386J-08627,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,46:23.00,2
+M,45-49,1,22,Profumo,Stefano,,386J-08627,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,23:45.00,2
+M,45-49,1,22,Profumo,Stefano,,386J-08627,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:21:11.00,2
+M,45-49,1,22,Profumo,Stefano,,386J-08627,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,24:10.00,2
+M,45-49,1,22,Profumo,Stefano,,386J-08627,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,40:16.00,2
+M,45-49,1,22,Profumo,Stefano,,386J-08627,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:05:33.98,2
+M,45-49,2,18,Arai,Tatsuya,,386P-5E8XC,Lake Del Valle,Lake Del Valle 5K,2026-06-20,1:30:27.00,2
+M,45-49,2,18,Arai,Tatsuya,,386P-5E8XC,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,25:50.00,2
+M,45-49,2,18,Arai,Tatsuya,,386P-5E8XC,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,45:04.00,2
+M,45-49,3,16,Baggaley,Brian,,386V-03X8U,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,32:54.00,2
+M,50-54,1,22,Wilkening,Jon,A,3866-05S33,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,50:19.00,2
+M,50-54,1,22,Chadwick,Christopher,,3861-UDDHP,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:33:58.37,2
+M,50-54,2,18,Bazgan,Corvin,,386A-0B0BB,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:43:46.40,2
+M,50-54,3,16,Shaw,David,,386W-1M7AZ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:46:18.38,2
+M,50-54,4,14,Hash,Amariah,,3867-FXAY4,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:48:45.10,2
+M,55-59,1,22,Goddard,John,W,3861-08BKY,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,53:54.00,2
+M,55-59,1,22,Ramanathan,Venkatesh,,3861-55SPW,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,45:14.00,2
+M,55-59,1,22,Briand,Emmanuel,,386D-W5ESZ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:16:51.40,2
+M,55-59,2,18,Rosenbaum,Arieh,,386M-14XCM,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:07:04.00,2
+M,55-59,2,18,Emanuel,Todd,P,386J-0A2W4,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:19:28.06,2
+M,55-59,3,16,Nelson,Casey,,386E-04FJ1,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:23:02.78,2
+M,55-59,4,14,Atkins,Steve,J,3868-0AZ8T,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:34:28.57,2
+M,55-59,5,12,Clardy,David,L,386E-0ATXT,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:43:31.82,2
+M,60-64,1,22,Lowry,Scott,F,386T-03KKG,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,45:36.00,2
+M,60-64,1,22,Bedsworth,Jay,W,386V-03X00,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,32:02.00,2
+M,60-64,1,22,Sheeper,Tim,K,3863-03G4R,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:09:46.78,2
+M,60-64,2,18,O'Rourke,Rick,,3862-07NAA,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,56:10.00,2
+M,60-64,2,18,Boucher,Laurent,P,386X-09M73,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,39:11.00,2
+M,60-64,2,18,Lewis,Scott,,3869-BZ69X,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:29:40.66,2
+M,60-64,3,16,Wu,Long,,386R-03Z6S,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,39:51.00,2
+M,60-64,3,16,Filloux,Dominique,,3867-0AZ8S,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:35:13.90,2
+M,60-64,4,14,Lussier,Brian,,386B-WE8D2,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:38:26.98,2
+M,60-64,5,12,Templeton,Jay,K,3866-EDAAJ,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:43:20.66,2
+M,60-64,6,10,Shahani,Lalit,K,386H-03EWM,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:50:44.62,2
+M,65-69,1,22,Anderson,Allan,E,386K-03ZD2,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,50:38.00,2
+M,65-69,1,22,Anderson,Allan,E,386K-03ZD2,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,26:46.00,2
+M,65-69,1,22,Anderson,Allan,E,386K-03ZD2,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:11:39.25,2
+M,65-69,1,22,Anderson,Gregory,B,3865-24N7S,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,30:24.00,2
+M,65-69,1,22,Anderson,Gregory,B,3865-24N7S,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,54:46.00,2
+M,65-69,2,18,Elsbach,Jan,K,386A-03NH5,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,30:36.00,2
+M,65-69,2,18,Jackson,Mark,A,386N-9YJ8W,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,34:14.00,2
+M,65-69,2,18,Milton,Tim,S,386U-09C1U,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:24:10.17,2
+M,65-69,3,16,Regan,Michael,J,386B-03FUN,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:41:28.08,2
+M,70-74,1,22,Stansell,Brian,,386M-03PZW,Lake Berryessa,Lake Berryessa 2 Mile,2026-06-06,1:23:00.00,2
+M,70-74,1,22,Sinnott,Samuel,C,386E-03G41,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:40:37.19,2
+M,70-74,2,18,Roitman,Daniel,B,386T-05HU9,Donner Lake Swim,Donner Lake Swim 2.7 Mile,2026-08-08,1:48:26.46,2
+M,75-79,1,22,Crockett,Robert,J,386E-0A1FK,Lake Del Valle,Lake Del Valle 2.5K,2026-06-21,1:05:27.00,2
+M,80-84,1,22,Rust,David,J,386G-03N36,Lake Berryessa,Lake Berryessa 1 Mile,2026-06-06,42:21.00,2
+M,80-84,1,22,Shoor,Perry,M,386J-040FN,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,33:41.00,2
+M,80-84,2,18,Blumenstock,Ed,,386R-8AGEZ,Lake Del Valle,Lake Del Valle 1.5K,2026-06-21,34:58.00,2

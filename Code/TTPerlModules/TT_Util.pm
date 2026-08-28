@@ -94,6 +94,29 @@ sub GenerateCanonicalDurationForDB_old($$$) {
 } # end of GenerateCanonicalDurationForDB()
 
 
+# 					my $olderAgeGroup = GetOlderAgeGroup( $ageGroup1, $ageGroup2 );
+# GetOlderAgeGroup - when passed two age groups return the older one.
+#
+# PASSED:
+#	$ageGroup1 - an age group in the form of "25-29"
+#	$ageGroup2 - ditto
+#
+# RETURNED:
+#	$olderAgeGroup - the result. For example, if the two age groups passed are "18-24" and
+#		"25-29", the result will be "25-29".
+#
+sub GetOlderAgeGroup( $$ ) {
+	my ($ageGroup1, $ageGroup2) = @_;
+	
+	my $lowAge1 = $ageGroup1;
+	$lowAge1 =~ s/-.*$//;
+	my $lowAge2 = $ageGroup2;
+	$lowAge2 =~ s/-.*$//;
+	
+	return $lowAge1 > $lowAge2 ? $ageGroup1 : $ageGroup2;
+} # end of GetOlderAgeGroup()
+
+
 
 
 1;  # end of module

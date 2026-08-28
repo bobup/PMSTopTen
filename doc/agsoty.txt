@@ -1,0 +1,36 @@
+
+21Aug2025
+
+2025 AGSOTY
+
+There are currently TWO significant problems with 2025 AGSOTY. In summary they are:
+	1. The inclusion of the 2024 Short Course Nationals results into the 2025 SCY top ten swims have caused some 2025 SCY swims to be "hidden" from AGSOTY.
+	2. The collapse of our swim records approval system have caused all PAC SCY records achieved since April, 2025 to be missing from 2025 AGSOTY.
+	
+	
+	
+Hidden swims:
+
+"Hidden" PAC SCY swims are the result of USMS including the 2024 SCY Nationals as part of the 2025 SCY season.
+
+The 2025 top ten swims assembled by USMS are listed here:
+	https://www.usms.org/comp/meets/toptenlocalind.php?Year=2025&CourseID=1&ZoneID=&LMSCID=38&Club=
+	
+We are going to explore one example of Hidden swims.
+
+Looking at the top ten swims referenced above we see the swimmer Selby C Sturzenegger has 8 Pacific Masters top ten SCY swims for the 2025 season. Consider her 50 yard free swim. USMS tells us that she is ranked 3rd in Pacific Masters with a time of 24.44. However, please note that this swim was swum on June 21, 2024. As per the USMS rule this swim is supposed to be designated as swum during the 2024 season, not the 2025 season.
+
+Now, as it happens, Selby swam the 50 yard free swim again on February 22, 2025 with a time of 25.56. This swim is was swum during the "normal" 2025 season.
+
+It is not possible to have two (or more) top ten times for the same person for the same event for the same season. For example, it is not possible to be ranked both 3rd and 8th for the same event during the 2025 season. Since USMS (mistakenly) ranked Selby as 3rd for the 50 free during the 2025 season that means that Selby's other 50 free swim (which is ranked ranked 8th in 2025) is "Hidden". The 8th place ranking doesn't show up on the USMS SCY top ten list because it is Hidden by the 3rd place ranking earned during the USMS-declared 2024 season but listed as a 2025 swim.
+
+AGSOTY does not consider Selby's 3rd ranked 50 yard swim for points for 2025 because USMS has declared that that swim was swum during the 2024 season. But AGSOTY doesn't see her 8th ranked 50 yard swim because USMS doesn't list it in the 2025 top ten list. So this means that Selby does not receive any points for her SCY 50 yard swims swum during the 2025 season.
+
+Note that PAC and USMS SCY records earned during the 2024 season ending on June 24, 2024 were included in the 2024 AGSOTY season, as per USMS edict. This means that there is no issue with AGSOTY calculations involving records, except for the following.
+
+
+
+PAC SCY records:
+
+All PAC swim records are automatically recognized when USMS publishes the record time as a fastest PAC swim for that event, gender, and age group. When such records are found they are recorded into our records database and tagged as "not verified". Records must be verified by our Administrator (Chris) before they can be included in AGSOTY calculations. Unfortunately, the tools Chris uses for the verification broke last April. Thus, swim records that very well might be valid and worth AGSOTY points to the owners of such records are not being considered by AGSOTY. 
+

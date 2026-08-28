@@ -532,8 +532,8 @@ Place,Age Group,Event,Name,Age,Club,LMSC,Time
 5,M45-49,400 IM,Zebron J Lemke,45,AAM,Pacific,5:34.66M
 7,M45-49,400 IM,David A Popko,48,AAM,Pacific,5:48.70M
 2,M50-54,50 Free,Robert J Smith,51,UC38,Pacific,25.08M
-5,M50-54,50 Free,Mike Pyle,50,MELO,Pacific,25.99M
-8,M50-54,50 Free,Kent A Anderson,53,DAM,Pacific,26.50M
+4,M50-54,50 Free,Mike Pyle,50,MELO,Pacific,25.99M
+7,M50-54,50 Free,Kent A Anderson,53,DAM,Pacific,26.50M
 4,M50-54,100 Free,Mike Pyle,50,MELO,Pacific,57.60M
 5,M50-54,100 Free,Will H Lane,54,FDM,Pacific,58.23M
 9,M50-54,100 Free,Jonathan D Flakoll,51,WCM,Pacific,59.76M
@@ -550,10 +550,10 @@ Place,Age Group,Event,Name,Age,Club,LMSC,Time
 10,M50-54,50 Back,Jonathan D Flakoll,51,WCM,Pacific,32.32M
 8,M50-54,100 Back,Will H Lane,54,FDM,Pacific,1:11.96M
 9,M50-54,200 Back,Brad Winsor,54,DAM,Pacific,2:51.95M
-10,M50-54,50 Breast,Dikan Rendic,54,GOOG,Pacific,34.95M
+9,M50-54,50 Breast,Dikan Rendic,54,GOOG,Pacific,34.95M
 2,M50-54,50 Fly,Will H Lane,54,FDM,Pacific,27.32M
-7,M50-54,50 Fly,Dikan Rendic,54,GOOG,Pacific,28.55M
-10,M50-54,50 Fly,Kent A Anderson,53,DAM,Pacific,28.88M
+6,M50-54,50 Fly,Dikan Rendic,54,GOOG,Pacific,28.55M
+9,M50-54,50 Fly,Kent A Anderson,53,DAM,Pacific,28.88M
 2,M50-54,100 Fly,Kent A Anderson,53,DAM,Pacific,1:02.47M
 3,M50-54,100 Fly,Will H Lane,54,FDM,Pacific,1:02.65M
 9,M50-54,200 IM,Jonathan D Flakoll,51,WCM,Pacific,2:40.45M

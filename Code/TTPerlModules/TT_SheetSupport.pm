@@ -19,6 +19,7 @@ my $debug = 0;	# set >0 to turn on debugging
 #
 # PASSED:
 #	$fileName - the full path name of the file we're going to open
+#	$ext - (optional) the type of the file. If not passed we use the file extension.
 #
 # RETURNED:
 #	%ssHandle - a hash whose fields define the opened file.  Fields:
@@ -32,6 +33,7 @@ my $debug = 0;	# set >0 to turn on debugging
 #
 sub OpenSheetFile($) {
 	my $fileName = $_[0];
+	my $ext = $_[1];		# undef if not passed...optional
 	my %ssHandle = (
 		"fileName" => "",		# will contain file name if the file was opened correctly
 		"fileRef" => 0,			# 0 -> unused/closed handle
@@ -42,11 +44,15 @@ sub OpenSheetFile($) {
 		"numCols" => 0,			# 0 -> txt or csv file, otherwise excel file
 	);
 	
-    # what kind of file is this?  Use the file extension to tell us:
-    my $ext = $fileName;
-    $ext =~ s/^.*\.//;
-    $ext = lc( $ext );
-
+    # what kind of file is this?  
+    if( ! defined $ext ) {
+		# Use the file extension to tell us:
+		$ext = $fileName;
+		$ext =~ s/^.*\.//;
+    }
+    # make sure the $ext is lc...
+	$ext = lc( $ext );
+    
     # Now, get to work!
     if( ! $ext ) {
     	# no extension?  give up

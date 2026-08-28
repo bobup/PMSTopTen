@@ -69,8 +69,6 @@ my $appRootDir;		# directory containing the appDirName directory
 my $sourceData;		# full path of directory containing the "source data" which we process to create the generated files
 
 my $doSleep;
-my $longSleep;
-my $shortSleep;
 
 
 BEGIN {
@@ -78,8 +76,6 @@ BEGIN {
 	$debug = 0;
 	
 	# http problems...
-	$longSleep = 60;		# seconds
-	$shortSleep = 1;
 	$doSleep = 1;			# 0 = don't do any sleep
 	
 	# Get the name of the program we're running:
@@ -142,7 +138,7 @@ my $generateEPostal			= ($RESULT_FILES_TO_READ & 0b1000000);	# set to non-zero i
 #	$generatePMSTopTen = 0;
 if( 0 ) {
 $generatePMSTopTen = 0;
-$generateUSMSTopTen = 0;
+#$generateUSMSTopTen = 0;
 $generatePMSRecords = 0;
 $generateUSMSRecords = 0;
 $generatePMSOW = 0;
@@ -191,7 +187,7 @@ use JSON::MaybeXS;
 sub GetUSMSTopTenResults( $$$$$ );
 sub GetPMSTopTenResults( $$$$$ );
 sub GetSwimMeetDetails();
-sub GetPMSRecords2( $$$$$ );
+sub GetPMSRecords2( $$$ );
 sub GetUSMSRecords( $$$ );
 sub GetPMSOWResults( $$ );
 sub GetEpostalResults( $ );
@@ -464,20 +460,29 @@ if( $generateUSMSTopTen != 0 ) {
 if( $generatePMSRecords != 0 ) {
 	PMSLogging::PrintLog( "", "", "\n*********", 1 );
 	my $previousYear = $yearBeingProcessed-1;
+
+	# make sure we know the dates of the beginning and ending of each season:
+	PMSConstants::FixSeasonRange( $yearBeingProcessed );
+	if( $debug ) {
+		PMSLogging::DumpNote( "", "", "GetResults::(getting PMS records):\n" .
+			"    SCY season: " . "$previousYear" . $PMSConstants::season{'SCYstart'} . " - " .
+					"$yearBeingProcessed" . $PMSConstants::season{'SCYend'} . "\n" .
+			"    SCM season: " . "$yearBeingProcessed" . $PMSConstants::season{'SCMstart'} . " - " . 
+					"$yearBeingProcessed" . $PMSConstants::season{'SCMend'} . "\n" .
+			"    LCM season: " . "$previousYear" . $PMSConstants::season{'LCMstart'} . " - " . 
+					"$yearBeingProcessed" . $PMSConstants::season{'LCMend'}, 1 );
+	}
 	foreach my $simpleFileName ( sort keys %PMSRecordsFiles ) {
 		my $org_course = $PMSRecordsFiles{$simpleFileName};
 		if( $org_course eq "PAC-SCY" ) {
 			## Get SCY results:
-			GetPMSRecords2( "PAC", "SCY Records", "$previousYear-06-01", "$yearBeingProcessed-05-31",
-				$simpleFileName );
+			GetPMSRecords2( "PAC", "SCY Records", $simpleFileName );
 		} elsif( $org_course eq "PAC-SCM" ) {
 			## Get SCM results:
-			GetPMSRecords2( "PAC", "SCM Records", "$yearBeingProcessed-01-01", "$yearBeingProcessed-12-31",
-				$simpleFileName );
+			GetPMSRecords2( "PAC", "SCM Records", $simpleFileName );
 		} elsif( $org_course eq "PAC-LCM" ) {
 			## Get LCM results:
-			GetPMSRecords2( "PAC", "LCM Records", "$previousYear-10-01", "$yearBeingProcessed-09-30",
-				$simpleFileName );
+			GetPMSRecords2( "PAC", "LCM Records", $simpleFileName );
 		} else {
 			PMSLogging::DumpError( "", "", "GetResults::Illegal org_course ($org_course) when getting PMS Records" );		
 		}
@@ -711,8 +716,9 @@ sub GetPMSTopTenResults( $$$$$ ) {
 		} );
 
 	# fetch the human-readable results
+	my $currentTime = strftime( "%T", localtime() );
 	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSTopTenResults(): Get the results for " .
-		"$org $course,\n    linkToResults='$linkToResults'...", 1 );
+		"$org $course; current time is $currentTime,\n    linkToResults='$linkToResults'...", 1 );
 
 	if($debug > 2) {
 		# dump the html we fetched so we can make sure we're getting what we expect
@@ -859,6 +865,7 @@ sub ParseFileDownloadHttpResponse( $$$$$$ ) {
 	my $fileHandle = $callbackStateRef->{"fileHandle"};
 	my $binmode = $callbackStateRef->{"binmode"};
 	$callbackStateRef->{"numBytesSeen"} += length( $content );
+	#my $debug = 0;
 
 	if( $debug ) {
 		PMSLogging::PrintLog( "", "", "ParseFileDownloadHttpResponse(): linkToResults='$linkToResults'\n    " .
@@ -882,6 +889,11 @@ sub ParseFileDownloadHttpResponse( $$$$$$ ) {
 			PMSLogging::PrintError( "", "", "ParseFileDownloadHttpResponse(): ERROR ($!) attempting to write " .
 				length( $content ) . " bytes to " . $callbackStateRef->{"fullFileName"} . "\n" );
 		} else {
+			if( $debug ) {
+				PMSLogging::PrintLog( "", "", "ParseFileDownloadHttpResponse(): Content length this callback: " .
+					$length . " bytes." );
+			}
+
 			$callbackStateRef->{"numBytesWritten"} += $length;
 		}
 	}
@@ -1100,8 +1112,9 @@ sub GetUSMSTopTenResults( $$$$$ ) {
 		} );
 
 	# fetch the human-readable results
+	my $currentTime = strftime( "%T", localtime() );
 	PMSLogging::PrintLog( "", "", "GetResults::GetUSMSTopTenResults(): Get the results for " .
-		"$org $course,\n    HTTP::Tiny->get($linkToResults)", 1 );
+		"$org $course; current time is $currentTime,\n    HTTP::Tiny->get($linkToResults)", 1 );
 		
 	my $httpResponse = $tinyHttp->get( $linkToResults, \%options );
 	# we get here under TWO conditions:
@@ -1197,7 +1210,11 @@ sub GetUSMSTopTenResults( $$$$$ ) {
 			$callbackState{"numLines"} . ", callbackState{numDifferentMeets}=" . $callbackState{"numDifferentMeets"} .
 			", callbackState{numDifferentResults}=" . $callbackState{"numDifferentResults"} . "\n", 1 );
 	}
-	
+
+	$currentTime = strftime( "%T", localtime() );
+	PMSLogging::PrintLog( "", "", "GetResults::GetUSMSTopTenResults(): Done with the results for " .
+		"$org $course; current time is $currentTime", 1 );
+
 	# record some statistics gathered while processing these results:
 	TT_Struct::IncreaseFetchStat( "FS_NumLinesRead", $callbackState{"numLines"} );
 	TT_Struct::IncreaseFetchStat( "FS_NumDifferentMeetsSeen", $callbackState{"numDifferentMeets"} );
@@ -1354,6 +1371,9 @@ sub ProcessUSMSSwimDetails($) {
 	my ($meetTitle,$link) = ("bogus meet title", "bogus meet link");
 	my $lineNum = 0;
 
+	# http problems...
+	my $longSleep;		# seconds
+	my $shortSleep;		# seconds
 	# rotate agents
 	my @agents = (
 		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.10 Safari/605.1.1',
@@ -1382,17 +1402,24 @@ sub ProcessUSMSSwimDetails($) {
 		);		
 	my $tinyHttp2 = HTTP::Tiny->new( %attributes );
 
-	# fetch the human-readable swim details
+	# fetch the human-readable swim details...but first we need to protect ourselves from Cloudflare - 
+	# if we hit USMS pages too fast it USMS will start giving us HTTP errors which, in the case of
+	# calls with callbacks, are difficult to recover from. So we'll build in some delays.
+	
 	$staticCounter++;
 	if( $debug > 2 ) {
 		PMSLogging::PrintLog( "", "", "GetResults::ProcessUSMSSwimDetails(): HTTP::Tiny->get('$swimLink'), $staticCounter", 1 );
 	}
 	if( ($staticCounter % 100) == 0 ) {
+		$longSleep = int( rand( 31 )) + 30;		# 30-60 seconds
 		if( $debug > 2 ) {
-			PMSLogging::PrintLog( "", "", "GetResults::ProcessUSMSSwimDetails(): staticCounter=$staticCounter", 1 );
+			my $currentTime = strftime( "%T", localtime() );
+			PMSLogging::PrintLog( "", "", "GetResults::ProcessUSMSSwimDetails(): staticCounter=$staticCounter" .
+				", sleep $longSleep seconds, time=$currentTime", 1 );
 		}
 		sleep( $longSleep ) if( $doSleep );
 	} else {
+		$shortSleep = 1;
 		sleep( $shortSleep ) if( $doSleep );
 	}
 	
@@ -1520,216 +1547,6 @@ sub ParseUSMSSwimDetails( $$$$ ) {
 
 
 
-# GetPMSRecords - get the PMS Records result files in all courses (SCY, SCM, and LCM)
-#
-# PASSED:
-#	$linkToResults - the URL to the page containing the human-readable records.  We'll scrape this page
-#		to get the actual data.
-#	$org - the organization.  Always PMS Records
-#	$course - the course.  One of SCY, SCM, or LCM
-#	$minDate - date range in the form yyyy-mm-dd
-#	$maxDate - date range
-#	$destinationFileName - the simple file name of the file we create with the results.  We'll convert
-#		to a full file name putting it into the "correct" directory.
-#
-# RETURNED:
-#	n/a
-#
-# NOTES:
-#	This routine will read the records page ($linkToResults) gathering the information for every
-#		record in the season.
-#	Files are created and global variables are modified and used later.
-#
-sub GetPMSRecords_old( $$$$$$ ) {
-	my( $linkToResults, $org, $course, $minDate, $maxDate, $destinationFileName ) = @_;
-	my $recordsFileName = "$sourceDataDir/$destinationFileName";
-	my $recordsFileHandle;
-	my $tinyHttp = HTTP::Tiny->new( );
-
-	# define our callback to handle the HTTP response containing PMS records
-	my %callbackState = (
-		"numCallbackCalls"		=> 	0,
-		"numLines"				=>	0,
-		"numDifferentRecords"	=>	0,
-		"recordsFileHandle"		=>	0,
-		"leftoverLine"			=>	""
-		);
-	my %options = (
-		"data_callback"	=>	sub {
-			ParsePMSRecordsHttpResponse( \%callbackState, $linkToResults, $org, 
-				$course, $minDate, $maxDate, $_[0], $_[1] );
-		} );
-
-	# fetch the human-readable results
-	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSRecords(): Get the results for $org $course in " .
-		"the range $minDate - $maxDate,\n    linkToResults='$linkToResults'...", 1 );
-	# create the file we'll use for accumulating the records we find:
-	open( $recordsFileHandle, ">$recordsFileName" ) || 
-		die "GetResults::GetPMSRecords(): Can't open $recordsFileName: $!\nAbort.\n";
-	$callbackState{"recordsFileHandle"} = $recordsFileHandle;
-		
-	my $httpResponse = $tinyHttp->get( $linkToResults, \%options );
-	# we get here under TWO conditions:
-	#	- the entire response has been processed by data_callback routine and all is good, or
-	#	- none (or some?) of the response has been processed and we got an error.
-	# This means the httpResponse is either "OK" or some error, so, if it's an error, we'll handle
-	# it here:
-	if( !$httpResponse->{success} ) {
-		# failure - display message and give up on this one
-		PMSLogging::PrintLog( "", "", "FAILED!!", 1 );
-		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponse, "From GetPMSRecords()" );
-	} else {
-		if( $callbackState{'numDifferentRecords'} ) {
-			PMSLogging::PrintLog( "", "", "($callbackState{'numLines'} lines, " .
-				"$callbackState{'numCallbackCalls'} callbacks)... " .
-				"found $callbackState{'numDifferentRecords'} records.", 1 );
-		} else {
-			PMSLogging::PrintLog( "", "", "none found - no result file generated - " .
-				$callbackState{"numLines"} . " lines, " . $callbackState{"numCallbackCalls"} .
-				" callbacks.", 1 );
-		}
-	}
-
-	# record some statistics gathered while processing these results:
-	TT_Struct::IncreaseFetchStat( "FS_NumLinesRead", $callbackState{"numLines"} );
-	TT_Struct::IncreaseFetchStat( "FS_NumDifferentMeetsSeen", 0 );
-	TT_Struct::IncreaseFetchStat( "FS_NumDifferentResultsSeen", $callbackState{"numDifferentRecords"} );
-	TT_Struct::IncreaseFetchStat( "FS_NumDifferentFiles", 1 );
-
-	return;
-	
-} # end of GetPMSRecords()
-		
-
-# ParsePMSRecordsHttpResponse - parse the response to the request made by GetPMSRecords() above.
-#
-sub ParsePMSRecordsHttpResponse_old_deleteThis( $$$$$$$$ ) {
-	my( $callbackStateRef, $linkToResults, $org, $course, $minDate, $maxDate,
-		$content, $httpResponseRef ) = @_;
-	my $numCallbackCalls = $callbackStateRef->{"numCallbackCalls"}+1;
-	$callbackStateRef->{"numCallbackCalls"} = $numCallbackCalls;
-	my $numLines = $callbackStateRef->{"numLines"};
-	my $partialLastLine = 0;		# set to 1 if the content we are passed
-	my $numLinesThisCall = 0;		# the number of lines of content we'll process this call (computed below)
-	
-	# before doing anything make sure we didn't get an error
-	if( ((defined $httpResponseRef->{success}) && !$httpResponseRef->{'success'}) ||
-		($httpResponseRef->{'status'} !~ /^2/) ) {
-		# failure - display message and give up on this one
-		PMSLogging::PrintLog( "", "", "ParsePMSRecordsHttpResponse() ($org,$course) FAILED!! (during " .
-			"callback #$numCallbackCalls)", 1 );
-		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef );
-	} else {
-		# begin/continue processing each line in the human-readable results:
-		if( $content !~ m/\n$/ ) {
-			# the content ends with a partial line - remember this fact:
-			$partialLastLine = 1;
-		}
-		my @lines = split('\n', $content);
-		my $leftoverLine = $callbackStateRef->{"leftoverLine"};
-		if( $leftoverLine ne "" ) {
-			# the previous chunk had a partial line, so we'll prepend it to the first line of
-			# the current chunk
-			$lines[0] = $leftoverLine . $lines[0];
-			if( $debug ) {
-				print "ParsePMSRecordsHttpResponse(): process previously saved partial line (" .
-					length($leftoverLine) . " chars).  New first line: '" . $lines[0] . "'\n";
-			}
-		}
-		# if the last line in our chunk is a partial line then process it with the next chunk
-		if( $partialLastLine ) {
-			my $lastIndex = $#lines;
-			my $lastLine = $lines[$lastIndex];
-			# the last line doesn't end with a '\n' so it's a partial line
-			$callbackStateRef->{"leftoverLine"} = $lastLine;
-			$#lines = $lastIndex-1;
-			if( $debug ) {
-				print "ParsePMSRecordsHttpResponse(): found a partial line (" . length($lastLine) . 
-					" chars) - saving it for next chunk: '" . $lastLine . "'\n";
-			}
-		} else {
-			# no partial line...
-			$callbackStateRef->{"leftoverLine"} = "";
-			if( $debug ) {
-				print "ParsePMSRecordsHttpResponse(): No partial line\n";
-			}
-		}
-		
-		$numLinesThisCall += scalar @lines;
-		#print "\ncallback #$numCallbackCalls: \n";
-		foreach my $line ( @lines ) {
-			$numLines++;
-			#print "line $numLines: $line\n";
-			if( ($numLines % 1000) == 0 ) {
-				PMSLogging::PrintLogNoNL( "", "", "$numLines...", 1 );
-			}
-			if( $line =~ m/^ <tr class="/ ) {
-				my $foundLinkUnderTime = 0;		# 0 = no link under time, 1 = link under time, -1 = error found - ignore line
-				# found a result line...get the fields			
-				#                  gender        age grp           dist            stroke          full name                        date             time
-				if( $line =~ m,<td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td class="active">([^<]+)</td><td>([^<]+)</td>, ) {
-					# we found a result line that does NOT contain a link under the time.
-					$foundLinkUnderTime = 0;
-				#                  gender        age grp           dist            stroke          full name                        date              link     time   unverified flag
-				} elsif( $line =~ m,<td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td><td class="active">([^<]+)</td><td><a[^>]+>([^<]+)</a(>.*<)/td>, ) {
-					$foundLinkUnderTime = 1;
-				} else {
-					# our pattern didn't match - this is a problem that we need to fix!
-					$foundLinkUnderTime = -1;
-				}
-				if( $foundLinkUnderTime >= 0 ) {
-					# it looks like a valid record line - do we use it?
-					my $date = $6;			# must be in MySql format
-					my $time = "";			# compute below
-					if( $foundLinkUnderTime == 1 ) {
-						# we have a link - is this record verified?
-						my $verifiedFlag = $8;
-						if( $verifiedFlag eq "><" ) {
-							# yes - this is verified!
-							$time = $7;
-						} else {
-							# no - not verified.  ignore it
-							PMSLogging::DumpNote( $line, $numLines, "Ignoring unverified record.", 1 );
-							next;
-						}
-					} else {
-						# no link under time
-						$time = $7;
-					}
-					my $dateAnalysis = PMSUtil::ValidateDateWithinSeason( $date, $course, $yearBeingProcessed );
-					if( index( $dateAnalysis, "Illegal" ) >= 0 ) {
-						# ValidateDateWithinSeason() had a problem...
-						PMSLogging::DumpError( $line, 0, "ParsePMSRecordsHttpResponse(): Error from " .
-							"ValidateDateWithinSeason(): '$dateAnalysis'", 1 );
-						# we'll keep going but this should be fixed!
-					}
-					if( $dateAnalysis eq "" ) {
-						$callbackStateRef->{"numDifferentRecords"}++;
-						# write the data to the output file.
-						my $fd = $callbackStateRef->{"recordsFileHandle"};
-						print $fd "$1,$2,$3,$4,$5,$6,$time\n";
-					} elsif( $date lt $minDate ) {
-						# records are in chronological order youngest to oldest, so in this case we're done
-						last;
-					}
-				} # done with this result line
-				else {
-					# this result line doesn't look like we think it should - we're going to skip it:
-					PMSLogging::DumpNote( $line, $numLines, "We are ignoring this record ($course) - pattern match failed:", 1 );
-				}
-			} elsif( $line =~ m,^</table>, ) {
-				# no more records...
-				last;
-			}
-		} # end of foreach ...
-	}
-	
-	$callbackStateRef->{"numLines"} += $numLinesThisCall;
-
-} # end of ParsePMSRecordsHttpResponse_old_deleteThis()
-
-
-
 # 	GetUSMSRecords( "http://www.usms.org/comp/recordexport.php", \%USMSRecordsFiles, $yearBeingProcessed );
 # GetUSMSRecords - get the USMS Records result files in all courses (SCY, SCM, and LCM)
 #
@@ -1756,6 +1573,7 @@ sub GetUSMSRecords( $$$ ) {
 	my $org = "USMS";
 	my %courses = ( "SCY" => 1, "LCM" => 2, "SCM" => 3 );
 	my $numFiles = 0;
+	#my $debug = 0;
 
 	my $tinyHttp = HTTP::Tiny->new( );
 	foreach my $simpleFileName ( sort keys %{$USMSRecordsFilesRef} ) {
@@ -1768,7 +1586,9 @@ sub GetUSMSRecords( $$$ ) {
 				"ignoring this entry.", 1 );
 			next;
 		}
-		PMSLogging::PrintLogNoNL( "", "", "GetResults::GetUSMSRecords(): Get the results for USMS Records $course ($gender)...", 1 );
+		my $currentTime = strftime( "%T", localtime() );
+		PMSLogging::PrintLogNoNL( "", "", "GetResults::GetUSMSRecords(): Get the results for USMS Records $course " .
+			"($gender); current time is $currentTime...", 1 );
 		my $courseCode = $courses{$course};
 		# get full url to download
 		my $linkToResults = $url . "?CourseID=$courseCode&ri=$gender&ext=csv&prog=0";
@@ -1809,6 +1629,13 @@ sub GetUSMSRecords( $$$ ) {
 				TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef, "From GetUSMSRecords()" );
 			} else {
 				# the excel file was downloaded with no errors
+				if( $debug ) {
+					PMSLogging::PrintLog( "", "", "SUCCESSFUL download of '$linkToResults'!!", 1 );
+					PMSLogging::PrintLog( "", "", "response: url=" . $httpResponseRef->{url} .
+						", http status=" . $httpResponseRef->{status} .
+						", reason=" . $httpResponseRef->{reason} .
+						"", 1 );
+				}
 			}
 		
 		if( ! -e $resultFileName ) {
@@ -1856,59 +1683,55 @@ sub GetPMSOWResults( $$ ) {
 	my $gotOWResults = 1;		# assume we'll find some OW events
 	my $org = "PMS";
 	my $course = "OW";
+	#my $debug = 0;
 
 	my $tinyHttp = HTTP::Tiny->new( );
-	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSOWResults(): Get the results for PAC open water...", 1 );
-	PMSLogging::PrintLogNoNL( "", "", "url='$linkToResults',\n  destination='$resultFileName'...", 1 );
+	my $currentTime = strftime( "%T", localtime() );
+	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSOWResults(): Get the results for PAC open water;" .
+		" current time is $currentTime...", 1 );
+	PMSLogging::PrintLog( "", "", "url='$linkToResults',\n  destination='$resultFileName'...", 1 );
 
+	# set up callback for file download
+	my %callbackFileDownloadState = (
+		"numCallbackCalls"		=> 	0,
+		"numBytesSeen"			=>	0,
+		"numBytesWritten"		=>	0,
+		"fullFileName"			=>	$resultFileName,
+		"fileHandle"			=>  0,
+		"binmode"				=>	0,		# set to 1 if downloading a binary file
+		);
+	my %optionsFileDownload = (
+		"data_callback"	=>	sub {
+			ParseFileDownloadHttpResponse( \%callbackFileDownloadState, $linkToResults, $org, 
+				$course, $_[0], $_[1] );
+		} );
 
-if(0) {
-my $response = $tinyHttp->get( "https://data.pacificmasters.org/points/OWPoints/2024PacMastersOWPlacesForEachSwimmer.csv" );
-print "success=" .  $response->{success} . "\n";
-print "$response->{status} $response->{reason}\n";
-print "content: **********\n";
-print $response->{content} if length $response->{content};
-
-return (1,1);
-
-}
-
-
-
-			# set up callback for file download
-			my %callbackFileDownloadState = (
-				"numCallbackCalls"		=> 	0,
-				"numBytesSeen"			=>	0,
-				"numBytesWritten"		=>	0,
-				"fullFileName"			=>	$resultFileName,
-				"fileHandle"			=>  0,
-				"binmode"				=>	0,		# set to 1 if downloading a binary file
-				);
-			my %optionsFileDownload = (
-				"data_callback"	=>	sub {
-					ParseFileDownloadHttpResponse( \%callbackFileDownloadState, $linkToResults, $org, 
-						$course, $_[0], $_[1] );
-				} );
-
-			if( $debug ) {
-				PMSLogging::DumpNote( "", "", "$appProgName:GetPMSTopTenResults(): fetch Excel from:\n  " .
-					"'$linkToResults'\n  and store in '$resultFileName'", 1);
-			}
-			OpenDownloadDestination( \%callbackFileDownloadState, $linkToResults );
-			my $httpResponseRef = $tinyHttp->get( $linkToResults, \%optionsFileDownload );
-			CloseDownloadDestination( \%callbackFileDownloadState );
-			# we get here under TWO conditions:
-			#	- the entire response has been processed by data_callback routine and all is good, or
-			#	- none (or some?) of the response has been processed and we got an error.
-			# This means the httpResponse is either "OK" or some error, so, if it's an error, we'll handle
-			# it here:
-			if( !$httpResponseRef->{success} ) {
-				# failure - display message and give up on this one
-				PMSLogging::PrintLog( "", "", "FAILED to download '$linkToResults'!!", 1 );
-				TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef, "From GetPMSOWResults()" );
-			} else {
-				# the excel file was downloaded with no errors
-			}
+	if( $debug ) {
+		PMSLogging::DumpNote( "", "", "$appProgName:GetPMSTopTenResults(): fetch Excel from:\n  " .
+			"'$linkToResults'\n  and store in '$resultFileName'", 1);
+	}
+	OpenDownloadDestination( \%callbackFileDownloadState, $linkToResults );
+	my $httpResponseRef = $tinyHttp->get( $linkToResults, \%optionsFileDownload );
+	CloseDownloadDestination( \%callbackFileDownloadState );
+	# we get here under TWO conditions:
+	#	- the entire response has been processed by data_callback routine and all is good, or
+	#	- none (or some?) of the response has been processed and we got an error.
+	# This means the httpResponse is either "OK" or some error, so, if it's an error, we'll handle
+	# it here:
+	if( !$httpResponseRef->{success} ) {
+		# failure - display message and give up on this one
+		PMSLogging::PrintLog( "", "", "FAILED to download '$linkToResults'!!", 1 );
+		TT_Logging::HandleHTTPFailure( $linkToResults, $org, $course, $httpResponseRef, "From GetPMSOWResults()" );
+	} else {
+		# the excel file was downloaded with no errors
+		if( $debug ) {
+			PMSLogging::PrintLog( "", "", "SUCCESSFUL download of '$linkToResults'!!", 1 );
+			PMSLogging::PrintLog( "", "", "response: url=" . $httpResponseRef->{url} .
+				", http status=" . $httpResponseRef->{status} .
+				", reason=" . $httpResponseRef->{reason} .
+				"", 1 );
+		}
+	}
 	
 	# if we found some OW events let's count them...
 	if( $gotOWResults ) {
@@ -1970,18 +1793,12 @@ sub CleanStringOfHTMLEscapeChars( $ ) {
 #################################################################################################
 #################################################################################################
 
-#	GetPMSRecords2( "PAC", "SCM Records", "$yearBeingProcessed-01-01", "$yearBeingProcessed-12-31",
-#	$simpleFileName );
-#	return ($callbackState{"numLines"}, 0, $callbackState{'numDifferentRecords'}, 1);
-
-
+#	GetPMSRecords2( "PAC", "SCM Records", $simpleFileName );
 # GetPMSRecords2 - get the PMS Records result files in all courses (SCY, SCM, and LCM)
 #
 # PASSED:
 #	$org - the organization.  Always "PAC"
 #	$course - the course (sort of...).  One of "SCY Records", "SCM Records", or "LCM Records"
-#	$minDate - date in the form yyyy-mm-dd
-#	$maxDate - date in the form yyyy-mm-dd
 #	$destinationFileName - the simple file name of the file we create with the results.  We'll convert
 #		to a full file name putting it into the "correct" directory.
 #
@@ -1990,16 +1807,16 @@ sub CleanStringOfHTMLEscapeChars( $ ) {
 #
 # NOTES:
 #	This routine will use the PACWebService named "GetRecords" to get all PMS records, and then
-#	pass over them looking for all records for the current season (set between $minDate and $maxDate,
-#	inclusive.)  Depending on the AGSOTY rules either the most recent record set during the season
-#	for a specific event/gender/age group will be collected, or all records set during the season
+#	pass over them looking for all records for the current season (using ValidateDateWithinSeason() ).
+#	Depending on the AGSOTY rules either the most recent record established during the season
+#	for a specific event/gender/age group will be collected, or all records established during the season
 #	for that event/gender/age group.
 #	NOTE:  Definition:  a "record set" is a set of 1 or more records where the gender, stroke, distance, 
 #	and age group are the same.
 #	Files are created and global variables are modified and used later.
 #
-sub GetPMSRecords2( $$$$$ ) {
-	my( $org, $course, $minDate, $maxDate, $destinationFileName ) = @_;
+sub GetPMSRecords2( $$$ ) {
+	my( $org, $course, $destinationFileName ) = @_;
 	my $recordsFileName = "$sourceDataDir/$destinationFileName";
 	my $recordsFileHandle;
 	my $totalNumCurrentRecords = 0;
@@ -2019,9 +1836,32 @@ sub GetPMSRecords2( $$$$$ ) {
 		die "GetResults::GetPMSRecords2(): Can't open $recordsFileName: $!\nAbort.\n";
 
 	# fetch the JSON results
-	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSRecords2(): Get the results for $org $course in " .
-		"the range $minDate - $maxDate...", 1 );
+	my $currentTime = strftime( "%T", localtime() );
+	PMSLogging::PrintLogNoNL( "", "", "GetResults::GetPMSRecords2(): Get the results for $org $course " .
+		"; current time is $currentTime;...", 1 );
 		
+	# here is where we get ALL individual records for a specific course (SCY, etc) regardless of the
+	# status of the record. Records are returned ordered by gender, then stroke, then distance, then age group
+	# Gender is one of "M" or "F", stroke is like "Freestyle", etc, distance in yd or meters, and
+	# agegroup is like "25-29".
+	# Here is a complete list of what is returned:
+	#	gender
+	#	age_group
+	#	distance (e.g. 50, 100, etc)
+	#	stroke
+	#	name - full name of the swimmer
+	#	swimmer_id - USMS swimmer id of the swimmer
+	#	rdate - the date of the Swim
+	#	rtime - the duration of the swim (the record)
+	#	ftime - one of: 
+	#		// this is for records
+	#  		const HISTORICAL = 0;		- previous record
+	#  		const FASTEST    = 1;		- current record
+	#  		const UNVERIFIED = 2;		- possible new record...waiting for verification
+	#  		const NULLIFIED  = 3;
+	#  		const UNVERIFIED_HISTORICAL = 4;
+	#  		const FAILS_STANDARDS = 5;
+
 	my $JSONdata = WebServiceClient::GetRecords( $trueCourse );
 	my $data = decode_json( $JSONdata );
 	
@@ -2071,6 +1911,11 @@ sub GetPMSRecords2( $$$$$ ) {
 					$previousAgeGroup = $currentAgeGroup;
 					### --- initialize our state to begin a new record set:
 				}
+			# NOTE: at this point the current record is either the first record of a record set, or
+			# an other record in a previously seen record set. All members of a single record Set
+			# are clumped together since the web service above returned all records in the
+			# order specified.  However, note that this record may not be valid, or verified, or
+			# within the specified season.
 			# analyze the current record:
 			my $curentDate = $recHashRef->{'date'};
 			my $currentFTime = $recHashRef->{'ftime'};
@@ -2189,27 +2034,47 @@ sub ComputePointsForPreviousRecordSet($$) {
 		# a historical record then she won't get points for her record during the 2019 season.  So
 		# here is where we will do that.
 		#
-		# NOTE:  currently we only use ONE of these historical records - the newest one:
-		my $newestHistoricalRecord = undef;
-		my $newestHistoricalDate = "0000-00-00";
-		foreach my $rec (@{$listOfThisSeasonsHistoricalRecordsRef}) {
-			if( $rec->{'date'} gt $newestHistoricalDate ) {
-				$newestHistoricalRecord = $rec;
-				$newestHistoricalDate = $rec->{'date'};
+		# XXXX NOTE:  currently we only use ONE of these historical records - the newest one:
+		# NO - 19jan2026: changed to use all historical records, since both Sally and Nancy could
+		# have set the record on Feb 3 and then 4, respectively, and both deserve points when we 
+		# realize that Jane doesn't get the points (above example)
+		if(0) {	# ignore the following old code removed 19jan2026
+			my $newestHistoricalRecord = undef;
+			my $newestHistoricalDate = "0000-00-00";
+			foreach my $rec (@{$listOfThisSeasonsHistoricalRecordsRef}) {
+				if( $rec->{'date'} gt $newestHistoricalDate ) {
+					$newestHistoricalRecord = $rec;
+					$newestHistoricalDate = $rec->{'date'};
+				}
 			}
-		}
-		if( defined $newestHistoricalRecord ) {
+			if( defined $newestHistoricalRecord ) {
+				print $recordsFileHandle
+					"$newestHistoricalRecord->{'gender'}," .
+					"$newestHistoricalRecord->{'age_group'}," .
+					"$newestHistoricalRecord->{'distance'}," .
+					"$newestHistoricalRecord->{'stroke'}," .
+					"$newestHistoricalRecord->{'name'}," .
+					"$newestHistoricalRecord->{'date'}," .
+					"$newestHistoricalRecord->{'duration'}," .
+					"\n";
+				$numSavedRecords++;
+			}
+		} # end of ignored old Code
+		# give points to all historical records that meet the criterion
+		foreach my $rec (@{$listOfThisSeasonsHistoricalRecordsRef}) {
 			print $recordsFileHandle
-				"$newestHistoricalRecord->{'gender'}," .
-				"$newestHistoricalRecord->{'age_group'}," .
-				"$newestHistoricalRecord->{'distance'}," .
-				"$newestHistoricalRecord->{'stroke'}," .
-				"$newestHistoricalRecord->{'name'}," .
-				"$newestHistoricalRecord->{'date'}," .
-				"$newestHistoricalRecord->{'duration'}," .
+				"$rec->{'gender'}," .
+				"$rec->{'age_group'}," .
+				"$rec->{'distance'}," .
+				"$rec->{'stroke'}," .
+				"$rec->{'name'}," .
+				"$rec->{'date'}," .
+				"$rec->{'duration'}," .
 				"\n";
 			$numSavedRecords++;
 		}
+		
+		
 	}
 	$numCurrentRecords = @$listOfThisSeasonsCurrentRecordsRef;
 	$numHistoricalRecords = @$listOfThisSeasonsHistoricalRecordsRef;
@@ -2236,7 +2101,9 @@ sub GetEpostalResults( $ ) {
 	my $numPMSScoringResults = 0;
 	my $numResultLines = 0;
 	
-	print "Processing ePostal file $resultFileName...\n";
+	my $currentTime = strftime( "%T", localtime() );
+	PMSLogging::PrintLog( "", "", "GetResults::GetEpostalResults(): Get the results for " .
+		"ePostal\n    '$resultFileName';\n    current time is $currentTime.", 1 );
 
 	# does this file exist?
 	if( ! ( -e -f -r $resultFileName ) ) {

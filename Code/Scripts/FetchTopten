@@ -35,17 +35,20 @@ fi
 
 cd "$FULLPATHCODE"
 # get the latest results for the specified season
-echo $SCRIPT_NAME:  Get the latest results for $1
+echo $SCRIPT_NAME:  
+echo "   Get the latest results for $1"
+echo "   TMPFILE='$TMPFILE'"
 if [ ."$2" = . ] ; then
 	./GetResults.pl $1 > $TMPFILE
 else
+	echo "(stdout tee'ed to $TMPFILE)"
 	./GetResults.pl $1 | tee $TMPFILE
 fi
+# display the tail end of our log showing some stats 
+sed < $TMPFILE -e "1,/GetResults:: Final Totals:/ d"   >$TMPFILE2
 if grep -q "Results have changed" < $TMPFILE ; then
 	# looks like we've got some changes!
 	echo "Found some changes:"
-#	tail -n -13 $TMPFILE >$TMPFILE2
-	sed < $TMPFILE -e "1,/GetResults:: Final Totals:/ d"   >$TMPFILE2
 	cat $TMPFILE2
 	/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<BUp
 Subject: There are new results to process for $1 Top ten
@@ -56,7 +59,6 @@ Details from GetResults.pl:
 BUp
 else
 	echo "No new changes for $1:"
-	tail -n -8 $TMPFILE >$TMPFILE2
 	cat $TMPFILE2
 	/usr/sbin/sendmail -f $EMAIL_NOTICE $EMAIL_NOTICE <<BUp2
 Subject: No new results to process for $1 Top ten

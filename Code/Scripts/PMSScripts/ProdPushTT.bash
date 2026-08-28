@@ -22,8 +22,9 @@ EMAIL_NOTICE=bobup@acm.org
 SIMPLE_SCRIPT_NAME=`basename $0`
 DESTINATION_DIR=/usr/home/pacmasters/public_html/pacificmasters.org/sites/default/files/comp/points/$STANDINGSDIR
 DESTINATION_BASE_URL=https://data.pacificmasters.org/points/standings-$SEASON
-DESTINATION_URL=https://data.pacificmasters.org/points/standings-$SEASON/TTStats.html
-DESTINATION_URL=$DESTINATION_BASE_URL/TTStats.html
+DESTINATION_GETRESULTS_URL=$DESTINATION_BASE_URL/GetResultsLog-$SEASON.txt
+DESTINATION_TOPTEN_URL=$DESTINATION_BASE_URL/TopTenLog-$SEASON.txt
+DESTINATION_TTSTATS_URL=$DESTINATION_BASE_URL/TTStats.html
 SERVER_TTSTATS=/tmp/TTStats.$$      # a copy of TTStats from the server prior to the push
 # compute the full path name of the directory holding this script.  We'll find the
 # other scripts using this path:
@@ -90,6 +91,8 @@ DoThePush() {
 Source Directory (dev points dir): $SOURCE_DIR
 Destination Directory: $DESTINATION_DIR
 Destination URL: $DESTINATION_BASE_URL
+   Get Results Log URL: $DESTINATION_GETRESULTS_URL
+   Top Ten Log URL: $DESTINATION_TOPTEN_URL
 (STARTed on $STARTDATE, FINISHed on $(date +'%a, %b %d %G at %l:%M:%S %p %Z'))
 diff $SERVER_TTSTATS $SOURCE_TTSTATS :
 $(cat $TTSTATS_DIFF2)
@@ -136,10 +139,10 @@ fi
 echo ""; echo '******************** Begin' "$0"
 
 # handle the edge case:  the production version of the TT files does NOT contain the TTStats file
-curl -f $DESTINATION_URL >$SERVER_TTSTATS 2>/dev/null
+curl -f $DESTINATION_TTSTATS_URL >$SERVER_TTSTATS 2>/dev/null
 STATUS=$?
 if [ "$STATUS" -eq 22 ] ; then
-    echo "There is no '$DESTINATION_URL'" | tee >$TTSTATS_DIFF2
+    echo "There is no '$DESTINATION_TTSTATS_URL'" | tee >$TTSTATS_DIFF2
     # do the push!
     DoThePush
 else

@@ -1,0 +1,88 @@
+
+
+swimming records in AGSOTY
+
+Jan 19, 2026: Chris wrote me asking the following:
+
+	It is possible that some records could be broken more than once and I know I need 
+	to make sure I approve these in order. So say Joe breaks a record at our SCY champs 
+	and then Steve breaks that record at Nationals, they both get AGSOTY points for that, 
+	right? What if Joe breaks his own record again (instead of Steve)?
+
+My reply on the same day:
+
+	OK, I have an answer to your questions.
+	First of all, I found an old document written when our new records system was being designed. 
+	Here is an excerpt with some clarification surrounded by “[ ]”’s:
+	
+	1.              Age Group Standings [AGSOTY] will assign Pac records points based on transactions 
+	in this repository [the new database and tools we’re designing].  This will allow us to reward 
+	multiple individuals who better a given record during a season.  (And, we can keep from awarding 
+	multiple points if one individually lowers a record more than once in a season.)
+	
+	Notice that the above implies that if Sally breaks the same record multiple times in a 
+	season she gets points for all records BUT WE CAN KEEP THAT FROM HAPPENING IF WE WANT. 
+	The term “multiple individuals” is unclear but could mean that if Sally and Jane both 
+	break the same record in the same season then both get points.
+	
+	My reading of the code agrees with the above AND DOES NOT PREVENT SOMEONE FROM GETTING 
+	MULTIPLE POINTS FOR BREAKING THE SAME RECORD MULTIPLE TIMES IN THE SAME SEASON. In your 
+	example below, both Joe and Steve get AGSOTY points. And Joe gets points for every time 
+	he breaks the same record in the same season.
+
+So it seems that the intention of the "old document" referenced above is:
+	1. if two people break the standing record for the same event in the same season then
+		both get points. So, using Chris' example, both Joe and Steve get points.
+		Currently it appears that the code for PMS records does this.
+	2 if the same person breaks the standing record for the same event in the same season
+		then that person only gets points for one of the records. Currently it appears 
+		that the code for PMS records DOES NOT DO THIS. (It gives that person points for
+		each time they broke the record.)
+
+Furthermore, the code handling USMS records does not handle #1 correctly. It only gives the
+current record holder points if the current record holder broke the record during the season
+being processed. I think it
+handles #2 correctly, but only accidentally.
+
+
+
+
+
+----
+
+- old way we got usms records for SCY (CourseId=1; LCM=2, SCM=3), gender (ri=M or W), ext=csv, prog=0
+	http://www.usms.org/comp/recordexport.php?CourseID=1&ri=M&ext=csv&prog=0
+example output:
+	USMS Men's Short Course Yards Records 03/27/2026				
+	Age Group	Event	Name	Date	Time
+	M18-24	50 Y Free	Josh Schneider	4/28/12	19.36Y
+	M18-24	100 Y Free	Eugene Godsoe	12/1/12	42.59Y
+	M18-24	200 Y Free	Andy Grant	11/8/09	1:35.02Y
+	M18-24	500 Y Free	Andy Grant	1/24/10	4:24.81Y
+	M18-24	1000 Y Free	JP Arnold	2/13/10	9:01.26Y
+	M18-24	1650 Y Free	Cole Weiderman	6/24/24	15:42.49Y
+	....
+
+- new way, change prog to 1
+	http://www.usms.org/comp/recordexport.php?CourseID=1&ri=M&ext=csv&prog=1
+example output:
+	USMS Men's Short Course Yards Records 03/27/2026				
+	Age Group	Event	Name	Date	Time
+	M18-24	50 Y Free	Josh Schneider	4/28/12	19.36Y
+			Josh Schneider	1/28/12	19.64Y
+			Steve A Scheren	5/23/10	19.69Y
+			Erik E Mauer	4/10/94	20.25Y
+			Brian Kurza	5/23/93	20.73Y
+			Adam Werth	  -  -92	21.07Y
+			Mark A Noetzel	  -  -87	21.11Y
+	M18-24	100 Y Free	Eugene Godsoe	12/1/12	42.59Y
+			Andy Grant	11/8/09	43.77Y
+			Romain Barneir	2/18/01	43.89Y
+			Erik E Mauer	4/10/94	45.11Y
+			....
+
+
+
+
+
+

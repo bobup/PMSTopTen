@@ -11,6 +11,18 @@
 # the results to be processed:
 RacesDataFile	races.txt
 
+# A special NOTE is displayed near the top of the page if desired. Here is the text of the note:
+#SpecialNote NOTE: There are problems with the results for the Women's 3000 ePostal event. Once they ar\
+#	e resolved their points will be included in AGSOTY.
+# If there is no special NOTE then define the SpecialNote as an empty string:
+SpecialNote NOTICE: the 2025 SCY season that AGSOTY has been using prior to th \
+	is release considered swims during the dates June 25, 2024 through May 31, 2025. HOW \
+	EVER, the Pool and Open Water swim committees have decided to change the dates of th \
+	e 2025 SCY season to June 1, 2024 through May 31, 2025 which are the normal dates of a S \
+	CY season. For this reason you may see changes in your points since this will effectiv \
+	ely increase the number of swims considered for points.  
+
+
 # The AGSOTYPointsEmail is the FULL mailto link to use when the user wants to email a question/problem
 # to a human. Note the strange format - it's designed to make it very hard for a bot to gather the
 # email address from the web page. See the necessary javascript that turns this into a working 
@@ -192,11 +204,57 @@ USMSEpostals \
 							https://www.usms.org/events/national-championships/virtual-championships/2025-virtual-championships/2025-5k-10k-virtual-championships@@@ \
 							{YearBeingProcessed}-05-15@@@ \
 							{YearBeingProcessed}-09-15@@@ \
+							0; \
+						{YearBeingProcessed}Men6000.csv; \
+							USMS@@@ \
+							6000@@@ \
+							0@@@ \
+							Meters@@@ \
+							{YearBeingProcessed} USMS 3000/6000 Virtual Championship@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2025-virtual-championships/2025-3000-6000-virtual-championships@@@ \
+							{YearBeingProcessed}-09-15@@@ \
+							{YearBeingProcessed}-11-15@@@ \
+							0; \
+						{YearBeingProcessed}Women6000.csv; \
+							USMS@@@ \
+							6000@@@ \
+							0@@@ \
+							Meters@@@ \
+							{YearBeingProcessed} USMS 3000/6000 Virtual Championship@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2025-virtual-championships/2025-3000-6000-virtual-championships@@@ \
+							{YearBeingProcessed}-09-15@@@ \
+							{YearBeingProcessed}-11-15@@@ \
+							0; \
+						{YearBeingProcessed}Men3000.csv; \
+							USMS@@@ \
+							3000@@@ \
+							0@@@ \
+							Meters@@@ \
+							{YearBeingProcessed} USMS 3000/6000 Virtual Championship@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2025-virtual-championships/2025-3000-6000-virtual-championships@@@ \
+							{YearBeingProcessed}-09-15@@@ \
+							{YearBeingProcessed}-11-15@@@ \
+							0; \
+						{YearBeingProcessed}Women3000.csv; \
+							USMS@@@ \
+							3000@@@ \
+							0@@@ \
+							Meters@@@ \
+							{YearBeingProcessed} USMS 3000/6000 Virtual Championship@@@ \
+							https://www.usms.org/events/national-championships/virtual-championships/2025-virtual-championships/2025-3000-6000-virtual-championships@@@ \
+							{YearBeingProcessed}-09-15@@@ \
+							{YearBeingProcessed}-11-15@@@ \
 							0;
 >skip
-							
-							
 >endskip
+
+
+							
+							
+
+
+
+
 
 
 >endoffile
